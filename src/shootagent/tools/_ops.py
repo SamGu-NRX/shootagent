@@ -193,11 +193,15 @@ def _analysis_job(store, shoot_id: str, view_id: str) -> Future:
     key = (shoot_id, view_id)
     with _qc_lock:
         fut = _qc_inflight.get(key)
-        if fut is None or (fut.done() and fut.exception() is not None):
+        fresh = fut is None or (fut.done() and fut.exception() is not None)
+        if fresh:
             fut = _qc_pool.submit(_fn("qc", "analyze_view"), store, shoot_id, view_id, None)
             _qc_inflight[key] = fut
-            fut.add_done_callback(lambda f, k=key: _qc_done(k, f))
-        return fut
+    if fresh:
+        # Outside the lock: a job that already finished runs the callback immediately, and _qc_done takes
+        # the same (non-reentrant) lock.
+        fut.add_done_callback(lambda f, k=key: _qc_done(k, f))
+    return fut
 
 
 def _qc_done(key, fut: Future) -> None:

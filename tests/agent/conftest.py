@@ -17,6 +17,8 @@ def fake_ops(monkeypatch):
 
     def judge(before, after, mask, intent, reference=None):
         v = verdicts.pop(0) if verdicts else "pass"
+        if isinstance(v, BaseException):  # the judge call itself blows up
+            raise v
         if isinstance(v, dict):  # a full verdict with sub-checks
             return v, {"model": "claude-sonnet-5-5", "input_tokens": 500, "output_tokens": 50}
         return (

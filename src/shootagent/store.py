@@ -187,8 +187,17 @@ class ShootStore:
         name = hashlib.sha256(data).hexdigest()[:20] + "." + ext.lstrip(".")
         path = self.blob_path(shoot_id, name)
         if not path.exists():
+            # Write a private temp file and rename it into place, so a reader never sees a half-written
+            # blob. Two writers of the same bytes race harmlessly: the name is the content hash.
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(data)
+            tmp = path.with_name(f".{name}.{uuid.uuid4().hex[:8]}.tmp")
+            tmp.write_bytes(data)
+            try:
+                os.replace(tmp, path)
+            except PermissionError:  # Windows: the other writer's copy is in place and open for reading
+                tmp.unlink(missing_ok=True)
+                if not path.exists():
+                    raise
         return name
 
     def put_file(self, shoot_id: str, src: Path) -> str:

@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import threading
 import time
 import uuid
@@ -52,6 +53,7 @@ class TraceRun:
         self.done = False
 
     def emit(self, kind: str, view: str | None = None, **data: Any) -> dict:
+        data = _finite(data)
         with self._lock:
             self._seq += 1
             event = {"run": self.id, "seq": self._seq, "t": now_iso(), "kind": kind, "view": view, "data": data}
@@ -61,9 +63,10 @@ class TraceRun:
                 self.usd += float(data.get("usd") or 0)
             if kind == "run_end":
                 self.done = True
-            subs = list(self._subs)
-        for loop, q in subs:
-            loop.call_soon_threadsafe(q.put_nowait, event)
+            # Queue for subscribers while still holding the lock, so two threads emitting at once cannot
+            # deliver seq N+1 before seq N (the UI reducer drops events older than the last one it saw).
+            for loop, q in self._subs:
+                loop.call_soon_threadsafe(q.put_nowait, event)
         return event
 
     def subscribe(self) -> asyncio.Queue:
@@ -84,6 +87,17 @@ class TraceRun:
         return int((time.perf_counter() - self.started) * 1000)
 
 
+def _finite(value: Any) -> Any:
+    """Replace NaN and infinity with None. They are not valid JSON, and the browser's JSON.parse rejects them."""
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {k: _finite(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_finite(v) for v in value]
+    return value
+
+
 def read_events(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -102,7 +116,7 @@ class NullTrace(TraceRun):
         self.events: list[dict] = []
 
     def emit(self, kind: str, view: str | None = None, **data: Any) -> dict:
-        event = {"kind": kind, "view": view, "data": data}
+        event = {"kind": kind, "view": view, "data": _finite(data)}
         self.events.append(event)
         if kind == "usage":
             self.usd += float(data.get("usd") or 0)

@@ -301,7 +301,11 @@ def render_reel(
             cmd += ["-c:a", "aac", "-b:a", "192k", "-shortest"]
         cmd.append(str(out_path))
         trace.emit("tool_result", tool="render_reel", ok=True, summary=f"Rendering {len(spec.slides)} photos, {total:.1f} s at {fps} fps.")
-        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        # stderr goes to a file, not a pipe: an unread pipe that fills up blocks ffmpeg, which then stops
+        # reading frames and blocks us too.
+        err_path = Path(tmp) / "ffmpeg.log"
+        err_file = err_path.open("wb")
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=err_file)
         last = len(spec.slides) - 1
 
         def make_frame(k: int) -> bytes:
@@ -326,17 +330,25 @@ def render_reel(
             return (np.clip(frame, 0, 1) * 255 + 0.5).astype(np.uint8).tobytes()
 
         # OpenCV and large numpy ops release the GIL, so threads render frames in parallel; map keeps order.
+        def ffmpeg_log() -> str:
+            err_file.flush()
+            return err_path.read_text(errors="replace").strip()[-500:]
+
         try:
             with ThreadPoolExecutor(max_workers=min(8, os.cpu_count() or 4)) as pool:
                 for chunk in pool.map(make_frame, range(n_frames), chunksize=4):
                     proc.stdin.write(chunk)
             proc.stdin.close()
-            err = proc.stderr.read().decode(errors="replace")
-            if proc.wait() != 0:
-                raise RuntimeError(f"ffmpeg failed: {err.strip()[-500:]}")
+            if proc.wait(timeout=120) != 0:
+                raise RuntimeError(f"ffmpeg failed: {ffmpeg_log()}")
         except BrokenPipeError as e:
-            err = proc.stderr.read().decode(errors="replace")
-            raise RuntimeError(f"ffmpeg exited early: {err.strip()[-500:]}") from e
+            proc.wait(timeout=30)
+            raise RuntimeError(f"ffmpeg exited early: {ffmpeg_log()}") from e
+        finally:
+            if proc.poll() is None:  # an error or timeout above: do not leave ffmpeg running
+                proc.kill()
+                proc.wait()
+            err_file.close()
     shutil.copyfile(out_path, reel_dir / "latest.mp4")
     (reel_dir / "spec.json").write_text(spec.model_dump_json(indent=1), encoding="utf-8")
     return out_path

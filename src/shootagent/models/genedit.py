@@ -56,7 +56,7 @@ REFERENCE_NOTE = "\nImages after the first are references only, not to be edited
 class GenResult:
     image: np.ndarray  # full-size RGB uint8, same shape as the input
     mask: np.ndarray  # bool, the area composited through; outside grow(mask, feather_px) is unchanged
-    usd: float  # estimate; see PRICES
+    usd: float | None  # estimate; see PRICES. None when the endpoint reported no usage
     ms: int  # wall time of the endpoint call
     crop_box: tuple[int, int, int, int]  # (x0, y0, x1, y1) px of the crop that was sent
     raw_size: tuple[int, int]  # (w, h) the model returned
@@ -341,8 +341,8 @@ def generative_edit(
     return GenResult(
         image=out,
         mask=final_mask,
-        # NaN rather than 0 when the gateway omits usage, so a missing cost shows up in run totals.
-        usd=estimate_usd(model, usage) if usage else float("nan"),
+        # None when the gateway omits usage: the cost is unknown, not zero. NaN broke JSON in the trace.
+        usd=estimate_usd(model, usage) if usage else None,
         ms=ms,
         crop_box=(x0, y0, x1, y1),
         raw_size=raw_size,

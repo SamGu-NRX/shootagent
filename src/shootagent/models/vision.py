@@ -255,6 +255,11 @@ def _shrink(img: np.ndarray, long_edge: int) -> np.ndarray:
     return cv2.resize(img, None, fx=s, fy=s, interpolation=cv2.INTER_AREA) if s < 1.0 else img
 
 
+# Major issue added when the judge says the intent was not achieved; agent/verify.py lets a measured
+# amount (EV, delta-E) overrule this one issue and no other.
+INTENT_ISSUE = "requested change not achieved"
+
+
 def combine_verdict(answer: dict) -> tuple[Literal["pass", "fail"], list[str], list[str]]:
     """(verdict, major issues, minor issues). The verdict follows the sub-answers, not the model's own
     verdict field: a failed check or any major artifact fails the edit, so a lenient final answer cannot
@@ -270,7 +275,7 @@ def combine_verdict(answer: dict) -> tuple[Literal["pass", "fail"], list[str], l
     if not answer["photoreal"]:
         major.insert(0, "edited region does not look photographic")
     if not answer["intent_achieved"]:
-        major.insert(0, "requested change not achieved")
+        major.insert(0, INTENT_ISSUE)
     ok = answer["verdict"] == "pass" and not major
     return ("pass" if ok else "fail"), major, minor
 

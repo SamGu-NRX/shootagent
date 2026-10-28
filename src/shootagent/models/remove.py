@@ -46,7 +46,7 @@ class Removal:
     image: np.ndarray  # RGB uint8, same shape as the input
     region: np.ndarray  # bool; outside it the image is byte-identical to the input
     method: str  # the method actually used ("lama", "generative", "lama+generative")
-    usd: float  # image-model spend (estimate); 0 for LaMa
+    usd: float | None  # image-model spend (estimate); 0 for LaMa, None when the endpoint reported no usage
     ms: int  # image-model endpoint time; 0 for LaMa
     grow_px: int  # how far the object mask was grown
     model: str = ""

@@ -380,7 +380,19 @@ class AgentRun:
         return self._result_block(ctx, block.id, result, check)
 
     def _verify(self, ctx: ToolContext, view: str, result: ToolResult) -> dict:
-        check = verify_edit(ctx, view, result)
+        try:
+            check = verify_edit(ctx, view, result)
+        except Exception as e:  # an edit nobody checked must not stay current; treat it as a failed check
+            parent = result.data.get("parent") or result.data.get("verify", {}).get("parent")
+            check = {
+                "version": result.version,
+                "parent": parent,
+                "passed": False,
+                "intent": result.data.get("verify", {}).get("intent"),
+                "metrics": {},
+                "failures": [f"the self-check itself failed ({type(e).__name__}: {e})"],
+                "judge": None,
+            }
         self.trace.emit("check", view=view, call_id=ctx.call_id, **check)
         if check["passed"]:
             with self._lock:

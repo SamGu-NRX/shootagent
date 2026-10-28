@@ -228,15 +228,23 @@ def test_second_run_on_a_shoot_waits_for_the_first_and_cancel_drops_a_queued_run
     assert store.load(sid).runs == [first.id, second.id, third.id]
 
 
-@pytest.mark.parametrize("photoreal, passed", [(True, True), (False, False)])
-def test_measured_exposure_overrides_a_judge_that_cannot_see_it_but_not_an_unrealistic_result(
-    tmp_path, fake_ops, photoreal, passed
+@pytest.mark.parametrize(
+    "photoreal, issues, passed",
+    [
+        (True, ["requested change not achieved"], True),
+        (False, ["requested change not achieved"], False),
+        # a major artifact the judge reports while still calling the region photoreal
+        (True, ["requested change not achieved", "banding across the ceiling"], False),
+    ],
+)
+def test_measured_exposure_overrides_a_judge_that_cannot_see_it_but_not_an_artifact(
+    tmp_path, fake_ops, photoreal, issues, passed
 ):
     fake_ops.append(
         {
             "verdict": "fail",
             "reason": "looks the same brightness",
-            "issues": [],
+            "issues": issues,
             "checks": {"intent_achieved": False, "photoreal": photoreal, "outside_unchanged": True},
         }
     )
@@ -251,5 +259,32 @@ def test_measured_exposure_overrides_a_judge_that_cannot_see_it_but_not_an_unrea
     )
     check = kinds(events, "check")[0]["data"]
     assert check["metrics"]["ev_measured"] == pytest.approx(0.5, abs=0.05)
+    assert check["passed"] is passed
+    assert store.load(sid).view("v01").head == ("v01.1" if passed else "v01.0")
+
+
+@pytest.mark.parametrize(
+    "call, passed",
+    [
+        # EV is measured, so the edit is still verified without the judge
+        (dict(tool="adjust_exposure", ev=0.5), True),
+        # nothing measures a watermark's intent, so an unjudged one is reverted
+        (dict(tool="add_watermark", text="Acme Realty"), False),
+    ],
+)
+def test_when_the_judge_crashes_only_metric_verified_edits_stay(tmp_path, fake_ops, call, passed):
+    fake_ops.append(MemoryError("judge ran out of memory"))
+    name = call.pop("tool")
+    store, sid, client, events = run(
+        tmp_path,
+        [
+            reply(tool("submit_plan", **PLAN)),
+            reply(tool(name, view="v01", intent="the customer's request", **call)),
+            reply(text="Done."),
+        ],
+        views=["v01"],
+    )
+    check = kinds(events, "check")[0]["data"]
+    assert check["judge"]["verdict"] == "unavailable"
     assert check["passed"] is passed
     assert store.load(sid).view("v01").head == ("v01.1" if passed else "v01.0")

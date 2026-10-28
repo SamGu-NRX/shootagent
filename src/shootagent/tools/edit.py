@@ -65,9 +65,13 @@ def commit(
         mask=mask_id,
         note=intent,
         run=ctx.trace.id,
+        move_head=False,
     )
     bbox = mask_bbox(mask) if mask is not None else None
     blob = before_after(ctx, before, after, bbox)
+    # Publish only once the preview exists: if anything above raises, the view stays on its parent and the
+    # unchecked version is just an orphan in the history.
+    ctx.store.set_head(ctx.shoot_id, lv.view.id, version.id)
     return ToolResult(
         summary=summary or f"{op} on {lv.view.id} wrote {version.id}.",
         data={

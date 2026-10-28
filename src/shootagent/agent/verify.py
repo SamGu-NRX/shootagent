@@ -12,6 +12,7 @@ from typing import Any
 
 import numpy as np
 
+from ..models.vision import INTENT_ISSUE  # the one major issue a measured amount may overrule
 from ..tools import _ops
 from ..tools._common import (
     ToolError,
@@ -109,14 +110,18 @@ def _bbox(mask: np.ndarray) -> list[float]:
 INTENT_METRICS = ("ev", "delta_e")
 
 
+
+
 def _metric_owns_intent(metric: dict[str, Any], failures: list[str], judge: dict[str, Any]) -> bool:
     checks = judge.get("checks") or {}
+    artifacts = [i for i in (judge.get("issues") or []) if i != INTENT_ISSUE]
     return (
         metric.get("kind") in INTENT_METRICS
         and not failures
         and bool(checks)
         and checks.get("photoreal") is not False
         and checks.get("outside_unchanged") is not False
+        and not artifacts
     )
 
 
@@ -206,6 +211,10 @@ def verify_edit(ctx: ToolContext, view_id: str, result: ToolResult, use_judge: b
                 "reason": f"{type(e).__name__}: {e}",
                 "model": ctx.settings.judge_model,
             }
+            # Without the judge, only an edit whose intent a metric measures (EV, delta-E) is verified; a
+            # removal or fill nobody looked at must not be accepted.
+            if metric.get("kind") not in INTENT_METRICS:
+                failures.append(f"the vision judge was unavailable ({type(e).__name__}) and no metric measures this edit")
 
     check = {
         "version": result.version,

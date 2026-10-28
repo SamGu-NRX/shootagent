@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import io
+import os
 import json
 import re
 import tempfile
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +16,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from PIL import Image
+from PIL import Image, ImageOps
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -429,15 +431,23 @@ def _resized(cache_dir: Path, path: Path, w: int) -> Path:
         out = cache_dir / f"{path.stem}.w{w}.{'png' if is_mask else 'jpg'}"
         if out.exists():
             return out
+        if not is_mask:
+            im = ImageOps.exif_transpose(im)  # match store.get_image, which serves upright pixels
         im.thumbnail((w, w), Image.Resampling.LANCZOS)
         buf = io.BytesIO()
         if is_mask:
             im.convert("L").save(buf, "PNG")
         else:
             im.convert("RGB").save(buf, "JPEG", quality=88)
-    tmp = out.with_suffix(out.suffix + ".tmp")
+    # Unique temp name: two requests for the same uncached size used to share one and 500 on Windows.
+    tmp = out.with_name(f".{out.name}.{uuid.uuid4().hex[:8]}.tmp")
     tmp.write_bytes(buf.getvalue())
-    tmp.replace(out)
+    try:
+        os.replace(tmp, out)
+    except PermissionError:  # Windows: another request published it and is reading it
+        tmp.unlink(missing_ok=True)
+        if not out.exists():
+            raise
     return out
 
 
