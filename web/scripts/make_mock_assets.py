@@ -126,7 +126,7 @@ def main() -> int:
         box = manifest[case]["box"]
         if case == "0001":  # lamp ghost: a loose first attempt that spills, then a tight one
             loose = rect_mask(finished.size, [box[0] - 0.08, box[1] - 0.1, box[2] + 0.1, box[3] + 0.12], 2)
-            composite(finished, ref_arr, loose).save(OUT / "0001_fix_try1.jpg", quality=86)
+            save(composite(finished, ref_arr, loose), "0001_fix_try1.jpg")
             loose.save(OUT / "0001_mask_try1.png")
             tight = ellipse_mask(finished.size, box, pad=0.05)
             fixed = composite(finished, ref_arr, tight)

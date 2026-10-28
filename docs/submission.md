@@ -26,6 +26,16 @@ a vision judge. A failed check reverts the edit and forces a different approach.
 defects overall, without editing any clean photo. It costs about $0.07 and 26 seconds per photo. Seven
 saved customer requests passed from chat, including removals of cars, bins and wires.
 
+## Loom
+
+The fastest path: narrate over [docs/media/demo-walkthrough.mp4](media/demo-walkthrough.mp4), a silent 6:54
+recording of one real showcase run (QC, two chat requests, reel; $0.91 of agent runs). The narration lines
+and timestamps are in [docs/media/demo-walkthrough.md](media/demo-walkthrough.md). Trim to under 5 minutes
+by cutting the approval clicks (5:31 to 6:12) and part of the verdict block. The same video can serve as
+the brief's fallback screen recording.
+
+To record live instead, follow the shot list below.
+
 ## Loom shot list (target 3:30)
 
 1. **0:00 to 0:20, the problem.** A finished AutoHDR photo with two rooms fused, beside its brackets. One
@@ -52,7 +62,7 @@ and cut to it when the trace is streaming; the Loom should show real runs, not t
 
 - [x] Public repo with quick start, stack, architecture diagram, `.env.example`, datasets and provenance,
       limitations and next steps
-- [ ] Loom, 2 to 5 minutes
+- [ ] Loom, 2 to 5 minutes (silent walkthrough ready to narrate: docs/media/demo-walkthrough.mp4)
 - [ ] Deployed URL for AutoHDR Track 3: https://shootagent.sillion.app (served from the demo MacBook through a
       named Cloudflare tunnel; passcode in the git-ignored .env.local on that machine). Their form:
       https://docs.google.com/forms/d/e/1FAIpQLSdDi6tLfJ_eglXgwOMU3p2QoSTvKf0CxKr4t82ZeDjoWZdR9A/viewform

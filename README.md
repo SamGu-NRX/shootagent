@@ -16,6 +16,10 @@ agent's first pass) and the Antler "Agents" track.
 walls to the colour in the reference image". Pixels outside each edit are byte-identical to the
 delivered photo.*
 
+A silent 7-minute walkthrough of one real run (QC, two chat requests, the reel) is in
+[docs/media/demo-walkthrough.mp4](docs/media/demo-walkthrough.mp4), with timestamps in
+[docs/media/demo-walkthrough.md](docs/media/demo-walkthrough.md).
+
 ## What it does
 
 **QC pass.** For each view, ShootAgent aligns and fuses the brackets into a reference, then compares the
