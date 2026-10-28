@@ -50,6 +50,7 @@ class RawAnalysis:
     notes: list[str] = field(default_factory=list)
     ghost_finished: np.ndarray | None = None  # bracket disagreement map warped into the finished frame
     naive_gain: float = 0.0  # how much better the finished photo matches an UNaligned fusion (> 0: AutoHDR did not align)
+    naive_mask: np.ndarray | None = None  # where the aligned and unaligned fusions differ: the doubled edges
 
 
 def fuse_group(imgs: list[np.ndarray], indices: list[int], feats: list[F.Features],
@@ -90,15 +91,17 @@ def window_mask(brackets: list[np.ndarray], fusion: GroupFusion) -> np.ndarray:
     return m > 0
 
 
-def _naive_gain(brackets: list[np.ndarray], fusion: GroupFusion, reg: Registration, finished: np.ndarray) -> float:
+def _naive_gain(brackets: list[np.ndarray], fusion: GroupFusion, reg: Registration,
+                finished: np.ndarray) -> tuple[float, np.ndarray | None]:
     """Does the finished photo look like the brackets fused WITHOUT alignment?
 
     Only meaningful when the camera moved between brackets. Compares gradient correlation of the
     finished photo with the aligned fusion and with a naive (unaligned) fusion, both in the finished
-    frame, over the pixels where the two fusions disagree. Returns ncc(naive) - ncc(aligned)."""
+    frame, over the pixels where the two fusions disagree. Returns (ncc(naive) - ncc(aligned), those
+    pixels grown into areas a restore can cover)."""
     shifts = [np.hypot(a.H[0, 2], a.H[1, 2]) for a in fusion.alignments if a.ok]
     if max(shifts, default=0) < 2.0:
-        return 0.0
+        return 0.0, None
     anchor = brackets[fusion.ref]
     ah, aw = anchor.shape[:2]
     raw = [cv2.resize(brackets[i], (aw, ah), interpolation=cv2.INTER_AREA) if brackets[i].shape[:2] != (ah, aw)
@@ -111,10 +114,11 @@ def _naive_gain(brackets: list[np.ndarray], fusion: GroupFusion, reg: Registrati
     diffmask = cv2.absdiff(cv2.GaussianBlur(g(al), (0, 0), 2), cv2.GaussianBlur(g(nv), (0, 0), 2)) > 20
     m = diffmask & valid & valid2
     if m.mean() < 0.005:
-        return 0.0
+        return 0.0, None
     m = cv2.dilate(m.astype(np.uint8), np.ones((9, 9), np.uint8)) > 0
     gf = g(finished)
-    return float(grad_ncc(gf, g(nv), m) - grad_ncc(gf, g(al), m))
+    area = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((25, 25), np.uint8)) > 0
+    return float(grad_ncc(gf, g(nv), m) - grad_ncc(gf, g(al), m)), area & valid
 
 
 def analyze_arrays(brackets: list[np.ndarray], finished: np.ndarray) -> RawAnalysis:
@@ -146,12 +150,12 @@ def analyze_arrays(brackets: list[np.ndarray], finished: np.ndarray) -> RawAnaly
         reg = register(fusion.fused, finished)
     except ValueError as e:
         notes.append(f"registration failed: {e}")
-    naive_gain = 0.0
+    naive_gain, naive_mask = 0.0, None
     if reg is not None:
         ref_al, valid = reg.warp(fusion.fused, (w, h))
         window, _ = reg.warp(window_mask(brackets, fusion), (w, h))
         ghost_fin, _ = reg.warp((fusion.ghost * 255).astype(np.uint8), (w, h))
-        naive_gain = _naive_gain(brackets, fusion, reg, finished)
+        naive_gain, naive_mask = _naive_gain(brackets, fusion, reg, finished)
         tm["register"] = time.perf_counter() - t0 - sum(tm.values())
         res = diff(finished, ref_al, valid)
         tm["diff"] = time.perf_counter() - t0 - sum(tm.values())
@@ -161,4 +165,4 @@ def analyze_arrays(brackets: list[np.ndarray], finished: np.ndarray) -> RawAnaly
     return RawAnalysis((w, h), grouping, fmatch, primary, fusion, reg, ref_al, valid, window, res, evs,
                        {k: round(v, 2) for k, v in tm.items()}, notes,
                        ghost_finished=(ghost_fin.astype(np.float32) / 255 if ghost_fin is not None else None),
-                       naive_gain=naive_gain)
+                       naive_gain=naive_gain, naive_mask=naive_mask)

@@ -499,7 +499,19 @@ class RegroupIn(ToolInput):
     kind="edit",
 )
 def regroup_brackets(ctx: ToolContext, args: RegroupIn) -> ToolResult:
+    from .perceive import bracket_problem
+
     lv = load_view(ctx, args.view)
+    problem = bracket_problem(lv.view)
+    if problem:
+        raise ToolError(f"{args.view} has {problem}; there are no camera positions to split.")
+    detected = (lv.view.meta.get("qc") or {}).get("groups")
+    if detected is not None and len(detected) < 2:
+        raise ToolError(
+            f"run_qc_checks found the brackets of {args.view} are one camera position; splitting them makes "
+            "near-identical views. For ghosting within one position use restore_from_brackets on the doubled "
+            "areas (the ghosting candidate's mask)."
+        )
     n = len(lv.view.brackets)
     flat = [i for g in args.groups for i in g]
     if sorted(flat) != sorted(set(flat)) or any(i < 0 or i >= n for i in flat):

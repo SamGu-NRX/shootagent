@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 from pydantic import Field
 
+from ..imaging.color import lab_to_rgb, rgb_to_hex, rgb_to_lab
 from ..store import Finding
 from . import _ops
 from ._common import (
@@ -43,6 +44,31 @@ def view_status(view) -> dict:
         "has_reference": view.reference is not None,
         "approved": view.approved,
     }
+
+
+def bracket_problem(view) -> str | None:
+    """Why a view's brackets cannot serve as QC ground truth, or None when they can. Editor-request views
+    store the request's display previews as brackets, not camera captures (QC once split a customer's TV
+    photo into two views from them)."""
+    if not view.brackets:
+        return "no brackets"
+    if view.meta.get("source") == "editor_request":
+        return "no original brackets (its images are the request's previews, not exposure captures)"
+    return None
+
+
+def view_order(shoot, view) -> dict:
+    """What the customer ordered for a view, from whatever the shoot recorded: shoot-wide
+    `source["requested_edits"]`, the view's own `meta["requested_edits"]`, and for AutoHDR cases the
+    case's `allowed_edits`, `editing_context` and `request`. Empty when nothing is known."""
+    edits = [*(shoot.source.get("requested_edits") or []), *(view.meta.get("requested_edits") or []),
+             *(view.meta.get("allowed_edits") or [])]
+    order = {
+        "requested_edits": list(dict.fromkeys(e for e in edits if isinstance(e, str) and e.strip())),
+        "notes": (view.meta.get("editing_context") or "").strip(),
+        "request": (view.meta.get("request") or "").strip(),
+    }
+    return {k: v for k, v in order.items() if v}
 
 
 def build_contact_sheet(ctx: ToolContext, view_ids: list[str] | None = None) -> tuple[str, list[dict]]:
@@ -140,15 +166,18 @@ class QcIn(ToolInput):
     "run_qc_checks",
     "Compare a view's finished photo with its exposure brackets and list candidate defects: regions where "
     "the edit disagrees with what the camera saw (erased objects, ghosting from mixed brackets, colour shifts, "
-    "fake fire, windows). Each candidate has an id, a type from AutoHDR's taxonomy, a region box and evidence, "
-    "and comes with a 'finished | reference' crop. Candidates are not verdicts: a sky replacement, declutter "
+    "fake fire, windows, neutralised wall paint). Each candidate has an id, a type from AutoHDR's taxonomy, a "
+    "region box and evidence, and comes with a 'finished | brackets | difference' crop; the result also repeats "
+    "the view's order. Candidates are not verdicts: a sky replacement, declutter "
     "or TV-screen fill is a legitimate edit; dismiss those with set_finding. Use once per view in QC mode.",
     kind="perceive",
 )
 def run_qc_checks(ctx: ToolContext, args: QcIn) -> ToolResult:
     lv = load_view(ctx, args.view)
-    if not lv.view.brackets:
-        raise ToolError(f"View {args.view} has no brackets, so there is nothing to check it against.")
+    problem = bracket_problem(lv.view)
+    if problem:
+        return ToolResult(summary=f"{args.view} has {problem}; nothing to check. Leave it unchanged.",
+                          data={"view": args.view, "candidates": [], "skipped": problem})
     # trace=None: this tool emits the finding events itself, with the ids the agent uses in set_finding.
     va = _ops.analyze_view(ctx.store, ctx.shoot_id, args.view, None)
     existing = {(f.type, tuple(f.region or ())): f for f in lv.view.findings}
@@ -182,9 +211,10 @@ def run_qc_checks(ctx: ToolContext, args: QcIn) -> ToolResult:
             "finding", view=args.view, finding=f.model_dump(), images=[by_id[f.id]] if by_id.get(f.id) else []
         )
 
-    images = [c for c in va.crops[:3] if c]
+    images = []
     if va.groups_sheet and len(va.groups) > 1:
-        images.insert(0, va.groups_sheet)
+        images.append(va.groups_sheet)
+    images += _candidate_sheets(ctx, [(f, by_id.get(f.id)) for f in findings], MAX_QC_IMAGES - len(images))
     cands = [
         {
             "finding": f.id,
@@ -199,6 +229,10 @@ def run_qc_checks(ctx: ToolContext, args: QcIn) -> ToolResult:
         for f in findings
     ]
     data = {"view": args.view, "summary": va.summary, "candidates": cands}
+    order = view_order(lv.shoot, lv.view)
+    data["order"] = order or "unknown: no order details were supplied for this view"
+    if va.notes:
+        data["notes"] = va.notes
     if len(va.groups) > 1:
         data["bracket_groups"] = va.groups
     summary = (
@@ -211,6 +245,27 @@ def run_qc_checks(ctx: ToolContext, args: QcIn) -> ToolResult:
 
 
 MAX_QC_IMAGES = 4
+CROPS_PER_SHEET = 3
+
+
+def _candidate_sheets(ctx: ToolContext, crops: list[tuple[Finding, str | None]], max_sheets: int) -> list[str]:
+    """Every candidate's finished | brackets | difference crop, headed by its finding id, stacked
+    CROPS_PER_SHEET to an image so all candidates fit in the per-result image limit."""
+    tiles = []
+    for f, blob in crops:
+        if not blob:
+            continue
+        img = ctx.store.get_image(ctx.shoot_id, blob)
+        bar = np.full((30, img.shape[1], 3), 255, np.uint8)
+        cv2.putText(bar, f"{f.id}  {f.type}", (8, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1, cv2.LINE_AA)
+        tiles.append(np.vstack([bar, img]))
+    sheets = []
+    for i in range(0, len(tiles), CROPS_PER_SHEET):
+        group = tiles[i : i + CROPS_PER_SHEET]
+        width = max(t.shape[1] for t in group)
+        group = [np.pad(t, ((0, 6), (0, width - t.shape[1]), (0, 0)), constant_values=255) for t in group]
+        sheets.append(put_preview(ctx, np.vstack(group), long_edge=1568))
+    return sheets[:max_sheets]
 
 
 class FindRegionsIn(ToolInput):
@@ -381,8 +436,9 @@ class SampleColorIn(ToolInput):
     box: Box | None = Field(None, description="Or a box [x0, y0, x1, y1] (fractions 0..1) to sample.")
     source: Literal["head", "finished", "brackets"] = Field(
         "head",
-        description="'head' samples the current photo, 'finished' AutoHDR's delivery, 'brackets' the "
-        "exposure-normalised bracket fusion (the true surface colour, before any styling).",
+        description="'head' samples the current photo, 'finished' AutoHDR's delivery, 'brackets' the surface's "
+        "hue and saturation in the bracket fusion (its true colour, before any styling) at the current photo's "
+        "lightness, ready for recolor_region.",
     )
 
 
@@ -412,8 +468,27 @@ def sample_color(ctx: ToolContext, args: SampleColorIn) -> ToolResult:
         m = box_to_mask(args.box, img.shape[:2])
     else:
         raise ToolError("Give a mask id or a box to sample.")
-    hexval = _ops.sample_hex(img, m)
+    where = "mask " + args.mask if args.mask else "box"
+    if args.source != "brackets":
+        hexval = _ops.sample_hex(img, m)
+        return ToolResult(
+            summary=f"{v.id} {args.source} colour in {where}: {hexval}.",
+            data={"view": v.id, "hex": hexval, "source": args.source, "region": mask_bbox(m)},
+        )
+    # The bracket fusion is not exposure-matched to the photo (a wall at L 75 in the photo can be L 48 in
+    # the fusion), and recolor_region keeps the photo's lightness while its check measures delta-E to the
+    # hex including lightness, so the raw fusion colour always failed that check. Return the bracket hue
+    # and chroma at the current photo's lightness instead.
+    head, _ = version_image(ctx, v)
+    hm = _ops.fit_mask(m, head.shape[:2])
+    ref_lab = np.median(rgb_to_lab(img)[m], axis=0)
+    head_lab = np.median(rgb_to_lab(head)[hm], axis=0)
+    target = np.array([[[head_lab[0], ref_lab[1], ref_lab[2]]]], np.float32)
+    hexval = rgb_to_hex(lab_to_rgb(target)[0, 0])
+    raw = _ops.sample_hex(img, m)
     return ToolResult(
-        summary=f"{v.id} {args.source} colour in {'mask ' + args.mask if args.mask else 'box'}: {hexval}.",
-        data={"view": v.id, "hex": hexval, "source": args.source, "region": mask_bbox(m)},
+        summary=f"{v.id} bracket colour in {where}: {hexval} (the brackets' hue and saturation at the photo's "
+        f"lightness; raw fusion {raw}, current photo {_ops.sample_hex(head, hm)}).",
+        data={"view": v.id, "hex": hexval, "source": "brackets", "raw_fusion_hex": raw,
+              "region": mask_bbox(m)},
     )

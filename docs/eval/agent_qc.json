@@ -2,20 +2,21 @@
  "summary": {
   "cases": 63,
   "crashed_runs": 0,
-  "seconds_per_view": 23.5,
-  "usd_per_view": 0.0453,
-  "checks_passed": 5,
-  "checks_failed": 8,
-  "retries": 7
+  "seconds_per_view": 26.4,
+  "usd_per_view": 0.0731,
+  "checks_passed": 14,
+  "checks_failed": 15,
+  "retries": 12
  },
  "by_family": {
   "ghosting_grouping": {
-   "flagged": 1,
+   "missed": 1,
    "fixed": 20
   },
   "camera_person_removal": {
-   "missed": 10,
-   "fixed": 4
+   "missed": 8,
+   "fixed": 5,
+   "flagged": 1
   },
   "tv_art": {
    "missed": 1
@@ -24,14 +25,16 @@
    "missed": 4
   },
   "fireplace": {
-   "missed": 7
+   "missed": 4,
+   "fixed": 1,
+   "flagged": 2
   },
   "wood_floor_color": {
-   "missed": 1,
-   "flagged": 1
+   "missed": 2
   },
   "paint_color": {
-   "missed": 6
+   "missed": 2,
+   "fixed": 4
   },
   "clean control": {
    "clean_ok": 4
@@ -42,8 +45,8 @@
  },
  "runs": [
   {
-   "shoot": "3ad2d604f3",
-   "run": "20261027-232423-fcf1f9",
+   "shoot": "6f74be0b82",
+   "run": "20261028-010747-79fa8d",
    "cases": [
     "defect_train_0001",
     "defect_train_0002",
@@ -55,16 +58,16 @@
     "defect_train_0008"
    ],
    "ok": true,
-   "seconds": 260.3,
-   "usd": 0.4248,
+   "seconds": 242.9,
+   "usd": 0.5154,
    "checks_passed": 1,
    "checks_failed": 0,
    "retries": 0,
-   "summary": "QC now covers every view, including the split ones, and none of the eight split views has any candidate defects. v01-a and v01-b come from the split I reverted, so they are not part of the delivery. v01 itself stays at the delivered photo.\n\n**Fixed**\n- **Exterior (v04):** A semi-transparent hand in "
+   "summary": "QC is now complete on all views, including the six split ones. I found and fixed real defects in four of the eight original views (v04, v06, v07 and v08), and left the other four unchanged.\n\n**v04 (exterior):** a stray hand was still visible in the top-left sky, partly covered by a cloud. I removed "
   },
   {
-   "shoot": "fa22af3444",
-   "run": "20261027-232828-f30a31",
+   "shoot": "27a5afe4d0",
+   "run": "20261028-011146-5c9f74",
    "cases": [
     "defect_train_0009",
     "defect_train_0010",
@@ -76,16 +79,16 @@
     "defect_train_0017"
    ],
    "ok": true,
-   "seconds": 223.8,
-   "usd": 0.5232,
-   "checks_passed": 2,
-   "checks_failed": 5,
-   "retries": 4,
-   "summary": "QC pass done on all eight views: two fixes made, one defect I could not fix, and the other five views left as delivered.\n\n**Fixed**\n- **Exterior (v07):** the stop sign and its pole had been erased from the street corner. I restored them from the brackets and the check passed. My first restore clippe"
+   "seconds": 159.6,
+   "usd": 0.6001,
+   "checks_passed": 4,
+   "checks_failed": 2,
+   "retries": 2,
+   "summary": "I fixed four of the eight views (v01, v04, v06, v07) and left the other four (v02, v03, v05, v08) as delivered.\n\n- **Living room (v01):** The blue shiplap accent wall had gone grey, so I recoloured it back to the blue-slate the brackets show. The blacked-out wall TV is what was ordered, and the warm"
   },
   {
-   "shoot": "ee09ecbc58",
-   "run": "20261027-233222-9a84aa",
+   "shoot": "9debe6d06c",
+   "run": "20261028-011432-203a90",
    "cases": [
     "defect_train_0018",
     "defect_train_0021",
@@ -97,16 +100,16 @@
     "defect_train_0027"
    ],
    "ok": true,
-   "seconds": 274.8,
-   "usd": 0.4987,
-   "checks_passed": 1,
-   "checks_failed": 2,
-   "retries": 2,
-   "summary": "QC pass is done: I fixed two views (the bathroom, v06, and the front exterior, v07) and left the other six as delivered. I didn't re-check the fixes on the contact sheet afterwards.\n\n**Fixed**\n- **Bathroom (v06):** The 15 brackets came from two camera positions (shower and vanity, and the freestandi"
+   "seconds": 253.0,
+   "usd": 0.734,
+   "checks_passed": 2,
+   "checks_failed": 1,
+   "retries": 1,
+   "summary": "All six candidates on v06 now have a verdict: the grouping defect is marked fixed by the regroup, and the other five are dismissed.\n\nThe five dismissals rest on the regroup, not on a separate look at each region. They came from the original v06 comparing a finished photo against brackets from the ot"
   },
   {
-   "shoot": "727a7d5e30",
-   "run": "20261027-233700-6a1b09",
+   "shoot": "e72131cd55",
+   "run": "20261028-011847-0ac627",
    "cases": [
     "defect_train_0028",
     "defect_train_0029",
@@ -118,16 +121,16 @@
     "defect_train_0035"
    ],
    "ok": true,
-   "seconds": 95.5,
-   "usd": 0.2663,
-   "checks_passed": 1,
-   "checks_failed": 0,
-   "retries": 0,
-   "summary": "I made one fix across the eight views, in the bathroom (v01), and left the other seven exactly as delivered.\n\n**Fixed:** The finished bathroom photo still showed a faint ghost of the tripod in the mirror. I removed it, and the check passed with nothing changed outside the mirror area.\n\n**Left alone:"
+   "seconds": 160.4,
+   "usd": 0.6001,
+   "checks_passed": 5,
+   "checks_failed": 1,
+   "retries": 1,
+   "summary": "I ran QC on all eight views and fixed five of them: the bathroom (v01), the living rooms (v02, v05, v06) and the kitchen (v03). The dining room (v04) and both exteriors (v07, v08) are unchanged. Every fix passed its automatic check, and every candidate now has a verdict.\n\n- **Bathroom (v01):** The t"
   },
   {
-   "shoot": "ffd94e31d8",
-   "run": "20261027-233837-c65506",
+   "shoot": "9063b014f3",
+   "run": "20261028-012129-e9612c",
    "cases": [
     "defect_train_0036",
     "defect_train_0037",
@@ -139,16 +142,16 @@
     "defect_train_0043"
    ],
    "ok": true,
-   "seconds": 56.1,
-   "usd": 0.1554,
+   "seconds": 168.2,
+   "usd": 0.5136,
    "checks_passed": 0,
-   "checks_failed": 0,
-   "retries": 0,
-   "summary": "I ran the QC pass on all eight views and found no real defects, so I left every photo as delivered.\n\nI dismissed every flagged candidate as a legitimate edit or a false alarm:\n\n- **Exterior (v01):** The dusk sky replacement is intended. The pool deck still reads as warm travertine, and nothing was e"
+   "checks_failed": 6,
+   "retries": 4,
+   "summary": "The added fire in the two living-room views (v06 and v07) is still in the photos, because none of my fixes passed the automatic check. The other six views are unchanged.\n\nLiving room (v06) and living room (v07): the finished photos show flames in a real firebox, but your order says to keep fireplace"
   },
   {
-   "shoot": "7b7de24880",
-   "run": "20261027-233943-120bec",
+   "shoot": "6b4ebb1e60",
+   "run": "20261028-012428-a402d1",
    "cases": [
     "defect_train_0044",
     "defect_train_0045",
@@ -160,16 +163,16 @@
     "defect_train_0051"
    ],
    "ok": true,
-   "seconds": 237.9,
-   "usd": 0.4141,
-   "checks_passed": 0,
-   "checks_failed": 1,
-   "retries": 1,
-   "summary": "QC is complete. I fixed the five views that mixed two camera positions and left both patient rooms alone. The staircase in v08 still needs your eye.\n\n**Fixed.** Each of v01 to v05 blended brackets from two camera positions into one ghosted photo, so I split each into two clean views. QC on all ten n"
+   "seconds": 353.2,
+   "usd": 0.8197,
+   "checks_passed": 1,
+   "checks_failed": 5,
+   "retries": 4,
+   "summary": "QC now covers all ten split views, and none needed an edit.\n\n- **Clean:** v01-a, v01-b, v02-a, v03-a, v03-b, v04-a, v05-a and v05-b came back with no defects.\n- **Dismissed:** v02-b and v04-b each flagged a \"wall\" colour candidate. v02-b is the outdoor golf-course sign and sky, and its finished and "
   },
   {
-   "shoot": "3c5b8a9605",
-   "run": "20261027-234345-17d772",
+   "shoot": "0cc332afdf",
+   "run": "20261028-013024-57847f",
    "cases": [
     "defect_train_0052",
     "defect_train_0053",
@@ -181,16 +184,16 @@
     "defect_train_0059"
    ],
    "ok": true,
-   "seconds": 192.0,
-   "usd": 0.3266,
+   "seconds": 170.9,
+   "usd": 0.4147,
    "checks_passed": 0,
    "checks_failed": 0,
    "retries": 0,
-   "summary": "QC on all twelve regrouped views came back clean, with no candidate defects on any of them.\n\n**What changed:** I split six views, which were each blending two camera positions, into separate photos:\n- The primary bedroom (v03) is now v03-a and v03-b.\n- The primary bathroom (v04) is now v04-a and v04"
+   "summary": "Every candidate now has a verdict, and nothing is left open.\n\nI regrouped the bedroom (v03), bathroom (v04), second bedroom (v05), two dining room views (v06, v07) and the office nook (v08). Each had mixed brackets from two camera positions, and the split views (v03-a/b through v08-a/b) came back cl"
   },
   {
-   "shoot": "ac52496389",
-   "run": "20261027-234705-a7d26e",
+   "shoot": "5083e13905",
+   "run": "20261028-013322-563af7",
    "cases": [
     "defect_train_0060",
     "defect_train_0061",
@@ -201,17 +204,17 @@
     "defect_train_0066"
    ],
    "ok": true,
-   "seconds": 139.7,
-   "usd": 0.2419,
-   "checks_passed": 0,
+   "seconds": 156.1,
+   "usd": 0.4081,
+   "checks_passed": 1,
    "checks_failed": 0,
    "retries": 0,
-   "summary": "QC has now run on all eight split views (v01-a, v01-b, v02-a, v02-b, v03-a, v03-b, v04-a, v04-b), and none of them has any candidate defects. Each finished photo agrees with its own brackets, so the regroup fixed the ghosting without leaving anything new behind. I only read the check results, not th"
+   "summary": "QC now covers every view, including the eight new views from the splits. I found one more defect and fixed it, and the other seven new views came back clean.\n\n**What changed:**\n- **Bunk room (v02-b):** the blue accent wall behind the bunk bed had gone grey in the finished photo. I recolored it to th"
   }
  ],
  "cases": [
   {
-   "outcome": "flagged",
+   "outcome": "missed",
    "family": "ghosting_grouping",
    "off_target_fixes": 0,
    "case": "defect_train_0001",
@@ -269,7 +272,7 @@
   {
    "outcome": "missed",
    "family": "tv_art",
-   "off_target_fixes": 0,
+   "off_target_fixes": 1,
    "case": "defect_train_0009",
    "subtype": "artwork_false_positive"
   },
@@ -290,7 +293,7 @@
   {
    "outcome": "missed",
    "family": "wood_floor_color",
-   "off_target_fixes": 0,
+   "off_target_fixes": 1,
    "case": "defect_train_0013",
    "subtype": "blue_tile_desaturation"
   },
@@ -329,7 +332,7 @@
    "subtype": null
   },
   {
-   "outcome": "missed",
+   "outcome": "fixed",
    "family": "fireplace",
    "off_target_fixes": 0,
    "case": "defect_train_0021",
@@ -385,14 +388,14 @@
    "subtype": "partial_camera_tripod_removal"
   },
   {
-   "outcome": "missed",
+   "outcome": "fixed",
    "family": "paint_color",
    "off_target_fixes": 0,
    "case": "defect_train_0029",
    "subtype": "blue_accent_wall_neutralized"
   },
   {
-   "outcome": "missed",
+   "outcome": "fixed",
    "family": "paint_color",
    "off_target_fixes": 0,
    "case": "defect_train_0030",
@@ -406,14 +409,14 @@
    "subtype": "blue_wall_and_soffit_neutralized"
   },
   {
-   "outcome": "missed",
+   "outcome": "fixed",
    "family": "paint_color",
    "off_target_fixes": 0,
    "case": "defect_train_0032",
    "subtype": "blue_wall_and_soffit_neutralized"
   },
   {
-   "outcome": "missed",
+   "outcome": "fixed",
    "family": "paint_color",
    "off_target_fixes": 0,
    "case": "defect_train_0033",
@@ -466,14 +469,14 @@
    "subtype": "camera_removal_artifact"
   },
   {
-   "outcome": "missed",
+   "outcome": "flagged",
    "family": "fireplace",
    "off_target_fixes": 0,
    "case": "defect_train_0041",
    "subtype": "unrequested_fire_added"
   },
   {
-   "outcome": "missed",
+   "outcome": "flagged",
    "family": "fireplace",
    "off_target_fixes": 0,
    "case": "defect_train_0042",
@@ -522,21 +525,21 @@
    "subtype": "wrong_view_bracket_fusion"
   },
   {
-   "outcome": "missed",
+   "outcome": "flagged",
    "family": "camera_person_removal",
    "off_target_fixes": 0,
    "case": "defect_train_0049",
    "subtype": "false_person_and_wheelchair_removal"
   },
   {
-   "outcome": "missed",
+   "outcome": "fixed",
    "family": "camera_person_removal",
    "off_target_fixes": 0,
    "case": "defect_train_0050",
    "subtype": "false_wheelchair_support_removal"
   },
   {
-   "outcome": "flagged",
+   "outcome": "missed",
    "family": "wood_floor_color",
    "off_target_fixes": 0,
    "case": "defect_train_0051",
@@ -559,28 +562,28 @@
   {
    "outcome": "fixed",
    "family": "ghosting_grouping",
-   "off_target_fixes": 0,
+   "off_target_fixes": 8,
    "case": "defect_train_0054",
    "subtype": "wrong_capture_group_fusion"
   },
   {
    "outcome": "fixed",
    "family": "ghosting_grouping",
-   "off_target_fixes": 0,
+   "off_target_fixes": 5,
    "case": "defect_train_0055",
    "subtype": "wrong_capture_group_fusion"
   },
   {
    "outcome": "fixed",
    "family": "ghosting_grouping",
-   "off_target_fixes": 0,
+   "off_target_fixes": 1,
    "case": "defect_train_0056",
    "subtype": "wrong_capture_group_fusion"
   },
   {
    "outcome": "fixed",
    "family": "ghosting_grouping",
-   "off_target_fixes": 0,
+   "off_target_fixes": 2,
    "case": "defect_train_0057",
    "subtype": "wrong_capture_group_fusion"
   },
@@ -608,7 +611,7 @@
   {
    "outcome": "fixed",
    "family": "ghosting_grouping",
-   "off_target_fixes": 0,
+   "off_target_fixes": 1,
    "case": "defect_train_0061",
    "subtype": "wrong_room_cross_capture_fusion"
   },

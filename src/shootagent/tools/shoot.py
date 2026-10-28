@@ -49,9 +49,16 @@ class SetFindingIn(ToolInput):
     )
     note: str = Field(description="Why, in one sentence. Shown to the photographer.")
     type: str | None = Field(
-        None, description="For 'new': AutoHDR taxonomy type, e.g. 'camera_person_removal'."
+        None,
+        description="AutoHDR taxonomy type, e.g. 'camera_person_removal'. Required for 'new'. On an existing "
+        "candidate, pass it to correct a wrong type (an erased person detected as 'window_sky').",
     )
-    region: list[float] | None = Field(None, description="For 'new': box [x0, y0, x1, y1] as fractions 0..1.")
+    region: list[float] | None = Field(
+        None,
+        description="Box [x0, y0, x1, y1] as fractions 0..1. Required for 'new'. On an existing candidate, pass "
+        "the area the defect actually covers when it differs from the candidate's box (e.g. only the flames "
+        "above a firebox rail).",
+    )
 
 
 @tool(
@@ -88,6 +95,12 @@ def set_finding(ctx: ToolContext, args: SetFindingIn) -> ToolResult:
             f = matches[0]
             f.status = args.status
             f.evidence = {**f.evidence, "agent_note": args.note}
+            if args.type and args.type != f.type:
+                f.evidence["detected_type"] = f.type
+                f.type = args.type
+            if args.region:
+                f.evidence.setdefault("detected_region", f.region)
+                f.region = list(norm_box(args.region))
         result["finding"] = f.model_dump()
 
     ctx.store.mutate(ctx.shoot_id, apply)

@@ -16,6 +16,15 @@ def linear_to_srgb(lin: np.ndarray) -> np.ndarray:
     return np.clip(np.round(y * 255.0), 0, 255).astype(np.uint8)
 
 
+def colour_match(src_u8: np.ndarray, dst_u8: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """`src` with one gain per channel in linear light, chosen so its median over `mask` equals `dst`'s:
+    the frame-wide exposure and white balance of `dst` applied to `src`. A surface that still differs in
+    colour afterwards changed locally, which no global white balance explains."""
+    lin = srgb_to_linear(src_u8)
+    gains = np.median(srgb_to_linear(dst_u8)[mask], axis=0) / np.maximum(np.median(lin[mask], axis=0), 1e-4)
+    return linear_to_srgb(lin * gains)
+
+
 def luma(img_u8: np.ndarray) -> np.ndarray:
     """Rec.601 luma as float32 0..255 (what most JPEG pipelines call Y)."""
     return cv2.cvtColor(img_u8, cv2.COLOR_RGB2GRAY).astype(np.float32)

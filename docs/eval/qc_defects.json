@@ -25,8 +25,8 @@
    },
    "paint_color": {
     "cases": 6,
-    "hit_any": 2,
-    "hit_high": 0
+    "hit_any": 5,
+    "hit_high": 4
    },
    "tv_art": {
     "cases": 1,
@@ -44,18 +44,18 @@
     "hit_high": 0
    }
   },
-  "defect_recall_any": 0.678,
-  "defect_recall_high": 0.458,
+  "defect_recall_any": 0.729,
+  "defect_recall_high": 0.525,
   "clean_controls": 4,
   "clean_with_high_candidates": 0,
   "clean_high_candidates_total": 0,
-  "defect_unmatched_high_total": 7,
+  "defect_unmatched_high_total": 12,
   "grouping_accuracy": 1.0,
   "grouping_cases": 59,
   "grouping_accuracy_multi_view": 1.0,
   "grouping_multi_view_cases": 19,
-  "seconds_median": 7.34,
-  "seconds_max": 20.02,
+  "seconds_median": 7.93,
+  "seconds_max": 30.4,
   "errors": []
  },
  "cases": [
@@ -143,7 +143,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.38,
+   "seconds": 30.4,
    "error": null
   },
   {
@@ -232,7 +232,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.17,
+   "seconds": 6.84,
    "error": null
   },
   {
@@ -321,7 +321,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 8.79,
+   "seconds": 10.31,
    "error": null
   },
   {
@@ -332,9 +332,31 @@
    "hit_any": true,
    "hit_high": false,
    "n_candidates": 8,
-   "n_high": 0,
-   "unmatched_high": [],
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "paint_color",
+     "confidence": 0.677,
+     "region": [
+      0.3225,
+      0.305,
+      0.6625,
+      0.6492
+     ]
+    }
+   ],
    "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.677,
+     "region": [
+      0.3225,
+      0.305,
+      0.6625,
+      0.6492
+     ],
+     "kind": "chroma"
+    },
     {
      "type": "paint_color",
      "confidence": 0.588,
@@ -378,17 +400,6 @@
       0.1422
      ],
      "kind": "chroma"
-    },
-    {
-     "type": "window_sky",
-     "confidence": 0.216,
-     "region": [
-      0.805,
-      0.0,
-      0.8781,
-      0.0393
-     ],
-     "kind": "chroma"
     }
    ],
    "groups_pred": [
@@ -410,7 +421,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 8.28,
+   "seconds": 10.29,
    "error": null
   },
   {
@@ -426,9 +437,9 @@
    "top": [
     {
      "type": "camera_person_removal",
-     "confidence": 0.49,
+     "confidence": 0.492,
      "region": [
-      0.7323,
+      0.7313,
       0.0976,
       0.8871,
       0.1228
@@ -437,7 +448,7 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.325,
+     "confidence": 0.319,
      "region": [
       0.4246,
       0.0989,
@@ -448,11 +459,11 @@
     },
     {
      "type": "paint_color",
-     "confidence": 0.169,
+     "confidence": 0.171,
      "region": [
       0.8082,
-      0.8712,
-      0.9351,
+      0.8718,
+      0.9361,
       1.0
      ],
      "kind": "chroma"
@@ -461,7 +472,7 @@
      "type": "paint_color",
      "confidence": 0.159,
      "region": [
-      0.3936,
+      0.3926,
       0.7563,
       0.5514,
       0.832
@@ -502,7 +513,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.3,
+   "seconds": 5.57,
    "error": null
   },
   {
@@ -561,7 +572,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 10.68,
+   "seconds": 9.69,
    "error": null
   },
   {
@@ -620,7 +631,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 12.69,
+   "seconds": 9.24,
    "error": null
   },
   {
@@ -679,7 +690,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 13.06,
+   "seconds": 10.96,
    "error": null
   },
   {
@@ -690,8 +701,18 @@
    "hit_any": false,
    "hit_high": false,
    "n_candidates": 5,
-   "n_high": 1,
+   "n_high": 2,
    "unmatched_high": [
+    {
+     "type": "paint_color",
+     "confidence": 0.69,
+     "region": [
+      0.0,
+      0.0,
+      0.3244,
+      0.9972
+     ]
+    },
     {
      "type": "fireplace",
      "confidence": 0.675,
@@ -704,6 +725,17 @@
     }
    ],
    "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.69,
+     "region": [
+      0.0,
+      0.0,
+      0.3244,
+      0.9972
+     ],
+     "kind": "chroma"
+    },
     {
      "type": "fireplace",
      "confidence": 0.675,
@@ -747,17 +779,6 @@
       1.0
      ],
      "kind": "added"
-    },
-    {
-     "type": "paint_color",
-     "confidence": 0.128,
-     "region": [
-      0.2137,
-      0.5033,
-      0.3025,
-      0.6026
-     ],
-     "kind": "chroma"
     }
    ],
    "groups_pred": [
@@ -771,7 +792,7 @@
    ],
    "groups_gt": null,
    "group_ok": null,
-   "seconds": 9.13,
+   "seconds": 8.58,
    "error": null
   },
   {
@@ -817,7 +838,7 @@
    ],
    "groups_gt": null,
    "group_ok": null,
-   "seconds": 4.74,
+   "seconds": 2.89,
    "error": null
   },
   {
@@ -840,7 +861,7 @@
    ],
    "groups_gt": null,
    "group_ok": null,
-   "seconds": 5.19,
+   "seconds": 5.57,
    "error": null
   },
   {
@@ -850,10 +871,32 @@
    "clean": false,
    "hit_any": false,
    "hit_high": false,
-   "n_candidates": 5,
-   "n_high": 0,
-   "unmatched_high": [],
+   "n_candidates": 6,
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "paint_color",
+     "confidence": 0.724,
+     "region": [
+      0.4356,
+      0.3714,
+      0.7644,
+      1.0
+     ]
+    }
+   ],
    "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.724,
+     "region": [
+      0.4356,
+      0.3714,
+      0.7644,
+      1.0
+     ],
+     "kind": "chroma"
+    },
     {
      "type": "paint_color",
      "confidence": 0.583,
@@ -897,17 +940,6 @@
       0.8926
      ],
      "kind": "added"
-    },
-    {
-     "type": "window_sky",
-     "confidence": 0.14,
-     "region": [
-      0.1013,
-      0.3189,
-      0.2444,
-      0.3722
-     ],
-     "kind": "missing"
     }
    ],
    "groups_pred": [
@@ -919,7 +951,7 @@
    ],
    "groups_gt": null,
    "group_ok": null,
-   "seconds": 6.82,
+   "seconds": 7.44,
    "error": null
   },
   {
@@ -1019,7 +1051,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.88,
+   "seconds": 4.59,
    "error": null
   },
   {
@@ -1097,7 +1129,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 5.93,
+   "seconds": 6.45,
    "error": null
   },
   {
@@ -1182,7 +1214,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 5.89,
+   "seconds": 3.36,
    "error": null
   },
   {
@@ -1227,7 +1259,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.22,
+   "seconds": 8.04,
    "error": null
   },
   {
@@ -1294,7 +1326,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.54,
+   "seconds": 7.37,
    "error": null
   },
   {
@@ -1353,18 +1385,18 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.493,
+     "confidence": 0.494,
      "region": [
       0.6225,
       0.7891,
-      0.7362,
+      0.7319,
       0.866
      ],
      "kind": "missing"
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.459,
+     "confidence": 0.46,
      "region": [
       0.1025,
       0.5014,
@@ -1379,7 +1411,7 @@
      "region": [
       0.1469,
       0.0,
-      0.3719,
+      0.3713,
       0.1799
      ],
      "kind": "chroma"
@@ -1404,7 +1436,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 10.92,
+   "seconds": 11.6,
    "error": null
   },
   {
@@ -1493,7 +1525,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 10.28,
+   "seconds": 10.96,
    "error": null
   },
   {
@@ -1593,7 +1625,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.93,
+   "seconds": 7.88,
    "error": null
   },
   {
@@ -1626,7 +1658,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.9,
+   "seconds": 4.56,
    "error": null
   },
   {
@@ -1739,7 +1771,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 20.02,
+   "seconds": 24.27,
    "error": null
   },
   {
@@ -1824,7 +1856,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.25,
+   "seconds": 6.52,
    "error": null
   },
   {
@@ -1834,10 +1866,32 @@
    "clean": false,
    "hit_any": false,
    "hit_high": false,
-   "n_candidates": 8,
-   "n_high": 0,
-   "unmatched_high": [],
+   "n_candidates": 7,
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "paint_color",
+     "confidence": 0.745,
+     "region": [
+      0.1306,
+      0.2418,
+      0.4244,
+      0.6682
+     ]
+    }
+   ],
    "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.745,
+     "region": [
+      0.1306,
+      0.2418,
+      0.4244,
+      0.6682
+     ],
+     "kind": "chroma"
+    },
     {
      "type": "paint_color",
      "confidence": 0.317,
@@ -1881,17 +1935,6 @@
       0.4396
      ],
      "kind": "chroma"
-    },
-    {
-     "type": "window_sky",
-     "confidence": 0.186,
-     "region": [
-      0.0,
-      0.0,
-      0.165,
-      0.104
-     ],
-     "kind": "chroma"
     }
    ],
    "groups_pred": [
@@ -1909,7 +1952,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 4.42,
+   "seconds": 9.29,
    "error": null
   },
   {
@@ -1994,7 +2037,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.94,
+   "seconds": 7.0,
    "error": null
   },
   {
@@ -2002,12 +2045,23 @@
    "family": "paint_color",
    "subtype": "blue_accent_wall_neutralized",
    "clean": false,
-   "hit_any": false,
-   "hit_high": false,
-   "n_candidates": 3,
-   "n_high": 0,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 4,
+   "n_high": 1,
    "unmatched_high": [],
    "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.654,
+     "region": [
+      0.4888,
+      0.1777,
+      1.0,
+      0.6717
+     ],
+     "kind": "chroma"
+    },
     {
      "type": "paint_color",
      "confidence": 0.525,
@@ -2057,7 +2111,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.08,
+   "seconds": 6.3,
    "error": null
   },
   {
@@ -2066,19 +2120,19 @@
    "subtype": "blue_clock_wall_neutralized",
    "clean": false,
    "hit_any": true,
-   "hit_high": false,
-   "n_candidates": 6,
-   "n_high": 0,
+   "hit_high": true,
+   "n_candidates": 4,
+   "n_high": 1,
    "unmatched_high": [],
    "top": [
     {
      "type": "paint_color",
-     "confidence": 0.593,
+     "confidence": 0.787,
      "region": [
-      0.605,
-      0.2909,
-      0.8825,
-      0.6773
+      0.2931,
+      0.3096,
+      0.8812,
+      0.6427
      ],
      "kind": "chroma"
     },
@@ -2114,17 +2168,6 @@
       1.0
      ],
      "kind": "chroma"
-    },
-    {
-     "type": "paint_color",
-     "confidence": 0.291,
-     "region": [
-      0.1237,
-      0.6548,
-      0.28,
-      0.7175
-     ],
-     "kind": "chroma"
     }
    ],
    "groups_pred": [
@@ -2142,7 +2185,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.74,
+   "seconds": 6.32,
    "error": null
   },
   {
@@ -2238,7 +2281,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 5.58,
+   "seconds": 7.5,
    "error": null
   },
   {
@@ -2246,12 +2289,24 @@
    "family": "paint_color",
    "subtype": "blue_wall_and_soffit_neutralized",
    "clean": false,
-   "hit_any": false,
-   "hit_high": false,
-   "n_candidates": 0,
-   "n_high": 0,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
    "unmatched_high": [],
-   "top": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.641,
+     "region": [
+      0.0,
+      0.2395,
+      0.4562,
+      0.594
+     ],
+     "kind": "chroma"
+    }
+   ],
    "groups_pred": [
     [
      0,
@@ -2267,7 +2322,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.4,
+   "seconds": 5.74,
    "error": null
   },
   {
@@ -2275,12 +2330,24 @@
    "family": "paint_color",
    "subtype": "blue_wall_and_soffit_neutralized",
    "clean": false,
-   "hit_any": false,
-   "hit_high": false,
-   "n_candidates": 0,
-   "n_high": 0,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
    "unmatched_high": [],
-   "top": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.652,
+     "region": [
+      0.0,
+      0.305,
+      0.3256,
+      0.6249
+     ],
+     "kind": "chroma"
+    }
+   ],
    "groups_pred": [
     [
      0,
@@ -2296,7 +2363,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.58,
+   "seconds": 7.25,
    "error": null
   },
   {
@@ -2323,7 +2390,7 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.474,
+     "confidence": 0.473,
      "region": [
       0.0525,
       0.1865,
@@ -2385,7 +2452,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 8.41,
+   "seconds": 11.01,
    "error": null
   },
   {
@@ -2474,7 +2541,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 11.75,
+   "seconds": 10.25,
    "error": null
   },
   {
@@ -2512,18 +2579,18 @@
     },
     {
      "type": "wood_floor_color",
-     "confidence": 0.249,
+     "confidence": 0.248,
      "region": [
       0.2487,
       0.5473,
       0.755,
-      0.9522
+      0.9513
      ],
      "kind": "chroma"
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.241,
+     "confidence": 0.24,
      "region": [
       0.8638,
       0.2521,
@@ -2552,7 +2619,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.27,
+   "seconds": 9.34,
    "error": null
   },
   {
@@ -2626,7 +2693,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.57,
+   "seconds": 5.41,
    "error": null
   },
   {
@@ -2667,7 +2734,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.1,
+   "seconds": 6.43,
    "error": null
   },
   {
@@ -2696,7 +2763,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.66,
+   "seconds": 6.57,
    "error": null
   },
   {
@@ -2741,7 +2808,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.34,
+   "seconds": 7.86,
    "error": null
   },
   {
@@ -2819,7 +2886,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.09,
+   "seconds": 7.47,
    "error": null
   },
   {
@@ -2908,7 +2975,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.83,
+   "seconds": 8.03,
    "error": null
   },
   {
@@ -2937,7 +3004,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 5.06,
+   "seconds": 5.19,
    "error": null
   },
   {
@@ -2996,7 +3063,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.96,
+   "seconds": 9.12,
    "error": null
   },
   {
@@ -3055,7 +3122,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 10.51,
+   "seconds": 10.87,
    "error": null
   },
   {
@@ -3096,7 +3163,7 @@
      "confidence": 0.293,
      "region": [
       0.8424,
-      0.9204,
+      0.9215,
       0.8878,
       1.0
      ],
@@ -3158,7 +3225,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 12.54,
+   "seconds": 11.11,
    "error": null
   },
   {
@@ -3168,9 +3235,20 @@
    "clean": false,
    "hit_any": true,
    "hit_high": true,
-   "n_candidates": 9,
-   "n_high": 1,
-   "unmatched_high": [],
+   "n_candidates": 3,
+   "n_high": 2,
+   "unmatched_high": [
+    {
+     "type": "paint_color",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      0.9789
+     ]
+    }
+   ],
    "top": [
     {
      "type": "ghosting_grouping",
@@ -3185,47 +3263,25 @@
     },
     {
      "type": "paint_color",
-     "confidence": 0.424,
-     "region": [
-      0.5097,
-      0.1742,
-      0.5718,
-      0.2669
-     ],
-     "kind": "chroma"
-    },
-    {
-     "type": "wood_floor_color",
-     "confidence": 0.406,
+     "confidence": 0.8,
      "region": [
       0.0,
-      0.5458,
-      0.2592,
-      0.8983
+      0.0,
+      1.0,
+      0.9789
      ],
      "kind": "chroma"
     },
     {
-     "type": "paint_color",
-     "confidence": 0.367,
+     "type": "camera_person_removal",
+     "confidence": 0.244,
      "region": [
-      0.3761,
-      0.1782,
-      0.4081,
-      0.2568
+      0.0047,
+      0.566,
+      0.0635,
+      0.709
      ],
-     "kind": "chroma"
-    },
-    {
-     "type": "paint_color",
-     "confidence": 0.351,
-     "region": [
-      0.8631,
-      0.1793,
-      0.9205,
-      0.2457
-     ],
-     "kind": "chroma"
+     "kind": "missing"
     }
    ],
    "groups_pred": [
@@ -3261,7 +3317,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 12.18,
+   "seconds": 10.52,
    "error": null
   },
   {
@@ -3342,7 +3398,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.51,
+   "seconds": 7.87,
    "error": null
   },
   {
@@ -3416,7 +3472,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 4.1,
+   "seconds": 5.81,
    "error": null
   },
   {
@@ -3457,7 +3513,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 3.81,
+   "seconds": 5.83,
    "error": null
   },
   {
@@ -3540,7 +3596,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 6.06,
+   "seconds": 7.93,
    "error": null
   },
   {
@@ -3625,7 +3681,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 5.81,
+   "seconds": 7.06,
    "error": null
   },
   {
@@ -3677,7 +3733,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 4.47,
+   "seconds": 8.63,
    "error": null
   },
   {
@@ -3704,11 +3760,11 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.476,
+     "confidence": 0.475,
      "region": [
       0.9313,
       0.2762,
-      0.9544,
+      0.955,
       0.6305
      ],
      "kind": "missing"
@@ -3719,7 +3775,7 @@
      "region": [
       0.38,
       0.3195,
-      0.4225,
+      0.4219,
       0.4505
      ],
      "kind": "missing"
@@ -3737,12 +3793,12 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.299,
+     "confidence": 0.29,
      "region": [
-      0.4894,
+      0.4863,
       0.0,
-      0.6275,
-      0.1235
+      0.6244,
+      0.1188
      ],
      "kind": "missing"
     }
@@ -3780,7 +3836,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 12.71,
+   "seconds": 11.27,
    "error": null
   },
   {
@@ -3818,7 +3874,7 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.268,
+     "confidence": 0.269,
      "region": [
       0.0,
       0.8558,
@@ -3829,10 +3885,10 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.251,
+     "confidence": 0.252,
      "region": [
-      0.2894,
-      0.8577,
+      0.2888,
+      0.8567,
       0.3656,
       1.0
      ],
@@ -3844,7 +3900,7 @@
      "region": [
       0.0,
       0.0434,
-      0.1806,
+      0.1844,
       0.9105
      ],
      "kind": "added"
@@ -3883,7 +3939,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 13.58,
+   "seconds": 12.21,
    "error": null
   },
   {
@@ -3953,7 +4009,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.12,
+   "seconds": 8.2,
    "error": null
   },
   {
@@ -4034,7 +4090,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 13.26,
+   "seconds": 11.25,
    "error": null
   },
   {
@@ -4093,7 +4149,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 11.2,
+   "seconds": 6.6,
    "error": null
   },
   {
@@ -4152,7 +4208,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 10.05,
+   "seconds": 9.38,
    "error": null
   },
   {
@@ -4255,7 +4311,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 13.75,
+   "seconds": 8.99,
    "error": null
   },
   {
@@ -4314,7 +4370,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.41,
+   "seconds": 9.34,
    "error": null
   },
   {
@@ -4373,7 +4429,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 9.66,
+   "seconds": 9.28,
    "error": null
   },
   {
@@ -4432,7 +4488,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.79,
+   "seconds": 9.0,
    "error": null
   },
   {
@@ -4473,7 +4529,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 4.56,
+   "seconds": 7.03,
    "error": null
   },
   {
@@ -4489,31 +4545,31 @@
    "top": [
     {
      "type": "paint_color",
-     "confidence": 0.539,
+     "confidence": 0.468,
      "region": [
-      0.5131,
-      0.2821,
-      0.7837,
-      0.4283
-     ],
-     "kind": "chroma"
-    },
-    {
-     "type": "paint_color",
-     "confidence": 0.469,
-     "region": [
-      0.2013,
-      0.298,
-      0.25,
+      0.2025,
+      0.3008,
+      0.2512,
       0.3646
      ],
      "kind": "chroma"
     },
     {
      "type": "paint_color",
-     "confidence": 0.231,
+     "confidence": 0.449,
      "region": [
-      0.8812,
+      0.5138,
+      0.283,
+      0.7837,
+      0.4292
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.23,
+     "region": [
+      0.8819,
       0.0778,
       1.0,
       0.135
@@ -4522,12 +4578,12 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.147,
+     "confidence": 0.148,
      "region": [
-      0.3444,
+      0.3538,
       0.0,
-      0.8069,
-      0.1575
+      0.8087,
+      0.1584
      ],
      "kind": "added"
     },
@@ -4538,7 +4594,7 @@
       0.0,
       0.2118,
       0.0587,
-      0.3065
+      0.3074
      ],
      "kind": "chroma"
     }
@@ -4562,7 +4618,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 8.33,
+   "seconds": 6.25,
    "error": null
   },
   {
@@ -4589,7 +4645,7 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.428,
+     "confidence": 0.429,
      "region": [
       0.8175,
       0.4,
@@ -4600,7 +4656,7 @@
     },
     {
      "type": "camera_person_removal",
-     "confidence": 0.326,
+     "confidence": 0.327,
      "region": [
       0.5381,
       0.4451,
@@ -4649,7 +4705,7 @@
     ]
    ],
    "group_ok": true,
-   "seconds": 7.12,
+   "seconds": 8.17,
    "error": null
   }
  ]

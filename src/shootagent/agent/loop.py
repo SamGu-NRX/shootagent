@@ -462,11 +462,25 @@ class AgentRun:
                 f"The customer selected mask {m.id} on view {m.view} (box {m.bbox}). Apply the request to "
                 "that area; use this mask unless it is clearly wrong."
             )
-        refs = self._reference_blobs(shoot) if self.mode == "chat" else []
-        if refs:
+        if self.mode == "qc":
+            from ..tools.perceive import view_order
+
+            orders = {v: view_order(shoot, shoot.view(v)) for v in self.scope}
             lines.append(
-                "Reference images supplied with the request (blob names, shown below in this order): "
-                + ", ".join(refs)
+                "What the customer ordered for each view (requested edits and order notes; 'unknown' when the "
+                "order was not supplied): "
+                + json.dumps({v: o or "unknown" for v, o in orders.items()}, ensure_ascii=False)
+            )
+        labelled = self._reference_blobs(shoot) if self.mode == "chat" else []
+        refs = [blob for blob, _ in labelled]
+        if labelled:
+            # Photo-level references come from an earlier request on that photo (the editor dataset), not from
+            # this message; saying so stops the agent thanking the customer for images they never sent.
+            lines.append(
+                "Reference images, shown below in this order. Shoot-level ones came with this request; ones "
+                "tagged with a view were attached to that photo earlier and matter only if this request asks "
+                "for a reference: "
+                + ", ".join(f"{blob} ({view or 'this request'})" for blob, view in labelled)
             )
         lines.append("View status: " + json.dumps(status, ensure_ascii=False))
         lines.append("The contact sheet of the views in scope follows.")
@@ -478,17 +492,21 @@ class AgentRun:
                 pass
         return content
 
-    def _reference_blobs(self, shoot) -> list[str]:
-        """Reference images for the request as blobs: shoot-level blobs, plus files listed in a view's
-        `meta["request_references"]` (editor-request ingest), copied into the store."""
-        refs = [r for r in (shoot.source.get("references") or []) if isinstance(r, str)]
+    def _reference_blobs(self, shoot) -> list[tuple[str, str | None]]:
+        """(blob, view) for each reference image: shoot-level blobs (view None), plus files listed in a view's
+        `meta["request_references"]` (editor-request ingest), copied into the store and tagged with the view."""
+        refs: list[tuple[str, str | None]] = [
+            (r, None) for r in (shoot.source.get("references") or []) if isinstance(r, str)
+        ]
+        seen = {b for b, _ in refs}
         for vid in self.scope:
             for path in shoot.view(vid).meta.get("request_references") or []:
                 p = Path(path)
                 if p.is_file():
                     blob = self.store.put_file(self.shoot_id, p)
-                    if blob not in refs:
-                        refs.append(blob)
+                    if blob not in seen:
+                        refs.append((blob, vid))
+                        seen.add(blob)
         return refs
 
     def _unfinished(self) -> str:

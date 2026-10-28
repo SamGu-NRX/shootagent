@@ -19,10 +19,12 @@ from dataclasses import asdict, dataclass, field
 
 import numpy as np
 
+from ..imaging.color import lab_to_rgb, rgb_to_hex, rgb_to_lab
 from ..imaging.diffmap import FIRE_MIN_PX_FRAC, DiffRegion
 from .pipeline import RawAnalysis
 
 HIGH_CONFIDENCE = 0.6
+EXTERIOR_WINDOW_FRAC = 0.35  # an exterior shot is mostly "window" by the brightness test
 # Finished photo correlates this much better with an unaligned merge than an aligned one. The two
 # labelled same-view ghosting cases score 0.08 and 0.13; a false alarm on a paint case scored 0.046.
 NAIVE_GAIN_MIN = 0.06
@@ -90,10 +92,11 @@ def _grouping_candidates(ra: RawAnalysis) -> list[Candidate]:
             "The camera moved between brackets (up to "
             f"{max(shifts.values()):.0f} px at analysis size) and the finished photo matches an unaligned merge "
             f"better than an aligned one (edge correlation +{ra.naive_gain:.2f}), so edges are doubled. "
-            "Re-merge the aligned brackets.",
+            "The brackets are one camera position, so do not regroup: restore the doubled areas from the aligned "
+            "bracket reference with restore_from_brackets.",
             FULL, conf, {"naive_gain": round(ra.naive_gain, 3), "bracket_shift_px": shifts,
                          "ghost_score": round(ra.fusion.ghost_score, 4)},
-            "ghosting", "regroup_brackets"))
+            "ghosting", "restore_from_brackets", ra.naive_mask))
     return out
 
 
@@ -174,6 +177,113 @@ def _region_candidate(r: DiffRegion, ra: RawAnalysis, exterior: bool) -> Candida
     return None
 
 
+# Wall paint check. The diff map's chroma signal is measured after a global colour fit, and when an editor's
+# white balance warms the whole room, a pale blue wall loses its colour together with everything else, so
+# the fit absorbs it: on AutoHDR paint cases 0029, 0032 and 0033 the chroma map stayed empty over the
+# labelled wall. This check instead compares raw bracket colour with the finished colour on segmented
+# walls. Thresholds come from the six paint cases and four clean controls of the AutoHDR set, with no
+# held-out data, so they are first guesses: labelled blue walls had bracket chroma 3.4-7.4 and lost 4.9-9.7
+# of it; on the controls only a window wall (0018, 44% of its mask glass) passed those two tests.
+# Warm walls are not checked: neutralising a tungsten-warm wall is ordinary white balance, and on the
+# defect set warm walls passed the chroma tests in 7 cases, none of them labelled.
+WALL_MIN_CHROMA = 3.0  # Lab chroma of the wall in the brackets
+WALL_MIN_LOSS = 3.5  # chroma the finished wall lost along the bracket hue
+WALL_MAX_WINDOW_FRAC = 0.15  # walls mostly made of windows take the sky's colour; labelled walls were <= 0.03
+WALL_MIN_AREA = 0.005  # fraction of the frame
+
+
+def hue_name(a: float, b: float) -> str:
+    """Rough colour name for a Lab a/b direction, for explanations the agent reads."""
+    h = float(np.degrees(np.arctan2(b, a)) % 360)
+    for limit, name in ((25, "pink-red"), (70, "orange-beige"), (105, "yellow"), (165, "green"), (215, "teal"),
+                        (295, "blue"), (340, "purple"), (360, "pink-red")):
+        if h < limit:
+            return name
+    return "pink-red"
+
+
+def _median_lab(lab: np.ndarray, m: np.ndarray) -> np.ndarray:
+    return np.median(lab[m], axis=0)
+
+
+def wall_paint_candidates(reference: np.ndarray, finished: np.ndarray, valid: np.ndarray,
+                          walls: list[np.ndarray], neutral: np.ndarray | None = None,
+                          window: np.ndarray | None = None) -> list[Candidate]:
+    """Walls whose paint colour in the brackets was neutralised in the finished photo.
+
+    `reference` is the raw bracket fusion registered into the finished frame (no colour fit), `walls` bool
+    masks of wall surfaces in that frame, `neutral` a mask of a surface that should be neutral (the ceiling),
+    reported as evidence so the agent can tell paint from a colour cast. Windows and clipped pixels are left
+    out of every measurement. Only cool hues (Lab hue 170-330 degrees) are checked."""
+    ref_lab, fin_lab = rgb_to_lab(reference), rgb_to_lab(finished)
+    usable = valid & (fin_lab[..., 0] > 15) & (fin_lab[..., 0] < 97) & (ref_lab[..., 0] > 5)
+    if window is not None:
+        usable &= ~window
+    h, w = valid.shape
+    neutral_ev = None
+    if neutral is not None and (neutral & usable).sum() >= WALL_MIN_AREA * h * w:
+        nr, nf = _median_lab(ref_lab, neutral & usable), _median_lab(fin_lab, neutral & usable)
+        neutral_ev = {"ceiling_ab_brackets": [round(float(v), 1) for v in nr[1:]],
+                      "ceiling_ab_finished": [round(float(v), 1) for v in nf[1:]]}
+    out = []
+    for wall in walls:
+        m = wall & usable
+        if m.sum() < WALL_MIN_AREA * h * w:
+            continue
+        if window is not None and float(window[wall].mean()) > WALL_MAX_WINDOW_FRAC:
+            continue
+        r, f = _median_lab(ref_lab, m), _median_lab(fin_lab, m)
+        c_ref = float(np.hypot(r[1], r[2]))
+        if c_ref < WALL_MIN_CHROMA or not 170 <= np.degrees(np.arctan2(r[2], r[1])) % 360 <= 330:
+            continue
+        along = float((f[1] * r[1] + f[2] * r[2]) / c_ref)  # finished colour along the bracket hue
+        loss = c_ref - along
+        if loss < WALL_MIN_LOSS:
+            continue
+        name = hue_name(r[1], r[2])
+        # The bracket hue at the finished photo's lightness: what to recolour the wall back to. (The brackets
+        # colour-matched to the finished photo frame-wide came out almost grey on 0029 and 0033, so that
+        # target would leave the wall as delivered.)
+        target = rgb_to_hex(lab_to_rgb(np.array([[[f[0], r[1], r[2]]]], np.float32))[0, 0])
+        fin_hex = rgb_to_hex(lab_to_rgb(f.reshape(1, 1, 3).astype(np.float32))[0, 0])
+        conf = float(np.clip(0.6 + 0.03 * (loss - WALL_MIN_LOSS), 0.6, 0.8))
+        ev = {"kind": "wall_paint", "area": round(float(m.mean()), 4), "reference_hex": target, "finished_hex": fin_hex,
+              "wall_ab_brackets": [round(float(v), 1) for v in r[1:]],
+              "wall_ab_finished": [round(float(v), 1) for v in f[1:]],
+              "reference_chroma": round(c_ref, 1), "finished_chroma": round(float(np.hypot(f[1], f[2])), 1),
+              "chroma_lost": round(loss, 1), "bracket_hue": name, **(neutral_ev or {})}
+        expl = (f"Segmented wall: {name} in the brackets (chroma {c_ref:.1f}; {target} at the finished lightness) "
+                f"but {fin_hex} in the finished photo (chroma {ev['finished_chroma']}): it lost {loss:.1f} of its "
+                f"colour along its own hue.")
+        if neutral_ev:
+            nr_ab, nf_ab = neutral_ev["ceiling_ab_brackets"], neutral_ev["ceiling_ab_finished"]
+            expl += (f" The ceiling measures a/b {nr_ab} in the brackets and {nf_ab} in the finished photo, against "
+                     f"the wall's {ev['wall_ab_brackets']} and {ev['wall_ab_finished']}.")
+        out.append(Candidate("paint_color", expl, _mask_bbox(m), conf, ev, "chroma", "recolor_region", m))
+    return out
+
+
+def _mask_bbox(m: np.ndarray) -> list[float]:
+    ys, xs = np.nonzero(m)
+    h, w = m.shape
+    return [xs.min() / w, ys.min() / h, (xs.max() + 1) / w, (ys.max() + 1) / h]
+
+
+def _overlap_smaller(a: list[float], b: list[float]) -> float:
+    w = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+    h = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+    small = min((a[2] - a[0]) * (a[3] - a[1]), (b[2] - b[0]) * (b[3] - b[1]))
+    return w * h / small if small > 0 else 0.0
+
+
+def _same_place(a: Candidate, b: Candidate) -> bool:
+    """One candidate per place: a replaced object is both "missing" and "added", and a chroma blob on a wall
+    duplicates the wall's own paint candidate."""
+    if _iou(a.region, b.region) > 0.4:
+        return True
+    return a.kind == b.kind == "chroma" and _overlap_smaller(a.region, b.region) > 0.7
+
+
 def _iou(a: list[float], b: list[float]) -> float:
     w = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
     h = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
@@ -182,21 +292,23 @@ def _iou(a: list[float], b: list[float]) -> float:
     return inter / union if union > 0 else 0.0
 
 
-def build_candidates(ra: RawAnalysis, max_regions: int = 8) -> list[Candidate]:
+def build_candidates(ra: RawAnalysis, max_regions: int = 8, extra: list[Candidate] = ()) -> list[Candidate]:
+    """`extra`: region candidates from checks outside the diff map (wall paint); they are de-duplicated and
+    capped together with the diff regions."""
     out = _grouping_candidates(ra)
     multi_view = len(ra.grouping.groups) > 1 and ra.finished_match.overlay
     # An exterior shot is mostly "window" by the brightness test, which would discount everything.
-    exterior = ra.window_mask is not None and float(ra.window_mask.mean()) > 0.35
+    exterior = ra.window_mask is not None and float(ra.window_mask.mean()) > EXTERIOR_WINDOW_FRAC
     if ra.diff is not None and not multi_view:
-        regs = []
+        regs = list(extra)
         for r in ra.diff.regions:
             c = _region_candidate(r, ra, exterior)
             if c is not None and c.confidence >= 0.12:
                 regs.append(c)
         regs.sort(key=lambda c: -c.confidence)
         kept: list[Candidate] = []
-        for c in regs:  # one candidate per place: a replaced object is both "missing" and "added"
-            dup = next((k for k in kept if _iou(k.region, c.region) > 0.4), None)
+        for c in regs:
+            dup = next((k for k in kept if _same_place(k, c)), None)
             if dup is None:
                 kept.append(c)
             else:
