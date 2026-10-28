@@ -5,7 +5,7 @@
   "verdict": "fail",
   "reasons": [
     "a straight edge bends by 8.62 px from t=4.25s at [0.196, 0.217, 0.223, 0.654]",
-    "judge (medium confidence): glass door (balcony door) glass pane/frame edge changed_shape at t=3.5s (center-left; the door's left frame and glass edge bend into a wavy curve)"
+    "judge: door changed at FRAME 5: Door frame and glass appear bowed/curved on the left edge, shape distorted (sky, hills, houses, deck railing)"
   ],
   "signals": {
     "endpoint_start": {
@@ -142,22 +142,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "glass door (balcony door) glass pane/frame edge",
-          "change": "changed_shape",
-          "first_frame": "t=3.5s",
-          "where": "center-left; the door's left frame and glass edge bend into a wavy curve"
+          "frame": "FRAME 5",
+          "kind": "changed",
+          "category": "door",
+          "item_id": "S2",
+          "description": "Door frame and glass appear bowed/curved on the left edge, shape distorted",
+          "where": "sky, hills, houses, deck railing",
+          "in_photo_view": true,
+          "confidence": "medium"
         }
       ],
-      "confidence": "medium",
+      "unverifiable": [],
+      "warnings": [],
+      "inventory_items": 13,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0083
+      "usd_check": 0.0797,
+      "usd_inventory": 0.0,
+      "usd": 0.0797,
+      "tokens_check": [
+        14437,
+        4578
+      ],
+      "usd_check_uncached": 0.0747
     }
   },
   "frames": {
@@ -178,17 +195,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_bend.sheet.jpg",
   "timing_s": {
-    "decode": 0.42,
-    "endpoint": 0.29,
-    "flow": 1.13,
-    "motion_appearance": 0.7,
-    "lines": 2.41,
-    "judge": 3.82,
-    "total": 8.83
+    "decode": 0.49,
+    "endpoint": 0.38,
+    "flow": 2.15,
+    "motion_appearance": 1.02,
+    "lines": 3.48,
+    "judge": 23.71,
+    "total": 31.3
   },
   "expected": "fail",
   "case": "defect_train_0058",

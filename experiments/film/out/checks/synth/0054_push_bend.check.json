@@ -4,8 +4,7 @@
   "end": null,
   "verdict": "fail",
   "reasons": [
-    "a straight edge bends by 5.77 px from t=5.5s at [0.22, 0.162, 0.232, 0.491]",
-    "judge (medium confidence): left window frame (large window beside the artwork) changed_shape at t=3.5s (upper left, right edge of the window frame bows and curves)"
+    "a straight edge bends by 5.66 px from t=5.75s at [0.22, 0.163, 0.231, 0.491]"
   ],
   "signals": {
     "endpoint_start": {
@@ -125,12 +124,12 @@
     "lines": {
       "pass": false,
       "segments": 80,
-      "bend_px": 5.77,
-      "bend_at_s": 5.5,
+      "bend_px": 5.66,
+      "bend_at_s": 5.75,
       "bend_box": [
         0.22,
-        0.162,
-        0.232,
+        0.163,
+        0.231,
         0.491
       ],
       "new_diag": 0.0,
@@ -142,22 +141,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
-      "pass": false,
-      "changed": true,
-      "changes": [
+      "pass": true,
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [
         {
-          "object": "left window frame (large window beside the artwork)",
-          "change": "changed_shape",
-          "first_frame": "t=3.5s",
-          "where": "upper left, right edge of the window frame bows and curves"
+          "frame": "FRAME 1",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S9",
+          "description": "small recessed light at upper left not clearly visible",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
         }
       ],
-      "confidence": "medium",
+      "inventory_items": 27,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0062
+      "usd_check": 0.1246,
+      "usd_inventory": 0.0,
+      "usd": 0.1246,
+      "tokens_check": [
+        15047,
+        8914
+      ],
+      "usd_check_uncached": 0.1192
     }
   },
   "frames": {
@@ -178,17 +194,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_bend.sheet.jpg",
   "timing_s": {
-    "decode": 0.44,
-    "endpoint": 0.27,
-    "flow": 1.51,
-    "motion_appearance": 0.86,
-    "lines": 1.98,
-    "judge": 2.93,
-    "total": 8.04
+    "decode": 1.64,
+    "endpoint": 0.52,
+    "flow": 3.69,
+    "motion_appearance": 1.25,
+    "lines": 3.05,
+    "judge": 42.02,
+    "total": 52.25
   },
   "expected": "fail",
   "case": "defect_train_0054",

@@ -5,10 +5,9 @@
   "verdict": "fail",
   "reasons": [
     "structure not in the first frame: 0.80% of the frame from t=4.75s at [0.446, 0.346, 0.535, 0.709]",
-    "a straight edge bends by 58.88 px from t=5.75s at [0.368, 0.247, 0.619, 0.541]",
+    "a straight edge bends by 6.75 px from t=4.5s at [0.368, 0.309, 0.616, 0.444]",
     "new straight edges (1.214 frame diagonals) from t=5.75s at [0.458, 0.073, 0.458, 0.235]",
-    "straight edges vanished (0.219 frame diagonals) from t=3.75s at [0.48, 0.125, 0.512, 0.587]",
-    "judge (medium confidence): window mullion/post (new vertical white column in the center window) appeared at t=3.5s (center of frame, from the top down to the bowl, in front of the center window); wooden bowl on table duplicated at t=3.5s (center of the table; a second smaller bowl shape appears beside the original, split by the column)"
+    "judge: other missing at FRAME 1: foreground counter edge no longer visible (); window changed at FRAME 5: A tall white vertical post or mullion has appeared in the middle of the centre window, hiding the bowl and part of the view. The photo has no such post. (sky, field, fence, houses); decor changed at FRAME 5: The bowl is split or obscured by the white post, so it looks like two halves. (); built_in new at FRAME 5: A new white vertical column or post stands in the centre of the centre window. It is not in the photo. ()"
   ],
   "signals": {
     "endpoint_start": {
@@ -133,13 +132,13 @@
     "lines": {
       "pass": false,
       "segments": 80,
-      "bend_px": 58.88,
-      "bend_at_s": 5.75,
+      "bend_px": 6.75,
+      "bend_at_s": 4.5,
       "bend_box": [
         0.368,
-        0.247,
-        0.619,
-        0.541
+        0.309,
+        0.616,
+        0.444
       ],
       "new_diag": 1.214,
       "new_at_s": 5.75,
@@ -149,39 +148,86 @@
         0.458,
         0.235
       ],
-      "gone_diag": 0.219,
-      "gone_at_s": 3.75,
-      "gone_box": [
-        0.48,
-        0.125,
-        0.512,
-        0.587
-      ]
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "window mullion/post (new vertical white column in the center window)",
-          "change": "appeared",
-          "first_frame": "t=3.5s",
-          "where": "center of frame, from the top down to the bowl, in front of the center window"
+          "frame": "FRAME 1",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "foreground counter edge no longer visible",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
         },
         {
-          "object": "wooden bowl on table",
-          "change": "duplicated",
-          "first_frame": "t=3.5s",
-          "where": "center of the table; a second smaller bowl shape appears beside the original, split by the column"
+          "frame": "FRAME 5",
+          "kind": "changed",
+          "category": "window",
+          "item_id": "S2",
+          "description": "A tall white vertical post or mullion has appeared in the middle of the centre window, hiding the bowl and part of the view. The photo has no such post.",
+          "where": "sky, field, fence, houses",
+          "in_photo_view": true,
+          "confidence": "medium"
+        },
+        {
+          "frame": "FRAME 5",
+          "kind": "changed",
+          "category": "decor",
+          "item_id": "S8",
+          "description": "The bowl is split or obscured by the white post, so it looks like two halves.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
+        },
+        {
+          "frame": "FRAME 5",
+          "kind": "new",
+          "category": "built_in",
+          "item_id": "NEW",
+          "description": "A new white vertical column or post stands in the centre of the centre window. It is not in the photo.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
         }
       ],
-      "confidence": "medium",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 6",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S7",
+          "description": "Left host chair is mostly out of frame, with only a small edge visible. Right chair is still partly visible.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 12,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0069
+      "usd_check": 0.0814,
+      "usd_inventory": 0.0,
+      "usd": 0.0814,
+      "tokens_check": [
+        14392,
+        4763
+      ],
+      "usd_check_uncached": 0.0764
     }
   },
   "frames": {
@@ -202,17 +248,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_paste.sheet.jpg",
   "timing_s": {
-    "decode": 0.33,
-    "endpoint": 0.23,
-    "flow": 1.04,
-    "motion_appearance": 0.64,
-    "lines": 2.44,
-    "judge": 3.94,
-    "total": 8.67
+    "decode": 1.29,
+    "endpoint": 1.14,
+    "flow": 3.62,
+    "motion_appearance": 1.61,
+    "lines": 6.06,
+    "judge": 25.23,
+    "total": 39.1
   },
   "expected": "fail",
   "case": "defect_train_0057",

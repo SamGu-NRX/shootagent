@@ -1,0 +1,826 @@
+[
+  {
+    "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T1.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "verdict": "fail",
+    "reasons": [
+      "judge: opening changed at FRAME 4: Opening shows the shower and bathroom beyond, not the hallway with wood floor; the opening also now has a second white door leaf on the right, a double door (shower with marble tile and window, visible rather than the hallway); door new at FRAME 4: Second white door leaf with lever handle at right, forming double doors, not in the photo ()"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 534,
+        "inliers": 484,
+        "inlier_ratio": 0.906,
+        "edge_ssim": 0.932,
+        "min_tile_ssim": 0.804,
+        "worst_tile": [
+          0.667,
+          0.75,
+          0.833,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": {
+        "pass": true,
+        "matches": 438,
+        "inliers": 361,
+        "inlier_ratio": 0.824,
+        "edge_ssim": 0.931,
+        "min_tile_ssim": 0.901,
+        "worst_tile": [
+          0.333,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "coverage": 0.993
+      },
+      "motion": {
+        "checkable": false,
+        "pass": null,
+        "shared_with_start": 0.0,
+        "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+      },
+      "appearance": {
+        "checkable": false,
+        "pass": null,
+        "shared_with_start": 0.0,
+        "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+      },
+      "lines": {
+        "checkable": false,
+        "pass": null,
+        "shared_with_start": 0.0,
+        "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": null,
+        "shared_start_last": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 4",
+            "kind": "changed",
+            "category": "opening",
+            "item_id": "S3",
+            "description": "Opening shows the shower and bathroom beyond, not the hallway with wood floor; the opening also now has a second white door leaf on the right, a double door",
+            "where": "shower with marble tile and window, visible rather than the hallway",
+            "in_photo_view": false,
+            "confidence": "medium"
+          },
+          {
+            "frame": "FRAME 4",
+            "kind": "new",
+            "category": "door",
+            "item_id": "NEW",
+            "description": "Second white door leaf with lever handle at right, forming double doors, not in the photo",
+            "where": "",
+            "in_photo_view": false,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [
+          {
+            "frame": "FRAME 4",
+            "kind": "new",
+            "category": "door",
+            "item_id": "NEW",
+            "description": "Second white door leaf with lever handle at right, forming double doors, not in the photo",
+            "where": "",
+            "in_photo_view": false,
+            "confidence": "medium"
+          }
+        ],
+        "warnings": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S9",
+            "description": "small recessed light at upper left not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "wall_plate",
+            "item_id": "NEW",
+            "description": "Outlet low on wall at left in bathroom entry pier, not in photo",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "FRAME 7",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "E7",
+            "description": "shower ceiling light not visible, cropped",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 45,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
+        "model": "claude-sonnet-5-5",
+        "usd_check": 0.0727,
+        "usd_inventory": 0.0,
+        "usd": 0.0727
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 145,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_3\\T1.sheet.jpg",
+    "timing_s": {
+      "decode": 0.61,
+      "endpoint": 1.25,
+      "judge": 40.97,
+      "total": 42.94
+    },
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "second door leaf in the right-hand doorway ~3.0 s; doorway now leads straight into the shower (0054 shows a hallway)"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T2.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "verdict": "fail",
+    "reasons": [
+      "judge: window changed at Frame 3: Right window shows a white deck railing/stairs outside, not in the start photo (sky, field, fence, white deck railing and stairs); window new at Frame 5: Extra window at far left with shade, not in end photo (sky, field)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 654,
+        "inliers": 527,
+        "inlier_ratio": 0.806,
+        "edge_ssim": 0.959,
+        "min_tile_ssim": 0.936,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": {
+        "pass": true,
+        "matches": 1044,
+        "inliers": 937,
+        "inlier_ratio": 0.898,
+        "edge_ssim": 0.849,
+        "min_tile_ssim": 0.643,
+        "worst_tile": [
+          0.25,
+          0.5,
+          0.5,
+          0.667
+        ],
+        "coverage": 1.0
+      },
+      "motion": {
+        "checkable": false,
+        "pass": null,
+        "shared_with_start": 0.0,
+        "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+      },
+      "appearance": {
+        "checkable": false,
+        "pass": null,
+        "shared_with_start": 0.0,
+        "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+      },
+      "lines": {
+        "checkable": false,
+        "pass": null,
+        "shared_with_start": 0.0,
+        "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": null,
+        "shared_start_last": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "failing": [
+          {
+            "frame": "Frame 3",
+            "kind": "changed",
+            "category": "window",
+            "item_id": "S3",
+            "description": "Right window shows a white deck railing/stairs outside, not in the start photo",
+            "where": "sky, field, fence, white deck railing and stairs",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "Frame 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "Extra window at far left with shade, not in end photo",
+            "where": "sky, field",
+            "in_photo_view": true,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "Frame 4",
+            "kind": "new",
+            "category": "ceiling_light",
+            "item_id": "NEW",
+            "description": "White ceiling fan blade at top right, not in either photo",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "Frame 5",
+            "kind": "new",
+            "category": "wall_plate",
+            "item_id": "NEW",
+            "description": "Dark vent/bar at upper right wall; resembles ghost wall bars",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "Frame 8",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "E11",
+            "description": "Black wire plant stand at bottom right not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 24,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
+        "model": "claude-sonnet-5-5",
+        "usd_check": 0.0454,
+        "usd_inventory": 0.0,
+        "usd": 0.0454
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 145,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_3\\T2.sheet.jpg",
+    "timing_s": {
+      "decode": 1.15,
+      "endpoint": 2.24,
+      "judge": 21.11,
+      "total": 24.63
+    },
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "white deck stair and railing outside the right-hand window from ~1.8 s (0057 shows open field)"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T3.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "motion no rigid camera explains: 2.39 px from t=5.75s in cell [0.811, 0.6, 0.913, 0.667]",
+      "structure not in the first frame: 2.11% of the frame from t=3.25s at [0.45, 0.834, 0.737, 1.0]",
+      "a straight edge bends by 16.72 px from t=4.75s at [0.66, 0.263, 0.693, 0.625]",
+      "new straight edges (0.673 frame diagonals) from t=2.5s at [0.418, 0.896, 0.424, 0.975]",
+      "straight edges vanished (0.383 frame diagonals) from t=0.25s at [0.973, 0.742, 0.982, 0.818]",
+      "38% of a frame shows area outside the start photo, which cannot be checked",
+      "judge: window new at FRAME 5: additional tall window at far left, beyond photo edge (sky, field, deck railing)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1491,
+        "inliers": 1400,
+        "inlier_ratio": 0.939,
+        "edge_ssim": 0.957,
+        "min_tile_ssim": 0.938,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.249,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": false,
+        "peak_px": 2.39,
+        "at_s": 5.75,
+        "cell": [
+          0.811,
+          0.6,
+          0.913,
+          0.667
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          0.938,
+          0.886,
+          0.819,
+          0.775,
+          0.721,
+          0.672,
+          0.547,
+          0.537,
+          0.503,
+          0.501,
+          0.4,
+          0.434,
+          0.404,
+          0.378,
+          0.339,
+          0.369,
+          0.37,
+          0.388,
+          0.377,
+          0.295,
+          0.24,
+          0.217,
+          0.255,
+          0.221
+        ],
+        "series_px": [
+          0.0,
+          0.33,
+          0.45,
+          0.48,
+          0.54,
+          0.49,
+          0.97,
+          1.05,
+          0.57,
+          1.35,
+          0.87,
+          0.66,
+          1.42,
+          1.43,
+          1.57,
+          1.16,
+          1.05,
+          1.63,
+          1.72,
+          1.85,
+          1.79,
+          2.0,
+          2.19,
+          2.51,
+          2.39
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0211,
+        "at_s": 3.25,
+        "box": [
+          0.45,
+          0.834,
+          0.737,
+          1.0
+        ],
+        "series_frac": [
+          0.0,
+          0.0063,
+          0.0156,
+          0.0189,
+          0.0199,
+          0.0168,
+          0.0186,
+          0.0181,
+          0.0191,
+          0.0189,
+          0.0174,
+          0.0182,
+          0.0178,
+          0.0224,
+          0.0211,
+          0.0189,
+          0.0178,
+          0.0178,
+          0.0205,
+          0.0175,
+          0.0195,
+          0.018,
+          0.0204,
+          0.0203,
+          0.022
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 16.72,
+        "bend_at_s": 4.75,
+        "bend_box": [
+          0.66,
+          0.263,
+          0.693,
+          0.625
+        ],
+        "new_diag": 0.673,
+        "new_at_s": 2.5,
+        "new_box": [
+          0.418,
+          0.896,
+          0.424,
+          0.975
+        ],
+        "gone_diag": 0.383,
+        "gone_at_s": 0.25,
+        "gone_box": [
+          0.973,
+          0.742,
+          0.982,
+          0.818
+        ]
+      },
+      "coverage": {
+        "pass": false,
+        "max_out_of_photo": 0.38,
+        "shared_start_last": null
+      },
+      "judge": {
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "additional tall window at far left, beyond photo edge",
+            "where": "sky, field, deck railing",
+            "in_photo_view": false,
+            "confidence": "high"
+          }
+        ],
+        "unverifiable": [
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "additional tall window at far left, beyond photo edge",
+            "where": "sky, field, deck railing",
+            "in_photo_view": false,
+            "confidence": "high"
+          }
+        ],
+        "warnings": [
+          {
+            "frame": "FRAME 2",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "black stand not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "FRAME 3",
+            "kind": "new",
+            "category": "wall_plate",
+            "item_id": "NEW",
+            "description": "light switch plate at left edge on wall, beyond photo edge",
+            "where": "",
+            "in_photo_view": false,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
+        "model": "claude-sonnet-5-5",
+        "usd_check": 0.0582,
+        "usd_inventory": 0.0,
+        "usd": 0.0582
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 145,
+      "sampled": 25,
+      "size": [
+        768,
+        1168
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_3\\T3.sheet.jpg",
+    "timing_s": {
+      "decode": 0.66,
+      "endpoint": 0.61,
+      "flow": 2.93,
+      "motion_appearance": 1.09,
+      "lines": 4.35,
+      "judge": 25.86,
+      "total": 35.56
+    },
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "double light-switch plate beside the door; the revealed second window is real"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T4.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "motion no rigid camera explains: 7.1 px from t=5.75s in cell [0.8, 0.811, 0.867, 0.913]",
+      "structure not in the first frame: 3.49% of the frame from t=2.0s at [0.382, 0.0, 0.641, 0.334]",
+      "a straight edge bends by 21.95 px from t=5.5s at [0.825, 0.559, 0.917, 0.771]",
+      "new straight edges (0.475 frame diagonals) from t=2.25s at [0.471, 0.008, 0.471, 0.133]",
+      "straight edges vanished (1.333 frame diagonals) from t=5.25s at [0.826, 0.587, 0.886, 0.778]",
+      "judge: ceiling_light new at FRAME 5: A cluster of five grey cone pendant lights hangs over the dining table. The photo shows no such fixture there. ()"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1199,
+        "inliers": 1116,
+        "inlier_ratio": 0.931,
+        "edge_ssim": 0.967,
+        "min_tile_ssim": 0.947,
+        "worst_tile": [
+          0.0,
+          0.249,
+          0.167,
+          0.499
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": false,
+        "peak_px": 7.1,
+        "at_s": 5.75,
+        "cell": [
+          0.8,
+          0.811,
+          0.867,
+          0.913
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          0.955,
+          0.722,
+          0.6,
+          0.472,
+          0.445,
+          0.405,
+          0.377,
+          0.389,
+          0.315,
+          0.357,
+          0.339,
+          0.273,
+          0.317,
+          0.323,
+          0.302,
+          0.272,
+          0.26,
+          0.289,
+          0.278,
+          0.289,
+          0.245,
+          0.252,
+          0.278,
+          0.278
+        ],
+        "series_px": [
+          0.0,
+          0.32,
+          0.65,
+          0.87,
+          1.23,
+          1.35,
+          1.94,
+          2.05,
+          2.99,
+          2.97,
+          3.43,
+          4.16,
+          4.73,
+          4.02,
+          3.66,
+          3.54,
+          4.14,
+          4.54,
+          5.0,
+          5.1,
+          4.99,
+          5.52,
+          7.01,
+          7.1,
+          7.64
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0349,
+        "at_s": 2.0,
+        "box": [
+          0.382,
+          0.0,
+          0.641,
+          0.334
+        ],
+        "series_frac": [
+          0.0,
+          0.007,
+          0.0091,
+          0.02,
+          0.0108,
+          0.0301,
+          0.0345,
+          0.0319,
+          0.035,
+          0.0349,
+          0.0362,
+          0.0307,
+          0.036,
+          0.031,
+          0.0323,
+          0.0335,
+          0.0333,
+          0.0296,
+          0.0291,
+          0.0291,
+          0.0207,
+          0.0312,
+          0.0284,
+          0.031,
+          0.0318
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 21.95,
+        "bend_at_s": 5.5,
+        "bend_box": [
+          0.825,
+          0.559,
+          0.917,
+          0.771
+        ],
+        "new_diag": 0.475,
+        "new_at_s": 2.25,
+        "new_box": [
+          0.471,
+          0.008,
+          0.471,
+          0.133
+        ],
+        "gone_diag": 1.333,
+        "gone_at_s": 5.25,
+        "gone_box": [
+          0.826,
+          0.587,
+          0.886,
+          0.778
+        ]
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.001,
+        "shared_start_last": null
+      },
+      "judge": {
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "ceiling_light",
+            "item_id": "NEW",
+            "description": "A cluster of five grey cone pendant lights hangs over the dining table. The photo shows no such fixture there.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "high"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
+        "model": "claude-sonnet-5-5",
+        "usd_check": 0.0121,
+        "usd_inventory": 0.0,
+        "usd": 0.0121
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 145,
+      "sampled": 25,
+      "size": [
+        1168,
+        768
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_3\\T4.sheet.jpg",
+    "timing_s": {
+      "decode": 0.77,
+      "endpoint": 0.46,
+      "flow": 3.61,
+      "motion_appearance": 1.42,
+      "lines": 3.99,
+      "judge": 6.33,
+      "total": 16.66
+    },
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "four cone pendant lights over the round table from 1.2 s; house ornament reshapes into a faceted block at 3.6 s"
+  }
+]

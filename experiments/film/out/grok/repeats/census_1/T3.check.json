@@ -1,0 +1,261 @@
+{
+  "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T3.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "motion no rigid camera explains: 2.39 px from t=5.75s in cell [0.811, 0.6, 0.913, 0.667]",
+    "structure not in the first frame: 2.11% of the frame from t=3.25s at [0.45, 0.834, 0.737, 1.0]",
+    "a straight edge bends by 16.72 px from t=4.75s at [0.66, 0.263, 0.693, 0.625]",
+    "new straight edges (0.673 frame diagonals) from t=2.5s at [0.418, 0.896, 0.424, 0.975]",
+    "straight edges vanished (0.383 frame diagonals) from t=0.25s at [0.973, 0.742, 0.982, 0.818]",
+    "38% of a frame shows area outside the start photo, which cannot be checked",
+    "judge: window new at Frame 5: Additional tall window at far left with roller shade, not in photo (sky, field, shade)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1491,
+      "inliers": 1400,
+      "inlier_ratio": 0.939,
+      "edge_ssim": 0.957,
+      "min_tile_ssim": 0.938,
+      "worst_tile": [
+        0.0,
+        0.0,
+        0.249,
+        0.167
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": false,
+      "peak_px": 2.39,
+      "at_s": 5.75,
+      "cell": [
+        0.811,
+        0.6,
+        0.913,
+        0.667
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        0.938,
+        0.886,
+        0.819,
+        0.775,
+        0.721,
+        0.672,
+        0.547,
+        0.537,
+        0.503,
+        0.501,
+        0.4,
+        0.434,
+        0.404,
+        0.378,
+        0.339,
+        0.369,
+        0.37,
+        0.388,
+        0.377,
+        0.295,
+        0.24,
+        0.217,
+        0.255,
+        0.221
+      ],
+      "series_px": [
+        0.0,
+        0.33,
+        0.45,
+        0.48,
+        0.54,
+        0.49,
+        0.97,
+        1.05,
+        0.57,
+        1.35,
+        0.87,
+        0.66,
+        1.42,
+        1.43,
+        1.57,
+        1.16,
+        1.05,
+        1.63,
+        1.72,
+        1.85,
+        1.79,
+        2.0,
+        2.19,
+        2.51,
+        2.39
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0211,
+      "at_s": 3.25,
+      "box": [
+        0.45,
+        0.834,
+        0.737,
+        1.0
+      ],
+      "series_frac": [
+        0.0,
+        0.0063,
+        0.0156,
+        0.0189,
+        0.0199,
+        0.0168,
+        0.0186,
+        0.0181,
+        0.0191,
+        0.0189,
+        0.0174,
+        0.0182,
+        0.0178,
+        0.0224,
+        0.0211,
+        0.0189,
+        0.0178,
+        0.0178,
+        0.0205,
+        0.0175,
+        0.0195,
+        0.018,
+        0.0204,
+        0.0203,
+        0.022
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 16.72,
+      "bend_at_s": 4.75,
+      "bend_box": [
+        0.66,
+        0.263,
+        0.693,
+        0.625
+      ],
+      "new_diag": 0.673,
+      "new_at_s": 2.5,
+      "new_box": [
+        0.418,
+        0.896,
+        0.424,
+        0.975
+      ],
+      "gone_diag": 0.383,
+      "gone_at_s": 0.25,
+      "gone_box": [
+        0.973,
+        0.742,
+        0.982,
+        0.818
+      ]
+    },
+    "coverage": {
+      "pass": false,
+      "max_out_of_photo": 0.38,
+      "shared_start_last": null
+    },
+    "judge": {
+      "pass": false,
+      "failing": [
+        {
+          "frame": "Frame 5",
+          "kind": "new",
+          "category": "window",
+          "item_id": "NEW",
+          "description": "Additional tall window at far left with roller shade, not in photo",
+          "where": "sky, field, shade",
+          "in_photo_view": false,
+          "confidence": "medium"
+        }
+      ],
+      "unverifiable": [
+        {
+          "frame": "Frame 5",
+          "kind": "new",
+          "category": "window",
+          "item_id": "NEW",
+          "description": "Additional tall window at far left with roller shade, not in photo",
+          "where": "sky, field, shade",
+          "in_photo_view": false,
+          "confidence": "medium"
+        }
+      ],
+      "warnings": [
+        {
+          "frame": "Frame 2",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "black stand no longer in view",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        },
+        {
+          "frame": "Frame 3",
+          "kind": "new",
+          "category": "wall_plate",
+          "item_id": "NEW",
+          "description": "Light switch plate at left edge on wall left of window, not in photo (wall beyond left edge)",
+          "where": "",
+          "in_photo_view": false,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 13,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
+      "model": "claude-sonnet-5-5",
+      "usd_check": 0.0584,
+      "usd_inventory": 0.0,
+      "usd": 0.0584
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 145,
+    "sampled": 25,
+    "size": [
+      768,
+      1168
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_1\\T3.sheet.jpg",
+  "timing_s": {
+    "decode": 0.64,
+    "endpoint": 0.52,
+    "flow": 4.02,
+    "motion_appearance": 1.31,
+    "lines": 4.63,
+    "judge": 26.94,
+    "total": 38.15
+  },
+  "expected": "fail",
+  "variant": "grok",
+  "corruption": "double light-switch plate beside the door; the revealed second window is real"
+}

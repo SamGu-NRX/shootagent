@@ -1,0 +1,162 @@
+{
+  "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T2.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+  "end": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "verdict": "fail",
+  "reasons": [
+    "judge: ceiling_light new at Frame 4: White ceiling fan blade at top right, not in either photo ()"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 654,
+      "inliers": 527,
+      "inlier_ratio": 0.806,
+      "edge_ssim": 0.959,
+      "min_tile_ssim": 0.936,
+      "worst_tile": [
+        0.5,
+        0.167,
+        0.75,
+        0.333
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": {
+      "pass": true,
+      "matches": 1044,
+      "inliers": 937,
+      "inlier_ratio": 0.898,
+      "edge_ssim": 0.849,
+      "min_tile_ssim": 0.643,
+      "worst_tile": [
+        0.25,
+        0.5,
+        0.5,
+        0.667
+      ],
+      "coverage": 1.0
+    },
+    "motion": {
+      "checkable": false,
+      "pass": null,
+      "shared_with_start": 0.0,
+      "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+    },
+    "appearance": {
+      "checkable": false,
+      "pass": null,
+      "shared_with_start": 0.0,
+      "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+    },
+    "lines": {
+      "checkable": false,
+      "pass": null,
+      "shared_with_start": 0.0,
+      "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": null,
+      "shared_start_last": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "failing": [
+        {
+          "frame": "Frame 4",
+          "kind": "new",
+          "category": "ceiling_light",
+          "item_id": "NEW",
+          "description": "White ceiling fan blade at top right, not in either photo",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
+        }
+      ],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "Frame 4",
+          "kind": "new",
+          "category": "window",
+          "item_id": "NEW",
+          "description": "Large additional window to the left of the window with large mullion, wall layout differs from end photo",
+          "where": "sky, field, fence",
+          "in_photo_view": true,
+          "confidence": "low"
+        },
+        {
+          "frame": "Frame 5",
+          "kind": "new",
+          "category": "wall_plate",
+          "item_id": "NEW",
+          "description": "Dark vent/bar at top right of wall",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        },
+        {
+          "frame": "Frame 7",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "E3",
+          "description": "Raised windows at right not yet in view",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        },
+        {
+          "frame": "Frame 8",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "E11",
+          "description": "Black wire plant stand at bottom right not visible",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 24,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
+      "model": "claude-sonnet-5-5",
+      "usd_check": 0.0464,
+      "usd_inventory": 0.0,
+      "usd": 0.0464
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 145,
+    "sampled": 25,
+    "size": [
+      720,
+      1280
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_2\\T2.sheet.jpg",
+  "timing_s": {
+    "decode": 0.61,
+    "endpoint": 1.32,
+    "judge": 22.48,
+    "total": 24.51
+  },
+  "expected": "fail",
+  "variant": "grok",
+  "corruption": "white deck stair and railing outside the right-hand window from ~1.8 s (0057 shows open field)"
+}

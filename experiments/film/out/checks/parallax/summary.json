@@ -111,7 +111,7 @@
         "bend_px": 0.89,
         "bend_at_s": 2.67,
         "bend_box": [
-          0.014,
+          0.077,
           0.985,
           0.501,
           0.991
@@ -125,15 +125,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.072,
+        "usd_inventory": 0.0,
+        "usd": 0.072,
+        "tokens_check": [
+          19160,
+          2623
+        ],
+        "usd_check_uncached": 0.0645
       }
     },
     "frames": {
@@ -154,17 +167,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_dolly.sheet.jpg",
     "timing_s": {
-      "decode": 0.59,
-      "endpoint": 0.24,
-      "flow": 0.9,
-      "motion_appearance": 0.58,
-      "lines": 1.5,
-      "judge": 11.02,
-      "total": 14.91
+      "decode": 1.01,
+      "endpoint": 0.45,
+      "flow": 2.59,
+      "motion_appearance": 1.16,
+      "lines": 2.8,
+      "judge": 28.83,
+      "total": 37.0
     },
     "expected": "pass",
     "case": "defect_train_0057",
@@ -305,15 +319,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0795,
+        "usd_inventory": 0.0,
+        "usd": 0.0795,
+        "tokens_check": [
+          19160,
+          3377
+        ],
+        "usd_check_uncached": 0.0721
       }
     },
     "frames": {
@@ -334,17 +361,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_truck.sheet.jpg",
     "timing_s": {
-      "decode": 0.63,
-      "endpoint": 0.23,
-      "flow": 0.88,
-      "motion_appearance": 0.55,
-      "lines": 1.55,
-      "judge": 3.16,
-      "total": 7.06
+      "decode": 0.81,
+      "endpoint": 0.31,
+      "flow": 1.51,
+      "motion_appearance": 0.63,
+      "lines": 2.61,
+      "judge": 18.29,
+      "total": 24.27
     },
     "expected": "pass",
     "case": "defect_train_0057",
@@ -485,15 +513,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0848,
+        "usd_inventory": 0.0,
+        "usd": 0.0848,
+        "tokens_check": [
+          19282,
+          3876
+        ],
+        "usd_check_uncached": 0.0773
       }
     },
     "frames": {
@@ -514,17 +555,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_dolly.sheet.jpg",
     "timing_s": {
-      "decode": 0.6,
-      "endpoint": 0.25,
-      "flow": 0.79,
-      "motion_appearance": 0.56,
-      "lines": 1.24,
-      "judge": 3.17,
-      "total": 6.65
+      "decode": 0.75,
+      "endpoint": 0.35,
+      "flow": 1.7,
+      "motion_appearance": 0.73,
+      "lines": 1.85,
+      "judge": 20.06,
+      "total": 25.53
     },
     "expected": "pass",
     "case": "defect_train_0060",
@@ -665,15 +707,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.017
+        "max_out_of_photo": 0.017,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0075
+        "usd_check": 0.083,
+        "usd_inventory": 0.0,
+        "usd": 0.083,
+        "tokens_check": [
+          19282,
+          3702
+        ],
+        "usd_check_uncached": 0.0756
       }
     },
     "frames": {
@@ -694,17 +749,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_truck.sheet.jpg",
     "timing_s": {
-      "decode": 0.61,
-      "endpoint": 0.24,
-      "flow": 0.82,
-      "motion_appearance": 0.55,
-      "lines": 1.41,
-      "judge": 3.73,
-      "total": 7.51
+      "decode": 0.85,
+      "endpoint": 0.37,
+      "flow": 1.46,
+      "motion_appearance": 0.75,
+      "lines": 2.43,
+      "judge": 20.16,
+      "total": 26.16
     },
     "expected": "pass",
     "case": "defect_train_0060",
@@ -821,7 +877,7 @@
       "lines": {
         "pass": true,
         "segments": 80,
-        "bend_px": 0.51,
+        "bend_px": 0.49,
         "bend_at_s": 4.8,
         "bend_box": [
           0.369,
@@ -838,15 +894,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "black wire stand at bottom right no longer visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0654,
+        "usd_inventory": 0.0,
+        "usd": 0.0654,
+        "tokens_check": [
+          19205,
+          1952
+        ],
+        "usd_check_uncached": 0.0579
       }
     },
     "frames": {
@@ -867,17 +947,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_dolly.sheet.jpg",
     "timing_s": {
-      "decode": 0.64,
-      "endpoint": 0.34,
-      "flow": 0.87,
-      "motion_appearance": 0.62,
-      "lines": 2.14,
-      "judge": 3.94,
-      "total": 8.61
+      "decode": 0.88,
+      "endpoint": 0.49,
+      "flow": 2.01,
+      "motion_appearance": 0.69,
+      "lines": 2.07,
+      "judge": 12.61,
+      "total": 18.8
     },
     "expected": "pass",
     "case": "defect_train_0058",
@@ -889,10 +970,8 @@
     "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck.mp4",
     "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
     "end": null,
-    "verdict": "fail",
-    "reasons": [
-      "a straight edge bends by 1.69 px from t=4.53s at [0.306, 0.249, 0.316, 0.637]"
-    ],
+    "verdict": "pass",
+    "reasons": [],
     "signals": {
       "endpoint_start": {
         "pass": true,
@@ -994,15 +1073,15 @@
         ]
       },
       "lines": {
-        "pass": false,
+        "pass": true,
         "segments": 80,
-        "bend_px": 1.69,
-        "bend_at_s": 4.53,
+        "bend_px": 0.91,
+        "bend_at_s": 3.73,
         "bend_box": [
-          0.306,
-          0.249,
-          0.316,
-          0.637
+          0.023,
+          0.289,
+          0.026,
+          0.418
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -1013,15 +1092,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0964,
+        "usd_inventory": 0.0,
+        "usd": 0.0964,
+        "tokens_check": [
+          19205,
+          5053
+        ],
+        "usd_check_uncached": 0.0889
       }
     },
     "frames": {
@@ -1042,17 +1134,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_truck.sheet.jpg",
     "timing_s": {
-      "decode": 0.67,
-      "endpoint": 0.25,
-      "flow": 0.85,
-      "motion_appearance": 0.58,
-      "lines": 2.14,
-      "judge": 3.02,
-      "total": 7.56
+      "decode": 0.8,
+      "endpoint": 0.33,
+      "flow": 2.49,
+      "motion_appearance": 0.8,
+      "lines": 2.55,
+      "judge": 25.54,
+      "total": 32.57
     },
     "expected": "pass",
     "case": "defect_train_0058",
@@ -1191,15 +1284,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.062,
+        "usd_inventory": 0.0,
+        "usd": 0.062,
+        "tokens_check": [
+          19815,
+          1467
+        ],
+        "usd_check_uncached": 0.0543
       }
     },
     "frames": {
@@ -1220,17 +1326,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0054_dolly.sheet.jpg",
     "timing_s": {
-      "decode": 0.73,
-      "endpoint": 0.28,
-      "flow": 1.05,
-      "motion_appearance": 0.66,
-      "lines": 1.66,
-      "judge": 3.87,
-      "total": 8.31
+      "decode": 1.28,
+      "endpoint": 0.63,
+      "flow": 1.67,
+      "motion_appearance": 1.04,
+      "lines": 2.14,
+      "judge": 10.94,
+      "total": 17.78
     },
     "expected": "pass",
     "case": "defect_train_0054",
@@ -1242,8 +1349,10 @@
     "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_truck.mp4",
     "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
     "end": null,
-    "verdict": "pass",
-    "reasons": [],
+    "verdict": "fail",
+    "reasons": [
+      "judge: other missing at FRAME 6: high wall vent above the door not visible on right wall ()"
+    ],
     "signals": {
       "endpoint_start": {
         "pass": true,
@@ -1364,15 +1473,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 6",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "high wall vent above the door not visible on right wall",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 6",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S1",
+            "description": "open door leaf and far hallway opening not reached yet",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0075
+        "usd_check": 0.0981,
+        "usd_inventory": 0.0,
+        "usd": 0.0981,
+        "tokens_check": [
+          19815,
+          5079
+        ],
+        "usd_check_uncached": 0.0904
       }
     },
     "frames": {
@@ -1393,17 +1537,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0054_truck.sheet.jpg",
     "timing_s": {
-      "decode": 0.71,
-      "endpoint": 0.26,
-      "flow": 1.02,
-      "motion_appearance": 0.57,
-      "lines": 1.53,
-      "judge": 2.72,
-      "total": 6.87
+      "decode": 1.0,
+      "endpoint": 0.36,
+      "flow": 1.71,
+      "motion_appearance": 0.99,
+      "lines": 2.56,
+      "judge": 26.14,
+      "total": 32.82
     },
     "expected": "pass",
     "case": "defect_train_0054",
@@ -1415,8 +1560,10 @@
     "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0055_dolly.mp4",
     "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
     "end": null,
-    "verdict": "pass",
-    "reasons": [],
+    "verdict": "fail",
+    "reasons": [
+      "judge: other missing at FRAME 1: Shower ceiling light not visible; ceiling shows no recessed light ()"
+    ],
     "signals": {
       "endpoint_start": {
         "pass": true,
@@ -1537,15 +1684,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S8",
+            "description": "Shower ceiling light not visible; ceiling shows no recessed light",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0839,
+        "usd_inventory": 0.0163,
+        "usd": 0.1001,
+        "tokens_check": [
+          19488,
+          3732
+        ],
+        "usd_check_uncached": 0.0763
       }
     },
     "frames": {
@@ -1566,17 +1737,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0055_dolly.sheet.jpg",
     "timing_s": {
-      "decode": 0.64,
-      "endpoint": 0.23,
-      "flow": 0.82,
-      "motion_appearance": 0.56,
-      "lines": 1.35,
-      "judge": 3.05,
-      "total": 6.71
+      "decode": 0.94,
+      "endpoint": 0.57,
+      "flow": 1.25,
+      "motion_appearance": 0.65,
+      "lines": 1.46,
+      "judge": 31.32,
+      "total": 36.34
     },
     "expected": "pass",
     "case": "defect_train_0055",
@@ -1590,7 +1762,7 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "judge (low confidence): glass shower door with black handle (open door panel at left) disappeared at t=2.1s (left side of frame, where the open door and handle were); white paneled door with black hinges beside the glass door disappeared at t=2.1s (left side of frame)"
+      "judge: other missing at Frame 4: glass door and handle gone from left; only plain wall/glass edge ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -1712,28 +1884,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "glass shower door with black handle (open door panel at left)",
-            "change": "disappeared",
-            "first_frame": "t=2.1s",
-            "where": "left side of frame, where the open door and handle were"
-          },
-          {
-            "object": "white paneled door with black hinges beside the glass door",
-            "change": "disappeared",
-            "first_frame": "t=2.1s",
-            "where": "left side of frame"
+            "frame": "Frame 4",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S3",
+            "description": "glass door and handle gone from left; only plain wall/glass edge",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "low",
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0087
+        "usd_check": 0.0864,
+        "usd_inventory": 0.0,
+        "usd": 0.0864,
+        "tokens_check": [
+          19488,
+          3990
+        ],
+        "usd_check_uncached": 0.0789
       }
     },
     "frames": {
@@ -1754,17 +1937,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0055_truck.sheet.jpg",
     "timing_s": {
-      "decode": 0.63,
-      "endpoint": 0.22,
-      "flow": 0.75,
-      "motion_appearance": 0.55,
-      "lines": 1.4,
-      "judge": 3.57,
-      "total": 7.18
+      "decode": 1.33,
+      "endpoint": 0.31,
+      "flow": 1.02,
+      "motion_appearance": 0.6,
+      "lines": 2.92,
+      "judge": 20.97,
+      "total": 27.21
     },
     "expected": "pass",
     "case": "defect_train_0055",
@@ -1881,13 +2065,13 @@
       "lines": {
         "pass": true,
         "segments": 63,
-        "bend_px": 0.91,
+        "bend_px": 0.9,
         "bend_at_s": 4.53,
         "bend_box": [
-          0.014,
+          0.035,
           0.985,
           0.499,
-          0.991
+          0.99
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -1898,15 +2082,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0716,
+        "usd_inventory": 0.0,
+        "usd": 0.0716,
+        "tokens_check": [
+          19160,
+          2590
+        ],
+        "usd_check_uncached": 0.0642
       }
     },
     "frames": {
@@ -1927,17 +2124,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_dolly_p24.sheet.jpg",
     "timing_s": {
-      "decode": 0.67,
-      "endpoint": 0.24,
-      "flow": 0.79,
-      "motion_appearance": 0.56,
-      "lines": 1.47,
-      "judge": 4.49,
-      "total": 8.26
+      "decode": 0.83,
+      "endpoint": 0.29,
+      "flow": 1.33,
+      "motion_appearance": 0.64,
+      "lines": 3.29,
+      "judge": 14.55,
+      "total": 21.01
     },
     "expected": "pass",
     "case": "defect_train_0057",
@@ -2071,15 +2269,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0755,
+        "usd_inventory": 0.0,
+        "usd": 0.0755,
+        "tokens_check": [
+          19160,
+          2980
+        ],
+        "usd_check_uncached": 0.0681
       }
     },
     "frames": {
@@ -2100,17 +2311,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_truck_p24.sheet.jpg",
     "timing_s": {
-      "decode": 0.67,
-      "endpoint": 0.24,
-      "flow": 0.82,
-      "motion_appearance": 0.55,
-      "lines": 1.47,
-      "judge": 2.53,
-      "total": 6.34
+      "decode": 0.59,
+      "endpoint": 0.23,
+      "flow": 0.92,
+      "motion_appearance": 0.5,
+      "lines": 1.32,
+      "judge": 16.3,
+      "total": 19.92
     },
     "expected": "pass",
     "case": "defect_train_0057",
@@ -2249,15 +2461,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0925,
+        "usd_inventory": 0.0,
+        "usd": 0.0925,
+        "tokens_check": [
+          19282,
+          4646
+        ],
+        "usd_check_uncached": 0.085
       }
     },
     "frames": {
@@ -2278,17 +2503,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_dolly_p24.sheet.jpg",
     "timing_s": {
-      "decode": 0.63,
-      "endpoint": 0.23,
-      "flow": 0.76,
-      "motion_appearance": 0.53,
-      "lines": 1.21,
-      "judge": 2.4,
-      "total": 5.82
+      "decode": 0.73,
+      "endpoint": 0.26,
+      "flow": 0.98,
+      "motion_appearance": 1.14,
+      "lines": 1.53,
+      "judge": 23.98,
+      "total": 28.68
     },
     "expected": "pass",
     "case": "defect_train_0060",
@@ -2422,15 +2648,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0868,
+        "usd_inventory": 0.0,
+        "usd": 0.0868,
+        "tokens_check": [
+          19282,
+          4080
+        ],
+        "usd_check_uncached": 0.0794
       }
     },
     "frames": {
@@ -2451,17 +2690,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_truck_p24.sheet.jpg",
     "timing_s": {
-      "decode": 0.61,
-      "endpoint": 0.23,
-      "flow": 0.91,
-      "motion_appearance": 0.63,
-      "lines": 1.34,
-      "judge": 3.13,
-      "total": 6.9
+      "decode": 0.79,
+      "endpoint": 0.29,
+      "flow": 1.04,
+      "motion_appearance": 0.53,
+      "lines": 2.2,
+      "judge": 21.57,
+      "total": 26.48
     },
     "expected": "pass",
     "case": "defect_train_0060",
@@ -2583,8 +2823,8 @@
         "bend_box": [
           0.056,
           0.234,
-          0.061,
-          0.599
+          0.06,
+          0.567
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -2595,15 +2835,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "Black wire stand at bottom right is no longer visible, likely out of frame",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0076
+        "usd_check": 0.0591,
+        "usd_inventory": 0.0,
+        "usd": 0.0591,
+        "tokens_check": [
+          19205,
+          1326
+        ],
+        "usd_check_uncached": 0.0517
       }
     },
     "frames": {
@@ -2624,17 +2888,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_dolly_p24.sheet.jpg",
     "timing_s": {
-      "decode": 0.64,
-      "endpoint": 0.3,
-      "flow": 0.89,
+      "decode": 0.62,
+      "endpoint": 0.28,
+      "flow": 0.96,
       "motion_appearance": 0.59,
-      "lines": 2.07,
-      "judge": 3.81,
-      "total": 8.36
+      "lines": 3.8,
+      "judge": 9.56,
+      "total": 15.86
     },
     "expected": "pass",
     "case": "defect_train_0058",
@@ -2751,7 +3016,7 @@
       "lines": {
         "pass": true,
         "segments": 80,
-        "bend_px": 1.44,
+        "bend_px": 1.01,
         "bend_at_s": 4.8,
         "bend_box": [
           0.809,
@@ -2768,15 +3033,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0075
+        "usd_check": 0.0624,
+        "usd_inventory": 0.0,
+        "usd": 0.0624,
+        "tokens_check": [
+          19205,
+          1656
+        ],
+        "usd_check_uncached": 0.055
       }
     },
     "frames": {
@@ -2797,17 +3075,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_truck_p24.sheet.jpg",
     "timing_s": {
-      "decode": 0.65,
-      "endpoint": 0.27,
-      "flow": 0.89,
-      "motion_appearance": 0.58,
-      "lines": 2.79,
-      "judge": 4.88,
-      "total": 10.12
+      "decode": 0.63,
+      "endpoint": 0.31,
+      "flow": 1.53,
+      "motion_appearance": 0.64,
+      "lines": 1.95,
+      "judge": 11.09,
+      "total": 16.22
     },
     "expected": "pass",
     "case": "defect_train_0058",

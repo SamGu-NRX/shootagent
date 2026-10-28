@@ -1,0 +1,166 @@
+{
+  "items": [
+    {
+      "id": "S1",
+      "category": "ceiling_light",
+      "description": "Recessed round can light in soffit, top left",
+      "location": "top left, on lowered soffit near left edge",
+      "beyond": ""
+    },
+    {
+      "id": "S2",
+      "category": "ceiling_light",
+      "description": "Recessed round can light on soffit, left of centre",
+      "location": "upper left, below S1 on soffit",
+      "beyond": ""
+    },
+    {
+      "id": "S3",
+      "category": "ceiling_light",
+      "description": "Recessed round can light on soffit, near the soffit's lower edge",
+      "location": "upper left-centre, left of S4",
+      "beyond": ""
+    },
+    {
+      "id": "S4",
+      "category": "ceiling_light",
+      "description": "Recessed round can light on ceiling, centre",
+      "location": "top centre-right, above the dark wall",
+      "beyond": ""
+    },
+    {
+      "id": "S5",
+      "category": "ceiling_light",
+      "description": "Recessed round can light at top edge",
+      "location": "top centre, near top edge",
+      "beyond": ""
+    },
+    {
+      "id": "S6",
+      "category": "ceiling_light",
+      "description": "Three grey teardrop pendant lights hanging at different heights over the bar",
+      "location": "upper right, above bar counter",
+      "beyond": ""
+    },
+    {
+      "id": "S7",
+      "category": "wall_plate",
+      "description": "Round flush ceiling speaker grille on soffit, and a second faint round one near it",
+      "location": "upper left, on soffit",
+      "beyond": ""
+    },
+    {
+      "id": "S8",
+      "category": "wall_plate",
+      "description": "Rectangular ceiling vent / register on ceiling at centre",
+      "location": "top centre, above back wall",
+      "beyond": ""
+    },
+    {
+      "id": "S9",
+      "category": "built_in",
+      "description": "Bar counter with dark grey top, L-shaped, with panel front",
+      "location": "right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S10",
+      "category": "built_in",
+      "description": "Round dark wood mirror on wall beside the bar",
+      "location": "centre right, on wall left of the world map",
+      "beyond": ""
+    },
+    {
+      "id": "S11",
+      "category": "furniture",
+      "description": "Round/oval dark wood dining table with glass top",
+      "location": "bottom centre",
+      "beyond": ""
+    },
+    {
+      "id": "S12",
+      "category": "furniture",
+      "description": "Metal-framed armchairs with cowhide seats, at least four visible around table",
+      "location": "bottom, left and right foreground",
+      "beyond": ""
+    },
+    {
+      "id": "S13",
+      "category": "furniture",
+      "description": "Black metal bar stools at the bar counter, about 6 visible",
+      "location": "right middle",
+      "beyond": ""
+    },
+    {
+      "id": "S14",
+      "category": "furniture",
+      "description": "Dark curved sofa with pillows",
+      "location": "left middle",
+      "beyond": ""
+    },
+    {
+      "id": "S15",
+      "category": "furniture",
+      "description": "Round black coffee table with vases and objects",
+      "location": "left, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S16",
+      "category": "furniture",
+      "description": "Tan leather pouf",
+      "location": "far left, lower middle",
+      "beyond": ""
+    },
+    {
+      "id": "S17",
+      "category": "furniture",
+      "description": "Gold bar cart with bottles and glasses",
+      "location": "centre, in front of back wall",
+      "beyond": ""
+    },
+    {
+      "id": "S18",
+      "category": "decor",
+      "description": "Two matching black-and-white framed prints side by side",
+      "location": "centre left on back wall",
+      "beyond": ""
+    },
+    {
+      "id": "S19",
+      "category": "decor",
+      "description": "Vintage world map wall hanging",
+      "location": "right, above bar",
+      "beyond": ""
+    },
+    {
+      "id": "S20",
+      "category": "decor",
+      "description": "Wooden bowl with geometric wood house-shaped box on table",
+      "location": "bottom centre, on table",
+      "beyond": ""
+    },
+    {
+      "id": "S21",
+      "category": "decor",
+      "description": "Glassware and wood tray on bar counter",
+      "location": "right middle on bar",
+      "beyond": ""
+    },
+    {
+      "id": "S22",
+      "category": "decor",
+      "description": "Light beige carpet floor with area rug",
+      "location": "bottom left",
+      "beyond": ""
+    },
+    {
+      "id": "S23",
+      "category": "built_in",
+      "description": "Boxed beam/soffit drop in ceiling and white baseboard trim",
+      "location": "top left; wall base",
+      "beyond": ""
+    }
+  ],
+  "edges": "Left: sofa with pillows, pouf and armchair cut off. Right: bar counter, stools, and armchairs cut off. Top: ceiling, soffit and a pendant cord cut off. Bottom: armchairs and table base cut off."
+}

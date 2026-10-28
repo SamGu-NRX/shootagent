@@ -112,8 +112,8 @@
       "bend_box": [
         0.056,
         0.234,
-        0.061,
-        0.599
+        0.06,
+        0.567
       ],
       "new_diag": 0.0,
       "new_at_s": 0.0,
@@ -124,15 +124,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "medium",
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 1",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "Black wire stand at bottom right is no longer visible, likely out of frame",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 13,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0076
+      "usd_check": 0.0591,
+      "usd_inventory": 0.0,
+      "usd": 0.0591,
+      "tokens_check": [
+        19205,
+        1326
+      ],
+      "usd_check_uncached": 0.0517
     }
   },
   "frames": {
@@ -153,17 +177,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_dolly_p24.sheet.jpg",
   "timing_s": {
-    "decode": 0.64,
-    "endpoint": 0.3,
-    "flow": 0.89,
+    "decode": 0.62,
+    "endpoint": 0.28,
+    "flow": 0.96,
     "motion_appearance": 0.59,
-    "lines": 2.07,
-    "judge": 3.81,
-    "total": 8.36
+    "lines": 3.8,
+    "judge": 9.56,
+    "total": 15.86
   },
   "expected": "pass",
   "case": "defect_train_0058",

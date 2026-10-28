@@ -141,7 +141,8 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.141
+      "max_out_of_photo": 0.141,
+      "shared_start_last": null
     }
   },
   "frames": {
@@ -162,15 +163,16 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\wrong_start_0055\\0054_push_good.sheet.jpg",
   "timing_s": {
-    "decode": 0.59,
-    "endpoint": 0.37,
-    "flow": 2.71,
-    "motion_appearance": 0.9,
-    "lines": 3.03,
-    "total": 7.69
+    "decode": 1.15,
+    "endpoint": 0.69,
+    "flow": 6.32,
+    "motion_appearance": 1.23,
+    "lines": 3.87,
+    "total": 13.38
   }
 }

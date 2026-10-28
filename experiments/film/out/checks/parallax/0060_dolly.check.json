@@ -131,15 +131,28 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "medium",
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [],
+      "inventory_items": 23,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0076
+      "usd_check": 0.0848,
+      "usd_inventory": 0.0,
+      "usd": 0.0848,
+      "tokens_check": [
+        19282,
+        3876
+      ],
+      "usd_check_uncached": 0.0773
     }
   },
   "frames": {
@@ -160,17 +173,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_dolly.sheet.jpg",
   "timing_s": {
-    "decode": 0.6,
-    "endpoint": 0.25,
-    "flow": 0.79,
-    "motion_appearance": 0.56,
-    "lines": 1.24,
-    "judge": 3.17,
-    "total": 6.65
+    "decode": 0.75,
+    "endpoint": 0.35,
+    "flow": 1.7,
+    "motion_appearance": 0.73,
+    "lines": 1.85,
+    "judge": 20.06,
+    "total": 25.53
   },
   "expected": "pass",
   "case": "defect_train_0060",

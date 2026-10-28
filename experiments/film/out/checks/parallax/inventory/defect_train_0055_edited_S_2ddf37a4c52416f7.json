@@ -1,0 +1,152 @@
+{
+  "items": [
+    {
+      "id": "S1",
+      "category": "door",
+      "description": "White five-panel interior door, standing open, black hinges, seen through the glass; leads to a closet or toilet room",
+      "location": "left, top to bottom, inside the left doorway behind the glass shower door",
+      "beyond": "Small room with beige wall and dark tile floor"
+    },
+    {
+      "id": "S2",
+      "category": "opening",
+      "description": "Doorway with white casing on the left, framing the open white door",
+      "location": "left, upper to bottom",
+      "beyond": "Small room with beige walls, dark floor tile and an open door"
+    },
+    {
+      "id": "S3",
+      "category": "door",
+      "description": "Frameless glass shower door with black hardware and a black D-shaped pull handle, hinged panel, plus fixed glass panel",
+      "location": "left of centre, in front of the shower",
+      "beyond": "Marble-tile shower interior"
+    },
+    {
+      "id": "S4",
+      "category": "door",
+      "description": "Closed white five-panel door with black lever handle",
+      "location": "right of centre, in the hallway wall beyond the white pillar",
+      "beyond": ""
+    },
+    {
+      "id": "S5",
+      "category": "opening",
+      "description": "Wide doorway at right with white baseboard, leading to bedroom",
+      "location": "right, top to middle",
+      "beyond": "Bedroom with carpet, round black-framed mirror on wall, dark navy sideboard with black handles, recessed light"
+    },
+    {
+      "id": "S6",
+      "category": "opening",
+      "description": "Walk-in shower entry, open with no door at the centre, glass panel on the right edge",
+      "location": "centre",
+      "beyond": "Marble tile walls, bench, niche, window, black hex tile floor"
+    },
+    {
+      "id": "S7",
+      "category": "window",
+      "description": "Small frosted or bright window in shower on the back wall, above the bench, with white frame",
+      "location": "centre, middle, right of the mosaic band",
+      "beyond": "Bright white, with no clear view"
+    },
+    {
+      "id": "S8",
+      "category": "ceiling_light",
+      "description": "Recessed round light in the shower ceiling",
+      "location": "top centre",
+      "beyond": ""
+    },
+    {
+      "id": "S9",
+      "category": "ceiling_light",
+      "description": "Recessed round light in the bedroom ceiling",
+      "location": "top right",
+      "beyond": ""
+    },
+    {
+      "id": "S10",
+      "category": "wall_plate",
+      "description": "White single rocker light switch plate",
+      "location": "left, middle, on the left wall",
+      "beyond": ""
+    },
+    {
+      "id": "S11",
+      "category": "built_in",
+      "description": "Marble-look large-format tile shower walls with a mosaic hexagon accent band",
+      "location": "centre",
+      "beyond": ""
+    },
+    {
+      "id": "S12",
+      "category": "built_in",
+      "description": "Built-in shower bench with white top, tiled front",
+      "location": "centre, lower middle",
+      "beyond": ""
+    },
+    {
+      "id": "S13",
+      "category": "built_in",
+      "description": "Recessed shower niche with shelf, right side wall",
+      "location": "centre right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S14",
+      "category": "built_in",
+      "description": "Brushed gold shower head and a valve trim, on the left shower wall",
+      "location": "centre left, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S15",
+      "category": "built_in",
+      "description": "Reflected cabinet or drawers with black bar pulls (two drawers) seen in glass reflection",
+      "location": "bottom left",
+      "beyond": ""
+    },
+    {
+      "id": "S16",
+      "category": "built_in",
+      "description": "White pillar or wall return with a thick baseboard between the shower and the hallway",
+      "location": "centre right",
+      "beyond": ""
+    },
+    {
+      "id": "S17",
+      "category": "furniture",
+      "description": "Dark navy sideboard with arched cabinet doors and black pulls",
+      "location": "right, middle, in the bedroom",
+      "beyond": ""
+    },
+    {
+      "id": "S18",
+      "category": "decor",
+      "description": "Round mirror with black frame on bedroom wall, above the sideboard",
+      "location": "right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S19",
+      "category": "decor",
+      "description": "Black candlesticks, two on the sideboard, and a small vase",
+      "location": "right, middle, on the sideboard",
+      "beyond": ""
+    },
+    {
+      "id": "S20",
+      "category": "decor",
+      "description": "Light area rug on the bedroom carpet",
+      "location": "right, middle to bottom",
+      "beyond": ""
+    },
+    {
+      "id": "S21",
+      "category": "built_in",
+      "description": "Dark large-format floor tile in the bathroom, with a black hex shower floor",
+      "location": "bottom",
+      "beyond": ""
+    }
+  ],
+  "edges": "Left: the beige wall, the white door casing and the light switch are cut off. Right: the bedroom doorway's white casing and beige wall continue out of frame. Top: the ceiling is cut off, with the shower recessed light and the bedroom light at the edge. Bottom: the dark floor tile continues, and the glass door and reflections are cut off."
+}

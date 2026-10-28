@@ -2,8 +2,10 @@
   "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_truck.mp4",
   "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
   "end": null,
-  "verdict": "pass",
-  "reasons": [],
+  "verdict": "fail",
+  "reasons": [
+    "judge: other missing at FRAME 6: high wall vent above the door not visible on right wall ()"
+  ],
   "signals": {
     "endpoint_start": {
       "pass": true,
@@ -124,15 +126,50 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
-      "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "low",
+      "pass": false,
+      "failing": [
+        {
+          "frame": "FRAME 6",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "high wall vent above the door not visible on right wall",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
+        }
+      ],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 6",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S1",
+          "description": "open door leaf and far hallway opening not reached yet",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 27,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0075
+      "usd_check": 0.0981,
+      "usd_inventory": 0.0,
+      "usd": 0.0981,
+      "tokens_check": [
+        19815,
+        5079
+      ],
+      "usd_check_uncached": 0.0904
     }
   },
   "frames": {
@@ -153,17 +190,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0054_truck.sheet.jpg",
   "timing_s": {
-    "decode": 0.71,
-    "endpoint": 0.26,
-    "flow": 1.02,
-    "motion_appearance": 0.57,
-    "lines": 1.53,
-    "judge": 2.72,
-    "total": 6.87
+    "decode": 1.0,
+    "endpoint": 0.36,
+    "flow": 1.71,
+    "motion_appearance": 0.99,
+    "lines": 2.56,
+    "judge": 26.14,
+    "total": 32.82
   },
   "expected": "pass",
   "case": "defect_train_0054",

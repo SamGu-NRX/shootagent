@@ -6,7 +6,7 @@
   "reasons": [
     "structure not in the first frame: 0.12% of the frame from t=4.5s at [0.59, 0.519, 0.626, 0.559]",
     "new straight edges (1.232 frame diagonals) from t=5.5s at [0.569, 0.161, 0.571, 0.505]",
-    "judge (medium confidence): white paneled door (duplicated door next to the existing door, beside the pillar) duplicated at t=3.5s (center-right, between the shower and the existing door, in front of the pillar area)"
+    "judge: door new at FRAME 5: A second white five-panel door with a black lever handle appears on the wall pier, left of the real closed door. The photo shows only a blank wall pier there. ()"
   ],
   "signals": {
     "endpoint_start": {
@@ -153,22 +153,50 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "white paneled door (duplicated door next to the existing door, beside the pillar)",
-          "change": "duplicated",
-          "first_frame": "t=3.5s",
-          "where": "center-right, between the shower and the existing door, in front of the pillar area"
+          "frame": "FRAME 5",
+          "kind": "new",
+          "category": "door",
+          "item_id": "NEW",
+          "description": "A second white five-panel door with a black lever handle appears on the wall pier, left of the real closed door. The photo shows only a blank wall pier there.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "high"
         }
       ],
-      "confidence": "medium",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 3",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "switch plate at the left edge is almost out of frame",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 21,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0063
+      "usd_check": 0.103,
+      "usd_inventory": 0.0,
+      "usd": 0.103,
+      "tokens_check": [
+        14843,
+        6809
+      ],
+      "usd_check_uncached": 0.0978
     }
   },
   "frames": {
@@ -189,17 +217,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_paste.sheet.jpg",
   "timing_s": {
-    "decode": 0.33,
-    "endpoint": 0.22,
-    "flow": 1.0,
-    "motion_appearance": 0.7,
-    "lines": 2.15,
-    "judge": 3.32,
-    "total": 7.76
+    "decode": 0.59,
+    "endpoint": 0.61,
+    "flow": 2.66,
+    "motion_appearance": 0.83,
+    "lines": 2.86,
+    "judge": 32.57,
+    "total": 40.19
   },
   "expected": "fail",
   "case": "defect_train_0055",

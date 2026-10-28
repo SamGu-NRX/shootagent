@@ -1,0 +1,228 @@
+{
+  "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T4.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "motion no rigid camera explains: 7.1 px from t=5.75s in cell [0.8, 0.811, 0.867, 0.913]",
+    "structure not in the first frame: 3.49% of the frame from t=2.0s at [0.382, 0.0, 0.641, 0.334]",
+    "a straight edge bends by 21.95 px from t=5.5s at [0.825, 0.559, 0.917, 0.771]",
+    "new straight edges (0.475 frame diagonals) from t=2.25s at [0.471, 0.008, 0.471, 0.133]",
+    "straight edges vanished (1.333 frame diagonals) from t=5.25s at [0.826, 0.587, 0.886, 0.778]",
+    "judge: ceiling_light new at FRAME 5: A cluster of five grey cone pendant lights hangs over the dining table. The photo shows no such fixture there. ()"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1199,
+      "inliers": 1116,
+      "inlier_ratio": 0.931,
+      "edge_ssim": 0.967,
+      "min_tile_ssim": 0.947,
+      "worst_tile": [
+        0.0,
+        0.249,
+        0.167,
+        0.499
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": false,
+      "peak_px": 7.1,
+      "at_s": 5.75,
+      "cell": [
+        0.8,
+        0.811,
+        0.867,
+        0.913
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        0.955,
+        0.722,
+        0.6,
+        0.472,
+        0.445,
+        0.405,
+        0.377,
+        0.389,
+        0.315,
+        0.357,
+        0.339,
+        0.273,
+        0.317,
+        0.323,
+        0.302,
+        0.272,
+        0.26,
+        0.289,
+        0.278,
+        0.289,
+        0.245,
+        0.252,
+        0.278,
+        0.278
+      ],
+      "series_px": [
+        0.0,
+        0.32,
+        0.65,
+        0.87,
+        1.23,
+        1.35,
+        1.94,
+        2.05,
+        2.99,
+        2.97,
+        3.43,
+        4.16,
+        4.73,
+        4.02,
+        3.66,
+        3.54,
+        4.14,
+        4.54,
+        5.0,
+        5.1,
+        4.99,
+        5.52,
+        7.01,
+        7.1,
+        7.64
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0349,
+      "at_s": 2.0,
+      "box": [
+        0.382,
+        0.0,
+        0.641,
+        0.334
+      ],
+      "series_frac": [
+        0.0,
+        0.007,
+        0.0091,
+        0.02,
+        0.0108,
+        0.0301,
+        0.0345,
+        0.0319,
+        0.035,
+        0.0349,
+        0.0362,
+        0.0307,
+        0.036,
+        0.031,
+        0.0323,
+        0.0335,
+        0.0333,
+        0.0296,
+        0.0291,
+        0.0291,
+        0.0207,
+        0.0312,
+        0.0284,
+        0.031,
+        0.0318
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 21.95,
+      "bend_at_s": 5.5,
+      "bend_box": [
+        0.825,
+        0.559,
+        0.917,
+        0.771
+      ],
+      "new_diag": 0.475,
+      "new_at_s": 2.25,
+      "new_box": [
+        0.471,
+        0.008,
+        0.471,
+        0.133
+      ],
+      "gone_diag": 1.333,
+      "gone_at_s": 5.25,
+      "gone_box": [
+        0.826,
+        0.587,
+        0.886,
+        0.778
+      ]
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.001,
+      "shared_start_last": null
+    },
+    "judge": {
+      "pass": false,
+      "failing": [
+        {
+          "frame": "FRAME 5",
+          "kind": "new",
+          "category": "ceiling_light",
+          "item_id": "NEW",
+          "description": "A cluster of five grey cone pendant lights hangs over the dining table. The photo shows no such fixture there.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "high"
+        }
+      ],
+      "unverifiable": [],
+      "warnings": [],
+      "inventory_items": 23,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
+      "model": "claude-sonnet-5-5",
+      "usd_check": 0.0121,
+      "usd_inventory": 0.0,
+      "usd": 0.0121
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 145,
+    "sampled": 25,
+    "size": [
+      1168,
+      768
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_3\\T4.sheet.jpg",
+  "timing_s": {
+    "decode": 0.77,
+    "endpoint": 0.46,
+    "flow": 3.61,
+    "motion_appearance": 1.42,
+    "lines": 3.99,
+    "judge": 6.33,
+    "total": 16.66
+  },
+  "expected": "fail",
+  "variant": "grok",
+  "corruption": "four cone pendant lights over the round table from 1.2 s; house ornament reshapes into a faceted block at 3.6 s"
+}

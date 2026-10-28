@@ -107,7 +107,7 @@
     "lines": {
       "pass": true,
       "segments": 80,
-      "bend_px": 0.51,
+      "bend_px": 0.49,
       "bend_at_s": 4.8,
       "bend_box": [
         0.369,
@@ -124,15 +124,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "medium",
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 1",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "black wire stand at bottom right no longer visible",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 13,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0076
+      "usd_check": 0.0654,
+      "usd_inventory": 0.0,
+      "usd": 0.0654,
+      "tokens_check": [
+        19205,
+        1952
+      ],
+      "usd_check_uncached": 0.0579
     }
   },
   "frames": {
@@ -153,17 +177,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_dolly.sheet.jpg",
   "timing_s": {
-    "decode": 0.64,
-    "endpoint": 0.34,
-    "flow": 0.87,
-    "motion_appearance": 0.62,
-    "lines": 2.14,
-    "judge": 3.94,
-    "total": 8.61
+    "decode": 0.88,
+    "endpoint": 0.49,
+    "flow": 2.01,
+    "motion_appearance": 0.69,
+    "lines": 2.07,
+    "judge": 12.61,
+    "total": 18.8
   },
   "expected": "pass",
   "case": "defect_train_0058",

@@ -131,7 +131,7 @@
         0.237,
         0.285,
         0.239,
-        0.561
+        0.546
       ],
       "new_diag": 0.0,
       "new_at_s": 0.0,
@@ -142,7 +142,8 @@
     },
     "coverage": {
       "pass": false,
-      "max_out_of_photo": 0.207
+      "max_out_of_photo": 0.207,
+      "shared_start_last": null
     }
   },
   "frames": {
@@ -163,15 +164,16 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\wrong_start_0057\\0058_pan_good.sheet.jpg",
   "timing_s": {
-    "decode": 0.46,
-    "endpoint": 0.39,
-    "flow": 2.6,
-    "motion_appearance": 1.08,
-    "lines": 3.63,
-    "total": 8.27
+    "decode": 1.74,
+    "endpoint": 1.25,
+    "flow": 3.26,
+    "motion_appearance": 1.28,
+    "lines": 3.16,
+    "total": 10.8
   }
 }

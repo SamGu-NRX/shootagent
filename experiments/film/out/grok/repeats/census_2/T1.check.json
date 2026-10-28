@@ -1,0 +1,142 @@
+{
+  "clip": "C:\\Users\\sgu07\\AppData\\Local\\Temp\\filmlab\\grok\\T1.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+  "end": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+  "verdict": "fail",
+  "reasons": [
+    "judge: opening changed at FRAME 4: Photo shows hallway beyond this opening; frame shows the walk-in shower through it (shower area with marble tile, glass and window, wood floor)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 534,
+      "inliers": 484,
+      "inlier_ratio": 0.906,
+      "edge_ssim": 0.932,
+      "min_tile_ssim": 0.804,
+      "worst_tile": [
+        0.667,
+        0.75,
+        0.833,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": {
+      "pass": true,
+      "matches": 438,
+      "inliers": 361,
+      "inlier_ratio": 0.824,
+      "edge_ssim": 0.931,
+      "min_tile_ssim": 0.901,
+      "worst_tile": [
+        0.333,
+        0.25,
+        0.5,
+        0.5
+      ],
+      "coverage": 0.993
+    },
+    "motion": {
+      "checkable": false,
+      "pass": null,
+      "shared_with_start": 0.0,
+      "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+    },
+    "appearance": {
+      "checkable": false,
+      "pass": null,
+      "shared_with_start": 0.0,
+      "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+    },
+    "lines": {
+      "checkable": false,
+      "pass": null,
+      "shared_with_start": 0.0,
+      "why": "the start photo covers 0% of the last frame (needs 50%), so frame-0 tracks cannot follow the clip"
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": null,
+      "shared_start_last": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "failing": [
+        {
+          "frame": "FRAME 4",
+          "kind": "changed",
+          "category": "opening",
+          "item_id": "S3",
+          "description": "Photo shows hallway beyond this opening; frame shows the walk-in shower through it",
+          "where": "shower area with marble tile, glass and window, wood floor",
+          "in_photo_view": true,
+          "confidence": "medium"
+        }
+      ],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 1",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S9",
+          "description": "small recessed light at upper left not visible",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        },
+        {
+          "frame": "FRAME 7",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "E7",
+          "description": "shower ceiling light not visible at top",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 45,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
+      "model": "claude-sonnet-5-5",
+      "usd_check": 0.0705,
+      "usd_inventory": 0.0,
+      "usd": 0.0705
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 145,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\grok\\repeats\\census_2\\T1.sheet.jpg",
+  "timing_s": {
+    "decode": 0.74,
+    "endpoint": 1.24,
+    "judge": 45.36,
+    "total": 47.47
+  },
+  "expected": "fail",
+  "variant": "grok",
+  "corruption": "second door leaf in the right-hand doorway ~3.0 s; doorway now leads straight into the shower (0054 shows a hallway)"
+}

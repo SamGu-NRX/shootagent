@@ -6,7 +6,7 @@
   "reasons": [
     "structure not in the first frame: 0.82% of the frame from t=4.0s at [0.465, 0.013, 0.552, 0.317]",
     "new straight edges (0.228 frame diagonals) from t=3.25s at [0.476, 0.027, 0.571, 0.031]",
-    "judge (high confidence): gray pendant light (fourth pendant) appeared at t=3.5s (upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam)"
+    "judge: ceiling_light new at FRAME 5: A fourth grey pendant light hangs in a recessed box/opening in the ceiling at top centre. The photo shows only a flat ceiling there (S4/S5 area), with no pendant. ()"
   ],
   "signals": {
     "endpoint_start": {
@@ -153,22 +153,50 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "gray pendant light (fourth pendant)",
-          "change": "appeared",
-          "first_frame": "t=3.5s",
-          "where": "upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam"
+          "frame": "FRAME 5",
+          "kind": "new",
+          "category": "ceiling_light",
+          "item_id": "NEW",
+          "description": "A fourth grey pendant light hangs in a recessed box/opening in the ceiling at top centre. The photo shows only a flat ceiling there (S4/S5 area), with no pendant.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "high"
         }
       ],
-      "confidence": "high",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 5",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S4",
+          "description": "The recessed light at the top centre-right is not visible; it is replaced by the new pendant alcove, although one light is visible near the pendant.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 23,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0063
+      "usd_check": 0.0465,
+      "usd_inventory": 0.0,
+      "usd": 0.0465,
+      "tokens_check": [
+        14514,
+        1236
+      ],
+      "usd_check_uncached": 0.0414
     }
   },
   "frames": {
@@ -189,17 +217,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_paste.sheet.jpg",
   "timing_s": {
-    "decode": 0.35,
-    "endpoint": 0.28,
-    "flow": 1.3,
-    "motion_appearance": 0.69,
-    "lines": 2.73,
-    "judge": 3.17,
-    "total": 8.57
+    "decode": 0.41,
+    "endpoint": 0.31,
+    "flow": 2.12,
+    "motion_appearance": 0.93,
+    "lines": 3.96,
+    "judge": 8.89,
+    "total": 16.68
   },
   "expected": "fail",
   "case": "defect_train_0060",

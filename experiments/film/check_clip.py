@@ -19,10 +19,15 @@ Signals, all measured on frames sampled every 0.25 s and resized to 960 px on th
   along each frame-0 segment are tracked; their deviation from a straight line is the bend. Long
   segments in later frames with no edge under them in frame 0 are new lines; frame-0 segments with no
   edge left under their tracked points are vanished lines.
-- judge: Claude looks at one contact sheet (photo plus 6 frames) and answers one question: did a
-  door, window, fixture or large furniture appear, disappear or change shape?
+- judge: Claude first lists the checkable items in each photo (doors, openings and what lies beyond
+  them, windows and the view through each, ceiling lights, wall plates, built-ins, furniture, decor;
+  cached per photo), then checks 8 frames, each at the clip's own resolution, against that list for
+  anything new, missing or changed.
 Motion, appearance and line findings count only when they persist across two consecutive samples
-(0.5 s), so a single bad decode does not fail a clip.
+(0.5 s), so a single bad decode does not fail a clip. They need frame-0 content to stay in view: for
+a clip with an end photo whose last frame shares less than half its area with the start photo (a
+room-to-room move), they are reported as not checkable, with that share, and only the endpoint
+checks and the judge apply.
 
 Usage:
     python experiments/film/check_clip.py clip.mp4 --start photo.jpg [--end photo.jpg]
@@ -30,12 +35,13 @@ Usage:
     python experiments/film/check_clip.py --dir folder                  # folder/clips.json, or <stem>.json
                                                                        # sidecars {"start", "end"?}
 Each clip gets <out>/<stem>.check.json and <out>/<stem>.sheet.jpg; with several clips, summary.json.
-Thresholds (LIMITS) were set on synthetic clips and checked on depth-parallax clips; none has been
-checked on a real generated clip yet.
+Thresholds (LIMITS) were set on synthetic clips and checked on depth-parallax clips and on four real
+Grok clips (see the commit messages for the numbers).
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import time
@@ -55,6 +61,10 @@ STEP_S = 0.25
 CELL = 64  # motion residual grid cell, px
 EDGE_MARGIN = 8  # px; line points closer than this to the frame border are not used
 SHEET_FRAMES = 6
+JUDGE_FRAMES = 8  # sent to the judge one by one at the clip's own resolution, so a switch plate is visible
+# Judge settings, set from the command line. strict: a confident new item outside every photo's view fails
+# the clip too, because nothing shows the house has it (T3's switch plate sits on wall the 0058 photo cuts off).
+JUDGE = {"effort": "medium", "strict": True, "form": "census"}
 
 
 @dataclass(frozen=True)
@@ -72,6 +82,10 @@ class Limits:
     line_max_bend_px: float = 1.5
     line_max_new: float = 0.05  # summed length of new or vanished long lines, in frame diagonals
     out_of_photo_max: float = 0.2  # fraction of a frame showing area outside the start photo, when no end photo
+    # With an end photo, motion, appearance and lines need the start photo to stay in view: below this
+    # share of the last frame covered by the start photo (homography from feature matches), they are
+    # reported as not checkable. Room-to-room clips T1 and T2 lost every frame-0 track by mid-clip.
+    min_shared_for_tracking: float = 0.5
 
 
 LIMITS = Limits()
@@ -250,8 +264,11 @@ class Chain:
             r = dis.calc(b, pred, None)  # b(x) ~ pred(x + r(x))
             self.maps.append(cv2.remap(base, self.ident + r, None, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE))
 
-    def forward(self, k: int, pts0: np.ndarray, iters: int = 4) -> np.ndarray:
-        """Frame-k positions of frame-0 points: invert the map by Newton steps from the homography guess."""
+    def forward(self, k: int, pts0: np.ndarray, iters: int = 4) -> tuple[np.ndarray, np.ndarray]:
+        """Frame-k positions of frame-0 points, by Newton steps on the map from the homography guess, and
+        whether each converged (maps back to within 1 px). Unconverged points are where the map has no
+        answer, such as content that left the frame; using them produced bends of hundreds of px with
+        boxes far outside the frame on real generated clips."""
         x = cv2.perspectiveTransform(pts0.reshape(-1, 1, 2).astype(np.float64), np.linalg.inv(self.H[k])).reshape(-1, 2).astype(np.float32)
         m = self.maps[k]
         for _ in range(iters):
@@ -265,7 +282,8 @@ class Chain:
             dx = (J[:, 1, 1] * e[:, 0] - J[:, 0, 1] * e[:, 1]) / det
             dy = (-J[:, 1, 0] * e[:, 0] + J[:, 0, 0] * e[:, 1]) / det
             x = x - np.stack([dx, dy], 1).astype(np.float32)
-        return x
+        ok = np.isfinite(x).all(1) & (np.linalg.norm(sample(m, x) - pts0, axis=1) < 1.0)
+        return x, ok
 
     def inside(self, k: int, margin: float = 0.0) -> np.ndarray:
         h, w = self.shape
@@ -443,9 +461,13 @@ def line_signals(chain: Chain) -> dict:
     bend_series, new_series, gone_series = [0.0], [0.0], [0.0]
     bend_where, new_where, gone_where = [None], [None], [None]
     for k in range(1, len(chain.g)):
-        tracked = chain.forward(k, pts.reshape(-1, 2)).reshape(pts.shape) if len(pts) else pts
+        if len(pts):
+            tracked, conv = chain.forward(k, pts.reshape(-1, 2))
+            tracked, conv = tracked.reshape(pts.shape), conv.reshape(pts.shape[:2])
+        else:
+            tracked, conv = pts, on_edge
         b = EDGE_MARGIN  # the map is least reliable at the frame border, where content enters and leaves
-        inside = (tracked[..., 0] >= b) & (tracked[..., 0] <= w - 1 - b) & (tracked[..., 1] >= b) & (tracked[..., 1] <= h - 1 - b) & on_edge
+        inside = (tracked[..., 0] >= b) & (tracked[..., 0] <= w - 1 - b) & (tracked[..., 1] >= b) & (tracked[..., 1] <= h - 1 - b) & on_edge & conv
         worst, worst_i, gone_len, gone_box = 0.0, -1, 0.0, None
         for i in range(len(tracked)):
             if inside[i].sum() < 12:
@@ -457,7 +479,8 @@ def line_signals(chain: Chain) -> dict:
                 gone_len += len0[i]
                 gone_box = box_frac(*tracked[i][inside[i]].min(0), *tracked[i][inside[i]].max(0), w, h)
         bend_series.append(worst)
-        bend_where.append(box_frac(*tracked[worst_i].min(0), *tracked[worst_i].max(0), w, h) if worst_i >= 0 else None)
+        bend_where.append(box_frac(*tracked[worst_i][inside[worst_i]].min(0), *tracked[worst_i][inside[worst_i]].max(0), w, h)
+                          if worst_i >= 0 else None)
         gone_series.append(gone_len)
         gone_where.append(gone_box)
         segs_k = detect_segments(chain.g[k], min_len)
@@ -483,35 +506,175 @@ def line_signals(chain: Chain) -> dict:
 
 # ---- judge ------------------------------------------------------------------------------------------------
 
-JUDGE_PROMPT = """The contact sheet shows a real photo of a room ({photos}) and six frames, in time order, from a short video that an AI model generated from {that}. The model was asked only to move the camera slowly. Camera motion is expected: framing, zoom, perspective and parallax change, and objects may leave the frame or enter at its edges as the camera moves. Small lighting or exposure shifts are expected too. None of those count. Some photos contain faint see-through ghost images from the photo's own editing; they are part of the photo.
+CATEGORIES = ["door", "opening", "window", "ceiling_light", "wall_plate", "built_in", "furniture", "decor"]
+JUDGE_VERSION = "inventory-v1"  # part of the inventory cache key; bump when the inventory prompt changes
 
-Question: compared with the photo, does any door, window, built-in fixture (light, fan, cabinet, sink, mirror, vent, shelf, trim) or large piece of furniture appear, disappear, duplicate or change shape in any frame while it is in view? Edges that are straight in the photo but bent or wavy in a frame count as a change of shape.
+JUDGE_SYSTEM = """You check AI-generated real-estate walkthrough videos against the real photos of the house. A buyer must never be shown a door, window, light, wall plate or fixture the house does not have, or a view through a window or doorway that is not there. Be thorough and literal, and report only what you can point to in an image."""
 
-List each change you can see: the object, the kind of change, the label of the first frame that shows it, and where in the frame it is. Set `changed` to true if you list any; otherwise return an empty list and false."""
+INVENTORY_PROMPT = """This is a real photo of a room in a house for sale. List every countable, checkable item that someone could verify in a video of this room, so a later check can spot anything added, removed or changed:
+- door: each door leaf, open or closed, with its panel style;
+- opening: each doorway, passage or arch, and what is visible beyond it (which room, hallway, fixtures);
+- window: each window unit, its pane layout and blinds, and what is visible through it (sky, field, houses, deck, railing, trees);
+- ceiling_light: each pendant, chandelier, recessed light or fan, with counts;
+- wall_plate: every switch plate, outlet, thermostat and vent, with the number of switches on each plate;
+- built_in: cabinets, counters, sinks, shelves, mirrors, fireplace, notable trim;
+- furniture: large pieces with counts (beds, tables, chairs, sofas, benches, nightstands, stools);
+- decor: large art, plants, rugs, lamps and table centrepieces.
+Give each item an id starting with "{prefix}" ({prefix}1, {prefix}2, ...), its category, a short description (shape, count, colour), where it is in the photo (left, centre or right; top, middle or bottom; what it is next to) and, for doors, openings and windows, what is visible through or beyond it (an empty string for other items). Some photos contain faint see-through ghost images left by their editing; do not list those. Finally say what is cut off at each edge of the photo."""
 
-JUDGE_SCHEMA = {
+INVENTORY_SCHEMA = {
     "type": "object",
     "properties": {
-        "changes": {
+        "items": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "object": {"type": "string"},
-                    "change": {"type": "string", "enum": ["appeared", "disappeared", "duplicated", "changed_shape"]},
-                    "first_frame": {"type": "string"},
-                    "where": {"type": "string"},
+                    "id": {"type": "string"},
+                    "category": {"type": "string", "enum": CATEGORIES},
+                    "description": {"type": "string"},
+                    "location": {"type": "string"},
+                    "beyond": {"type": "string"},
                 },
-                "required": ["object", "change", "first_frame", "where"],
+                "required": ["id", "category", "description", "location", "beyond"],
                 "additionalProperties": False,
             },
         },
-        "changed": {"type": "boolean"},
-        "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+        "edges": {"type": "string"},
     },
-    "required": ["changes", "changed", "confidence"],
+    "required": ["items", "edges"],
     "additionalProperties": False,
 }
+
+CHECK_PROMPT = """{photos_intro} The FRAME images are, in time order, from a video that an AI model generated to move the camera {path}. This is the inventory of checkable items in the photo{s}:
+
+{inventory}
+
+Go through every frame. Compare what is in view with the inventory and the photo{s}, item by item: doors and door leaves, openings and what lies beyond each, windows and what is visible through each, ceiling lights, wall plates (switches, outlets, thermostats, vents), built-ins, large furniture and decor. Look closely at small items such as switch plates and outlets.
+
+Report each problem once, at the first frame that shows it:
+- new: an item of those kinds that is not in the inventory. Set in_photo_view to true when the place where it appears is visible in a photo, so the video invented it; false when it lies entirely outside what the photos show (beyond their edges or hidden behind something), where it cannot be verified.
+- missing: an inventory item that should be in view in that frame but is gone.
+- changed: an inventory item whose shape, count, size or position differs, or a window, door or opening through which something different is visible than in the photo.
+
+Not problems: camera motion (framing, zoom, perspective, parallax), items leaving the frame, lighting or exposure changes, motion blur, and the video dropping faint see-through ghost images that the photo's editing left.
+
+Set confidence to high when you can see the problem clearly, medium when fairly sure, low when unsure. Return an empty list if you find nothing."""
+
+CHECK_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "findings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "frame": {"type": "string"},
+                    "kind": {"type": "string", "enum": ["new", "missing", "changed"]},
+                    "category": {"type": "string", "enum": CATEGORIES},
+                    "item_id": {"type": "string"},
+                    "description": {"type": "string"},
+                    "where": {"type": "string"},
+                    "in_photo_view": {"type": "boolean"},
+                    "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+                },
+                "required": ["frame", "kind", "category", "item_id", "description", "where", "in_photo_view", "confidence"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["findings"],
+    "additionalProperties": False,
+}
+
+CENSUS_PROMPT = """{photos_intro} The FRAME images are, in time order, from a video that an AI model generated to move the camera {path}. This is the inventory of checkable items in the photo{s}:
+
+{inventory}
+
+Check every frame against the inventory, one frame at a time. For each frame, list every item of these kinds that you can see in it: doors and door leaves, openings, windows, ceiling lights, wall plates (switches, outlets, thermostats, vents), built-ins, large furniture and decor. Look closely at small items such as switch plates and outlets. For each item give:
+- item_id: the inventory id it is, or "NEW" if it is none of them;
+- beyond: for windows, doors and openings, what you can see through or beyond it in this frame (empty for other items);
+- matches_photo: false if its shape, count, size or position differs from the photo, or if what is visible through or beyond it differs from what that same window, door or opening shows in the photo, even when the other photo makes the new view plausible; true otherwise (NEW items: false);
+- in_photo_view: for NEW items, true when the wall, ceiling or floor area where it appears is visible in a photo, even if the photo shows nothing there; false only when that area lies beyond the edges of, or hidden behind something in, every photo. True for inventory items;
+- note: what differs, when matches_photo is false;
+- confidence: high, medium or low that the item is as you describe.
+Then list the inventory items that should be in view in this frame, given the camera position, but are not there.
+
+Not differences: camera motion (framing, zoom, perspective, parallax), items leaving the frame, lighting or exposure changes, motion blur, and the video dropping faint see-through ghost images that the photo's editing left."""
+
+CENSUS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "frames": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "frame": {"type": "string"},
+                    "visible": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "item_id": {"type": "string"},
+                                "category": {"type": "string", "enum": CATEGORIES},
+                                "beyond": {"type": "string"},
+                                "matches_photo": {"type": "boolean"},
+                                "in_photo_view": {"type": "boolean"},
+                                "note": {"type": "string"},
+                                "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+                            },
+                            "required": ["item_id", "category", "beyond", "matches_photo", "in_photo_view", "note", "confidence"],
+                            "additionalProperties": False,
+                        },
+                    },
+                    "missing": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "item_id": {"type": "string"},
+                                "note": {"type": "string"},
+                                "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+                            },
+                            "required": ["item_id", "note", "confidence"],
+                            "additionalProperties": False,
+                        },
+                    },
+                },
+                "required": ["frame", "visible", "missing"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["frames"],
+    "additionalProperties": False,
+}
+
+
+def census_findings(answer: dict) -> list[dict]:
+    """Findings in the CHECK_SCHEMA shape from a census answer, each item reported at its first frame."""
+    out, seen = [], set()
+    for fr in answer["frames"]:
+        for v in fr["visible"]:
+            if v["item_id"] != "NEW" and v["matches_photo"]:
+                continue
+            kind = "new" if v["item_id"] == "NEW" else "changed"
+            # The same new item comes back in later frames under other wording; keep the first per category.
+            key = (kind, v["item_id"] if kind == "changed" else v["category"])
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append({"frame": fr["frame"], "kind": kind, "category": v["category"], "item_id": v["item_id"],
+                        "description": v["note"] or v["beyond"], "where": v["beyond"], "in_photo_view": v["in_photo_view"],
+                        "confidence": v["confidence"]})
+        for m in fr["missing"]:
+            if ("missing", m["item_id"]) in seen:
+                continue
+            seen.add(("missing", m["item_id"]))
+            out.append({"frame": fr["frame"], "kind": "missing", "category": "other", "item_id": m["item_id"],
+                        "description": m["note"], "where": "", "in_photo_view": True, "confidence": m["confidence"]})
+    return out
 
 
 def load_env(explicit: Path | None) -> None:
@@ -534,16 +697,71 @@ def load_env(explicit: Path | None) -> None:
     load_dotenv(cand)
 
 
-def run_judge(sheet: np.ndarray, has_end: bool) -> dict:
+def photo_inventory(photo: np.ndarray, path: Path, prefix: str, cache_dir: Path) -> tuple[dict, float]:
+    """Claude's list of checkable items in one photo, cached on disk by photo content; returns (inventory,
+    USD spent now, 0 when cached)."""
     from shootagent.models.vision import ask_json
 
-    photos = "START PHOTO, and END PHOTO where the video should end" if has_end else "START PHOTO"
-    prompt = JUDGE_PROMPT.format(photos=photos, that="them" if has_end else "it")
-    answer, usage = ask_json([("contact sheet: photo tiles, then video frames labelled with their time", sheet)], prompt,
-                             JUDGE_SCHEMA, effort="medium")
-    changes = answer.get("changes", [])
-    return {"pass": not (answer["changed"] or changes), "changed": answer["changed"], "changes": changes,
-            "confidence": answer["confidence"], "model": usage.model, "usd": round(usage.usd, 4)}
+    key = hashlib.sha1(path.read_bytes() + f"{JUDGE_VERSION}:{prefix}".encode()).hexdigest()[:16]
+    cached = cache_dir / f"{path.parent.name}_{path.stem}_{prefix}_{key}.json"
+    if cached.is_file():
+        return json.loads(cached.read_text()), 0.0
+    answer, usage = ask_json([("PHOTO", photo)], INVENTORY_PROMPT.format(prefix=prefix), INVENTORY_SCHEMA,
+                             effort="medium", max_tokens=16000, system=JUDGE_SYSTEM)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cached.write_text(json.dumps(answer, indent=2))
+    return answer, usage.usd
+
+
+def format_inventory(label: str, inv: dict) -> str:
+    lines = [f"{label}:"]
+    for it in inv["items"]:
+        beyond = f"; beyond it: {it['beyond']}" if it["beyond"] else ""
+        lines.append(f"- {it['id']} {it['category']}: {it['description']}; at {it['location']}{beyond}")
+    lines.append(f"Cut off at the edges: {inv['edges']}")
+    return "\n".join(lines)
+
+
+def run_judge(photo: np.ndarray, start: Path, end_photo: np.ndarray | None, end: Path | None,
+              frames: list[tuple[float, np.ndarray]], out_dir: Path) -> dict:
+    """Inventory first, then check every frame against it. Fails on any medium- or high-confidence finding:
+    missing, changed, or new. A new item where no photo shows the spot is also listed as unverifiable;
+    with JUDGE["strict"] off it is reported but does not fail. Low-confidence findings are warnings."""
+    from shootagent.models.vision import ask_json, usage_cost
+
+    cache = out_dir / "inventory"
+    inv_s, usd_inv = photo_inventory(photo, start, "S", cache)
+    blocks = [format_inventory("START PHOTO", inv_s)]
+    images = [("START PHOTO", photo)]
+    if end_photo is not None:
+        inv_e, usd_e = photo_inventory(end_photo, end, "E", cache)
+        usd_inv += usd_e
+        blocks.append(format_inventory("END PHOTO", inv_e))
+        images.append(("END PHOTO", end_photo))
+        intro = "The first two images are real photos of the house: START PHOTO is where the video begins and END PHOTO where it ends."
+        path = "from the start photo to the end photo"
+    else:
+        intro = "The first image, START PHOTO, is a real photo of the house and the frame the video begins on."
+        path = "through the room shown in the start photo"
+    images += [(f"FRAME {i + 1} at t={t:.1f}s", f) for i, (t, f) in enumerate(frames)]
+    census = JUDGE["form"] == "census"
+    prompt = (CENSUS_PROMPT if census else CHECK_PROMPT).format(
+        photos_intro=intro, path=path, s="s" if end_photo is not None else "", inventory="\n\n".join(blocks))
+    answer, usage = ask_json(images, prompt, CENSUS_SCHEMA if census else CHECK_SCHEMA, effort=JUDGE["effort"],
+                             max_tokens=32000, system=JUDGE_SYSTEM)
+    findings = census_findings(answer) if census else answer["findings"]
+    confident = [f for f in findings if f["confidence"] in ("medium", "high")]
+    unverifiable = [f for f in confident if f["kind"] == "new" and not f["in_photo_view"]]
+    failing = [f for f in confident if f["kind"] != "new" or f["in_photo_view"] or JUDGE["strict"]]
+    warnings = [f for f in findings if f["confidence"] == "low"]
+    return {"pass": not failing, "failing": failing, "unverifiable": unverifiable, "warnings": warnings,
+            "inventory_items": len(inv_s["items"]) + (len(inv_e["items"]) if end_photo is not None else 0),
+            "frames_checked": len(frames), "effort": JUDGE["effort"], "strict": JUDGE["strict"], "form": JUDGE["form"], "model": usage.model, "usd_check": round(usage.usd, 4),
+            "usd_inventory": round(usd_inv, 4), "usd": round(usage.usd + usd_inv, 4),
+            # What the check call costs with no cached input, at list price: repeat runs of one clip were billed
+            # less, which looks like gateway caching.
+            "tokens_check": [usage.input_tokens, usage.output_tokens],
+            "usd_check_uncached": round(usage_cost(usage.model, usage.input_tokens, usage.output_tokens), 4)}
 
 
 # ---- the check --------------------------------------------------------------------------------------------
@@ -571,8 +789,74 @@ def check_clip(clip: Path, start: Path, end: Path | None, out_dir: Path, judge: 
     t = time.perf_counter()
     reg0 = register(photo, work[0])
     reg1 = register(end_photo, work[-1]) if end_photo is not None else None
+    shared = None
+    if end_photo is not None:
+        r = register(photo, work[-1])
+        shared = r.get("coverage", 0.0) if r["inliers"] >= LIMITS.endpoint_min_inliers else 0.0
+    trackable = shared is None or shared >= LIMITS.min_shared_for_tracking
     timing["endpoint"] = time.perf_counter() - t
 
+    signals: dict = {
+        "endpoint_start": {"pass": endpoint_ok(reg0), **{k: v for k, v in reg0.items() if k != "H"}},
+        "endpoint_end": ({"pass": endpoint_ok(reg1), **{k: v for k, v in reg1.items() if k != "H"}} if reg1 else None),
+    }
+    oop = None
+    if trackable:
+        signals.update(tracking_signals(grays, smp.times, reg0, photo.shape[:2], timing))
+        oop = signals.pop("_oop")
+    else:
+        why = {"checkable": False, "pass": None, "shared_with_start": round(shared, 3),
+               "why": f"the start photo covers {shared * 100:.0f}% of the last frame (needs "
+                      f"{LIMITS.min_shared_for_tracking * 100:.0f}%), so frame-0 tracks cannot follow the clip"}
+        signals.update({"motion": why, "appearance": why, "lines": why})
+    signals["coverage"] = {"pass": end is not None or oop is None or oop <= LIMITS.out_of_photo_max,
+                           "max_out_of_photo": oop, "shared_start_last": None if shared is None else round(shared, 3)}
+
+    stem = clip.stem
+    out_dir.mkdir(parents=True, exist_ok=True)
+    tiles = [("START PHOTO", photo)] + ([("END PHOTO", end_photo)] if end_photo is not None else [])
+    tiles += [(f"t={smp.times[i]:.1f}s", smp.frames[i]) for i in pick_evenly(len(smp.frames), SHEET_FRAMES)]
+    sheet = contact_sheet(tiles)
+    sheet_path = out_dir / f"{stem}.sheet.jpg"
+    save_jpg(sheet_path, sheet)
+
+    if judge:
+        t = time.perf_counter()
+        idx = pick_evenly(len(smp.frames), JUDGE_FRAMES)
+        signals["judge"] = run_judge(photo, start, end_photo, end, [(smp.times[i], smp.frames[i]) for i in idx], out_dir)
+        timing["judge"] = time.perf_counter() - t
+
+    reasons = []
+    for name in ("endpoint_start", "endpoint_end"):
+        r = signals[name]
+        if r and not r["pass"]:
+            which = "first frame vs start photo" if name == "endpoint_start" else "last frame vs end photo"
+            reasons.append(f"{which} do not match: {r['inliers']} homography inliers, edge SSIM {r['edge_ssim']}, "
+                           f"worst tile {r['min_tile_ssim']} at {r['worst_tile']}")
+    if trackable:
+        reasons += tracking_reasons(signals)
+    if not signals["coverage"]["pass"]:
+        reasons.append(f"{oop * 100:.0f}% of a frame shows area outside the start photo, which cannot be checked")
+    if judge and not signals["judge"]["pass"]:
+        items = "; ".join(f"{f['category']} {f['kind']} at {f['frame']}: {f['description']} ({f['where']})"
+                          for f in signals["judge"]["failing"])
+        reasons.append(f"judge: {items}")
+
+    timing["total"] = time.perf_counter() - t0
+    result = {
+        "clip": str(clip), "start": str(start), "end": str(end) if end else None,
+        "verdict": "fail" if reasons else "pass", "reasons": reasons, "signals": signals,
+        "frames": {"fps": round(smp.fps, 3), "decoded": smp.n_frames, "sampled": len(smp.frames), "size": list(smp.frames[0].shape[1::-1])},
+        "units": f"px at {WORK_LONG} px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+        "limits": asdict(LIMITS), "sheet": str(sheet_path.resolve()),
+        "timing_s": {k: round(v, 2) for k, v in timing.items()},
+    }
+    (out_dir / f"{stem}.check.json").write_text(json.dumps(result, indent=2))
+    return result
+
+
+def tracking_signals(grays: list[np.ndarray], ts: list[float], reg0: dict, photo_shape, timing: dict) -> dict:
+    """Motion, appearance and line signals from the frame-0 chain, plus "_oop" (largest out-of-photo share)."""
     t = time.perf_counter()
     chain = Chain(grays)
     timing["flow"] = time.perf_counter() - t
@@ -595,21 +879,10 @@ def check_clip(clip: Path, start: Path, end: Path | None, out_dir: Path, judge: 
     oop = None
     if reg0["H"] is not None:
         H_photo = np.array(reg0["H"])
-        vals = [out_of_photo(H_photo, s["H"], photo.shape[:2], chain.shape) for s in steps if s["H"] is not None]
+        vals = [out_of_photo(H_photo, s["H"], photo_shape, chain.shape) for s in steps if s["H"] is not None]
         oop = round(max(vals), 3) if vals else None
 
-    stem = clip.stem
-    out_dir.mkdir(parents=True, exist_ok=True)
-    tiles = [("START PHOTO", photo)] + ([("END PHOTO", end_photo)] if end_photo is not None else [])
-    tiles += [(f"t={smp.times[i]:.1f}s", smp.frames[i]) for i in pick_evenly(len(smp.frames), SHEET_FRAMES)]
-    sheet = contact_sheet(tiles)
-    sheet_path = out_dir / f"{stem}.sheet.jpg"
-    save_jpg(sheet_path, sheet)
-
-    ts = smp.times
-    signals: dict = {
-        "endpoint_start": {"pass": endpoint_ok(reg0), **{k: v for k, v in reg0.items() if k != "H"}},
-        "endpoint_end": ({"pass": endpoint_ok(reg1), **{k: v for k, v in reg1.items() if k != "H"}} if reg1 else None),
+    return {
         "motion": {"pass": m_peak <= LIMITS.motion_max_px, "peak_px": round(m_peak, 2), "at_s": round(ts[m_i], 2),
                    "cell": steps[max(m_i - 1, 0)]["cell"] if steps else None,
                    "models": "".join(s["model"] or "-" for s in steps),
@@ -620,23 +893,18 @@ def check_clip(clip: Path, start: Path, end: Path | None, out_dir: Path, judge: 
                        "series_frac": [round(a["score"], 4) for a in app]},
         "lines": {"pass": b_peak <= LIMITS.line_max_bend_px and n_peak <= LIMITS.line_max_new and g_peak <= LIMITS.line_max_new,
                   "segments": lines["segments"],
-                  "bend_px": round(b_peak, 2), "bend_at_s": round(ts[b_i], 2), "bend_box": lines["bend_where"][b_i + 1] if b_i + 1 < len(ts) else None,
-                  "new_diag": round(n_peak, 3), "new_at_s": round(ts[n_i], 2), "new_box": lines["new_where"][n_i + 1] if n_i + 1 < len(ts) else None,
-                  "gone_diag": round(g_peak, 3), "gone_at_s": round(ts[g_i], 2), "gone_box": lines["gone_where"][g_i + 1] if g_i + 1 < len(ts) else None},
-        "coverage": {"pass": end is not None or oop is None or oop <= LIMITS.out_of_photo_max, "max_out_of_photo": oop},
+                  "bend_px": round(b_peak, 2), "bend_at_s": round(ts[b_i], 2),
+                  "bend_box": lines["bend_where"][b_i + 1] if b_i + 1 < len(ts) else None,
+                  "new_diag": round(n_peak, 3), "new_at_s": round(ts[n_i], 2),
+                  "new_box": lines["new_where"][n_i + 1] if n_i + 1 < len(ts) else None,
+                  "gone_diag": round(g_peak, 3), "gone_at_s": round(ts[g_i], 2),
+                  "gone_box": lines["gone_where"][g_i + 1] if g_i + 1 < len(ts) else None},
+        "_oop": oop,
     }
-    if judge:
-        t = time.perf_counter()
-        signals["judge"] = run_judge(sheet, end_photo is not None)
-        timing["judge"] = time.perf_counter() - t
 
+
+def tracking_reasons(signals: dict) -> list[str]:
     reasons = []
-    for name in ("endpoint_start", "endpoint_end"):
-        r = signals[name]
-        if r and not r["pass"]:
-            which = "first frame vs start photo" if name == "endpoint_start" else "last frame vs end photo"
-            reasons.append(f"{which} do not match: {r['inliers']} homography inliers, edge SSIM {r['edge_ssim']}, "
-                           f"worst tile {r['min_tile_ssim']} at {r['worst_tile']}")
     m = signals["motion"]
     if not m["pass"]:
         reasons.append(f"motion no rigid camera explains: {m['peak_px']} px from t={m['at_s']}s in cell {m['cell']}")
@@ -650,23 +918,7 @@ def check_clip(clip: Path, start: Path, end: Path | None, out_dir: Path, judge: 
         reasons.append(f"new straight edges ({ln['new_diag']} frame diagonals) from t={ln['new_at_s']}s at {ln['new_box']}")
     if ln["gone_diag"] > LIMITS.line_max_new:
         reasons.append(f"straight edges vanished ({ln['gone_diag']} frame diagonals) from t={ln['gone_at_s']}s at {ln['gone_box']}")
-    if not signals["coverage"]["pass"]:
-        reasons.append(f"{oop * 100:.0f}% of a frame shows area outside the start photo, which cannot be checked")
-    if judge and not signals["judge"]["pass"]:
-        items = "; ".join(f"{c['object']} {c['change']} at {c['first_frame']} ({c['where']})" for c in signals["judge"]["changes"])
-        reasons.append(f"judge ({signals['judge']['confidence']} confidence): {items or 'changed'}")
-
-    timing["total"] = time.perf_counter() - t0
-    result = {
-        "clip": str(clip), "start": str(start), "end": str(end) if end else None,
-        "verdict": "fail" if reasons else "pass", "reasons": reasons, "signals": signals,
-        "frames": {"fps": round(smp.fps, 3), "decoded": smp.n_frames, "sampled": len(smp.frames), "size": list(smp.frames[0].shape[1::-1])},
-        "units": f"px at {WORK_LONG} px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
-        "limits": asdict(LIMITS), "sheet": str(sheet_path.resolve()),
-        "timing_s": {k: round(v, 2) for k, v in timing.items()},
-    }
-    (out_dir / f"{stem}.check.json").write_text(json.dumps(result, indent=2))
-    return result
+    return reasons
 
 
 def jobs_from_dir(folder: Path) -> list[dict]:
@@ -697,7 +949,12 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=HERE / "out" / "checks")
     ap.add_argument("--no-judge", action="store_true", help="skip the Claude vision judge")
     ap.add_argument("--env-file", type=Path, help=".env with the model gateway settings")
+    ap.add_argument("--judge-effort", default=JUDGE["effort"], choices=["low", "medium", "high", "xhigh", "max"])
+    ap.add_argument("--judge-form", default=JUDGE["form"], choices=["findings", "census"])
+    ap.add_argument("--lenient", action="store_true",
+                    help="new items where no photo shows the spot are reported as unverifiable but do not fail")
     args = ap.parse_args()
+    JUDGE.update(effort=args.judge_effort, strict=not args.lenient, form=args.judge_form)
 
     if args.manifest:
         jobs = json.loads(args.manifest.read_text())
@@ -720,7 +977,7 @@ def main() -> None:
         results.append(r)
         s = r["signals"]
         flags = " ".join(n for n in ("endpoint_start", "endpoint_end", "motion", "appearance", "lines", "coverage", "judge")
-                         if s.get(n) and not s[n]["pass"])
+                         if s.get(n) and s[n]["pass"] is False)
         exp = f" expected={job['expected']}" if "expected" in job else ""
         print(f"{r['verdict'].upper():4} {Path(job['clip']).name}{exp}  failed: {flags or '-'}  ({r['timing_s']['total']} s)", flush=True)
     if len(results) > 1:

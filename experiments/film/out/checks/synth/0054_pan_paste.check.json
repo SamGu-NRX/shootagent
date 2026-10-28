@@ -6,7 +6,7 @@
   "reasons": [
     "structure not in the first frame: 0.54% of the frame from t=4.25s at [0.715, 0.307, 0.784, 0.493]",
     "new straight edges (0.393 frame diagonals) from t=5.75s at [0.692, 0.167, 0.757, 0.189]",
-    "judge (high confidence): window with lamp (extra window on wall) appeared at t=3.5s (right-center wall between the bathroom doorway and the open door, above the foot of the bed)"
+    "judge: window new at FRAME 5: A new window with a lamp visible appears on the wall between the bathroom opening and the door, where the photo shows plain wall. It looks like a mirror or ghost reflection but reads as a window. (Window showing sky and a lamp reflection)"
   ],
   "signals": {
     "endpoint_start": {
@@ -134,8 +134,8 @@
       "bend_px": 0.12,
       "bend_at_s": 0.75,
       "bend_box": [
-        0.007,
-        0.014,
+        0.008,
+        0.101,
         0.01,
         0.263
       ],
@@ -153,22 +153,50 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "window with lamp (extra window on wall)",
-          "change": "appeared",
-          "first_frame": "t=3.5s",
-          "where": "right-center wall between the bathroom doorway and the open door, above the foot of the bed"
+          "frame": "FRAME 5",
+          "kind": "new",
+          "category": "window",
+          "item_id": "NEW",
+          "description": "A new window with a lamp visible appears on the wall between the bathroom opening and the door, where the photo shows plain wall. It looks like a mirror or ghost reflection but reads as a window.",
+          "where": "Window showing sky and a lamp reflection",
+          "in_photo_view": true,
+          "confidence": "medium"
         }
       ],
-      "confidence": "high",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 5",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S13",
+          "description": "Outlet on the wall right of the bathroom opening is not visible.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 27,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0081
+      "usd_check": 0.0822,
+      "usd_inventory": 0.0,
+      "usd": 0.0822,
+      "tokens_check": [
+        15047,
+        4675
+      ],
+      "usd_check_uncached": 0.0768
     }
   },
   "frames": {
@@ -189,17 +217,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_paste.sheet.jpg",
   "timing_s": {
-    "decode": 0.44,
-    "endpoint": 0.37,
-    "flow": 1.1,
-    "motion_appearance": 0.7,
-    "lines": 2.14,
-    "judge": 5.05,
-    "total": 9.85
+    "decode": 0.67,
+    "endpoint": 0.45,
+    "flow": 11.67,
+    "motion_appearance": 1.35,
+    "lines": 4.53,
+    "judge": 27.56,
+    "total": 46.33
   },
   "expected": "fail",
   "case": "defect_train_0054",

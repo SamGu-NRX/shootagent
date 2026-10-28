@@ -1,0 +1,194 @@
+{
+  "items": [
+    {
+      "id": "S1",
+      "category": "door",
+      "description": "White six-panel door leaf standing open, with dark lever handle, swung against the wall beside the right doorway",
+      "location": "right, middle, next to the right wall corner and the far doorway",
+      "beyond": "Opens into a hallway with wood floor"
+    },
+    {
+      "id": "S2",
+      "category": "opening",
+      "description": "Doorway/archway with trim leading to the ensuite bathroom, left of centre-right wall",
+      "location": "centre-right, middle, left of the open door",
+      "beyond": "Bathroom with vanity cabinet, wall sconce light, a tub edge and warm lighting; wood-look floor"
+    },
+    {
+      "id": "S3",
+      "category": "opening",
+      "description": "Wide opening at far right with white trim, leading to the hallway",
+      "location": "right edge, middle, behind the open door",
+      "beyond": "Hallway with wood floor, another door/doorway and a plant in the distance"
+    },
+    {
+      "id": "S4",
+      "category": "window",
+      "description": "Large double-hung window with white frame, 2 over 2 panes (grid with vertical divider), black roller shade partially lowered at the top",
+      "location": "left of centre, upper middle, above the left nightstand",
+      "beyond": "Blue sky, open field/prairie and a neighbouring house roof"
+    },
+    {
+      "id": "S5",
+      "category": "window",
+      "description": "Smaller double-hung window with white frame, black shade at top, vertical divider",
+      "location": "centre, middle, above the right nightstand",
+      "beyond": "Sky and a view outside, partly blocked"
+    },
+    {
+      "id": "S6",
+      "category": "window",
+      "description": "Tall window at far left edge with white frame and black shade at top, sunlit",
+      "location": "left edge, upper to middle",
+      "beyond": "Bright outdoor light; plant leaves in front"
+    },
+    {
+      "id": "S7",
+      "category": "ceiling_light",
+      "description": "Black three-blade ceiling fan",
+      "location": "top centre-right, in the tray ceiling",
+      "beyond": ""
+    },
+    {
+      "id": "S8",
+      "category": "ceiling_light",
+      "description": "Recessed can light, round white, near the fan",
+      "location": "top centre, in the tray ceiling",
+      "beyond": ""
+    },
+    {
+      "id": "S9",
+      "category": "ceiling_light",
+      "description": "Recessed can light, small, at upper left in the tray ceiling",
+      "location": "top left, near the ceiling edge",
+      "beyond": ""
+    },
+    {
+      "id": "S10",
+      "category": "wall_plate",
+      "description": "Floor/wall HVAC vent grille on the carpet near the left wall",
+      "location": "bottom left, below the window",
+      "beyond": ""
+    },
+    {
+      "id": "S11",
+      "category": "wall_plate",
+      "description": "Wall vent/return grille high on the wall",
+      "location": "right, upper middle, above the open door",
+      "beyond": ""
+    },
+    {
+      "id": "S12",
+      "category": "wall_plate",
+      "description": "Single light switch plate on wall between windows and doorway",
+      "location": "centre-right, middle, left of the bathroom opening",
+      "beyond": ""
+    },
+    {
+      "id": "S13",
+      "category": "wall_plate",
+      "description": "Outlet plate low on the wall right of the bathroom opening",
+      "location": "right, middle-lower, on wall near the door",
+      "beyond": ""
+    },
+    {
+      "id": "S14",
+      "category": "wall_plate",
+      "description": "Switch plate in the hallway beyond the door",
+      "location": "far right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S15",
+      "category": "built_in",
+      "description": "Recessed wall niche with art/frame inside the bathroom entry area",
+      "location": "centre-right, middle, within the bathroom doorway",
+      "beyond": ""
+    },
+    {
+      "id": "S16",
+      "category": "built_in",
+      "description": "Bathroom vanity cabinet visible beyond the doorway",
+      "location": "centre-right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S17",
+      "category": "furniture",
+      "description": "Black upholstered king bed with tall headboard and footboard, white bedding, throw blanket, pillows (white and black, one grey)",
+      "location": "centre, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S18",
+      "category": "furniture",
+      "description": "Black three-drawer nightstand/dresser with gold handles on left side",
+      "location": "left of centre, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S19",
+      "category": "furniture",
+      "description": "Black nightstand on right side of the bed, partly hidden",
+      "location": "centre, middle, right of the bed head",
+      "beyond": ""
+    },
+    {
+      "id": "S20",
+      "category": "furniture",
+      "description": "Black-legged bench with cream cushioned top at the foot of the bed",
+      "location": "centre-bottom, in front of the bed",
+      "beyond": ""
+    },
+    {
+      "id": "S21",
+      "category": "furniture",
+      "description": "Black furniture piece edge at right edge",
+      "location": "right edge, lower middle",
+      "beyond": ""
+    },
+    {
+      "id": "S22",
+      "category": "decor",
+      "description": "Two large abstract beige/brown art pieces with black frames, hung side by side above the bed",
+      "location": "centre, upper middle",
+      "beyond": ""
+    },
+    {
+      "id": "S23",
+      "category": "decor",
+      "description": "Glass-base table lamp with white shade on left nightstand",
+      "location": "left of centre, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S24",
+      "category": "decor",
+      "description": "Glass-base table lamp with white shade on right nightstand",
+      "location": "centre-right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S25",
+      "category": "decor",
+      "description": "Large cream woven textured area rug under the bed and bench",
+      "location": "centre, bottom",
+      "beyond": ""
+    },
+    {
+      "id": "S26",
+      "category": "decor",
+      "description": "Green leafy plant leaves at left edge",
+      "location": "left edge, middle",
+      "beyond": ""
+    },
+    {
+      "id": "S27",
+      "category": "decor",
+      "description": "Glass panel/reflective sheet standing at the left nightstand edge (glass screen)",
+      "location": "left, middle-lower, in front of the dresser",
+      "beyond": ""
+    }
+  ],
+  "edges": "Left: window with black shade, green plant leaves, and carpet and baseboard. Right: edge of a black furniture piece at lower right, and the hallway opening with trim. Top: tray ceiling and the ceiling fan blades cut off. Bottom: grey carpet and the cream rug."
+}

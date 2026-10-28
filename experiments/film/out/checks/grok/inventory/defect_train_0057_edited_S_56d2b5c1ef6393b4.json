@@ -1,0 +1,89 @@
+{
+  "items": [
+    {
+      "id": "S1",
+      "category": "window",
+      "description": "Left tall white double-hung window, 2 sashes each with 2x2 grid (6 visible panes), dark grey roller shade pulled down at top",
+      "location": "left, top to middle, behind the table",
+      "beyond": "blue sky with white clouds, dry grassy field, dark wooden rail fence, distant house on horizon"
+    },
+    {
+      "id": "S2",
+      "category": "window",
+      "description": "Centre tall white double-hung window, grid panes, dark grey roller shade at top, chandelier hangs in front",
+      "location": "centre, top to middle",
+      "beyond": "blue sky with clouds, dry field, dark rail fence, a couple of houses on the horizon"
+    },
+    {
+      "id": "S3",
+      "category": "window",
+      "description": "Right tall white double-hung window, grid panes, dark grey roller shade at top",
+      "location": "right of centre, top to middle",
+      "beyond": "blue sky, dry field, rail fence, distant houses on horizon; reflection of stone fireplace at lower right"
+    },
+    {
+      "id": "S4",
+      "category": "ceiling_light",
+      "description": "Chandelier/pendant made of dark brown wooden beads in draped strands, with visible bulbs; 1 fixture",
+      "location": "top centre, cut off by top edge",
+      "beyond": ""
+    },
+    {
+      "id": "S5",
+      "category": "furniture",
+      "description": "Rectangular wooden dining table with thick square legs, weathered brown top",
+      "location": "centre to left, middle to bottom",
+      "beyond": ""
+    },
+    {
+      "id": "S6",
+      "category": "furniture",
+      "description": "Dark mauve/burgundy velvet curved-back dining chairs, 4 visible (2 near the front, 2 behind the table)",
+      "location": "centre, around the table",
+      "beyond": ""
+    },
+    {
+      "id": "S7",
+      "category": "furniture",
+      "description": "Cream/beige upholstered host chairs at table ends, 2 (one each side)",
+      "location": "left edge and right edge, bottom",
+      "beyond": ""
+    },
+    {
+      "id": "S8",
+      "category": "decor",
+      "description": "Large white/pink pedestal bowl centrepiece with dried moss-like filler",
+      "location": "centre, on the table",
+      "beyond": ""
+    },
+    {
+      "id": "S9",
+      "category": "decor",
+      "description": "Tall potted plant with large glossy dark green and bronze leaves",
+      "location": "right edge, middle to bottom",
+      "beyond": ""
+    },
+    {
+      "id": "S10",
+      "category": "decor",
+      "description": "Small round side table with a candle/jar and a vase of dried pink branches (seen as reflection/in window area)",
+      "location": "left, middle, in front of left window",
+      "beyond": ""
+    },
+    {
+      "id": "S11",
+      "category": "built_in",
+      "description": "Glossy counter edge (kitchen island) in foreground, out of focus",
+      "location": "bottom edge, centre to right",
+      "beyond": ""
+    },
+    {
+      "id": "S12",
+      "category": "decor",
+      "description": "Patterned dark rug under the table, partly visible",
+      "location": "bottom centre, under chairs",
+      "beyond": ""
+    }
+  ],
+  "edges": "Left: cream beige chair and wall edge, window frame. Right: plant, beige chair, wall edge with window trim. Top: roller shades and chandelier cut off. Bottom: foreground counter edge, chairs and rug cut off."
+}

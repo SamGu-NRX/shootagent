@@ -4,3 +4,6 @@ out/checks_dev/
 out/*.log
 out/parallax/*_depth_*.jpg
 out/synth_sweep/**/*.sheet.jpg
+out/**/*.log
+out/grok/repeats/**/*.sheet.jpg
+out/grok/repeats/**/inventory/

@@ -5,9 +5,9 @@
   "verdict": "fail",
   "reasons": [
     "structure not in the first frame: 0.55% of the frame from t=5.25s at [0.777, 0.285, 0.857, 0.494]",
-    "a straight edge bends by 2.04 px from t=4.5s at [0.839, 0.031, 0.865, 1.196]",
+    "a straight edge bends by 1.71 px from t=5.25s at [0.853, 0.026, 0.858, 0.663]",
     "new straight edges (0.371 frame diagonals) from t=5.5s at [0.787, 0.48, 0.849, 0.481]",
-    "judge (high confidence): window (or mirror) with lamp reflection on the wall between bathroom doorway and open door appeared at t=3.5s (right-center of frame, on the wall left of the open door)"
+    "judge: window new at FRAME 5: A new window with black shade appears on the wall right of the bathroom opening, where the photo shows plain wall with a switch/outlet. It looks like a duplicate of the right window and lamp. (sky, white window panes and a lamp reflected)"
   ],
   "signals": {
     "endpoint_start": {
@@ -132,13 +132,13 @@
     "lines": {
       "pass": false,
       "segments": 80,
-      "bend_px": 2.04,
-      "bend_at_s": 4.5,
+      "bend_px": 1.71,
+      "bend_at_s": 5.25,
       "bend_box": [
-        0.839,
-        0.031,
-        0.865,
-        1.196
+        0.853,
+        0.026,
+        0.858,
+        0.663
       ],
       "new_diag": 0.371,
       "new_at_s": 5.5,
@@ -154,22 +154,50 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "window (or mirror) with lamp reflection on the wall between bathroom doorway and open door",
-          "change": "appeared",
-          "first_frame": "t=3.5s",
-          "where": "right-center of frame, on the wall left of the open door"
+          "frame": "FRAME 5",
+          "kind": "new",
+          "category": "window",
+          "item_id": "NEW",
+          "description": "A new window with black shade appears on the wall right of the bathroom opening, where the photo shows plain wall with a switch/outlet. It looks like a duplicate of the right window and lamp.",
+          "where": "sky, white window panes and a lamp reflected",
+          "in_photo_view": true,
+          "confidence": "high"
         }
       ],
-      "confidence": "high",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 5",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S13",
+          "description": "The outlet low on the wall right of the bathroom opening is not visible or is hard to see. The wall near it is visible.",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 27,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0091
+      "usd_check": 0.0788,
+      "usd_inventory": 0.0,
+      "usd": 0.0788,
+      "tokens_check": [
+        15047,
+        4338
+      ],
+      "usd_check_uncached": 0.0735
     }
   },
   "frames": {
@@ -190,17 +218,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_paste.sheet.jpg",
   "timing_s": {
-    "decode": 0.35,
-    "endpoint": 0.24,
-    "flow": 1.22,
-    "motion_appearance": 0.69,
-    "lines": 1.9,
-    "judge": 5.34,
-    "total": 9.79
+    "decode": 0.61,
+    "endpoint": 0.49,
+    "flow": 2.49,
+    "motion_appearance": 1.02,
+    "lines": 2.73,
+    "judge": 22.7,
+    "total": 30.1
   },
   "expected": "fail",
   "case": "defect_train_0054",

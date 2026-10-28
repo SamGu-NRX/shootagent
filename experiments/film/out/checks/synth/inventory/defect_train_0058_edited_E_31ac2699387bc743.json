@@ -1,0 +1,89 @@
+{
+  "items": [
+    {
+      "id": "E1",
+      "category": "door",
+      "description": "Exterior door, white, single leaf, closed, with full glass pane (one large light), black lever handle and hinges, white trim",
+      "location": "centre, middle, behind the dining table",
+      "beyond": "Glass shows deck with white railing, distant houses, plains and hazy mountains under pale sky"
+    },
+    {
+      "id": "E2",
+      "category": "window",
+      "description": "Tall white double-hung window with two sashes (upper and lower panes), dark roller shade partly lowered at top",
+      "location": "left, middle, left of the door",
+      "beyond": "Sky, dry grass field/hillside, white deck railing, distant horizon"
+    },
+    {
+      "id": "E3",
+      "category": "window",
+      "description": "Tall white-framed windows stacked with transom panes, multiple panes, in the adjacent raised area",
+      "location": "right, top to middle, behind the plant",
+      "beyond": "Interior/bright light; not clearly visible"
+    },
+    {
+      "id": "E4",
+      "category": "ceiling_light",
+      "description": "Large black wooden-bead chandelier with draped strands, a rope-wrapped top ring, and visible bulbs; one fixture",
+      "location": "top left, hanging over the table",
+      "beyond": ""
+    },
+    {
+      "id": "E5",
+      "category": "furniture",
+      "description": "Rectangular light-wood dining table with thick block legs",
+      "location": "bottom left to centre",
+      "beyond": ""
+    },
+    {
+      "id": "E6",
+      "category": "furniture",
+      "description": "Dark burgundy/plum velvet curved-back dining chairs with thin black legs; about 4 in front, 1 more partly visible at far left",
+      "location": "bottom, left to centre",
+      "beyond": ""
+    },
+    {
+      "id": "E7",
+      "category": "furniture",
+      "description": "Cream upholstered chair/bench back visible behind the table at the far end",
+      "location": "centre, middle, below the door",
+      "beyond": ""
+    },
+    {
+      "id": "E8",
+      "category": "decor",
+      "description": "White round pedestal bowl with moss-like filler as table centrepiece",
+      "location": "left, middle, on the table",
+      "beyond": ""
+    },
+    {
+      "id": "E9",
+      "category": "decor",
+      "description": "Tall artificial rubber-plant in a white planter with gold legs/stand",
+      "location": "right, middle to bottom",
+      "beyond": ""
+    },
+    {
+      "id": "E10",
+      "category": "decor",
+      "description": "Black and white striped area rug under the table",
+      "location": "bottom, centre",
+      "beyond": ""
+    },
+    {
+      "id": "E11",
+      "category": "decor",
+      "description": "Small black wire plant stand or side table",
+      "location": "bottom right",
+      "beyond": ""
+    },
+    {
+      "id": "E12",
+      "category": "built_in",
+      "description": "White baseboard trim along the wall; light wood flooring",
+      "location": "right, bottom",
+      "beyond": ""
+    }
+  ],
+  "edges": "Left: the window, the table end and a chair are cut off. Right: the raised windows, plant and planter are cut off. Top: the chandelier and ceiling are cut off. Bottom: the chairs, rug and floor are cut off."
+}

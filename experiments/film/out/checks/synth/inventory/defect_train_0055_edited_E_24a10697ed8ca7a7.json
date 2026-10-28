@@ -1,0 +1,131 @@
+{
+  "items": [
+    {
+      "id": "E1",
+      "category": "door",
+      "description": "White five-panel interior door, standing open, with black hinges and black lever handle, seen through the glass",
+      "location": "left, upper to middle, behind the glass shower door",
+      "beyond": "Dim room or closet interior behind it with beige walls"
+    },
+    {
+      "id": "E2",
+      "category": "door",
+      "description": "Frameless glass shower door with black hinges and black D-shaped pull handle, closed, with fixed glass panel beside it",
+      "location": "left-centre, in front of the open white door",
+      "beyond": "Shower and white door visible through the glass"
+    },
+    {
+      "id": "E3",
+      "category": "door",
+      "description": "White five/six-panel closed interior door with black lever handle, in white casing",
+      "location": "right-centre, in the hallway beyond the shower wall",
+      "beyond": ""
+    },
+    {
+      "id": "E4",
+      "category": "opening",
+      "description": "Doorway on the right with white trim and baseboard leading into a bedroom",
+      "location": "right, upper to middle",
+      "beyond": "Bedroom with carpet, round black-framed mirror, dark navy cabinet or sideboard with arched doors, a recessed light and a window"
+    },
+    {
+      "id": "E5",
+      "category": "opening",
+      "description": "Open walk-in shower entry with frameless glass panels, black hardware, and a dark hex-tile floor with linear drain",
+      "location": "centre",
+      "beyond": "White marble-look tile walls, bench, niche, brass fixtures"
+    },
+    {
+      "id": "E6",
+      "category": "window",
+      "description": "Small frosted or bright window inside the shower, above the bench, behind the glass panel",
+      "location": "centre-right, middle",
+      "beyond": "Bright, blown-out, no detail visible"
+    },
+    {
+      "id": "E7",
+      "category": "ceiling_light",
+      "description": "Recessed round light in the shower ceiling",
+      "location": "top centre",
+      "beyond": ""
+    },
+    {
+      "id": "E8",
+      "category": "ceiling_light",
+      "description": "Recessed round light in the bedroom ceiling",
+      "location": "top right",
+      "beyond": ""
+    },
+    {
+      "id": "E9",
+      "category": "ceiling_light",
+      "description": "Recessed round light in the bedroom ceiling, further inside",
+      "location": "top right, in the doorway, near the middle",
+      "beyond": ""
+    },
+    {
+      "id": "E10",
+      "category": "wall_plate",
+      "description": "White single rocker light switch plate",
+      "location": "left, middle-low, on the wall beside the white door casing",
+      "beyond": ""
+    },
+    {
+      "id": "E11",
+      "category": "built_in",
+      "description": "Shower with large white marble-look tile walls, a mosaic accent strip, a built-in tiled bench, a recessed niche with shelf, a brass shower head and a brass valve handle",
+      "location": "centre",
+      "beyond": ""
+    },
+    {
+      "id": "E12",
+      "category": "built_in",
+      "description": "Vanity or cabinet with two drawers with black bar pulls, seen as a reflection in the glass",
+      "location": "left, bottom",
+      "beyond": ""
+    },
+    {
+      "id": "E13",
+      "category": "built_in",
+      "description": "Dark large-format tile floor laid in a diagonal pattern, with white baseboards and a wide white-trimmed wall corner or pier",
+      "location": "bottom, across the width",
+      "beyond": ""
+    },
+    {
+      "id": "E14",
+      "category": "furniture",
+      "description": "Dark navy sideboard with arched cabinet doors and black pulls",
+      "location": "right, middle, in the bedroom",
+      "beyond": ""
+    },
+    {
+      "id": "E15",
+      "category": "decor",
+      "description": "Round mirror with a thin black frame on the wall above the sideboard",
+      "location": "right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "E16",
+      "category": "decor",
+      "description": "Two black candlestick holders and a small vase on the sideboard",
+      "location": "right, middle",
+      "beyond": ""
+    },
+    {
+      "id": "E17",
+      "category": "decor",
+      "description": "Light area rug on the bedroom carpet",
+      "location": "right, middle-bottom",
+      "beyond": ""
+    },
+    {
+      "id": "E18",
+      "category": "decor",
+      "description": "Bottle and folded white towel on the shower bench",
+      "location": "centre, lower middle",
+      "beyond": ""
+    }
+  ],
+  "edges": "Left: the wall and white door casing, with the glass vanity reflection cut off. Right: the white-trimmed wall and doorway edge. Top: the ceiling and the tops of the door casings. Bottom: the dark tile floor and the lower glass panel."
+}

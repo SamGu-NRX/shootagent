@@ -40,24 +40,48 @@ def _scene(h=360, w=640, seed=0):
     return np.clip(img, 0, 255).astype(np.uint8)
 
 
-def test_chain_maps_track_a_known_push_in_to_a_pixel():
-    """Fails if the frame-k -> frame-0 map drifts (chained dense flow alone was off by >9 px at p95)."""
+def _push_in(h=360, w=640, steps=13):
+    """Frames of a 12% push-in over 3 s at 0.25 s steps, and each frame's frame-px -> source-px matrix."""
     src = _scene(720, 1280)
-    h, w = 360, 640
     frames, to_src = [], []
-    for k in range(13):
-        z = 1 + 0.12 * k / 12  # 12% push-in over 3 s at 0.25 s steps
-        s = 2 / z  # source px per frame px
-        B = np.array([[s, 0, 640 - s * w / 2], [0, s, 360 - s * h / 2], [0, 0, 1]])  # frame px -> source px
+    for k in range(steps):
+        s = 2 / (1 + 0.12 * k / (steps - 1))  # source px per frame px
+        B = np.array([[s, 0, 640 - s * w / 2], [0, s, 360 - s * h / 2], [0, 0, 1]])
         frames.append(cv2.warpAffine(src, B[:2], (w, h), flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP))
         to_src.append(B)
-    chain = cc.Chain(frames)
-    k = len(frames) - 1
+    return frames, to_src
+
+
+@pytest.fixture(scope="module")
+def push_in_chain():
+    frames, to_src = _push_in()
+    return cc.Chain(frames), to_src
+
+
+def test_chain_maps_track_a_known_push_in_to_a_pixel(push_in_chain):
+    """Fails if the frame-k -> frame-0 map drifts (chained dense flow alone was off by >9 px at p95)."""
+    chain, to_src = push_in_chain
+    h, w = chain.shape
+    k = len(to_src) - 1
     T = np.linalg.inv(to_src[0]) @ to_src[k]  # frame k -> frame 0
     ys, xs = np.mgrid[0:h, 0:w]
     gt = np.stack([T[0, 0] * xs + T[0, 2], T[1, 1] * ys + T[1, 2]], -1)
     err = np.linalg.norm(chain.maps[k] - gt, axis=-1)[10:-10, 10:-10]
     assert np.percentile(err, 95) < 1.5
+
+
+def test_forward_flags_points_that_left_the_frame(push_in_chain):
+    """Fails if frame-0 points pushed out of view are reported as tracked (the source of line boxes far
+    outside the frame on real clips) or if points still in view are dropped."""
+    chain, to_src = push_in_chain
+    h, w = chain.shape
+    k = len(to_src) - 1
+    pts0 = np.array([[w / 2, h / 2], [w * 0.4, h * 0.6], [3, 3], [w - 4, h / 2]], np.float32)
+    x, ok = chain.forward(k, pts0)
+    T = np.linalg.inv(to_src[k]) @ to_src[0]  # frame 0 -> frame k
+    truth = pts0 * T[0, 0] + T[:2, 2]
+    assert ok.tolist() == [True, True, False, False]
+    assert np.abs(x[:2] - truth[:2]).max() < 1.0
 
 
 def test_truck_disocclusion_matches_the_gap_a_near_block_opens(monkeypatch):

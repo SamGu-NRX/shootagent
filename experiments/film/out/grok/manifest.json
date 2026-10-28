@@ -1,0 +1,34 @@
+[
+  {
+    "clip": "C:/Users/sgu07/AppData/Local/Temp/filmlab/grok/T1.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0054/edited.jpg",
+    "end": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0055/edited.jpg",
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "second door leaf in the right-hand doorway ~3.0 s; doorway now leads straight into the shower (0054 shows a hallway)"
+  },
+  {
+    "clip": "C:/Users/sgu07/AppData/Local/Temp/filmlab/grok/T2.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0057/edited.jpg",
+    "end": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0058/edited.jpg",
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "white deck stair and railing outside the right-hand window from ~1.8 s (0057 shows open field)"
+  },
+  {
+    "clip": "C:/Users/sgu07/AppData/Local/Temp/filmlab/grok/T3.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0058/edited.jpg",
+    "end": null,
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "double light-switch plate beside the door; the revealed second window is real"
+  },
+  {
+    "clip": "C:/Users/sgu07/AppData/Local/Temp/filmlab/grok/T4.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0060/edited.jpg",
+    "end": null,
+    "expected": "fail",
+    "variant": "grok",
+    "corruption": "four cone pendant lights over the round table from 1.2 s; house ornament reshapes into a faceted block at 3.6 s"
+  }
+]

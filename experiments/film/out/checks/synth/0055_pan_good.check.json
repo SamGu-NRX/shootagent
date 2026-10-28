@@ -139,15 +139,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "low",
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 3",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "switch plate at the left edge is mostly cut off",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 21,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0055
+      "usd_check": 0.1036,
+      "usd_inventory": 0.0,
+      "usd": 0.1036,
+      "tokens_check": [
+        14843,
+        6868
+      ],
+      "usd_check_uncached": 0.0984
     }
   },
   "frames": {
@@ -168,17 +192,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_good.sheet.jpg",
   "timing_s": {
-    "decode": 0.33,
-    "endpoint": 0.22,
-    "flow": 1.11,
-    "motion_appearance": 0.65,
-    "lines": 2.09,
-    "judge": 5.98,
-    "total": 10.42
+    "decode": 3.07,
+    "endpoint": 2.48,
+    "flow": 4.59,
+    "motion_appearance": 1.3,
+    "lines": 5.26,
+    "judge": 32.75,
+    "total": 49.58
   },
   "expected": "pass",
   "case": "defect_train_0055",

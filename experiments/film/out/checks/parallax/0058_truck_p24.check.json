@@ -107,7 +107,7 @@
     "lines": {
       "pass": true,
       "segments": 80,
-      "bend_px": 1.44,
+      "bend_px": 1.01,
       "bend_at_s": 4.8,
       "bend_box": [
         0.809,
@@ -124,15 +124,28 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "low",
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [],
+      "inventory_items": 13,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0075
+      "usd_check": 0.0624,
+      "usd_inventory": 0.0,
+      "usd": 0.0624,
+      "tokens_check": [
+        19205,
+        1656
+      ],
+      "usd_check_uncached": 0.055
     }
   },
   "frames": {
@@ -153,17 +166,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_truck_p24.sheet.jpg",
   "timing_s": {
-    "decode": 0.65,
-    "endpoint": 0.27,
-    "flow": 0.89,
-    "motion_appearance": 0.58,
-    "lines": 2.79,
-    "judge": 4.88,
-    "total": 10.12
+    "decode": 0.63,
+    "endpoint": 0.31,
+    "flow": 1.53,
+    "motion_appearance": 0.64,
+    "lines": 1.95,
+    "judge": 11.09,
+    "total": 16.22
   },
   "expected": "pass",
   "case": "defect_train_0058",

@@ -5,10 +5,9 @@
   "verdict": "fail",
   "reasons": [
     "structure not in the first frame: 4.71% of the frame from t=4.0s at [0.706, 0.141, 0.965, 0.671]",
-    "a straight edge bends by 48.54 px from t=5.0s at [0.274, 0.485, 0.794, 0.711]",
+    "a straight edge bends by 6.92 px from t=4.0s at [0.742, 0.113, 0.975, 0.219]",
     "new straight edges (1.975 frame diagonals) from t=3.75s at [0.727, 0.227, 0.866, 0.245]",
-    "straight edges vanished (0.16 frame diagonals) from t=4.5s at [0.761, 0.121, 0.786, 0.226]",
-    "judge (medium confidence): window with dark shade (new window on right wall where the plant was) appeared at t=3.5s (right side of frame, mid-height, replacing the wall and plant area)"
+    "judge: window new at Frame 5: A new double-hung window with roller shade and a ghost of a chandelier appears on the right, where the photo shows wall and plant. It looks like a translucent overlay of the left window. (sky, field, deck railing); other missing at Frame 5: tall right window mostly replaced by the new window overlay (); other missing at Frame 8: plant mostly gone or faded behind the new window ()"
   ],
   "signals": {
     "endpoint_start": {
@@ -133,13 +132,13 @@
     "lines": {
       "pass": false,
       "segments": 80,
-      "bend_px": 48.54,
-      "bend_at_s": 5.0,
+      "bend_px": 6.92,
+      "bend_at_s": 4.0,
       "bend_box": [
-        0.274,
-        0.485,
-        0.794,
-        0.711
+        0.742,
+        0.113,
+        0.975,
+        0.219
       ],
       "new_diag": 1.975,
       "new_at_s": 3.75,
@@ -149,33 +148,76 @@
         0.866,
         0.245
       ],
-      "gone_diag": 0.16,
-      "gone_at_s": 4.5,
-      "gone_box": [
-        0.761,
-        0.121,
-        0.786,
-        0.226
-      ]
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "window with dark shade (new window on right wall where the plant was)",
-          "change": "appeared",
-          "first_frame": "t=3.5s",
-          "where": "right side of frame, mid-height, replacing the wall and plant area"
+          "frame": "Frame 5",
+          "kind": "new",
+          "category": "window",
+          "item_id": "NEW",
+          "description": "A new double-hung window with roller shade and a ghost of a chandelier appears on the right, where the photo shows wall and plant. It looks like a translucent overlay of the left window.",
+          "where": "sky, field, deck railing",
+          "in_photo_view": true,
+          "confidence": "medium"
+        },
+        {
+          "frame": "Frame 5",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S4",
+          "description": "tall right window mostly replaced by the new window overlay",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
+        },
+        {
+          "frame": "Frame 8",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S10",
+          "description": "plant mostly gone or faded behind the new window",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "medium"
         }
       ],
-      "confidence": "medium",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "Frame 1",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "black wire stand not visible",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 13,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0083
+      "usd_check": 0.053,
+      "usd_inventory": 0.0,
+      "usd": 0.053,
+      "tokens_check": [
+        14437,
+        1904
+      ],
+      "usd_check_uncached": 0.0479
     }
   },
   "frames": {
@@ -196,17 +238,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_paste.sheet.jpg",
   "timing_s": {
-    "decode": 0.42,
-    "endpoint": 0.36,
-    "flow": 1.21,
-    "motion_appearance": 0.72,
-    "lines": 2.5,
-    "judge": 3.62,
-    "total": 8.88
+    "decode": 0.76,
+    "endpoint": 0.6,
+    "flow": 2.58,
+    "motion_appearance": 1.38,
+    "lines": 4.31,
+    "judge": 12.29,
+    "total": 22.03
   },
   "expected": "fail",
   "case": "defect_train_0058",

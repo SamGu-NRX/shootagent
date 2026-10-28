@@ -140,15 +140,49 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S9",
+            "description": "small recessed light at upper left not visible beyond a hint",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "FRAME 8",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S7",
+            "description": "ceiling fan no longer visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0072
+        "usd_check": 0.0664,
+        "usd_inventory": 0.0,
+        "usd": 0.0664,
+        "tokens_check": [
+          15047,
+          3098
+        ],
+        "usd_check_uncached": 0.0611
       }
     },
     "frames": {
@@ -169,17 +203,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.38,
-      "endpoint": 0.22,
-      "flow": 1.17,
-      "motion_appearance": 0.71,
-      "lines": 1.91,
-      "judge": 11.5,
-      "total": 15.97
+      "decode": 0.69,
+      "endpoint": 0.4,
+      "flow": 2.57,
+      "motion_appearance": 1.09,
+      "lines": 3.53,
+      "judge": 35.13,
+      "total": 43.56
     },
     "expected": "pass",
     "case": "defect_train_0054",
@@ -194,9 +229,9 @@
     "verdict": "fail",
     "reasons": [
       "structure not in the first frame: 0.55% of the frame from t=5.25s at [0.777, 0.285, 0.857, 0.494]",
-      "a straight edge bends by 2.04 px from t=4.5s at [0.839, 0.031, 0.865, 1.196]",
+      "a straight edge bends by 1.71 px from t=5.25s at [0.853, 0.026, 0.858, 0.663]",
       "new straight edges (0.371 frame diagonals) from t=5.5s at [0.787, 0.48, 0.849, 0.481]",
-      "judge (high confidence): window (or mirror) with lamp reflection on the wall between bathroom doorway and open door appeared at t=3.5s (right-center of frame, on the wall left of the open door)"
+      "judge: window new at FRAME 5: A new window with black shade appears on the wall right of the bathroom opening, where the photo shows plain wall with a switch/outlet. It looks like a duplicate of the right window and lamp. (sky, white window panes and a lamp reflected)"
     ],
     "signals": {
       "endpoint_start": {
@@ -321,13 +356,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 2.04,
-        "bend_at_s": 4.5,
+        "bend_px": 1.71,
+        "bend_at_s": 5.25,
         "bend_box": [
-          0.839,
-          0.031,
-          0.865,
-          1.196
+          0.853,
+          0.026,
+          0.858,
+          0.663
         ],
         "new_diag": 0.371,
         "new_at_s": 5.5,
@@ -343,22 +378,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "window (or mirror) with lamp reflection on the wall between bathroom doorway and open door",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "right-center of frame, on the wall left of the open door"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "A new window with black shade appears on the wall right of the bathroom opening, where the photo shows plain wall with a switch/outlet. It looks like a duplicate of the right window and lamp.",
+            "where": "sky, white window panes and a lamp reflected",
+            "in_photo_view": true,
+            "confidence": "high"
           }
         ],
-        "confidence": "high",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 5",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S13",
+            "description": "The outlet low on the wall right of the bathroom opening is not visible or is hard to see. The wall near it is visible.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0091
+        "usd_check": 0.0788,
+        "usd_inventory": 0.0,
+        "usd": 0.0788,
+        "tokens_check": [
+          15047,
+          4338
+        ],
+        "usd_check_uncached": 0.0735
       }
     },
     "frames": {
@@ -379,17 +442,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.35,
-      "endpoint": 0.24,
-      "flow": 1.22,
-      "motion_appearance": 0.69,
-      "lines": 1.9,
-      "judge": 5.34,
-      "total": 9.79
+      "decode": 0.61,
+      "endpoint": 0.49,
+      "flow": 2.49,
+      "motion_appearance": 1.02,
+      "lines": 2.73,
+      "judge": 22.7,
+      "total": 30.1
     },
     "expected": "fail",
     "case": "defect_train_0054",
@@ -403,8 +467,7 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 5.77 px from t=5.5s at [0.22, 0.162, 0.232, 0.491]",
-      "judge (medium confidence): left window frame (large window beside the artwork) changed_shape at t=3.5s (upper left, right edge of the window frame bows and curves)"
+      "a straight edge bends by 5.66 px from t=5.75s at [0.22, 0.163, 0.231, 0.491]"
     ],
     "signals": {
       "endpoint_start": {
@@ -524,12 +587,12 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 5.77,
-        "bend_at_s": 5.5,
+        "bend_px": 5.66,
+        "bend_at_s": 5.75,
         "bend_box": [
           0.22,
-          0.162,
-          0.232,
+          0.163,
+          0.231,
           0.491
         ],
         "new_diag": 0.0,
@@ -541,22 +604,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": false,
-        "changed": true,
-        "changes": [
+        "pass": true,
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
           {
-            "object": "left window frame (large window beside the artwork)",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "upper left, right edge of the window frame bows and curves"
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S9",
+            "description": "small recessed light at upper left not clearly visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
           }
         ],
-        "confidence": "medium",
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0062
+        "usd_check": 0.1246,
+        "usd_inventory": 0.0,
+        "usd": 0.1246,
+        "tokens_check": [
+          15047,
+          8914
+        ],
+        "usd_check_uncached": 0.1192
       }
     },
     "frames": {
@@ -577,17 +657,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.44,
-      "endpoint": 0.27,
-      "flow": 1.51,
-      "motion_appearance": 0.86,
-      "lines": 1.98,
-      "judge": 2.93,
-      "total": 8.04
+      "decode": 1.64,
+      "endpoint": 0.52,
+      "flow": 3.69,
+      "motion_appearance": 1.25,
+      "lines": 3.05,
+      "judge": 42.02,
+      "total": 52.25
     },
     "expected": "fail",
     "case": "defect_train_0054",
@@ -736,15 +817,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0587,
+        "usd_inventory": 0.0,
+        "usd": 0.0587,
+        "tokens_check": [
+          15047,
+          2324
+        ],
+        "usd_check_uncached": 0.0533
       }
     },
     "frames": {
@@ -765,17 +859,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.34,
-      "endpoint": 0.23,
-      "flow": 1.11,
-      "motion_appearance": 0.65,
-      "lines": 2.05,
-      "judge": 2.67,
-      "total": 7.11
+      "decode": 0.5,
+      "endpoint": 0.38,
+      "flow": 2.02,
+      "motion_appearance": 0.84,
+      "lines": 2.82,
+      "judge": 13.17,
+      "total": 19.8
     },
     "expected": "pass",
     "case": "defect_train_0054",
@@ -791,7 +886,7 @@
     "reasons": [
       "structure not in the first frame: 0.54% of the frame from t=4.25s at [0.715, 0.307, 0.784, 0.493]",
       "new straight edges (0.393 frame diagonals) from t=5.75s at [0.692, 0.167, 0.757, 0.189]",
-      "judge (high confidence): window with lamp (extra window on wall) appeared at t=3.5s (right-center wall between the bathroom doorway and the open door, above the foot of the bed)"
+      "judge: window new at FRAME 5: A new window with a lamp visible appears on the wall between the bathroom opening and the door, where the photo shows plain wall. It looks like a mirror or ghost reflection but reads as a window. (Window showing sky and a lamp reflection)"
     ],
     "signals": {
       "endpoint_start": {
@@ -919,8 +1014,8 @@
         "bend_px": 0.12,
         "bend_at_s": 0.75,
         "bend_box": [
-          0.007,
-          0.014,
+          0.008,
+          0.101,
           0.01,
           0.263
         ],
@@ -938,22 +1033,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "window with lamp (extra window on wall)",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "right-center wall between the bathroom doorway and the open door, above the foot of the bed"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "A new window with a lamp visible appears on the wall between the bathroom opening and the door, where the photo shows plain wall. It looks like a mirror or ghost reflection but reads as a window.",
+            "where": "Window showing sky and a lamp reflection",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "high",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 5",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S13",
+            "description": "Outlet on the wall right of the bathroom opening is not visible.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0081
+        "usd_check": 0.0822,
+        "usd_inventory": 0.0,
+        "usd": 0.0822,
+        "tokens_check": [
+          15047,
+          4675
+        ],
+        "usd_check_uncached": 0.0768
       }
     },
     "frames": {
@@ -974,17 +1097,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.44,
-      "endpoint": 0.37,
-      "flow": 1.1,
-      "motion_appearance": 0.7,
-      "lines": 2.14,
-      "judge": 5.05,
-      "total": 9.85
+      "decode": 0.67,
+      "endpoint": 0.45,
+      "flow": 11.67,
+      "motion_appearance": 1.35,
+      "lines": 4.53,
+      "judge": 27.56,
+      "total": 46.33
     },
     "expected": "fail",
     "case": "defect_train_0054",
@@ -998,8 +1122,7 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 6.55 px from t=4.75s at [0.09, 0.131, 0.219, 1.841]",
-      "judge (low confidence): window on left wall (frame edge bowed/curved) changed_shape at t=3.5s (left edge of frame, window and wall edge curved)"
+      "a straight edge bends by 6.55 px from t=4.75s at [0.09, 0.131, 0.103, 0.488]"
     ],
     "signals": {
       "endpoint_start": {
@@ -1124,8 +1247,8 @@
         "bend_box": [
           0.09,
           0.131,
-          0.219,
-          1.841
+          0.103,
+          0.488
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -1136,22 +1259,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": false,
-        "changed": true,
-        "changes": [
+        "pass": true,
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
           {
-            "object": "window on left wall (frame edge bowed/curved)",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "left edge of frame, window and wall edge curved"
+            "frame": "FRAME 3",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S6",
+            "description": "left window no longer visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
           }
         ],
-        "confidence": "low",
+        "inventory_items": 27,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0062
+        "usd_check": 0.1169,
+        "usd_inventory": 0.0,
+        "usd": 0.1169,
+        "tokens_check": [
+          15047,
+          8149
+        ],
+        "usd_check_uncached": 0.1116
       }
     },
     "frames": {
@@ -1172,17 +1312,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.24,
-      "flow": 1.12,
-      "motion_appearance": 0.7,
-      "lines": 2.13,
-      "judge": 3.44,
-      "total": 8.01
+      "decode": 0.76,
+      "endpoint": 0.59,
+      "flow": 3.71,
+      "motion_appearance": 1.83,
+      "lines": 4.15,
+      "judge": 42.42,
+      "total": 53.7
     },
     "expected": "fail",
     "case": "defect_train_0054",
@@ -1331,15 +1472,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 5",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "switch plate is cut off at left edge, only a sliver visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0547,
+        "usd_inventory": 0.0238,
+        "usd": 0.0785,
+        "tokens_check": [
+          14843,
+          1976
+        ],
+        "usd_check_uncached": 0.0494
       }
     },
     "frames": {
@@ -1360,17 +1525,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.38,
-      "endpoint": 0.24,
-      "flow": 1.01,
-      "motion_appearance": 0.67,
-      "lines": 2.24,
-      "judge": 6.41,
-      "total": 10.99
+      "decode": 1.4,
+      "endpoint": 0.56,
+      "flow": 2.91,
+      "motion_appearance": 1.08,
+      "lines": 5.97,
+      "judge": 24.71,
+      "total": 36.72
     },
     "expected": "pass",
     "case": "defect_train_0055",
@@ -1386,7 +1552,7 @@
     "reasons": [
       "structure not in the first frame: 0.10% of the frame from t=5.75s at [0.673, 0.517, 0.707, 0.556]",
       "new straight edges (1.126 frame diagonals) from t=5.75s at [0.678, 0.192, 0.679, 0.498]",
-      "judge (medium confidence): white paneled door-like panel on the pillar face appeared at t=3.5s (center-right, on the front face of the wide pillar right of the shower)"
+      "judge: door new at FRAME 5: A second white five-panel door with a black lever handle appears on the wall pier in front of the hallway door. The photo shows only a plain beige wall pier there. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -1533,22 +1699,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "white paneled door-like panel on the pillar face",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "center-right, on the front face of the wide pillar right of the shower"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "door",
+            "item_id": "NEW",
+            "description": "A second white five-panel door with a black lever handle appears on the wall pier in front of the hallway door. The photo shows only a plain beige wall pier there.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "high"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 5",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "The switch plate is cut off at the left edge. It may be only partly visible.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0086
+        "usd_check": 0.0665,
+        "usd_inventory": 0.0,
+        "usd": 0.0665,
+        "tokens_check": [
+          14843,
+          3153
+        ],
+        "usd_check_uncached": 0.0612
       }
     },
     "frames": {
@@ -1569,17 +1763,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.41,
-      "endpoint": 0.26,
-      "flow": 1.13,
-      "motion_appearance": 0.67,
-      "lines": 2.28,
-      "judge": 5.6,
-      "total": 10.38
+      "decode": 0.78,
+      "endpoint": 0.88,
+      "flow": 3.71,
+      "motion_appearance": 1.03,
+      "lines": 5.26,
+      "judge": 18.55,
+      "total": 30.3
     },
     "expected": "fail",
     "case": "defect_train_0055",
@@ -1594,7 +1789,7 @@
     "verdict": "fail",
     "reasons": [
       "a straight edge bends by 5.74 px from t=5.25s at [0.767, 0.171, 0.777, 0.759]",
-      "judge (high confidence): wall column/pillar right of the shower (straight edge) changed_shape at t=3.5s (right-center, the beige column beside the shower glass bends and waves along its right edge)"
+      "judge: door changed at Frame 8: Door and casing are warped/curved (); other missing at Frame 8: switch plate left the frame ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -1731,22 +1926,70 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "wall column/pillar right of the shower (straight edge)",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "right-center, the beige column beside the shower glass bends and waves along its right edge"
+            "frame": "Frame 8",
+            "kind": "changed",
+            "category": "door",
+            "item_id": "S3",
+            "description": "Door and casing are warped/curved",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "Frame 8",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "switch plate left the frame",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "high",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "Frame 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S8",
+            "description": "shower ceiling light not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          },
+          {
+            "frame": "Frame 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S9",
+            "description": "hallway ceiling light not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0063
+        "usd_check": 0.0542,
+        "usd_inventory": 0.0,
+        "usd": 0.0542,
+        "tokens_check": [
+          14843,
+          1930
+        ],
+        "usd_check_uncached": 0.049
       }
     },
     "frames": {
@@ -1767,17 +2010,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.37,
-      "endpoint": 0.25,
-      "flow": 1.0,
-      "motion_appearance": 0.65,
-      "lines": 2.49,
-      "judge": 3.37,
-      "total": 8.18
+      "decode": 0.85,
+      "endpoint": 0.51,
+      "flow": 1.84,
+      "motion_appearance": 1.27,
+      "lines": 4.09,
+      "judge": 12.1,
+      "total": 20.74
     },
     "expected": "fail",
     "case": "defect_train_0055",
@@ -1926,15 +2170,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 3",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "switch plate at the left edge is mostly cut off",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.1036,
+        "usd_inventory": 0.0,
+        "usd": 0.1036,
+        "tokens_check": [
+          14843,
+          6868
+        ],
+        "usd_check_uncached": 0.0984
       }
     },
     "frames": {
@@ -1955,17 +2223,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.22,
-      "flow": 1.11,
-      "motion_appearance": 0.65,
-      "lines": 2.09,
-      "judge": 5.98,
-      "total": 10.42
+      "decode": 3.07,
+      "endpoint": 2.48,
+      "flow": 4.59,
+      "motion_appearance": 1.3,
+      "lines": 5.26,
+      "judge": 32.75,
+      "total": 49.58
     },
     "expected": "pass",
     "case": "defect_train_0055",
@@ -1981,7 +2250,7 @@
     "reasons": [
       "structure not in the first frame: 0.12% of the frame from t=4.5s at [0.59, 0.519, 0.626, 0.559]",
       "new straight edges (1.232 frame diagonals) from t=5.5s at [0.569, 0.161, 0.571, 0.505]",
-      "judge (medium confidence): white paneled door (duplicated door next to the existing door, beside the pillar) duplicated at t=3.5s (center-right, between the shower and the existing door, in front of the pillar area)"
+      "judge: door new at FRAME 5: A second white five-panel door with a black lever handle appears on the wall pier, left of the real closed door. The photo shows only a blank wall pier there. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -2128,22 +2397,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "white paneled door (duplicated door next to the existing door, beside the pillar)",
-            "change": "duplicated",
-            "first_frame": "t=3.5s",
-            "where": "center-right, between the shower and the existing door, in front of the pillar area"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "door",
+            "item_id": "NEW",
+            "description": "A second white five-panel door with a black lever handle appears on the wall pier, left of the real closed door. The photo shows only a blank wall pier there.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "high"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 3",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "switch plate at the left edge is almost out of frame",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0063
+        "usd_check": 0.103,
+        "usd_inventory": 0.0,
+        "usd": 0.103,
+        "tokens_check": [
+          14843,
+          6809
+        ],
+        "usd_check_uncached": 0.0978
       }
     },
     "frames": {
@@ -2164,17 +2461,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.22,
-      "flow": 1.0,
-      "motion_appearance": 0.7,
-      "lines": 2.15,
-      "judge": 3.32,
-      "total": 7.76
+      "decode": 0.59,
+      "endpoint": 0.61,
+      "flow": 2.66,
+      "motion_appearance": 0.83,
+      "lines": 2.86,
+      "judge": 32.57,
+      "total": 40.19
     },
     "expected": "fail",
     "case": "defect_train_0055",
@@ -2188,8 +2486,7 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 9.33 px from t=5.0s at [0.618, 0.05, 0.634, 0.927]",
-      "judge (high confidence): white wall pillar/column right of shower changed_shape at t=3.5s (center-right, the vertical pillar edge bends and curves in the frames)"
+      "a straight edge bends by 9.33 px from t=5.0s at [0.618, 0.05, 0.634, 0.927]"
     ],
     "signals": {
       "endpoint_start": {
@@ -2326,22 +2623,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": false,
-        "changed": true,
-        "changes": [
+        "pass": true,
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
           {
-            "object": "white wall pillar/column right of shower",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "center-right, the vertical pillar edge bends and curves in the frames"
+            "frame": "FRAME 3",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "switch plate at left edge is mostly cut off",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
           }
         ],
-        "confidence": "high",
+        "inventory_items": 21,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0062
+        "usd_check": 0.1013,
+        "usd_inventory": 0.0,
+        "usd": 0.1013,
+        "tokens_check": [
+          14843,
+          6634
+        ],
+        "usd_check_uncached": 0.096
       }
     },
     "frames": {
@@ -2362,17 +2676,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.23,
-      "flow": 0.98,
-      "motion_appearance": 0.63,
-      "lines": 2.04,
-      "judge": 2.78,
-      "total": 7.04
+      "decode": 0.45,
+      "endpoint": 0.3,
+      "flow": 1.77,
+      "motion_appearance": 0.69,
+      "lines": 2.46,
+      "judge": 31.58,
+      "total": 37.33
     },
     "expected": "fail",
     "case": "defect_train_0055",
@@ -2384,8 +2699,10 @@
     "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_good.mp4",
     "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
     "end": null,
-    "verdict": "pass",
-    "reasons": [],
+    "verdict": "fail",
+    "reasons": [
+      "judge: other missing at FRAME 1: foreground counter edge no longer visible ()"
+    ],
     "signals": {
       "endpoint_start": {
         "pass": true,
@@ -2508,8 +2825,8 @@
         "bend_at_s": 4.5,
         "bend_box": [
           0.137,
-          -0.02,
-          64369.658,
+          0.03,
+          0.139,
           0.369
         ],
         "new_diag": 0.0,
@@ -2521,15 +2838,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "foreground counter edge no longer visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0807,
+        "usd_inventory": 0.0,
+        "usd": 0.0807,
+        "tokens_check": [
+          14392,
+          4688
+        ],
+        "usd_check_uncached": 0.0757
       }
     },
     "frames": {
@@ -2550,17 +2891,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.34,
-      "endpoint": 0.22,
-      "flow": 0.99,
-      "motion_appearance": 0.7,
-      "lines": 2.5,
-      "judge": 2.42,
-      "total": 7.21
+      "decode": 1.08,
+      "endpoint": 0.46,
+      "flow": 4.96,
+      "motion_appearance": 1.35,
+      "lines": 3.73,
+      "judge": 23.16,
+      "total": 34.83
     },
     "expected": "pass",
     "case": "defect_train_0057",
@@ -2575,10 +2917,9 @@
     "verdict": "fail",
     "reasons": [
       "structure not in the first frame: 0.80% of the frame from t=4.75s at [0.446, 0.346, 0.535, 0.709]",
-      "a straight edge bends by 58.88 px from t=5.75s at [0.368, 0.247, 0.619, 0.541]",
+      "a straight edge bends by 6.75 px from t=4.5s at [0.368, 0.309, 0.616, 0.444]",
       "new straight edges (1.214 frame diagonals) from t=5.75s at [0.458, 0.073, 0.458, 0.235]",
-      "straight edges vanished (0.219 frame diagonals) from t=3.75s at [0.48, 0.125, 0.512, 0.587]",
-      "judge (medium confidence): window mullion/post (new vertical white column in the center window) appeared at t=3.5s (center of frame, from the top down to the bowl, in front of the center window); wooden bowl on table duplicated at t=3.5s (center of the table; a second smaller bowl shape appears beside the original, split by the column)"
+      "judge: other missing at FRAME 1: foreground counter edge no longer visible (); window changed at FRAME 5: A tall white vertical post or mullion has appeared in the middle of the centre window, hiding the bowl and part of the view. The photo has no such post. (sky, field, fence, houses); decor changed at FRAME 5: The bowl is split or obscured by the white post, so it looks like two halves. (); built_in new at FRAME 5: A new white vertical column or post stands in the centre of the centre window. It is not in the photo. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -2703,13 +3044,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 58.88,
-        "bend_at_s": 5.75,
+        "bend_px": 6.75,
+        "bend_at_s": 4.5,
         "bend_box": [
           0.368,
-          0.247,
-          0.619,
-          0.541
+          0.309,
+          0.616,
+          0.444
         ],
         "new_diag": 1.214,
         "new_at_s": 5.75,
@@ -2719,39 +3060,86 @@
           0.458,
           0.235
         ],
-        "gone_diag": 0.219,
-        "gone_at_s": 3.75,
-        "gone_box": [
-          0.48,
-          0.125,
-          0.512,
-          0.587
-        ]
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "window mullion/post (new vertical white column in the center window)",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "center of frame, from the top down to the bowl, in front of the center window"
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "foreground counter edge no longer visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           },
           {
-            "object": "wooden bowl on table",
-            "change": "duplicated",
-            "first_frame": "t=3.5s",
-            "where": "center of the table; a second smaller bowl shape appears beside the original, split by the column"
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "window",
+            "item_id": "S2",
+            "description": "A tall white vertical post or mullion has appeared in the middle of the centre window, hiding the bowl and part of the view. The photo has no such post.",
+            "where": "sky, field, fence, houses",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "decor",
+            "item_id": "S8",
+            "description": "The bowl is split or obscured by the white post, so it looks like two halves.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "built_in",
+            "item_id": "NEW",
+            "description": "A new white vertical column or post stands in the centre of the centre window. It is not in the photo.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 6",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S7",
+            "description": "Left host chair is mostly out of frame, with only a small edge visible. Right chair is still partly visible.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0069
+        "usd_check": 0.0814,
+        "usd_inventory": 0.0,
+        "usd": 0.0814,
+        "tokens_check": [
+          14392,
+          4763
+        ],
+        "usd_check_uncached": 0.0764
       }
     },
     "frames": {
@@ -2772,17 +3160,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.23,
-      "flow": 1.04,
-      "motion_appearance": 0.64,
-      "lines": 2.44,
-      "judge": 3.94,
-      "total": 8.67
+      "decode": 1.29,
+      "endpoint": 1.14,
+      "flow": 3.62,
+      "motion_appearance": 1.61,
+      "lines": 6.06,
+      "judge": 25.23,
+      "total": 39.1
     },
     "expected": "fail",
     "case": "defect_train_0057",
@@ -2796,7 +3185,8 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 5.17 px from t=5.75s at [0.482, 0.176, 0.492, 0.66]"
+      "a straight edge bends by 5.17 px from t=5.75s at [0.482, 0.176, 0.492, 0.66]",
+      "judge: other missing at FRAME 1: foreground counter edge no longer visible ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -2933,15 +3323,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "foreground counter edge no longer visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 6",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S9",
+            "description": "plant mostly out of frame",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0811,
+        "usd_inventory": 0.0,
+        "usd": 0.0811,
+        "tokens_check": [
+          14392,
+          4727
+        ],
+        "usd_check_uncached": 0.0761
       }
     },
     "frames": {
@@ -2962,17 +3387,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.34,
-      "endpoint": 0.22,
-      "flow": 1.02,
-      "motion_appearance": 0.75,
-      "lines": 2.46,
-      "judge": 2.61,
-      "total": 7.46
+      "decode": 0.47,
+      "endpoint": 0.39,
+      "flow": 1.85,
+      "motion_appearance": 1.14,
+      "lines": 3.21,
+      "judge": 24.44,
+      "total": 31.57
     },
     "expected": "fail",
     "case": "defect_train_0057",
@@ -3108,7 +3534,7 @@
         "bend_at_s": 5.25,
         "bend_box": [
           0.749,
-          0.013,
+          0.019,
           0.751,
           0.172
         ],
@@ -3121,15 +3547,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 3",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S9",
+            "description": "plant at right not yet visible; likely just out of frame",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0721,
+        "usd_inventory": 0.0,
+        "usd": 0.0721,
+        "tokens_check": [
+          14392,
+          3825
+        ],
+        "usd_check_uncached": 0.067
       }
     },
     "frames": {
@@ -3150,17 +3600,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.32,
-      "endpoint": 0.25,
-      "flow": 0.98,
-      "motion_appearance": 0.66,
-      "lines": 2.22,
-      "judge": 2.8,
-      "total": 7.28
+      "decode": 0.75,
+      "endpoint": 0.47,
+      "flow": 1.8,
+      "motion_appearance": 1.0,
+      "lines": 3.5,
+      "judge": 20.39,
+      "total": 28.0
     },
     "expected": "pass",
     "case": "defect_train_0057",
@@ -3175,10 +3626,9 @@
     "verdict": "fail",
     "reasons": [
       "structure not in the first frame: 1.34% of the frame from t=3.5s at [0.393, 0.387, 0.491, 0.807]",
-      "a straight edge bends by 61.47 px from t=4.5s at [0.249, -0.675, 93.336, 1.53]",
+      "a straight edge bends by 22.33 px from t=4.25s at [0.427, 0.28, 0.546, 0.357]",
       "new straight edges (1.602 frame diagonals) from t=4.75s at [0.339, 0.035, 0.339, 0.266]",
-      "straight edges vanished (0.345 frame diagonals) from t=3.75s at [0.403, 0.031, 0.437, 0.748]",
-      "judge (high confidence): window frame / mullion (new vertical white post) appeared at t=3.5s (center of frame, running from top to the table, in front of the bowl)"
+      "judge: decor changed at FRAME 5: Bowl is split/duplicated by a ghost white column overlay, appears as two halves (); decor new at FRAME 5: Translucent white pillar/column in the middle of the centre window that is not in the photo ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -3303,13 +3753,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 61.47,
-        "bend_at_s": 4.5,
+        "bend_px": 22.33,
+        "bend_at_s": 4.25,
         "bend_box": [
-          0.249,
-          -0.675,
-          93.336,
-          1.53
+          0.427,
+          0.28,
+          0.546,
+          0.357
         ],
         "new_diag": 1.602,
         "new_at_s": 4.75,
@@ -3319,33 +3769,55 @@
           0.339,
           0.266
         ],
-        "gone_diag": 0.345,
-        "gone_at_s": 3.75,
-        "gone_box": [
-          0.403,
-          0.031,
-          0.437,
-          0.748
-        ]
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "window frame / mullion (new vertical white post)",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "center of frame, running from top to the table, in front of the bowl"
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "decor",
+            "item_id": "S8",
+            "description": "Bowl is split/duplicated by a ghost white column overlay, appears as two halves",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "decor",
+            "item_id": "NEW",
+            "description": "Translucent white pillar/column in the middle of the centre window that is not in the photo",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "high",
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0062
+        "usd_check": 0.0797,
+        "usd_inventory": 0.0,
+        "usd": 0.0797,
+        "tokens_check": [
+          14392,
+          4585
+        ],
+        "usd_check_uncached": 0.0746
       }
     },
     "frames": {
@@ -3366,17 +3838,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.22,
-      "flow": 1.02,
-      "motion_appearance": 0.67,
-      "lines": 2.22,
-      "judge": 4.52,
-      "total": 9.03
+      "decode": 0.69,
+      "endpoint": 0.6,
+      "flow": 3.32,
+      "motion_appearance": 1.04,
+      "lines": 4.08,
+      "judge": 22.9,
+      "total": 32.69
     },
     "expected": "fail",
     "case": "defect_train_0057",
@@ -3390,7 +3863,8 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 7.81 px from t=5.75s at [0.35, 0.046, 0.364, 0.679]"
+      "a straight edge bends by 7.81 px from t=5.75s at [0.35, 0.046, 0.364, 0.679]",
+      "judge: ceiling_light changed at FRAME 5: Chandelier appears as only a small dark bead cluster with a long white cord/pole stretching down to the bowl, unlike the draped bead strands. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -3527,15 +4001,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
-        "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "pass": false,
+        "failing": [
+          {
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "ceiling_light",
+            "item_id": "S4",
+            "description": "Chandelier appears as only a small dark bead cluster with a long white cord/pole stretching down to the bowl, unlike the draped bead strands.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          }
+        ],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 12,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0509,
+        "usd_inventory": 0.0,
+        "usd": 0.0509,
+        "tokens_check": [
+          14392,
+          1710
+        ],
+        "usd_check_uncached": 0.0459
       }
     },
     "frames": {
@@ -3556,17 +4054,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.34,
-      "endpoint": 0.22,
-      "flow": 1.0,
-      "motion_appearance": 0.67,
-      "lines": 2.24,
-      "judge": 2.87,
-      "total": 7.39
+      "decode": 0.86,
+      "endpoint": 0.48,
+      "flow": 1.91,
+      "motion_appearance": 1.37,
+      "lines": 3.47,
+      "judge": 11.31,
+      "total": 19.5
     },
     "expected": "fail",
     "case": "defect_train_0057",
@@ -3701,10 +4200,10 @@
         "bend_px": 0.21,
         "bend_at_s": 3.5,
         "bend_box": [
-          0.635,
+          0.637,
           0.173,
-          0.945,
-          3.192
+          0.639,
+          0.571
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -3715,15 +4214,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "medium",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "Frame 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "Black wire stand not visible at bottom right.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.008
+        "usd_check": 0.0863,
+        "usd_inventory": 0.0,
+        "usd": 0.0863,
+        "tokens_check": [
+          14437,
+          5242
+        ],
+        "usd_check_uncached": 0.0813
       }
     },
     "frames": {
@@ -3744,17 +4267,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.4,
-      "endpoint": 0.26,
-      "flow": 1.16,
-      "motion_appearance": 0.73,
-      "lines": 2.66,
-      "judge": 2.3,
-      "total": 7.56
+      "decode": 0.87,
+      "endpoint": 0.57,
+      "flow": 3.41,
+      "motion_appearance": 1.29,
+      "lines": 4.12,
+      "judge": 25.84,
+      "total": 36.19
     },
     "expected": "pass",
     "case": "defect_train_0058",
@@ -3769,10 +4293,9 @@
     "verdict": "fail",
     "reasons": [
       "structure not in the first frame: 4.71% of the frame from t=4.0s at [0.706, 0.141, 0.965, 0.671]",
-      "a straight edge bends by 48.54 px from t=5.0s at [0.274, 0.485, 0.794, 0.711]",
+      "a straight edge bends by 6.92 px from t=4.0s at [0.742, 0.113, 0.975, 0.219]",
       "new straight edges (1.975 frame diagonals) from t=3.75s at [0.727, 0.227, 0.866, 0.245]",
-      "straight edges vanished (0.16 frame diagonals) from t=4.5s at [0.761, 0.121, 0.786, 0.226]",
-      "judge (medium confidence): window with dark shade (new window on right wall where the plant was) appeared at t=3.5s (right side of frame, mid-height, replacing the wall and plant area)"
+      "judge: window new at Frame 5: A new double-hung window with roller shade and a ghost of a chandelier appears on the right, where the photo shows wall and plant. It looks like a translucent overlay of the left window. (sky, field, deck railing); other missing at Frame 5: tall right window mostly replaced by the new window overlay (); other missing at Frame 8: plant mostly gone or faded behind the new window ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -3897,13 +4420,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 48.54,
-        "bend_at_s": 5.0,
+        "bend_px": 6.92,
+        "bend_at_s": 4.0,
         "bend_box": [
-          0.274,
-          0.485,
-          0.794,
-          0.711
+          0.742,
+          0.113,
+          0.975,
+          0.219
         ],
         "new_diag": 1.975,
         "new_at_s": 3.75,
@@ -3913,33 +4436,76 @@
           0.866,
           0.245
         ],
-        "gone_diag": 0.16,
-        "gone_at_s": 4.5,
-        "gone_box": [
-          0.761,
-          0.121,
-          0.786,
-          0.226
-        ]
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "window with dark shade (new window on right wall where the plant was)",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "right side of frame, mid-height, replacing the wall and plant area"
+            "frame": "Frame 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "A new double-hung window with roller shade and a ghost of a chandelier appears on the right, where the photo shows wall and plant. It looks like a translucent overlay of the left window.",
+            "where": "sky, field, deck railing",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "Frame 5",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S4",
+            "description": "tall right window mostly replaced by the new window overlay",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
+          },
+          {
+            "frame": "Frame 8",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S10",
+            "description": "plant mostly gone or faded behind the new window",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "Frame 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "black wire stand not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0083
+        "usd_check": 0.053,
+        "usd_inventory": 0.0,
+        "usd": 0.053,
+        "tokens_check": [
+          14437,
+          1904
+        ],
+        "usd_check_uncached": 0.0479
       }
     },
     "frames": {
@@ -3960,17 +4526,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.42,
-      "endpoint": 0.36,
-      "flow": 1.21,
-      "motion_appearance": 0.72,
-      "lines": 2.5,
-      "judge": 3.62,
-      "total": 8.88
+      "decode": 0.76,
+      "endpoint": 0.6,
+      "flow": 2.58,
+      "motion_appearance": 1.38,
+      "lines": 4.31,
+      "judge": 12.29,
+      "total": 22.03
     },
     "expected": "fail",
     "case": "defect_train_0058",
@@ -3984,8 +4551,8 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 8.01 px from t=5.0s at [0.334, 0.217, 0.363, 0.648]",
-      "judge (medium confidence): glass door (left edge of door frame / door glass pane) changed_shape at t=3.5s (center of frame, the door's left edge and glass pane bow and curve, most visibly at t=4.8s and t=6.0s)"
+      "a straight edge bends by 7.95 px from t=4.5s at [0.338, 0.222, 0.364, 0.647]",
+      "judge: door changed at FRAME 6: door frame and glass visibly warped/curved (sky, hills, houses, railing)"
     ],
     "signals": {
       "endpoint_start": {
@@ -4105,13 +4672,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 8.01,
-        "bend_at_s": 5.0,
+        "bend_px": 7.95,
+        "bend_at_s": 4.5,
         "bend_box": [
-          0.334,
-          0.217,
-          0.363,
-          0.648
+          0.338,
+          0.222,
+          0.364,
+          0.647
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -4122,22 +4689,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "glass door (left edge of door frame / door glass pane)",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "center of frame, the door's left edge and glass pane bow and curve, most visibly at t=4.8s and t=6.0s"
+            "frame": "FRAME 6",
+            "kind": "changed",
+            "category": "door",
+            "item_id": "S2",
+            "description": "door frame and glass visibly warped/curved",
+            "where": "sky, hills, houses, railing",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S11",
+            "description": "black wire stand not visible",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0085
+        "usd_check": 0.0813,
+        "usd_inventory": 0.0,
+        "usd": 0.0813,
+        "tokens_check": [
+          14437,
+          4740
+        ],
+        "usd_check_uncached": 0.0763
       }
     },
     "frames": {
@@ -4158,17 +4753,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.37,
-      "endpoint": 0.26,
-      "flow": 1.21,
-      "motion_appearance": 0.77,
-      "lines": 2.56,
-      "judge": 7.03,
-      "total": 12.25
+      "decode": 0.82,
+      "endpoint": 0.58,
+      "flow": 3.13,
+      "motion_appearance": 1.26,
+      "lines": 5.51,
+      "judge": 23.64,
+      "total": 35.01
     },
     "expected": "fail",
     "case": "defect_train_0058",
@@ -4306,7 +4902,7 @@
           0.237,
           0.285,
           0.239,
-          0.561
+          0.546
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -4317,15 +4913,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0075
+        "usd_check": 0.078,
+        "usd_inventory": 0.0,
+        "usd": 0.078,
+        "tokens_check": [
+          14437,
+          4411
+        ],
+        "usd_check_uncached": 0.073
       }
     },
     "frames": {
@@ -4346,17 +4955,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.38,
-      "endpoint": 0.24,
-      "flow": 1.02,
-      "motion_appearance": 0.68,
-      "lines": 2.39,
-      "judge": 3.35,
-      "total": 8.11
+      "decode": 0.45,
+      "endpoint": 0.36,
+      "flow": 3.23,
+      "motion_appearance": 1.02,
+      "lines": 3.32,
+      "judge": 22.37,
+      "total": 30.81
     },
     "expected": "pass",
     "case": "defect_train_0058",
@@ -4371,10 +4981,10 @@
     "verdict": "fail",
     "reasons": [
       "structure not in the first frame: 0.42% of the frame from t=4.5s at [0.567, 0.347, 0.644, 0.546]",
-      "a straight edge bends by 47.69 px from t=3.25s at [0.347, -0.101, 27.928, 12.853]",
+      "a straight edge bends by 5.4 px from t=5.0s at [0.579, 0.457, 0.595, 0.519]",
       "new straight edges (0.536 frame diagonals) from t=3.5s at [0.679, 0.276, 0.681, 0.405]",
-      "straight edges vanished (0.063 frame diagonals) from t=3.75s at [0.604, 0.123, 0.698, 0.246]",
-      "judge (medium confidence): window with dark roller shade (duplicate of left window) and chandelier beads fragment duplicated at t=3.5s (right side of frame, next to the door, upper-middle right); white wall/trim panel with bright rectangular patch appeared at t=3.5s (right-center, around the lower window and below, with a light rectangular block edge)"
+      "straight edges vanished (0.063 frame diagonals) from t=4.75s at [0.594, 0.463, 0.621, 0.521]",
+      "judge: window new at FRAME 5: A window with a shade and a duplicate chandelier strand fragment appears on the right wall where the photo has only wall and plant. It looks like a ghost or invented overlay. (sky, field, railing)"
     ],
     "signals": {
       "endpoint_start": {
@@ -4499,13 +5109,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 47.69,
-        "bend_at_s": 3.25,
+        "bend_px": 5.4,
+        "bend_at_s": 5.0,
         "bend_box": [
-          0.347,
-          -0.101,
-          27.928,
-          12.853
+          0.579,
+          0.457,
+          0.595,
+          0.519
         ],
         "new_diag": 0.536,
         "new_at_s": 3.5,
@@ -4516,38 +5126,60 @@
           0.405
         ],
         "gone_diag": 0.063,
-        "gone_at_s": 3.75,
+        "gone_at_s": 4.75,
         "gone_box": [
-          0.604,
-          0.123,
-          0.698,
-          0.246
+          0.594,
+          0.463,
+          0.621,
+          0.521
         ]
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "window with dark roller shade (duplicate of left window) and chandelier beads fragment",
-            "change": "duplicated",
-            "first_frame": "t=3.5s",
-            "where": "right side of frame, next to the door, upper-middle right"
-          },
-          {
-            "object": "white wall/trim panel with bright rectangular patch",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "right-center, around the lower window and below, with a light rectangular block edge"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "A window with a shade and a duplicate chandelier strand fragment appears on the right wall where the photo has only wall and plant. It looks like a ghost or invented overlay.",
+            "where": "sky, field, railing",
+            "in_photo_view": false,
+            "confidence": "medium"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [
+          {
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "window",
+            "item_id": "NEW",
+            "description": "A window with a shade and a duplicate chandelier strand fragment appears on the right wall where the photo has only wall and plant. It looks like a ghost or invented overlay.",
+            "where": "sky, field, railing",
+            "in_photo_view": false,
+            "confidence": "medium"
+          }
+        ],
+        "warnings": [],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.009
+        "usd_check": 0.0734,
+        "usd_inventory": 0.0,
+        "usd": 0.0734,
+        "tokens_check": [
+          14437,
+          3952
+        ],
+        "usd_check_uncached": 0.0684
       }
     },
     "frames": {
@@ -4568,17 +5200,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.35,
-      "endpoint": 0.25,
-      "flow": 1.13,
-      "motion_appearance": 0.69,
-      "lines": 2.4,
-      "judge": 3.88,
-      "total": 8.75
+      "decode": 0.63,
+      "endpoint": 0.63,
+      "flow": 11.73,
+      "motion_appearance": 1.64,
+      "lines": 4.66,
+      "judge": 21.37,
+      "total": 40.75
     },
     "expected": "fail",
     "case": "defect_train_0058",
@@ -4593,7 +5226,7 @@
     "verdict": "fail",
     "reasons": [
       "a straight edge bends by 8.62 px from t=4.25s at [0.196, 0.217, 0.223, 0.654]",
-      "judge (medium confidence): glass door (balcony door) glass pane/frame edge changed_shape at t=3.5s (center-left; the door's left frame and glass edge bend into a wavy curve)"
+      "judge: door changed at FRAME 5: Door frame and glass appear bowed/curved on the left edge, shape distorted (sky, hills, houses, deck railing)"
     ],
     "signals": {
       "endpoint_start": {
@@ -4730,22 +5363,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "glass door (balcony door) glass pane/frame edge",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "center-left; the door's left frame and glass edge bend into a wavy curve"
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "door",
+            "item_id": "S2",
+            "description": "Door frame and glass appear bowed/curved on the left edge, shape distorted",
+            "where": "sky, hills, houses, deck railing",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 13,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0083
+        "usd_check": 0.0797,
+        "usd_inventory": 0.0,
+        "usd": 0.0797,
+        "tokens_check": [
+          14437,
+          4578
+        ],
+        "usd_check_uncached": 0.0747
       }
     },
     "frames": {
@@ -4766,17 +5416,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.42,
-      "endpoint": 0.29,
-      "flow": 1.13,
-      "motion_appearance": 0.7,
-      "lines": 2.41,
-      "judge": 3.82,
-      "total": 8.83
+      "decode": 0.49,
+      "endpoint": 0.38,
+      "flow": 2.15,
+      "motion_appearance": 1.02,
+      "lines": 3.48,
+      "judge": 23.71,
+      "total": 31.3
     },
     "expected": "fail",
     "case": "defect_train_0058",
@@ -4925,15 +5576,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 1",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S5",
+            "description": "Recessed light near top centre is present at top (x~717) as S5; S8 vent faint at top centre",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0574,
+        "usd_inventory": 0.0,
+        "usd": 0.0574,
+        "tokens_check": [
+          14514,
+          2329
+        ],
+        "usd_check_uncached": 0.0523
       }
     },
     "frames": {
@@ -4954,17 +5629,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.34,
-      "endpoint": 0.27,
-      "flow": 1.06,
-      "motion_appearance": 0.65,
-      "lines": 2.7,
-      "judge": 2.78,
-      "total": 7.85
+      "decode": 0.79,
+      "endpoint": 0.37,
+      "flow": 2.38,
+      "motion_appearance": 1.03,
+      "lines": 5.78,
+      "judge": 13.56,
+      "total": 24.01
     },
     "expected": "pass",
     "case": "defect_train_0060",
@@ -4980,7 +5656,7 @@
     "reasons": [
       "structure not in the first frame: 0.82% of the frame from t=4.0s at [0.465, 0.013, 0.552, 0.317]",
       "new straight edges (0.228 frame diagonals) from t=3.25s at [0.476, 0.027, 0.571, 0.031]",
-      "judge (high confidence): gray pendant light (fourth pendant) appeared at t=3.5s (upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam)"
+      "judge: ceiling_light new at FRAME 5: A fourth grey pendant light hangs in a recessed box/opening in the ceiling at top centre. The photo shows only a flat ceiling there (S4/S5 area), with no pendant. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -5127,22 +5803,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "gray pendant light (fourth pendant)",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "ceiling_light",
+            "item_id": "NEW",
+            "description": "A fourth grey pendant light hangs in a recessed box/opening in the ceiling at top centre. The photo shows only a flat ceiling there (S4/S5 area), with no pendant.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "high"
           }
         ],
-        "confidence": "high",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 5",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S4",
+            "description": "The recessed light at the top centre-right is not visible; it is replaced by the new pendant alcove, although one light is visible near the pendant.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0063
+        "usd_check": 0.0465,
+        "usd_inventory": 0.0,
+        "usd": 0.0465,
+        "tokens_check": [
+          14514,
+          1236
+        ],
+        "usd_check_uncached": 0.0414
       }
     },
     "frames": {
@@ -5163,17 +5867,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.35,
-      "endpoint": 0.28,
-      "flow": 1.3,
-      "motion_appearance": 0.69,
-      "lines": 2.73,
-      "judge": 3.17,
-      "total": 8.57
+      "decode": 0.41,
+      "endpoint": 0.31,
+      "flow": 2.12,
+      "motion_appearance": 0.93,
+      "lines": 3.96,
+      "judge": 8.89,
+      "total": 16.68
     },
     "expected": "fail",
     "case": "defect_train_0060",
@@ -5188,7 +5893,7 @@
     "verdict": "fail",
     "reasons": [
       "a straight edge bends by 7.47 px from t=4.75s at [0.273, 0.28, 0.285, 0.505]",
-      "judge (high confidence): right framed art print (right of the two wall frames) changed_shape at t=3.5s (upper left of frame, right-hand picture frame, its right edge bows and waves)"
+      "judge: decor changed at FRAME 5: Right print is warped/bowed in its frame, differs from the straight frame in photo ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -5325,22 +6030,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "right framed art print (right of the two wall frames)",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "upper left of frame, right-hand picture frame, its right edge bows and waves"
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "decor",
+            "item_id": "S18",
+            "description": "Right print is warped/bowed in its frame, differs from the straight frame in photo",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "high"
           }
         ],
-        "confidence": "high",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 8",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S16",
+            "description": "Tan leather pouf no longer in view, left of frame",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0063
+        "usd_check": 0.0577,
+        "usd_inventory": 0.0,
+        "usd": 0.0577,
+        "tokens_check": [
+          14514,
+          2360
+        ],
+        "usd_check_uncached": 0.0526
       }
     },
     "frames": {
@@ -5361,17 +6094,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.24,
-      "flow": 1.04,
-      "motion_appearance": 0.67,
-      "lines": 2.78,
-      "judge": 3.17,
-      "total": 8.29
+      "decode": 0.54,
+      "endpoint": 0.42,
+      "flow": 2.84,
+      "motion_appearance": 0.93,
+      "lines": 3.71,
+      "judge": 14.17,
+      "total": 22.74
     },
     "expected": "fail",
     "case": "defect_train_0060",
@@ -5503,13 +6237,13 @@
       "lines": {
         "pass": true,
         "segments": 80,
-        "bend_px": 0.52,
-        "bend_at_s": 3.75,
+        "bend_px": 0.4,
+        "bend_at_s": 5.25,
         "bend_box": [
-          0.802,
+          0.743,
           0.679,
-          0.876,
-          1.515
+          0.753,
+          0.838
         ],
         "new_diag": 0.0,
         "new_at_s": 0.0,
@@ -5520,15 +6254,28 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": true,
-        "changed": false,
-        "changes": [],
-        "confidence": "low",
+        "failing": [],
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0055
+        "usd_check": 0.0497,
+        "usd_inventory": 0.0,
+        "usd": 0.0497,
+        "tokens_check": [
+          14514,
+          1557
+        ],
+        "usd_check_uncached": 0.0446
       }
     },
     "frames": {
@@ -5549,17 +6296,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_pan_good.sheet.jpg",
     "timing_s": {
-      "decode": 0.35,
-      "endpoint": 0.25,
-      "flow": 1.06,
-      "motion_appearance": 0.68,
-      "lines": 2.42,
-      "judge": 2.5,
-      "total": 7.31
+      "decode": 0.54,
+      "endpoint": 0.43,
+      "flow": 1.86,
+      "motion_appearance": 0.97,
+      "lines": 4.58,
+      "judge": 11.06,
+      "total": 19.53
     },
     "expected": "pass",
     "case": "defect_train_0060",
@@ -5575,7 +6323,7 @@
     "reasons": [
       "structure not in the first frame: 0.58% of the frame from t=4.75s at [0.355, 0.143, 0.449, 0.294]",
       "new straight edges (0.093 frame diagonals) from t=4.25s at [0.377, 0.011, 0.377, 0.181]",
-      "judge (medium confidence): gray pendant light (extra fourth pendant) with light rectangular soffit block appeared at t=3.5s (top center-left of frame, above the left wall near the picture frames)"
+      "judge: ceiling_light new at FRAME 5: A fourth grey pendant light hangs from a recessed ceiling box at upper centre, left of the bar pendants. The photo shows only three pendants, and the ceiling there is flat. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -5700,13 +6448,13 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 0.5,
-        "bend_at_s": 2.25,
+        "bend_px": 0.49,
+        "bend_at_s": 4.0,
         "bend_box": [
-          0.897,
+          0.788,
           0.679,
-          0.917,
-          0.855
+          0.797,
+          0.844
         ],
         "new_diag": 0.093,
         "new_at_s": 4.25,
@@ -5722,22 +6470,50 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "gray pendant light (extra fourth pendant) with light rectangular soffit block",
-            "change": "appeared",
-            "first_frame": "t=3.5s",
-            "where": "top center-left of frame, above the left wall near the picture frames"
+            "frame": "FRAME 5",
+            "kind": "new",
+            "category": "ceiling_light",
+            "item_id": "NEW",
+            "description": "A fourth grey pendant light hangs from a recessed ceiling box at upper centre, left of the bar pendants. The photo shows only three pendants, and the ceiling there is flat.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "high"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [
+          {
+            "frame": "FRAME 8",
+            "kind": "missing",
+            "category": "other",
+            "item_id": "S4",
+            "description": "The ceiling light at top centre is replaced by the extra pendant box.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "low"
+          }
+        ],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0077
+        "usd_check": 0.053,
+        "usd_inventory": 0.0,
+        "usd": 0.053,
+        "tokens_check": [
+          14514,
+          1887
+        ],
+        "usd_check_uncached": 0.0479
       }
     },
     "frames": {
@@ -5758,17 +6534,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_pan_paste.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.25,
-      "flow": 1.05,
-      "motion_appearance": 0.66,
-      "lines": 2.38,
-      "judge": 4.37,
-      "total": 9.08
+      "decode": 0.87,
+      "endpoint": 0.41,
+      "flow": 1.93,
+      "motion_appearance": 0.97,
+      "lines": 4.31,
+      "judge": 13.13,
+      "total": 21.71
     },
     "expected": "fail",
     "case": "defect_train_0060",
@@ -5782,8 +6559,8 @@
     "end": null,
     "verdict": "fail",
     "reasons": [
-      "a straight edge bends by 9.92 px from t=4.25s at [-0.954, -4.161, 0.177, 0.568]",
-      "judge (medium confidence): left framed art print (right of the two frames) changed_shape at t=2.5s (left side of the frame, upper wall; the frame's right edge bows and warps); left framed art print (left frame) changed_shape at t=3.5s (far left edge, wall; frame edges bend and wave)"
+      "a straight edge bends by 9.58 px from t=4.5s at [0.152, 0.261, 0.166, 0.568]",
+      "judge: decor changed at FRAME 5: Right print is warped/curved in shape. ()"
     ],
     "signals": {
       "endpoint_start": {
@@ -5903,12 +6680,12 @@
       "lines": {
         "pass": false,
         "segments": 80,
-        "bend_px": 9.92,
-        "bend_at_s": 4.25,
+        "bend_px": 9.58,
+        "bend_at_s": 4.5,
         "bend_box": [
-          -0.954,
-          -4.161,
-          0.177,
+          0.152,
+          0.261,
+          0.166,
           0.568
         ],
         "new_diag": 0.0,
@@ -5920,28 +6697,39 @@
       },
       "coverage": {
         "pass": true,
-        "max_out_of_photo": 0.0
+        "max_out_of_photo": 0.0,
+        "shared_start_last": null
       },
       "judge": {
         "pass": false,
-        "changed": true,
-        "changes": [
+        "failing": [
           {
-            "object": "left framed art print (right of the two frames)",
-            "change": "changed_shape",
-            "first_frame": "t=2.5s",
-            "where": "left side of the frame, upper wall; the frame's right edge bows and warps"
-          },
-          {
-            "object": "left framed art print (left frame)",
-            "change": "changed_shape",
-            "first_frame": "t=3.5s",
-            "where": "far left edge, wall; frame edges bend and wave"
+            "frame": "FRAME 5",
+            "kind": "changed",
+            "category": "decor",
+            "item_id": "S18",
+            "description": "Right print is warped/curved in shape.",
+            "where": "",
+            "in_photo_view": true,
+            "confidence": "medium"
           }
         ],
-        "confidence": "medium",
+        "unverifiable": [],
+        "warnings": [],
+        "inventory_items": 23,
+        "frames_checked": 8,
+        "effort": "medium",
+        "strict": true,
+        "form": "census",
         "model": "claude-sonnet-5-5",
-        "usd": 0.0068
+        "usd_check": 0.0518,
+        "usd_inventory": 0.0,
+        "usd": 0.0518,
+        "tokens_check": [
+          14514,
+          1770
+        ],
+        "usd_check_uncached": 0.0467
       }
     },
     "frames": {
@@ -5962,17 +6750,18 @@
       "appear_max_frac": 0.0008,
       "line_max_bend_px": 1.5,
       "line_max_new": 0.05,
-      "out_of_photo_max": 0.2
+      "out_of_photo_max": 0.2,
+      "min_shared_for_tracking": 0.5
     },
     "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_pan_bend.sheet.jpg",
     "timing_s": {
-      "decode": 0.33,
-      "endpoint": 0.27,
-      "flow": 1.02,
-      "motion_appearance": 0.64,
-      "lines": 2.41,
-      "judge": 3.29,
-      "total": 8.01
+      "decode": 0.82,
+      "endpoint": 0.36,
+      "flow": 2.18,
+      "motion_appearance": 0.75,
+      "lines": 3.39,
+      "judge": 10.92,
+      "total": 18.49
     },
     "expected": "fail",
     "case": "defect_train_0060",

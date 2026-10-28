@@ -5,7 +5,7 @@
   "verdict": "fail",
   "reasons": [
     "a straight edge bends by 7.47 px from t=4.75s at [0.273, 0.28, 0.285, 0.505]",
-    "judge (high confidence): right framed art print (right of the two wall frames) changed_shape at t=3.5s (upper left of frame, right-hand picture frame, its right edge bows and waves)"
+    "judge: decor changed at FRAME 5: Right print is warped/bowed in its frame, differs from the straight frame in photo ()"
   ],
   "signals": {
     "endpoint_start": {
@@ -142,22 +142,50 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": false,
-      "changed": true,
-      "changes": [
+      "failing": [
         {
-          "object": "right framed art print (right of the two wall frames)",
-          "change": "changed_shape",
-          "first_frame": "t=3.5s",
-          "where": "upper left of frame, right-hand picture frame, its right edge bows and waves"
+          "frame": "FRAME 5",
+          "kind": "changed",
+          "category": "decor",
+          "item_id": "S18",
+          "description": "Right print is warped/bowed in its frame, differs from the straight frame in photo",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "high"
         }
       ],
-      "confidence": "high",
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 8",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S16",
+          "description": "Tan leather pouf no longer in view, left of frame",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 23,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0063
+      "usd_check": 0.0577,
+      "usd_inventory": 0.0,
+      "usd": 0.0577,
+      "tokens_check": [
+        14514,
+        2360
+      ],
+      "usd_check_uncached": 0.0526
     }
   },
   "frames": {
@@ -178,17 +206,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_bend.sheet.jpg",
   "timing_s": {
-    "decode": 0.33,
-    "endpoint": 0.24,
-    "flow": 1.04,
-    "motion_appearance": 0.67,
-    "lines": 2.78,
-    "judge": 3.17,
-    "total": 8.29
+    "decode": 0.54,
+    "endpoint": 0.42,
+    "flow": 2.84,
+    "motion_appearance": 0.93,
+    "lines": 3.71,
+    "judge": 14.17,
+    "total": 22.74
   },
   "expected": "fail",
   "case": "defect_train_0060",

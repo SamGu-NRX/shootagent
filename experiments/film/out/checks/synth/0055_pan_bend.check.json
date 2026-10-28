@@ -4,8 +4,7 @@
   "end": null,
   "verdict": "fail",
   "reasons": [
-    "a straight edge bends by 9.33 px from t=5.0s at [0.618, 0.05, 0.634, 0.927]",
-    "judge (high confidence): white wall pillar/column right of shower changed_shape at t=3.5s (center-right, the vertical pillar edge bends and curves in the frames)"
+    "a straight edge bends by 9.33 px from t=5.0s at [0.618, 0.05, 0.634, 0.927]"
   ],
   "signals": {
     "endpoint_start": {
@@ -142,22 +141,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
-      "pass": false,
-      "changed": true,
-      "changes": [
+      "pass": true,
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [
         {
-          "object": "white wall pillar/column right of shower",
-          "change": "changed_shape",
-          "first_frame": "t=3.5s",
-          "where": "center-right, the vertical pillar edge bends and curves in the frames"
+          "frame": "FRAME 3",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S11",
+          "description": "switch plate at left edge is mostly cut off",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
         }
       ],
-      "confidence": "high",
+      "inventory_items": 21,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0062
+      "usd_check": 0.1013,
+      "usd_inventory": 0.0,
+      "usd": 0.1013,
+      "tokens_check": [
+        14843,
+        6634
+      ],
+      "usd_check_uncached": 0.096
     }
   },
   "frames": {
@@ -178,17 +194,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_bend.sheet.jpg",
   "timing_s": {
-    "decode": 0.33,
-    "endpoint": 0.23,
-    "flow": 0.98,
-    "motion_appearance": 0.63,
-    "lines": 2.04,
-    "judge": 2.78,
-    "total": 7.04
+    "decode": 0.45,
+    "endpoint": 0.3,
+    "flow": 1.77,
+    "motion_appearance": 0.69,
+    "lines": 2.46,
+    "judge": 31.58,
+    "total": 37.33
   },
   "expected": "fail",
   "case": "defect_train_0055",

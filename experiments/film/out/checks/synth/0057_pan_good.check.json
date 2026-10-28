@@ -126,7 +126,7 @@
       "bend_at_s": 5.25,
       "bend_box": [
         0.749,
-        0.013,
+        0.019,
         0.751,
         0.172
       ],
@@ -139,15 +139,39 @@
     },
     "coverage": {
       "pass": true,
-      "max_out_of_photo": 0.0
+      "max_out_of_photo": 0.0,
+      "shared_start_last": null
     },
     "judge": {
       "pass": true,
-      "changed": false,
-      "changes": [],
-      "confidence": "medium",
+      "failing": [],
+      "unverifiable": [],
+      "warnings": [
+        {
+          "frame": "FRAME 3",
+          "kind": "missing",
+          "category": "other",
+          "item_id": "S9",
+          "description": "plant at right not yet visible; likely just out of frame",
+          "where": "",
+          "in_photo_view": true,
+          "confidence": "low"
+        }
+      ],
+      "inventory_items": 12,
+      "frames_checked": 8,
+      "effort": "medium",
+      "strict": true,
+      "form": "census",
       "model": "claude-sonnet-5-5",
-      "usd": 0.0055
+      "usd_check": 0.0721,
+      "usd_inventory": 0.0,
+      "usd": 0.0721,
+      "tokens_check": [
+        14392,
+        3825
+      ],
+      "usd_check_uncached": 0.067
     }
   },
   "frames": {
@@ -168,17 +192,18 @@
     "appear_max_frac": 0.0008,
     "line_max_bend_px": 1.5,
     "line_max_new": 0.05,
-    "out_of_photo_max": 0.2
+    "out_of_photo_max": 0.2,
+    "min_shared_for_tracking": 0.5
   },
   "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_good.sheet.jpg",
   "timing_s": {
-    "decode": 0.32,
-    "endpoint": 0.25,
-    "flow": 0.98,
-    "motion_appearance": 0.66,
-    "lines": 2.22,
-    "judge": 2.8,
-    "total": 7.28
+    "decode": 0.75,
+    "endpoint": 0.47,
+    "flow": 1.8,
+    "motion_appearance": 1.0,
+    "lines": 3.5,
+    "judge": 20.39,
+    "total": 28.0
   },
   "expected": "pass",
   "case": "defect_train_0057",
