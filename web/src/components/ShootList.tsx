@@ -1,4 +1,4 @@
-import { ArrowRight, FolderUp, ImagePlus, MessageSquareText, ScanSearch } from "lucide-react";
+import { ArrowRight, FolderUp, ImagePlus, MessageSquareText, ScanSearch, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, passcode, type DemoPreset } from "../api/client";
 import type { ShootSummary } from "../api/types";
@@ -10,7 +10,17 @@ import { NewShootDialog } from "./NewShootDialog";
 
 type Load = { state: "loading" } | { state: "ready"; shoots: ShootSummary[] } | { state: "error"; error: ApiError };
 
-const PRESETS: { id: DemoPreset; title: string; body: string; icon: typeof ScanSearch }[] = [
+const PRESETS: { id: DemoPreset; title: string; body: string; icon: typeof ScanSearch; primary?: boolean }[] = [
+  {
+    id: "showcase",
+    title: "QC and customer requests",
+    body:
+      "Eight photos: four AutoHDR edits with known defects or none (a mixed-up merge, ghosting, an erased stop sign, a clean control) " +
+      "and four real customer requests (a car on the driveway, a trash bin, wall colour from a reference, a TV screen). " +
+      "Run QC, then ask for edits in chat.",
+    icon: Sparkles,
+    primary: true,
+  },
   {
     id: "qc-tour",
     title: "QC tour",
@@ -81,6 +91,7 @@ export function ShootList() {
             <button
               key={p.id}
               className="start-card"
+              data-primary={p.primary || undefined}
               onClick={() => createDemo(p.id)}
               disabled={creating !== null || load.state === "error"}
               aria-busy={creating === p.id}
@@ -91,8 +102,8 @@ export function ShootList() {
                 <span className="start-card-kicker">Demo shoot</span>
               </span>
               <span className="start-card-body">{p.body}</span>
-              <span className="start-card-cta">
-                {creating === p.id ? "Building shoot…" : "Create"} <ArrowRight size={14} aria-hidden />
+              <span className={p.primary ? "start-card-cta btn btn-primary" : "start-card-cta"}>
+                {creating === p.id ? "Building shoot…" : p.primary ? "Create demo shoot" : "Create"} <ArrowRight size={14} aria-hidden />
               </span>
             </button>
           ))}

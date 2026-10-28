@@ -65,7 +65,7 @@ export function statusText(status: ViewStatus, view: View): string {
     case "approved":
       return "Approved";
     case "open":
-      return `${count("open")} open`;
+      return `${count("open")} to check`;
     case "failed":
       return "Needs review";
     case "fixed":

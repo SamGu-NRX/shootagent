@@ -96,7 +96,8 @@ function TopBar() {
   const busy = useStore((s) => s.busyAction);
 
   const views = shoot?.views ?? [];
-  const open = views.reduce((n, v) => n + v.findings.filter((f) => f.status === "open" || f.status === "failed").length, 0);
+  // open findings are unadjudicated QC candidates while a run is going; only count them once nothing is working on them
+  const open = views.reduce((n, v) => n + v.findings.filter((f) => f.status === "failed" || (!live && f.status === "open")).length, 0);
   const fixed = views.reduce((n, v) => n + v.findings.filter((f) => f.status === "fixed").length, 0);
   const approved = views.filter((v) => v.approved).length;
   const qcRan = runs.some((r) => r.mode === "qc");

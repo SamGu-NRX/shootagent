@@ -28,6 +28,7 @@ import { clock, duration, findingLabel, inputSummary, metricRows, relTime, toolL
 import { useStore } from "../state/store";
 import { currentStep, type CheckItem, type TimelineItem, type ToolItem, type TraceState } from "../trace/reduce";
 import { LiveClock } from "./LiveClock";
+import { MessageText } from "./MessageText";
 
 const TOOL_ICONS: Record<string, LucideIcon> = {
   list_views: LayoutGrid,
@@ -106,7 +107,7 @@ export function TracePanel() {
               return (
                 <option key={r.id} value={r.id}>
                   {what} · {relTime(r.started)}
-                  {r.done ? "" : " · running"}
+                  {r.done ? "" : r.status && r.status !== "running" ? ` · ${r.status}` : " · running"}
                 </option>
               );
             })}
@@ -174,16 +175,36 @@ function TraceView({ trace }: { trace: TraceState }) {
         )}
         {trace.plan.steps.length > 0 && <Plan trace={trace} />}
         <ol className="timeline" aria-label="Agent steps">
-          {trace.items.map((it) => (
-            <Row
-              key={it.key}
-              item={it}
-              finding={it.type === "finding" ? trace.findings[it.findingId] : undefined}
-              endUsd={it.type === "end" ? trace.totals.usd : undefined}
-              lastMessage={it.type === "end" ? trace.messages[trace.messages.length - 1] : undefined}
-              animate={!replayed.current.keys.has(it.key)}
-            />
-          ))}
+          {segments(trace.items).map((seg) =>
+            seg.kind === "verdicts" ? (
+              <VerdictBlock
+                key={seg.items[0]!.key}
+                items={seg.items}
+                findings={trace.findings}
+                animate={!replayed.current.keys.has(seg.items[0]!.key)}
+              />
+            ) : (
+              <Row
+                key={seg.item.key}
+                item={seg.item}
+                finding={
+                  seg.item.type === "finding"
+                    ? trace.findings[seg.item.findingId]
+                    : seg.item.type === "tool" && seg.item.tool === "set_finding"
+                      ? trace.findings[String(seg.item.input.finding)]
+                      : undefined
+                }
+                candidates={
+                  seg.item.type === "tool" && seg.item.candidates
+                    ? seg.item.candidates.map((id) => trace.findings[id]).filter((f): f is Finding => !!f)
+                    : undefined
+                }
+                endUsd={seg.item.type === "end" ? trace.totals.usd : undefined}
+                lastMessage={seg.item.type === "end" ? trace.messages[trace.messages.length - 1] : undefined}
+                animate={!replayed.current.keys.has(seg.item.key)}
+              />
+            ),
+          )}
           {trace.status === "running" && (
             <li className="tr tr-waiting" aria-hidden>
               <span className="tr-time num" />
@@ -214,6 +235,7 @@ function TraceView({ trace }: { trace: TraceState }) {
 function Tape({ trace }: { trace: TraceState }) {
   const t = trace.totals;
   const status = trace.status;
+  const openCandidates = Object.values(trace.findings).filter((f) => f.status === "open").length;
   return (
     <div className="tape" data-status={status}>
       <div className="tape-status">
@@ -258,8 +280,15 @@ function Tape({ trace }: { trace: TraceState }) {
           <dt>Fixed</dt>
           <dd className="num">
             {t.findingsFixed}
-            <span className="tape-sep">of</span>
-            {t.findingsFound}
+            {/* while the agent is still adjudicating, open candidates aren't defects yet */}
+            {status === "running" && openCandidates > 0 ? (
+              <span className="tape-sep">· {openCandidates} to check</span>
+            ) : (
+              <>
+                <span className="tape-sep">of</span>
+                {t.findingsFound}
+              </>
+            )}
           </dd>
         </div>
       </dl>
@@ -346,12 +375,14 @@ function versionBlob(shoot: Shoot | null, view: string | null, version: string |
 const Row = memo(function Row({
   item,
   finding,
+  candidates,
   endUsd,
   lastMessage,
   animate,
 }: {
   item: TimelineItem;
   finding?: Finding;
+  candidates?: Finding[];
   endUsd?: number;
   lastMessage?: string;
   animate: boolean;
@@ -376,7 +407,8 @@ const Row = memo(function Row({
 
   switch (item.type) {
     case "tool":
-      return <ToolRow item={item} time={time} viewChip={viewChip} onFocus={focus} common={common} />;
+      if (item.tool === "set_finding") return <VerdictRow item={item} finding={finding} time={time} viewChip={viewChip} common={common} />;
+      return <ToolRow item={item} candidates={candidates} time={time} viewChip={viewChip} onFocus={focus} common={common} />;
     case "check":
       return <CheckRow item={item} time={time} onFocus={focus} common={common} />;
     case "retry":
@@ -386,10 +418,15 @@ const Row = memo(function Row({
           <div className="tr-body">
             <div className="tr-head">
               <RotateCcw size={13} className="tr-icon" aria-hidden />
-              <span className="tr-title">Retry · attempt {item.attempt}</span>
+              <span className="tr-title">
+                Retry · try {item.attempt + 1}
+                {item.max_attempts ? ` of ${item.max_attempts}` : ""}
+              </span>
               {viewChip}
             </div>
-            <p className="tr-text">{item.reason}</p>
+            <p className="tr-text tr-clamp" title={item.reason}>
+              {item.reason}
+            </p>
             <p className="tr-next">
               <span>Next</span> {item.next}
             </p>
@@ -438,7 +475,7 @@ const Row = memo(function Row({
         <li className="tr tr-message" {...common}>
           {time}
           <div className="tr-body">
-            <p>{item.text}</p>
+            <MessageText text={item.text} />
           </div>
         </li>
       );
@@ -484,12 +521,14 @@ const Row = memo(function Row({
 
 function ToolRow({
   item,
+  candidates,
   time,
   viewChip,
   onFocus,
   common,
 }: {
   item: ToolItem;
+  candidates?: Finding[];
   time: React.ReactNode;
   viewChip: React.ReactNode;
   onFocus: (version?: string | null) => void;
@@ -522,6 +561,7 @@ function ToolRow({
         <p className="tr-result" data-ok={r ? r.ok : undefined}>
           {r ? (r.ok ? r.summary : `Failed: ${r.error ?? r.summary}`) : <span className="muted">Running…</span>}
         </p>
+        {candidates && candidates.length > 0 && <CandidateChips findings={candidates} />}
         {(r?.version || r?.mask) && (
           <p className="tr-refs num">
             {r.version && (
@@ -582,9 +622,9 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
             </footer>
           </blockquote>
         )}
-        {!item.passed && item.failures.length > 0 && (
+        {!item.passed && otherFailures(item).length > 0 && (
           <ul className="failures">
-            {item.failures.map((f) => (
+            {otherFailures(item).map((f) => (
               <li key={f}>
                 <Circle size={5} aria-hidden fill="currentColor" /> {f}
               </li>
@@ -594,4 +634,135 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
       </div>
     </li>
   );
+}
+
+type Segment = { kind: "item"; item: TimelineItem } | { kind: "verdicts"; items: ToolItem[] };
+
+const isVerdict = (it: TimelineItem): it is ToolItem => it.type === "tool" && it.tool === "set_finding";
+
+/**
+ * Consecutive set_finding calls form one block: QC records its verdicts on dozens of candidates in a
+ * burst, interleaving fixed and dismissed, and one row each would bury the edits.
+ */
+function segments(items: TimelineItem[]): Segment[] {
+  const out: Segment[] = [];
+  for (const it of items) {
+    const last = out[out.length - 1];
+    if (isVerdict(it)) {
+      if (last?.kind === "verdicts") last.items.push(it);
+      else out.push({ kind: "verdicts", items: [it] });
+    } else out.push({ kind: "item", item: it });
+  }
+  return out;
+}
+
+const DISMISSALS_SHOWN = 4;
+
+function VerdictBlock({ items, findings, animate }: { items: ToolItem[]; findings: Record<string, Finding>; animate: boolean }) {
+  const viewLabel = useViewLabel();
+  const [open, setOpen] = useState(false);
+  const kept = items.filter((it) => it.input.status !== "dismissed");
+  const dismissed = items.filter((it) => it.input.status === "dismissed");
+  const shown = open ? dismissed : dismissed.slice(0, DISMISSALS_SHOWN);
+  const hidden = dismissed.length - shown.length;
+  const line = (it: ToolItem) => {
+    const f = findings[String(it.input.finding)];
+    const status = String(it.input.status ?? "");
+    return (
+      <li key={it.key} data-status={status}>
+        {it.view && <span className="chip-view">{viewLabel(it.view)}</span>}
+        <span className="verdict-type">
+          {status === "fixed" ? "Fixed · " : status === "failed" ? "Needs review · " : status === "open" ? "Reopened · " : ""}
+          {f ? findingLabel(f.type) : String(it.input.finding)}
+        </span>
+        <span className="verdict-note" title={String(it.input.note ?? "")}>
+          {String(it.input.note ?? "")}
+        </span>
+      </li>
+    );
+  };
+  const counts = [
+    kept.filter((it) => it.input.status === "fixed").length && `${kept.filter((it) => it.input.status === "fixed").length} fixed`,
+    kept.filter((it) => it.input.status === "failed").length && `${kept.filter((it) => it.input.status === "failed").length} need review`,
+    dismissed.length && `${dismissed.length} dismissed`,
+  ].filter(Boolean);
+  return (
+    <li className="tr tr-verdicts" data-enter={animate || undefined}>
+      <span className="tr-time num">{clock(items[0]!.at)}</span>
+      <div className="tr-body">
+        <div className="tr-head">
+          <Flag size={13} className="tr-icon" aria-hidden />
+          <span className="tr-title">
+            Verdict{items.length > 1 ? "s" : ""} on {items.length} candidate{items.length > 1 ? "s" : ""}
+          </span>
+          <span className="tr-dur">{counts.join(" · ")}</span>
+        </div>
+        {kept.length > 0 && <ul className="verdict-list verdict-kept">{kept.map(line)}</ul>}
+        {dismissed.length > 0 && (
+          <>
+            <p className="verdict-sub">Dismissed as legitimate edits or noise</p>
+            <ul className="verdict-list">{shown.map(line)}</ul>
+          </>
+        )}
+        {hidden > 0 && (
+          <button className="link link-quiet" onClick={() => setOpen(true)}>
+            Show {hidden} more
+          </button>
+        )}
+      </div>
+    </li>
+  );
+}
+
+function VerdictRow({
+  item,
+  finding,
+  time,
+  viewChip,
+  common,
+}: {
+  item: ToolItem;
+  finding?: Finding;
+  time: React.ReactNode;
+  viewChip: React.ReactNode;
+  common: object;
+}) {
+  const status = String(item.input.status ?? "");
+  const verb = status === "fixed" ? "Marked fixed" : status === "failed" ? "Needs review" : status === "open" ? "Reopened" : status;
+  return (
+    <li className="tr tr-finding" data-status={status} {...common}>
+      {time}
+      <div className="tr-body">
+        <div className="tr-head">
+          <Crosshair size={13} className="tr-icon" aria-hidden />
+          <span className="tr-title">
+            {verb} · {finding ? findingLabel(finding.type) : String(item.input.finding)}
+          </span>
+          {viewChip}
+        </div>
+        {typeof item.input.note === "string" && item.input.note && <p className="tr-text">{item.input.note}</p>}
+        {item.result && !item.result.ok && <p className="tr-text c-fail">{item.result.error ?? item.result.summary}</p>}
+      </div>
+    </li>
+  );
+}
+
+/** Candidates a QC check reported, grouped by type; each chip follows the agent's later verdict. */
+function CandidateChips({ findings }: { findings: Finding[] }) {
+  return (
+    <ul className="cand-chips" aria-label="Candidates">
+      {findings.map((f) => (
+        <li key={f.id} className="cand" data-status={f.status} title={f.explanation}>
+          {findingLabel(f.type)}
+          {f.confidence != null && <span className="num"> {f.confidence.toFixed(2)}</span>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Check failures, minus the "vision judge: …" line that repeats the quoted judge reason. */
+function otherFailures(item: CheckItem): string[] {
+  const reason = item.judge?.reason?.trim();
+  return item.failures.filter((f) => !(reason && f.includes(reason)));
 }

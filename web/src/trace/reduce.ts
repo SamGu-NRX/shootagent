@@ -28,6 +28,8 @@ export interface ToolItem extends Base {
   attempt: number;
   status: "running" | "ok" | "failed";
   result?: TraceDataByKind["tool_result"];
+  /** findings first reported while this call ran (run_qc_checks candidates), shown inside its row */
+  candidates?: string[];
 }
 
 export interface CheckItem extends Base {
@@ -46,7 +48,7 @@ export type TimelineItem =
   | ToolItem
   | CheckItem
   | (Base & { type: "thought"; text: string })
-  | (Base & { type: "retry"; attempt: number; reason: string; next: string })
+  | (Base & { type: "retry"; attempt: number; reason: string; next: string; max_attempts?: number })
   | (Base & { type: "finding"; findingId: string; status: Finding["status"]; first: boolean })
   | (Base & { type: "message"; text: string })
   | (Base & { type: "error"; message: string })
@@ -95,6 +97,8 @@ export interface TraceState {
   lastFailByView: Record<string, string>;
   /** views the agent closed with report_view_result; their outcome is final */
   reportedViews: Record<string, true>;
+  /** evidence crops per finding id, from finding events */
+  findingImages: Record<string, string[]>;
 }
 
 export function emptyTrace(): TraceState {
@@ -130,6 +134,7 @@ export function emptyTrace(): TraceState {
     lastNoteByView: {},
     lastFailByView: {},
     reportedViews: {},
+    findingImages: {},
   };
 }
 
@@ -141,8 +146,26 @@ function markStep(steps: PlanStepState[], index: number): PlanStepState[] {
   return steps.map((s, i) => (i === index || (i < index && !s.tool) ? { ...s, done: true } : s));
 }
 
+// Tool-name words too common to tie a tool to a plan step ("compare against the brackets").
+const GENERIC_WORDS = new Set(["views", "photo", "region", "regions", "brackets", "image", "check"]);
+
+/**
+ * Whether a finished tool call satisfies a plan step. The agent's plan steps often omit `tool`, so a
+ * step without one matches a tool whose distinctive name word (5+ letters) appears in the step's intent:
+ * run_qc_checks satisfies "Run QC checks on every view", label_views satisfies "label rooms".
+ */
+function stepMatches(step: PlanStepState, tool: string, view: string | null): boolean {
+  if (step.view != null && step.view !== view) return false;
+  // run 20261028-001209-9e8f42 planned "gloom_place_on_screen" for place_on_screen: accept a prefixed name
+  if (step.tool) return step.tool === tool || step.tool.endsWith(`_${tool}`);
+  const intent = step.intent.toLowerCase();
+  return tool
+    .split("_")
+    .some((w) => w.length >= 5 && !GENERIC_WORDS.has(w) && intent.includes(w));
+}
+
 function findStep(steps: PlanStepState[], tool: string, view: string | null): number {
-  return steps.findIndex((s) => !s.done && s.tool === tool && (s.view == null || s.view === view));
+  return steps.findIndex((s) => !s.done && stepMatches(s, tool, view));
 }
 
 export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
@@ -297,7 +320,8 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       return s;
     }
     case "retry": {
-      s.attempts = { ...s.attempts, [vk]: event.data.attempt };
+      // attempt counts failures so far; tool calls after this retry belong to attempt + 1
+      s.attempts = { ...s.attempts, [vk]: event.data.attempt + 1 };
       s.totals = { ...s.totals, retries: s.totals.retries + 1 };
       s.items = [...s.items, { ...base, type: "retry", ...event.data }];
       return s;
@@ -306,12 +330,28 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       const f = event.data.finding;
       const first = !(f.id in s.findings);
       s.findings = { ...s.findings, [f.id]: f };
+      if (event.data.images?.length) s.findingImages = { ...s.findingImages, [f.id]: event.data.images };
       const all = Object.values(s.findings);
       s.totals = {
         ...s.totals,
-        findingsFound: all.length,
+        // candidates the agent dismissed were never defects, so they don't count toward "fixed of found"
+        findingsFound: all.filter((x) => x.status !== "dismissed").length,
         findingsFixed: all.filter((x) => x.status === "fixed").length,
       };
+      // run_qc_checks reports its candidates as finding events before its tool_result; list them in
+      // that call's row instead of one timeline row each.
+      const host = first
+        ? s.items.findIndex((it) => it.type === "tool" && it.status === "running" && it.tool === "run_qc_checks" && it.view === event.view)
+        : -1;
+      // A status change the agent made with set_finding is already shown by that call's row.
+      if (!first && s.items.some((it) => it.type === "tool" && it.tool === "set_finding" && it.input.finding === f.id)) return s;
+      if (host >= 0) {
+        const items = s.items.slice();
+        const tool = items[host] as ToolItem;
+        items[host] = { ...tool, candidates: [...(tool.candidates ?? []), f.id] };
+        s.items = items;
+        return s;
+      }
       s.items = [...s.items, { ...base, type: "finding", findingId: f.id, status: f.status, first }];
       return s;
     }
@@ -335,7 +375,10 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       const d = event.data;
       s.status = d.ok ? "done" : "failed";
       s.summary = d.summary;
-      s.totals = { ...s.totals, usd: d.usd ?? s.totals.usd, ms: d.ms ?? at };
+      // run ended ok: steps no tool call could be tied to were carried out; a tool step that never passed stays open
+      if (d.ok) s.plan = { ...s.plan, steps: s.plan.steps.map((st) => (st.done || st.tool ? st : { ...st, done: true })) };
+      // api/app.py ends a run whose process died with ms 0 and usd 0; keep what the events measured
+      s.totals = { ...s.totals, usd: d.usd || s.totals.usd, ms: d.ms || at };
       s.viewResults = settleViews(s);
       s.items = [...s.items, { ...base, type: "end", ok: d.ok, summary: d.summary }];
       return s;
@@ -357,6 +400,8 @@ function checkFailReason(d: TraceDataByKind["check"]): string {
   return d.judge?.reason ?? "The self-check failed.";
 }
 
+export const NOT_REACHED = "Not reached: the run stopped first.";
+
 /** At run end, every view still pending becomes "not needed" (no edit made) or "failed" (edits all failed). */
 function settleViews(s: TraceState): Record<string, ViewResult> {
   const out: Record<string, ViewResult> = {};
@@ -371,7 +416,8 @@ function settleViews(s: TraceState): Record<string, ViewResult> {
     else if (unchecked.length) {
       const last = unchecked[unchecked.length - 1]!;
       out[view] = { outcome: "applied", reason: last.summary, version: last.version };
-    } else out[view] = { outcome: "not_needed", reason: s.lastNoteByView[view] ?? "No change was needed." };
+    } else if (s.status === "failed") out[view] = { outcome: "failed", reason: NOT_REACHED };
+    else out[view] = { outcome: "not_needed", reason: s.lastNoteByView[view] ?? "No change was needed." };
   }
   return out;
 }

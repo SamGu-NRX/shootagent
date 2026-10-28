@@ -159,7 +159,8 @@ export function createMockApi(speed = 1): Api {
     },
     async createDemo(preset) {
       counter += 1;
-      const shoot = makeShoot(`demo-${preset}-${counter}`, preset === "chat" ? "88 Larkspur Lane" : `412 Maple Court (${counter})`);
+      const title = preset === "chat" ? "88 Larkspur Lane" : preset === "showcase" ? "Demo shoot: QC and customer requests" : `412 Maple Court (${counter})`;
+      const shoot = makeShoot(`demo-${preset}-${counter}`, title);
       if (preset === "chat") start(shoot, "qc", qcScript(shoot), true);
       shoots.set(shoot.id, shoot);
       return delay(clone(shoot), 400);

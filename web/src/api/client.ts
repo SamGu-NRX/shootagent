@@ -1,6 +1,6 @@
 import type { Mask, RunSummary, Shoot, ShootSummary, TraceEvent, View } from "./types";
 
-export type DemoPreset = "qc-tour" | "chat";
+export type DemoPreset = "showcase" | "qc-tour" | "chat";
 
 export interface ChatBody {
   message: string;
@@ -135,6 +135,8 @@ function streamEvents(
       if (ctrl.signal.aborted) return;
       return retry();
     }
+    // 5xx is usually the dev proxy or a restarting server: retry. 4xx means the run is gone or forbidden.
+    if (res.status >= 500) return retry();
     if (!res.ok || !res.body) return finish(await parseError(res));
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
     let buf = "";
@@ -156,6 +158,7 @@ function streamEvents(
           const ev = JSON.parse(data) as TraceEvent;
           if (ev.kind === "run_end") sawEnd = true;
           lastSeq = Math.max(lastSeq, ev.seq);
+          attempts = 0;
           onEvent(ev);
         }
       }
@@ -170,10 +173,11 @@ function streamEvents(
   const retry = async () => {
     if (ctrl.signal.aborted) return;
     attempts += 1;
-    if (attempts > 4) {
+    // about 90 s of consecutive failures (backoff capped at 8 s) before telling the user
+    if (attempts > 14) {
       return finish(new ApiError(0, "stream_lost", "Lost the live trace connection. Reload the page to reconnect."));
     }
-    await new Promise((r) => setTimeout(r, 500 * 2 ** attempts));
+    await new Promise((r) => setTimeout(r, Math.min(8000, 500 * 2 ** attempts)));
     return connect();
   };
 

@@ -145,6 +145,8 @@ export interface TraceDataByKind {
     images?: string[];
     ms: number;
     error?: string | null;
+    /** tool-specific payload, e.g. render_reel's {url, seconds} */
+    data?: Record<string, unknown> | null;
   };
   check: {
     call_id?: string | null;
@@ -156,8 +158,10 @@ export interface TraceDataByKind {
     failures?: string[];
     intent?: string;
   };
-  retry: { attempt: number; reason: string; next: string };
-  finding: { finding: Finding };
+  /** attempt = how many fix attempts on this view have failed so far (agent/loop.py); the next try is attempt + 1 */
+  retry: { attempt: number; reason: string; next: string; max_attempts?: number };
+  /** images: crops showing the evidence, by blob name */
+  finding: { finding: Finding; images?: string[] };
   /** chat outcome for one view, from the agent's report_view_result call (authoritative) */
   view_result: { results: { request: string; status: "applied" | "not_needed" | "failed"; reason: string }[] };
   message: { text: string };

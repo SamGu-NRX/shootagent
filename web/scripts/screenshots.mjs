@@ -26,7 +26,7 @@ await page.waitForTimeout(800);
 await shot(page, "02-workspace-fresh");
 
 await page.getByRole("button", { name: "Run QC", exact: true }).first().click();
-await page.getByText("Retry · attempt 2").first().waitFor({ timeout: 30000 });
+await page.getByText("Retry · try 2", { exact: false }).first().waitFor({ timeout: 30000 });
 await page.waitForTimeout(2600);
 await shot(page, "03-trace-live-retry");
 
@@ -43,7 +43,8 @@ await shot(page, "05-failed-attempt-preview");
 
 await page.locator(".strip-item").nth(1).click();
 await page.getByRole("tab", { name: "Chat" }).click();
-await page.getByRole("button", { name: "Make the kitchen brighter in every photo" }).click();
+await page.locator("#chat-input").fill("Make the kitchen brighter in every photo");
+await page.keyboard.press("Enter");
 await page.getByText(/Brightened/).waitFor({ timeout: 30000 });
 await page.waitForTimeout(800);
 await shot(page, "06-chat-results");

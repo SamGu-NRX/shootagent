@@ -84,6 +84,7 @@ export function Viewer() {
   const clearDraft = useStore((s) => s.clearMaskDraft);
   const attachDraft = useStore((s) => s.attachDraftMask);
   const instant = useStore((s) => s.instantSwap);
+  const selectView = useStore((s) => s.selectView);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -232,6 +233,8 @@ export function Viewer() {
   const findings = (view?.findings ?? []).filter((f) => f.region && f.status !== "dismissed");
   const points = maskDraft?.viewId === view?.id ? (maskDraft?.points ?? []) : [];
   const zoomPct = Math.round((rect.w / natural.w) * 100);
+  // views regrouping split out of this one: the fix lives there, not in this view's versions
+  const children = shoot?.views.filter((v) => view && v.derived_from === view.id) ?? [];
 
   if (!shoot || !view) {
     return (
@@ -358,7 +361,8 @@ export function Viewer() {
           findings.map((f) => {
             const r = f.region as [number, number, number, number];
             const left = Math.max(4, Math.min(size.w - 180, rect.left + r[0] * rect.w));
-            const top = Math.max(4, rect.top + r[1] * rect.h - 24);
+            // keep tags below the source labels pinned to the top of the stage
+            const top = Math.max(38, rect.top + r[1] * rect.h - 24);
             return (
               <span key={f.id} className="finding-tag" data-status={f.status} style={{ transform: `translate(${left}px, ${top}px)` }} title={f.explanation}>
                 {findingLabel(f.type)}
@@ -422,6 +426,17 @@ export function Viewer() {
           {compare !== "before" && <span className="stage-label stage-label-r">{sourceLabel(view, b)}</span>}
         </div>
 
+        {children.length > 0 && (
+          <div className="split-note" onPointerDown={(e) => e.stopPropagation()}>
+            <span>This photo mixed {children.length} camera positions. ShootAgent split it into</span>
+            {children.map((c) => (
+              <button key={c.id} className="btn btn-sm" onClick={() => selectView(c.id)}>
+                {c.label || c.id}
+              </button>
+            ))}
+          </div>
+        )}
+
         {failed && (
           <div className="stage-error" role="alert">
             Couldn't load <code>{decodeURIComponent(failed.split("/").pop() ?? failed)}</code>. Check that the server is running, then pick the photo again.
@@ -449,6 +464,12 @@ export function Viewer() {
         ) : (
           <p className="stage-hint">
             <kbd>Shift</kbd>-click an object to mark it for chat · <kbd>Shift</kbd>+<kbd>Alt</kbd>-click to exclude
+          </p>
+        )}
+        {typeof view.meta.request === "string" && view.meta.request.trim() && (
+          <p className="stage-request" title="The note the customer sent with this photo">
+            <span>Customer request</span>
+            {view.meta.request.trim()}
           </p>
         )}
       </div>

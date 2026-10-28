@@ -2,15 +2,16 @@ import { ArrowUp, ChevronRight, SquareDashed, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { pct } from "../lib/format";
 import { activeRun, currentView, useStore } from "../state/store";
-import type { TraceState, ViewOutcome, ViewResult } from "../trace/reduce";
+import { NOT_REACHED, type TraceState, type ViewOutcome, type ViewResult } from "../trace/reduce";
 import { LiveClock } from "./LiveClock";
+import { MessageText } from "./MessageText";
 import { radioKeys } from "./radioKeys";
 
 const QUICK = [
-  "Make the kitchen brighter in every photo",
-  "Remove the trash bins",
-  "Match the wall and floor colours to the original",
-  "Warm up the interiors slightly",
+  "Remove the cars and trash bins",
+  "Put the reference image on the TV screen",
+  "Match the wall colour to the reference",
+  "Add a 'Listed by Acme Realty' watermark bottom-right on every photo",
 ];
 
 const OUTCOME_TEXT: Record<ViewOutcome, string> = {
@@ -75,7 +76,8 @@ function Exchange({ trace }: { trace: TraceState }) {
   // Applied first, then the rest, so the changes are what the eye lands on.
   const order: ViewOutcome[] = ["applied", "failed", "pending", "not_needed"];
   results.sort((a, b) => order.indexOf(a[1].outcome) - order.indexOf(b[1].outcome));
-  const changed = results.filter(([, r]) => r.outcome !== "not_needed");
+  const unreached = results.filter(([, r]) => r.reason === NOT_REACHED);
+  const changed = results.filter(([, r]) => r.outcome !== "not_needed" && r.reason !== NOT_REACHED);
   const skipped = results.filter(([, r]) => r.outcome === "not_needed");
 
   const openTrace = () => {
@@ -95,10 +97,15 @@ function Exchange({ trace }: { trace: TraceState }) {
         </p>
       )}
       {trace.messages.map((m, i) => (
-        <p key={i} className="msg-agent">
-          {m}
-        </p>
+        <div key={i} className="msg-agent">
+          <MessageText text={m} />
+        </div>
       ))}
+      {trace.status === "failed" && (
+        <p className="inline-error" role="alert">
+          The run stopped before it finished{trace.summary ? `: ${trace.summary}` : "."} Send the request again to finish it.
+        </p>
+      )}
       {results.length > 0 && !running && (
         <div className="results" aria-label="Result per photo">
           {changed.length > 0 && (
@@ -118,6 +125,21 @@ function Exchange({ trace }: { trace: TraceState }) {
               </summary>
               <ul>
                 {skipped.map(([viewId, r]) => (
+                  <li key={viewId}>
+                    <ResultRow viewId={viewId} r={r} />
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+          {unreached.length > 0 && (
+            <details className="skipped">
+              <summary>
+                <ChevronRight size={13} aria-hidden />
+                Not reached in {unreached.length} photo{unreached.length > 1 ? "s" : ""}
+              </summary>
+              <ul>
+                {unreached.map(([viewId, r]) => (
                   <li key={viewId}>
                     <ResultRow viewId={viewId} r={r} />
                   </li>

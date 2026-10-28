@@ -29,7 +29,7 @@ export function Filmstrip() {
           const status = viewStatus(v, qcRan);
           const blob = sourceBlob(v, { kind: "head" });
           return (
-            <li key={v.id}>
+            <li key={v.id} data-derived={v.derived_from ? "" : undefined}>
               <button className="strip-item" aria-current={v.id === viewId} onClick={() => select(v.id)}>
                 <span className="strip-thumb">
                   {blob && <img src={api.blobUrl(shoot.id, blob, 320)} alt="" loading="lazy" decoding="async" />}

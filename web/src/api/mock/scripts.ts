@@ -177,7 +177,8 @@ export function qcScript(shoot: Shoot): Step[] {
     "The restored box is visibly darker than the wall and sofa around it; the seam reads as a patch.",
     ["region moved away from the brackets (SSIM 0.74 -> 0.71)", "vision judge: visible rectangular seam around the lamp"]);
   s.push(350, "retry", "v01", () => ({
-    attempt: 2,
+    attempt: 1,
+    max_attempts: 3,
     reason: "A box mask pulled wall and sofa from a darker bracket and left a seam.",
     next: "Segment only the lamp with SAM and restore through that mask.",
   }));
@@ -244,7 +245,7 @@ export function qcScript(shoot: Shoot): Step[] {
   s.check(600, "v05", c5, false, { outside_max_delta: 0, mask_area: 0.041 },
     "The hand is gone but the fill is a soft smear with no cloud texture; it reads as a blur in the sky.",
     ["vision judge: smeared fill with no cloud texture"]);
-  s.push(300, "retry", "v05", () => ({ attempt: 2, reason: "LaMa smeared the clouds.", next: "Generative fill with the surrounding sky as reference." }));
+  s.push(300, "retry", "v05", () => ({ attempt: 1, max_attempts: 3, reason: "LaMa smeared the clouds.", next: "Generative fill with the surrounding sky as reference." }));
   const c6 = s.tool(300, "v05", "generative_fill", { view: "v05", mask: "m_hand0004", prompt: "blue sky with soft white clouds" }, 5200, (ctx) => {
     const v = addVersion(ctx, "v05", "0004_try2.jpg", "generative_fill", { mask: "m_hand0004" }, "m_hand0004", "Remove the hand from the sky");
     return { summary: "Filled the masked sky with gpt-image-2.", version: v, mask: "m_hand0004", images: ["0004_try2_w360.jpg"] };

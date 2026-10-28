@@ -20,7 +20,22 @@ Mock images come from the AutoHDR defect set: `.venv/Scripts/python web/scripts/
 
 ## Screenshots
 
-`npm run screenshots` (with `npm run dev` running) drives the demo data with Playwright and writes `screenshots/`.
+`screenshots/live-*.jpg` come from real agent runs on the showcase demo shoot at 1920x1080:
+
+| File | Shows |
+|---|---|
+| `live-00-start.jpg` | Start screen with the showcase preset |
+| `live-01-qc-midrun-check.jpg` | QC streaming: candidate chips, a failed self-check, the retry |
+| `live-02-qc-done.jpg` | QC finished: totals, split views, the agent's summary |
+| `live-03-fixed-finding-slider.jpg` | Restored stop sign, zoomed, slider through it, the passing check |
+| `live-04-chat-results.jpg` | "remove the cars and trash bins": applied and not-needed lines |
+| `live-05-click-to-mask.jpg` | Shift-clicked TV mask attached to the next request |
+| `live-06-tv-result-retry.jpg` | The TV result, with the failed first attempt and retry in the trace |
+| `live-07-reel-playing.jpg` | The 9:16 reel in the Reel tab |
+
+`node scripts/live-screenshots.mjs <shootId>` regenerates live-03 to live-07 from a shoot that already has
+those runs. It reads runs only, needs Microsoft Edge (Playwright's Chromium can't play H.264), and both
+servers running. `npm run screenshots` captures the demo-data set (`01-` to `13-`).
 
 ## Keys
 

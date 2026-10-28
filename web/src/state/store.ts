@@ -310,6 +310,8 @@ export const useStore = create<State>()((set, get) => {
           pendingChat: null,
           attachedMask: null,
           maskDraft: null,
+          // the overlay was on for drawing; leave it on and it hides the edit the request produces
+          showMask: attachedMask ? false : st.showMask,
           traceRunId: run_id,
           runs: [...st.runs, { id: run_id, mode: "chat", started: new Date().toISOString(), done: false, usd: 0, summary: null }],
           // Optimistic seed so the message shows before the server's run_start echo arrives.
