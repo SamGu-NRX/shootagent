@@ -12,11 +12,11 @@ import os
 import shutil
 import subprocess
 import tempfile
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Callable
 
 import cv2
 import numpy as np
@@ -179,7 +179,7 @@ def prepare_source(img: np.ndarray, out_h: int, headroom: float = 1.18) -> np.nd
 def move(slide: Slide, src_w: int, src_h: int, out_w: int, out_h: int) -> Callable[[float], tuple[float, float, float]]:
     """Return t (0..1) -> (centre_x, centre_y, scale) in source pixels; scale = output px per source px."""
     s_fit = out_h / src_h  # the window spans the full photo height at this scale
-    half_w = lambda s: out_w / s / 2  # noqa: E731
+    half_w = lambda s: out_w / s / 2
     fx, fy = slide.focus or (0.5, 0.5)
     cy = src_h / 2
 
@@ -224,7 +224,7 @@ def _blend_layer(frame: np.ndarray, layer: Layer, t: float, slide_seconds: float
     alpha = max(0.0, min(a_in, 1 - ease_out((t - t_out) / fade)))
     if alpha <= 0.001:
         return frame
-    dy = int(round(layer.rise * (1 - a_in)))
+    dy = round(layer.rise * (1 - a_in))
     y0, y1, x0, x1 = layer.box
     h = y1 - y0
     # Drifting up: draw the layer `dy` px lower, clipped to the frame.
@@ -280,7 +280,7 @@ def render_reel(
         starts.append(t)
         t += slide.seconds - xf
     total = t + xf + end_seconds
-    n_frames = int(round(total * fps))
+    n_frames = round(total * fps)
     shade = scrim(W, H) / 255.0  # frames come out of the warp as 0..255
 
     with tempfile.TemporaryDirectory() as tmp:
