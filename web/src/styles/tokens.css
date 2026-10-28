@@ -1,0 +1,55 @@
+/*
+ * Darkroom instrument. Chrome is zero-chroma grey so nothing tints colour judgement of the photos;
+ * the only hue in the chrome is --agent (violet: rare in real-estate photos and distinct from the
+ * pass / fail / retry signal colours).
+ */
+:root {
+  --bg: #131313;
+  --panel: #1a1a1a;
+  --raised: #222222;
+  --hover: #2a2a2a;
+  --line: #2b2b2b;
+  --line-2: #3a3a3a;
+
+  --text: #ececec;
+  --text-2: #b0b0b0;
+  --text-3: #8c8c8c;
+
+  --agent: #a593ff;
+  --agent-ink: #c4b8ff;
+  --agent-wash: rgb(165 147 255 / 0.12);
+  --agent-line: rgb(165 147 255 / 0.5);
+
+  --pass: #6fcf8e;
+  --pass-wash: rgb(111 207 142 / 0.12);
+  --fail: #ff7d6e;
+  --fail-wash: rgb(255 125 110 / 0.12);
+  --retry: #e8b04f;
+  --retry-wash: rgb(232 176 79 / 0.12);
+
+  /* photo surrounds */
+  --canvas-black: #0c0c0c;
+  --canvas-dark: #2c2c2c;
+  --canvas-mid: #767676; /* 18% reflectance grey in sRGB */
+
+  --sans: "Instrument Sans Variable", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+
+  --fs-label: 11px;
+  --fs-meta: 12px;
+  --fs-body: 13px;
+  --fs-title: 15px;
+  --fs-h1: 20px;
+  --fs-display: 30px;
+
+  --r-sm: 5px;
+  --r: 7px;
+  --r-lg: 10px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--agent);
+
+  color-scheme: dark;
+}

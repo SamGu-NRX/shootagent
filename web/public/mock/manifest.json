@@ -1,0 +1,153 @@
+{
+ "0001": {
+  "case": "defect_train_0001",
+  "size": [
+   1600,
+   1064
+  ],
+  "brackets": 4,
+  "ev": [
+   -2.62,
+   -0.24,
+   0.0,
+   -1.04
+  ],
+  "title": "Shifted lamps and room edges after merging",
+  "family": "ghosting_grouping",
+  "box": [
+   0.39,
+   0.46,
+   0.47,
+   0.6
+  ],
+  "description": "The lamp left of the sofa has displaced overlapping shade/finial structures. This corrects the first-pass misplaced window box."
+ },
+ "0030": {
+  "case": "defect_train_0030",
+  "size": [
+   1600,
+   1069
+  ],
+  "brackets": 3,
+  "ev": [
+   -1.39,
+   0.0,
+   0.86
+  ],
+  "title": "Blue kitchen wall turns gray",
+  "family": "paint_color",
+  "box": [
+   0.682,
+   0.31,
+   0.882,
+   0.642
+  ],
+  "description": "Clock wall with suppressed blue paint character"
+ },
+ "0015": {
+  "case": "defect_train_0015",
+  "size": [
+   1600,
+   1068
+  ],
+  "brackets": 5,
+  "ev": [
+   -4.57,
+   -1.42,
+   0.0,
+   -2.87,
+   -0.44
+  ],
+  "title": "Floor lamp support incorrectly removed",
+  "family": "camera_person_removal",
+  "box": [
+   0.4292798110979929,
+   0.43155288291475064,
+   0.5879574970484062,
+   0.8560311284046692
+  ],
+  "description": "The floor lamp has a three-legged support in every source. Camera removal erases its shaft and legs, leaving its shade floating."
+ },
+ "0013": {
+  "case": "defect_train_0013",
+  "size": [
+   1600,
+   1201
+  ],
+  "brackets": 3,
+  "ev": [
+   -1.41,
+   0.0,
+   1.16
+  ],
+  "title": "Blue floor tiles turned gray",
+  "family": "wood_floor_color",
+  "box": [
+   0.02,
+   0.81,
+   0.42,
+   1.0
+  ],
+  "description": "Visible laundry floor tiles at lower left, exclude washer and threshold"
+ },
+ "0004": {
+  "case": "defect_train_0004",
+  "size": [
+   1600,
+   1069
+  ],
+  "brackets": 5,
+  "ev": [
+   -3.29,
+   -0.78,
+   0.0,
+   -1.77,
+   -0.24
+  ],
+  "title": "Hand still blocks the upper-left sky",
+  "family": "camera_person_removal",
+  "box": [
+   0,
+   0,
+   0.31,
+   0.16
+  ],
+  "description": "Large hand enters from the upper-left image edge."
+ },
+ "0039": {
+  "case": "defect_train_0039",
+  "size": [
+   1600,
+   1067
+  ],
+  "brackets": 3,
+  "ev": [
+   -1.57,
+   0.0,
+   1.01
+  ],
+  "title": "Clean bathroom and shower",
+  "family": null,
+  "box": null,
+  "description": null
+ },
+ "0018": {
+  "case": "defect_train_0018",
+  "size": [
+   1600,
+   1067
+  ],
+  "brackets": 5,
+  "ev": [
+   -1.39,
+   -0.62,
+   0.0,
+   0.49,
+   0.85
+  ],
+  "title": "Clean interior with existing fire",
+  "family": null,
+  "box": null,
+  "description": null
+ }
+}
