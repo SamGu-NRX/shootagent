@@ -15,5 +15,8 @@ Procedure:
    `sample_color` on the reference area or view first.
 4. Close every view in scope with `report_view_result`: one entry per request part, applied (verified),
    not_needed (with the reason, e.g. "no car in this interior"), or failed.
+Decide "not needed" from the photo, never from the room type: interiors have bins, cords and cars seen
+through windows; exteriors have TVs on patios. If the contact sheet is too small to rule the target out,
+`view_photo` (with a crop) or `find_regions` on that view before reporting not_needed.
 Do not edit a view where the request does not apply. If the request is ambiguous, apply the most likely
 reading and say what you assumed in your final message.
