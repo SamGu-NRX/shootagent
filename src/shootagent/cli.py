@@ -173,7 +173,7 @@ def main(argv: list[str] | None = None) -> int:
     s.set_defaults(fn=cmd_ingest)
 
     s = sub.add_parser("demo", help="build a demo shoot from the datasets on disk")
-    s.add_argument("preset", help="qc-tour or chat")
+    s.add_argument("preset", help="showcase, qc-tour, chat or requests")
     s.set_defaults(fn=cmd_demo)
 
     s = sub.add_parser("qc", help="run the autonomous QC pass and print the trace")

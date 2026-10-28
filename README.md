@@ -132,12 +132,13 @@ Local model weights (Grounding DINO base, SAM 2.1 hiera-large, big-lama) downloa
 ### Reproduce the demo
 
 ```bash
+uv run shootagent demo showcase           # 4 defect cases + 4 saved customer-request photos (the live demo)
 uv run shootagent demo qc-tour            # 8 defect cases: grouping, ghosting, fire, false removal, paint, 2 clean
 uv run shootagent qc <shoot-id>           # autonomous QC pass, trace printed as it runs
 uv run shootagent chat <shoot-id> "add a 'Listed by Acme Realty' watermark bottom-right on every photo"
 ```
 
-Or open the UI, pick "QC tour" on the start screen, and press Run QC.
+Or open the UI, pick a demo shoot on the start screen, and press Run QC.
 
 ## How it works
 

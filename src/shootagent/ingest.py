@@ -255,13 +255,25 @@ QC_TOUR_CASES = [
     "defect_train_0039",  # clean control
 ]
 
+# The demo shoot for the live demo and the Loom: defect cases the QC pass fixes reliably in the 63-case eval
+# (grouping split, ghosting, an erased stop sign) plus a clean control, and saved customer-request photos
+# whose requests passed from chat (README Results). Not one property; one place to show every capability.
+SHOWCASE_CASES = ["defect_train_0044", "defect_train_0026", "defect_train_0016", "defect_train_0038"]
+SHOWCASE_REQUESTS = [
+    "request-4603f63f34e776d189",  # remove the grey car
+    "request-868a9e8901c4cdc9a0",  # remove white trash bin on the side
+    "request-dab278eb9a3bc3ffd6",  # change the grey walls to the colour in the reference image
+    "request-0e142faf3b55390045",  # add the reference image on the TV screen
+]
+
 CHAT_REQUEST_KEYWORDS = ["wall", "sky", "lawn", "grass", "tv", "declutter", "remove", "twilight", "fire"]
 
 
 def build_demo_shoot(store: ShootStore, preset: str, settings: Settings | None = None) -> Shoot:
     """`qc-tour`: defect cases spanning grouping, removal, fire and paint plus clean controls.
     `chat`: finished photos from one property in the customer set (shared shoot_group_id), for chat edits.
-    `requests`: a handful of real editor requests (downloaded once into data/cache/editor-requests)."""
+    `requests`: a handful of real editor requests (downloaded once into data/cache/editor-requests).
+    `showcase`: the live-demo shoot, reliable QC cases plus customer-request photos (see SHOWCASE_CASES)."""
     settings = settings or get_settings()
     if preset == "qc-tour":
         root = resolve_path(settings.autohdr_defect_dir, "AUTOHDR_DEFECT_DIR")
@@ -300,4 +312,18 @@ def build_demo_shoot(store: ShootStore, preset: str, settings: Settings | None =
         for r in picked[:6]:
             ingest_editor_request(store, shoot.id, r, cache)
         return store.load(shoot.id)
-    raise ValueError(f"unknown demo preset {preset!r}; use 'qc-tour', 'chat' or 'requests'")
+    if preset == "showcase":
+        root = resolve_path(settings.autohdr_defect_dir, "AUTOHDR_DEFECT_DIR")
+        path = resolve_path(settings.autohdr_editor_requests, "AUTOHDR_EDITOR_REQUESTS")
+        by_id = {r["id"]: r for r in json.loads(path.read_text(encoding="utf-8"))["records"]}
+        missing = [c for c in SHOWCASE_CASES if not (root / c).is_dir()] + [r for r in SHOWCASE_REQUESTS if r not in by_id]
+        if missing:
+            raise FileNotFoundError(f"showcase inputs not found: {', '.join(missing)}")
+        shoot = create_shoot_from_defect_cases(
+            store, "Demo shoot: QC and customer requests", [root / c for c in SHOWCASE_CASES], {"preset": preset}
+        )
+        cache = settings.data_dir / "cache" / "editor-requests"
+        for rid in SHOWCASE_REQUESTS:
+            ingest_editor_request(store, shoot.id, by_id[rid], cache)
+        return store.load(shoot.id)
+    raise ValueError(f"unknown demo preset {preset!r}; use 'qc-tour', 'chat', 'requests' or 'showcase'")
