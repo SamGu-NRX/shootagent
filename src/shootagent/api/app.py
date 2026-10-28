@@ -295,7 +295,7 @@ def create_app(
     @app.post("/api/shoots/{shoot_id}/reel")
     def reel(shoot_id: str):
         load(shoot_id)
-        raise ApiError(501, "not_implemented", "Reel assembly is not wired to the API yet.")
+        return start(shoot_id, "reel")
 
     @app.get("/api/shoots/{shoot_id}/reel/latest.mp4")
     def reel_latest(shoot_id: str):

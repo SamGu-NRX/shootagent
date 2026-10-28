@@ -8,9 +8,11 @@ else) and kept inside the area social apps leave clear of their own buttons.
 from __future__ import annotations
 
 import math
+import os
 import shutil
 import subprocess
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -64,12 +66,23 @@ def _tracked(draw: ImageDraw.ImageDraw, xy, text: str, f, fill, tracking: float,
 
 @dataclass
 class Layer:
-    """An RGBA overlay with its own fade/rise timing within a slide."""
+    """An RGBA overlay with its own fade/rise timing within a slide, cropped to its visible box."""
 
-    rgba: np.ndarray  # (H, W, 4) float32 premultiplied 0..1
+    rgba: np.ndarray  # (H, W, 4) float32 premultiplied 0..1; cropped to `box` in __post_init__
     t_in: float  # seconds after slide start
     t_out: float | None  # seconds after slide start, or None to stay until the slide ends
     rise: float = 18.0  # px the layer drifts up while fading in
+    box: tuple[int, int, int, int] = (0, 0, 0, 0)  # y0, y1, x0, x1 in frame pixels
+
+    def __post_init__(self):
+        ys, xs = np.nonzero(self.rgba[..., 3] > 0.002)
+        if len(ys) == 0:
+            self.box, self.rgba = (0, 0, 0, 0), self.rgba[:0, :0]
+            return
+        pad = int(self.rise) + 2
+        y0, y1 = max(0, ys.min() - 2), min(self.rgba.shape[0], ys.max() + pad)
+        x0, x1 = xs.min(), xs.max() + 1
+        self.box, self.rgba = (y0, y1, x0, x1), np.ascontiguousarray(self.rgba[y0:y1, x0:x1])
 
 
 def _canvas(w: int, h: int) -> tuple[Image.Image, ImageDraw.ImageDraw]:
@@ -196,22 +209,33 @@ def move(slide: Slide, src_w: int, src_h: int, out_w: int, out_h: int) -> Callab
 def frame_at(src: np.ndarray, cam: tuple[float, float, float], out_w: int, out_h: int) -> np.ndarray:
     cx, cy, s = cam
     m = np.array([[s, 0, out_w / 2 - s * cx], [0, s, out_h / 2 - s * cy]], dtype=np.float64)
-    return cv2.warpAffine(src, m, (out_w, out_h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
+    return cv2.warpAffine(src, m, (out_w, out_h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
 
 # ---- assembly ------------------------------------------------------------------------------------------
 
 def _blend_layer(frame: np.ndarray, layer: Layer, t: float, slide_seconds: float) -> np.ndarray:
+    """Blend in place inside the layer's box. `frame` is float32 RGB 0..1."""
+    if layer.rgba.size == 0:
+        return frame
     fade = 0.45
     a_in = ease_out((t - layer.t_in) / fade)
     t_out = layer.t_out if layer.t_out is not None else slide_seconds + 1
-    a_out = 1 - ease_out((t - t_out) / fade)
-    alpha = max(0.0, min(a_in, a_out))
+    alpha = max(0.0, min(a_in, 1 - ease_out((t - t_out) / fade)))
     if alpha <= 0.001:
         return frame
     dy = int(round(layer.rise * (1 - a_in)))
-    rgba = layer.rgba if dy == 0 else np.roll(layer.rgba, dy, axis=0)
-    return frame * (1 - rgba[..., 3:4] * alpha) + rgba[..., :3] * alpha
+    y0, y1, x0, x1 = layer.box
+    h = y1 - y0
+    # Drifting up: draw the layer `dy` px lower, clipped to the frame.
+    ty0, ty1 = y0 + dy, min(frame.shape[0], y1 + dy)
+    src = layer.rgba[: ty1 - ty0]
+    if h <= 0 or src.size == 0:
+        return frame
+    region = frame[ty0:ty1, x0:x1]
+    region *= 1 - src[..., 3:4] * alpha
+    region += src[..., :3] * alpha
+    return frame
 
 
 def render_reel(
@@ -257,7 +281,7 @@ def render_reel(
         t += slide.seconds - xf
     total = t + xf + end_seconds
     n_frames = int(round(total * fps))
-    shade = scrim(W, H)
+    shade = scrim(W, H) / 255.0  # frames come out of the warp as 0..255
 
     with tempfile.TemporaryDirectory() as tmp:
         audio_args: list[str] = []
@@ -279,25 +303,33 @@ def render_reel(
         trace.emit("tool_result", tool="render_reel", ok=True, summary=f"Rendering {len(spec.slides)} photos, {total:.1f} s at {fps} fps.")
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         last = len(spec.slides) - 1
+
+        def make_frame(k: int) -> bytes:
+            tt = k / fps
+            frame = None
+            for i, slide in enumerate(spec.slides):
+                local = tt - starts[i]
+                # The last photo holds under the end card instead of cutting to black.
+                span = slide.seconds + (end_seconds + xf if i == last else 0)
+                if local < 0 or local > span:
+                    continue
+                img = frame_at(sources[i], cams[i](min(1.0, local / span)), W, H).astype(np.float32)
+                img *= shade
+                for layer in layers[i]:
+                    _blend_layer(img, layer, local, slide.seconds)
+                if i == last:
+                    end_t = local - slide.seconds + 0.2
+                    img *= 1 - 0.35 * ease_out(end_t / 0.8)
+                    _blend_layer(img, end_layer, end_t, end_seconds)
+                w_in = ease_in_out(local / xf) if (i > 0 and xf > 0) else 1.0
+                frame = img if frame is None else cv2.addWeighted(frame, 1 - w_in, img, w_in, 0)
+            return (np.clip(frame, 0, 1) * 255 + 0.5).astype(np.uint8).tobytes()
+
+        # OpenCV and large numpy ops release the GIL, so threads render frames in parallel; map keeps order.
         try:
-            for k in range(n_frames):
-                tt = k / fps
-                frame = None
-                for i, slide in enumerate(spec.slides):
-                    local = tt - starts[i]
-                    # The last photo holds under the end card instead of cutting to black.
-                    span = slide.seconds + (end_seconds + xf if i == last else 0)
-                    if local < 0 or local > span:
-                        continue
-                    img = frame_at(sources[i], cams[i](min(1.0, local / span)), W, H).astype(np.float32) / 255.0
-                    img *= shade
-                    for layer in layers[i]:
-                        img = _blend_layer(img, layer, local, slide.seconds)
-                    if i == last:
-                        img = _blend_layer(img * (1 - 0.35 * ease_out((local - slide.seconds + 0.2) / 0.8)), end_layer, local - slide.seconds + 0.2, end_seconds)
-                    w_in = ease_in_out(local / xf) if (i > 0 and xf > 0) else 1.0
-                    frame = img if frame is None else frame * (1 - w_in) + img * w_in
-                proc.stdin.write((np.clip(frame, 0, 1) * 255 + 0.5).astype(np.uint8).tobytes())
+            with ThreadPoolExecutor(max_workers=min(8, os.cpu_count() or 4)) as pool:
+                for chunk in pool.map(make_frame, range(n_frames), chunksize=4):
+                    proc.stdin.write(chunk)
             proc.stdin.close()
             err = proc.stderr.read().decode(errors="replace")
             if proc.wait() != 0:
