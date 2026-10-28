@@ -170,9 +170,11 @@ class ShootStore:
 
     def load(self, shoot_id: str) -> Shoot:
         path = self.shoot_dir(shoot_id) / "shoot.json"
-        if not path.exists():
-            raise KeyError(f"no shoot {shoot_id!r} under {self.root}")
-        return Shoot.model_validate_json(path.read_text(encoding="utf-8"))
+        # Under the shoot lock: on Windows, os.replace in save() fails while another thread has the file open.
+        with self.lock(shoot_id):
+            if not path.exists():
+                raise KeyError(f"no shoot {shoot_id!r} under {self.root}")
+            return Shoot.model_validate_json(path.read_text(encoding="utf-8"))
 
     def save(self, shoot: Shoot) -> None:
         path = self.shoot_dir(shoot.id) / "shoot.json"

@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     anthropic_base_url: str | None = None
     agent_model: str = "claude-sonnet-5-5"
     judge_model: str = "claude-sonnet-5-5"
+    # Effort for agent turns. "medium" keeps a whole-shoot run near the 2-minute demo target; untuned.
+    agent_effort: str = "medium"
 
     # OpenAI-compatible image edit endpoint for generative fills.
     openai_api_key: str | None = None
