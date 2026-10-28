@@ -16,7 +16,8 @@ agent's first pass) and the Antler "Agents" track.
 walls to the colour in the reference image". Pixels outside each edit are byte-identical to the
 delivered photo.*
 
-A silent 7-minute walkthrough of one real run (QC, two chat requests, the reel) is in
+**Live demo:** https://shootagent.sillion.app (the passcode is in the submission form; it gates spending on
+model APIs). A silent 7-minute walkthrough of one real run (QC, two chat requests, the reel) is in
 [docs/media/demo-walkthrough.mp4](docs/media/demo-walkthrough.mp4), with timestamps in
 [docs/media/demo-walkthrough.md](docs/media/demo-walkthrough.md).
 
@@ -66,19 +67,21 @@ its fix passed the self-check. "Flagged" means it confirmed the defect but left 
 
 | Family | Cases | Fixed | Flagged | Missed |
 |---|---|---|---|---|
-| ghosting / grouping | 21 | 20 | 0 | 1 |
-| camera, tripod, person removal | 14 | 5 | 1 | 8 |
+| ghosting / grouping | 21 | 21 | 0 | 0 |
+| camera, tripod, person removal | 14 | 4 | 0 | 10 |
 | fireplace | 7 | 1 | 2 | 4 |
 | paint colour | 6 | 4 | 0 | 2 |
 | window / sky | 4 | 0 | 0 | 4 |
 | lens geometry | 4 | 0 | 0 | 4 |
-| floor colour | 2 | 0 | 0 | 2 |
+| floor colour | 2 | 1 | 1 | 0 |
 | TV / art | 1 | 0 | 0 | 1 |
 | **clean controls** | 4 | 4 kept byte-identical | | |
 
-30 of 59 defects fixed and 3 flagged; no clean photo edited; no run crashed. 26.4 s and $0.073 per view.
-The self-check failed 15 edits, all reverted; 12 retries followed. (A first run, before the paint and
-fire work below, fixed 24 and flagged 2 at $0.045 per view.)
+31 of 59 defects fixed and 3 flagged; no clean photo edited; no run crashed. $0.073 and 39 s per view
+(one shoot took 825 s, most of it waiting on the model APIs). The self-check failed 11 edits, all
+reverted; 9 retries followed. Results move by a few cases between full runs: the previous run fixed 30
+and flagged 3 at 26 s per view, with a different handful of misses (it fixed the erased stop sign in 0016,
+which this run missed). A first run, before the paint and fire work below, fixed 24 and flagged 2.
 
 Grouping is the strongest result. The detector splits brackets into camera positions with feature
 matching and matched the labelled groups on 59 of 59 cases; the agent then re-fuses each group into its
@@ -225,7 +228,8 @@ variables at the unzipped folders.
 
 - QC misses most sky, lens and erased-object defects, and some fire (see Results). Restoring a firebox
   from the brackets often fails the judge, and erased-object verdicts vary from run to run.
-- The wall paint check looks only at cool hues; warm walls flagged too often on photos with no defect.
+- The wall paint check looks only at cool hues (blues and greens). Checking warm walls flagged seven walls
+  that had no defect, so they are left out.
 - The vision judge is a model. It is stricter than a human on close-ups and sometimes misses small
   leftovers such as a car antenna; edits it rejects are reverted, not shipped.
 - Generative removals cost about $0.025 each and take 20 to 40 s at the image endpoint, so a removal
@@ -235,7 +239,8 @@ variables at the unzipped folders.
 - The QC detector's confidence thresholds were chosen on the same 63 cases it is scored on.
 - Single-user: one agent run per shoot at a time, files on local disk, no accounts.
 
-Next steps: a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight architectural lines; batch generative removals per shoot.
+Next steps: a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight
+architectural lines; batch generative removals per shoot.
 
 ## Team
 
