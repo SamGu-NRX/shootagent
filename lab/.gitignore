@@ -1,0 +1,4 @@
+inputs/
+*.wav
+.grok-runs/
+.scratch/
