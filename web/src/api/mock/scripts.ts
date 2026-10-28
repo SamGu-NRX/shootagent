@@ -4,6 +4,7 @@
 
 import type { Finding, Shoot, TraceDataByKind, TraceKind, View } from "../types";
 import { caseOf, finding } from "./data";
+import { classifyRequest } from "./delivery";
 
 export interface Ctx {
   shoot: Shoot;
@@ -280,14 +281,55 @@ export function qcScript(shoot: Shoot): Step[] {
   return s.steps;
 }
 
-/** Keyword-routed chat replies, enough to demonstrate applied / not-needed / scoped results. */
-export function chatScript(shoot: Shoot, message: string, views: string[] | undefined, maskId: string | undefined): Step[] {
+/** Keyword-routed chat replies, enough to demonstrate applied / not-needed / declined / scoped results. */
+export function chatScript(
+  shoot: Shoot,
+  message: string,
+  views: string[] | undefined,
+  maskId: string | undefined,
+  opts: { origin?: string; comment?: string } = {},
+): Step[] {
   const s = new Script();
   const scope = views?.length ? views : shoot.views.map((v) => v.id);
   const label = (id: string) => view(shoot, id).label || id;
   const lower = message.toLowerCase();
-  s.push(0, "run_start", null, () => ({ mode: "chat", request: message, views: scope }));
+  const policy = classifyRequest(message);
+  const declined = policy.items.filter((i) => i.verdict === "decline");
+  const allowed = policy.items.filter((i) => i.verdict !== "decline" && i.verdict !== "unclear");
+  s.push(0, "run_start", null, () => ({
+    mode: "chat",
+    request: message,
+    views: scope,
+    origin: opts.origin ?? "photographer",
+    comment: opts.comment ?? null,
+    policy,
+  }));
   s.usage(300, 7400, 260, 0.0262);
+
+  // The listing photo policy (compliance/policy.py): a request that would misrepresent the property is declined.
+  if (declined.length && !allowed.length) {
+    const what = declined.map((d) => `“${d.text}”`).join(" and ");
+    s.push(400, "plan", null, () => ({
+      text: "Decline the request: it would misrepresent the property.",
+      steps: [{ intent: `Decline ${what} and explain why` }],
+    }));
+    s.thought(300, null, `The listing photo policy declines ${what}: ${declined[0]!.reason}`);
+    for (const id of scope) {
+      s.push(120, "view_result", id, () => ({
+        results: declined.map((d) => ({ request: d.text, status: "declined", reason: d.reason })),
+      }));
+    }
+    s.push(300, "message", null, () => ({
+      text:
+        `I can't do ${what}. ${declined[0]!.reason} ` +
+        "I can brighten or straighten the photo, or remove temporary things like cars, bins and cords; those edits are disclosed on the listing.",
+    }));
+    s.push(250, "run_end", null, () => ({ ok: true, summary: "Request declined by the listing photo policy.", ms: 0, usd: 0, counts: { edits_declined: declined.length } }));
+    return s.steps;
+  }
+  if (declined.length) {
+    s.thought(250, null, `Part of the request is declined by the listing photo policy: ${declined.map((d) => `“${d.text}”`).join(", ")}. Doing the rest.`);
+  }
 
   if (/bright|exposure|dark/.test(lower)) {
     const kitchens = scope.filter((id) => view(shoot, id).room === "kitchen");
@@ -326,14 +368,18 @@ export function chatScript(shoot: Shoot, message: string, views: string[] | unde
     }));
     if (maskId) {
       const id = shoot.masks[maskId]?.view ?? scope[0]!;
-      const c = s.tool(300, id, "remove_object", { view: id, mask: maskId, method: "lama" }, 1500, (ctx) => {
+      // "remove the white trash bin by the garage" -> "white trash bin"
+      const what =
+        message.match(/\b(?:remove|erase|delete|get rid of|take out)\s+(?:the|this|that|a|an)?\s*([a-z][a-z -]{1,40}?)(?:\s+(?:from|on|in|by|near|next|at|beside)\b|[.,!]|$)/i)?.[1]?.trim() ||
+        "object";
+      const c = s.tool(300, id, "remove_object", { view: id, mask: maskId, method: "auto", what }, 1500, (ctx) => {
         const v = view(ctx.shoot, id);
         const blob = v.versions.find((x) => x.id === v.head)!.blob;
-        const vid = addVersion(ctx, id, blob, "remove_object", { mask: maskId }, maskId, "Remove the object under the user's mask");
-        return { summary: "Removed the masked object (demo data: image unchanged).", version: vid, mask: maskId };
+        const vid = addVersion(ctx, id, blob, "remove_object", { mask: maskId, what }, maskId, `Remove the ${what} under the marked area`);
+        return { summary: `Removed the ${what} (demo data: image unchanged).`, version: vid, mask: maskId };
       });
       s.check(500, id, c, true, { outside_max_delta: 0, mask_area: shoot.masks[maskId]?.area ?? 0 }, "Object removed; surroundings intact.");
-      s.push(300, "message", null, () => ({ text: `Removed the object you marked in ${label(id)}.` }));
+      s.push(300, "message", null, () => ({ text: `Removed the ${what} you marked in ${label(id)}.` }));
     } else {
       s.tool(300, null, "find_regions", { views: scope, prompt: "trash bin, garbage can, recycling bin" }, 2600, () => ({
         summary: "No bins in any photo. Best match 0.12 (a shadow on the garage driveway), below the 0.35 threshold.",

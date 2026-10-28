@@ -14,7 +14,7 @@ export type Source =
   | { kind: "bracket"; index: number };
 
 export type CompareMode = "split" | "before" | "after";
-export type RightTab = "chat" | "trace" | "reel";
+export type RightTab = "chat" | "trace" | "reel" | "deliver";
 export type CanvasTone = "dark" | "mid" | "black";
 
 interface MaskDraft {
@@ -218,7 +218,6 @@ export const useStore = create<State>()((set, get) => {
           runs,
           viewId: shoot.views[0]?.id ?? null,
           traceRunId: latest?.id ?? null,
-          tab: runs.length ? "trace" : "trace",
           loadingShoot: false,
         });
         runs.forEach((r) => watchRun(id, r.id));

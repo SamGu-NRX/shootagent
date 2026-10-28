@@ -2,9 +2,9 @@
 // Pure and idempotent by `seq`: an SSE reconnect replays every past event, and replaying them again
 // must leave the state unchanged.
 
-import type { Finding, PlanStep, TraceDataByKind, TraceEvent } from "../api/types";
+import type { Finding, PlanStep, PolicyResult, TraceDataByKind, TraceEvent } from "../api/types";
 
-export type ViewOutcome = "pending" | "applied" | "not_needed" | "failed";
+export type ViewOutcome = "pending" | "applied" | "not_needed" | "failed" | "declined";
 
 export interface ViewResult {
   outcome: ViewOutcome;
@@ -77,6 +77,10 @@ export interface TraceState {
   runId: string | null;
   mode: string | null;
   request: string | null;
+  /** "client" for a request from the client review link */
+  origin: string | null;
+  /** the listing photo policy's verdict on a chat request */
+  policy: PolicyResult | null;
   views: string[];
   status: "idle" | "running" | "done" | "failed";
   /** epoch ms of run_start */
@@ -106,6 +110,8 @@ export function emptyTrace(): TraceState {
     runId: null,
     mode: null,
     request: null,
+    origin: null,
+    policy: null,
     views: [],
     status: "idle",
     startedAt: null,
@@ -185,6 +191,8 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       s.runId = event.run;
       s.mode = event.data.mode;
       s.request = event.data.request ?? null;
+      s.origin = event.data.origin ?? null;
+      s.policy = event.data.policy ?? null;
       s.views = views;
       s.status = "running";
       s.startedAt = epoch;
@@ -310,7 +318,9 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
         ? "applied"
         : res.some((x) => x.status === "failed")
           ? "failed"
-          : "not_needed";
+          : res.some((x) => x.status === "declined")
+            ? "declined"
+            : "not_needed";
       const prev = s.viewResults[view];
       s.viewResults = {
         ...s.viewResults,

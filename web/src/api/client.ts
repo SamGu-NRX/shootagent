@@ -1,4 +1,21 @@
-import type { Mask, RunSummary, Shoot, ShootSummary, TraceEvent, View } from "./types";
+import type {
+  CommentView,
+  ComplianceReport,
+  KitInfo,
+  LintResult,
+  Listing,
+  Mask,
+  PolicyResult,
+  PublicationSummary,
+  PublicPage,
+  ReviewShoot,
+  RunSummary,
+  Share,
+  Shoot,
+  ShootSummary,
+  TraceEvent,
+  View,
+} from "./types";
 
 export type DemoPreset = "showcase" | "qc-tour" | "chat";
 
@@ -13,6 +30,13 @@ export type MaskPoint = [number, number, 0 | 1];
 
 export interface RunSubscription {
   close(): void;
+}
+
+export interface ReviewCommentBody {
+  view: string;
+  text: string;
+  /** [x, y] normalised, where the client tapped */
+  point?: [number, number];
 }
 
 export interface Api {
@@ -38,6 +62,36 @@ export interface Api {
   ): RunSubscription;
   blobUrl(shootId: string, blob: string, w?: number): string;
   reelUrl(shootId: string): string;
+
+  // ---- delivery (api/delivery.py) ----
+  getCompliance(id: string): Promise<ComplianceReport>;
+  /** the photographer's ruling on a QC finding that might be an alteration */
+  setFindingVerdict(id: string, view: string, finding: string, verdict: "disclose" | "not_alteration"): Promise<View>;
+  publish(id: string): Promise<PublicationSummary>;
+  patchListing(id: string, fields: Partial<Listing>): Promise<Shoot>;
+  createShare(id: string, label?: string): Promise<Share>;
+  revokeShare(id: string, token: string): Promise<void>;
+  listComments(id: string): Promise<CommentView[]>;
+  buildKit(id: string): Promise<KitInfo>;
+  /** null when no kit has been built */
+  getKit(id: string): Promise<KitInfo | null>;
+  lintListing(text: string): Promise<LintResult>;
+  lintRequest(text: string): Promise<PolicyResult>;
+  /** the public disclosure page (no passcode) */
+  getPublic(token: string): Promise<PublicPage>;
+  publicBlobUrl(token: string, blob: string, w?: number): string;
+  /** the client review link (no passcode) */
+  getReview(token: string): Promise<ReviewShoot>;
+  reviewBlobUrl(token: string, blob: string, w?: number): string;
+  reviewVerdict(token: string, view: string, status: "approved" | "changes_requested" | null): Promise<ReviewShoot>;
+  reviewComment(token: string, body: ReviewCommentBody): Promise<CommentView>;
+  reviewUndo(token: string, commentId: string): Promise<CommentView>;
+  subscribeReviewRun(
+    token: string,
+    run: string,
+    onEvent: (e: TraceEvent) => void,
+    onEnd: (error?: ApiError) => void,
+  ): RunSubscription;
 }
 
 export class ApiError extends Error {
@@ -192,6 +246,7 @@ function streamEvents(
 
 export function createHttpApi(): Api {
   const s = (id: string) => `/api/shoots/${encodeURIComponent(id)}`;
+  const r = (token: string) => `/api/review/${encodeURIComponent(token)}`;
   return {
     mode: "live",
     listShoots: () => request("GET", "/api/shoots"),
@@ -212,5 +267,36 @@ export function createHttpApi(): Api {
     subscribeRun: (id, run, onEvent, onEnd) => streamEvents(`${s(id)}/runs/${run}/events`, onEvent, onEnd),
     blobUrl: (shootId, blob, w) => `${s(shootId)}/blobs/${encodeURIComponent(blob)}${w ? `?w=${w}` : ""}`,
     reelUrl: (shootId) => `${s(shootId)}/reel/latest.mp4`,
+
+    getCompliance: (id) => request("GET", `${s(id)}/compliance`),
+    setFindingVerdict: (id, view, finding, verdict) =>
+      request("POST", `${s(id)}/views/${encodeURIComponent(view)}/findings/${encodeURIComponent(finding)}`, { verdict }),
+    publish: (id) => request("POST", `${s(id)}/publish`),
+    patchListing: (id, fields) => request("PATCH", `${s(id)}/listing`, fields),
+    createShare: (id, label) => request("POST", `${s(id)}/shares`, { label: label ?? "" }),
+    revokeShare: async (id, token) => {
+      await request("DELETE", `${s(id)}/shares/${encodeURIComponent(token)}`);
+    },
+    listComments: (id) => request("GET", `${s(id)}/comments`),
+    buildKit: (id) => request("POST", `${s(id)}/kit`, { include_reel: true }),
+    getKit: async (id) => {
+      try {
+        return await request<KitInfo>("GET", `${s(id)}/kit`);
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 404) return null;
+        throw e;
+      }
+    },
+    lintListing: (text) => request("POST", "/api/lint/listing", { text }),
+    lintRequest: (text) => request("POST", "/api/lint/request", { text }),
+    getPublic: (token) => request("GET", `/api/public/${encodeURIComponent(token)}`),
+    publicBlobUrl: (token, blob, w) =>
+      `/api/public/${encodeURIComponent(token)}/blobs/${encodeURIComponent(blob)}${w ? `?w=${w}` : ""}`,
+    getReview: (token) => request("GET", `${r(token)}`),
+    reviewBlobUrl: (token, blob, w) => `${r(token)}/blobs/${encodeURIComponent(blob)}${w ? `?w=${w}` : ""}`,
+    reviewVerdict: (token, view, status) => request("POST", `${r(token)}/views/${encodeURIComponent(view)}/verdict`, { status }),
+    reviewComment: (token, body) => request("POST", `${r(token)}/comments`, body),
+    reviewUndo: (token, id) => request("POST", `${r(token)}/comments/${encodeURIComponent(id)}/undo`),
+    subscribeReviewRun: (token, run, onEvent, onEnd) => streamEvents(`${r(token)}/runs/${encodeURIComponent(run)}/events`, onEvent, onEnd),
   };
 }

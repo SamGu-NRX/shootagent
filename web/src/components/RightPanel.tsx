@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { activeRun, useStore, type RightTab } from "../state/store";
 import { ChatPanel } from "./ChatPanel";
+import { DeliverPanel } from "./DeliverPanel";
 import { ReelPanel } from "./ReelPanel";
 import { TracePanel } from "./TracePanel";
 
@@ -8,6 +9,7 @@ const TABS: { id: RightTab; label: string }[] = [
   { id: "chat", label: "Chat" },
   { id: "trace", label: "Trace" },
   { id: "reel", label: "Reel" },
+  { id: "deliver", label: "Deliver" },
 ];
 
 export function RightPanel() {
@@ -51,6 +53,7 @@ export function RightPanel() {
         {tab === "chat" && <ChatPanel />}
         {tab === "trace" && <TracePanel />}
         {tab === "reel" && <ReelPanel />}
+        {tab === "deliver" && <DeliverPanel />}
       </div>
     </aside>
   );
