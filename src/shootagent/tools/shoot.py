@@ -6,7 +6,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..store import Finding
+from ..store import TAXONOMY, Finding
 from ._common import ToolError, load_view, norm_box
 from .base import ToolContext, ToolInput, ToolResult, tool
 
@@ -48,7 +48,7 @@ class SetFindingIn(ToolInput):
         "alarm, 'failed' when every fix attempt failed its check, 'open' to keep it for a human."
     )
     note: str = Field(description="Why, in one sentence. Shown to the photographer.")
-    type: str | None = Field(
+    type: Literal[TAXONOMY] | None = Field(  # type: ignore[valid-type]
         None,
         description="AutoHDR taxonomy type, e.g. 'camera_person_removal'. Required for 'new'. On an existing "
         "candidate, pass it to correct a wrong type (an erased person detected as 'window_sky').",

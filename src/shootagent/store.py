@@ -41,6 +41,15 @@ class Bracket(BaseModel):
     name: str | None = None
 
 
+# AutoHDR's defect taxonomy (validation-policy.json in their Track 2 starter); findings use these names so
+# results map onto their result format.
+TAXONOMY = (
+    "sky_bleed", "window_sky", "color_exposure", "wood_floor_color", "paint_color", "grass", "declutter",
+    "detail_hallucination", "geometry_lens", "ghosting_grouping", "camera_person_removal", "staging",
+    "fireplace", "tv_art", "twilight", "rendering_artifact", "sharpness_resolution",
+)
+
+
 class Finding(BaseModel):
     """One located defect. `region` is [x0, y0, x1, y1] normalised to 0..1, matching AutoHDR's result format."""
 

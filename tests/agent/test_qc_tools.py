@@ -82,3 +82,15 @@ def test_brackets_detected_as_one_camera_position_are_not_split(tmp_path):
     res = run_tool(ctx, "regroup_brackets", {"view": "v01", "groups": [[0, 1], [2]]})
     assert not res.ok and "restore_from_brackets" in res.summary
     assert [v.id for v in store.load(sid).views] == ["v01"]
+
+
+def test_set_finding_rejects_types_outside_autohdr_taxonomy():
+    # A live QC run recorded an invented 'erased_object' type, which maps onto nothing in AutoHDR's results.
+    import pydantic
+    import pytest
+
+    from shootagent.tools.shoot import SetFindingIn
+
+    with pytest.raises(pydantic.ValidationError):
+        SetFindingIn(view="v01", finding="new", status="open", note="x", type="erased_object")
+    assert SetFindingIn(view="v01", finding="new", status="open", note="x", type="camera_person_removal").type
