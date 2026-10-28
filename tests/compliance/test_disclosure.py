@@ -68,7 +68,8 @@ def test_editor_alterations_come_from_qc_verdicts(tmp_path):
     def findings(s):
         s.view("v01").findings.append(Finding(type="window_sky", explanation="sky differs", status="dismissed",
                                               evidence={"agent_note": "legitimate sky replacement"}))
-        s.view("v02").findings.append(Finding(type="camera_person_removal", explanation="lamp missing", status="open"))
+        s.view("v02").findings.append(Finding(type="camera_person_removal", explanation="lamp missing", status="open",
+                                              confidence=0.55))
         s.view("v03").findings.append(Finding(type="camera_person_removal", explanation="tripod gone",
                                               status="dismissed", evidence={"agent_note": "tripod removal ordered"}))
     store.mutate(sid, findings)
@@ -145,7 +146,8 @@ def test_a_leftover_defect_is_not_an_alteration_and_the_photographer_rules_on_fi
         s.view("v01").findings.append(Finding(id="f_hand", type="camera_person_removal",
                                               explanation="A hand enters the sky from the upper-left edge.", status="failed"))
         s.view("v02").findings.append(Finding(id="f_lamp", type="camera_person_removal",
-                                              explanation="The floor lamp's stand is missing.", status="open"))
+                                              explanation="The floor lamp's stand is missing.", status="open",
+                                              evidence={"agent_note": "Can't tell if the lamp was removed on purpose."}))
     store.mutate(sid, findings)
     r = report_of(store, sid)
     assert r["v01"].status == "unaltered" and r["v02"].status == "review"
@@ -162,7 +164,21 @@ def test_readiness_counts_only_the_listing_set(tmp_path):
     store, sid = make_shoot(tmp_path, n_views=2)
     mark_qc(store, sid, "v01", "v02")
     store.mutate(sid, lambda s: s.view("v02").findings.append(
-        Finding(type="paint_color", explanation="wall colour differs", status="open")))
+        Finding(type="paint_color", explanation="wall colour differs", status="open", confidence=0.7)))
     assert not build_report(store, sid).ready
     store.mutate(sid, lambda s: setattr(s.view("v01"), "approved", True))  # v02 leaves the listing set
     assert build_report(store, sid).ready
+
+
+def test_unreviewed_low_confidence_candidates_do_not_block_publishing(tmp_path):
+    store, sid = make_shoot(tmp_path, n_views=1)
+    mark_qc(store, sid, "v01")
+    store.mutate(sid, lambda s: s.view("v01").findings.extend([
+        Finding(type="paint_color", explanation="surface colour differs", status="open", confidence=0.2),
+        Finding(type="camera_person_removal", explanation="Something in every bracket is missing here", status="open",
+                confidence=0.43),
+    ]))
+    r = report_of(store, sid)["v01"]
+    # the possible erased object (0.43) needs a ruling; the faint colour candidate is only noted
+    assert r.status == "review" and [c.category for c in r.changes] == ["camera_person_removal"]
+    assert any("nobody has ruled on" in n for n in r.notes)

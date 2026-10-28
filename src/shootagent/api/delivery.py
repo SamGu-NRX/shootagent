@@ -305,11 +305,10 @@ def register(app: FastAPI, ctx: Ctx) -> None:
 
     @app.get("/api/shoots/{shoot_id}/kit")
     def kit_info(shoot_id: str):
+        """The latest kit's contents, or null before one is built (not a 404: the Deliver tab asks every time)."""
         ctx.load(shoot_id)
         info = latest_kit(store, shoot_id)
-        if info is None:
-            raise ApiError(404, "no_kit", "No listing kit has been built for this shoot yet.")
-        return {**info, "url": f"/api/shoots/{shoot_id}/kit/latest.zip"}
+        return {**info, "url": f"/api/shoots/{shoot_id}/kit/latest.zip"} if info else None
 
     @app.get("/api/shoots/{shoot_id}/kit/latest.zip")
     def kit_zip(shoot_id: str):

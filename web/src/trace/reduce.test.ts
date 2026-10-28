@@ -185,4 +185,25 @@ describe("QC candidates and plan progress (shapes from run 20261027-235730-b73cb
     expect(s.viewResults.v02).toEqual({ outcome: "failed", reason: "Not reached: the run stopped first." });
     expect(s.totals).toMatchObject({ usd: 0.05, ms: 12000 });
   });
+
+  it("keeps the request's origin and policy, and a declined view stays declined", () => {
+    const e = stream();
+    const state = reduceAll([
+      e("run_start", {
+        mode: "chat",
+        request: "remove the power lines",
+        views: ["v01", "v02"],
+        origin: "client",
+        policy: { verdict: "decline", items: [{ text: "remove the power lines", verdict: "decline", category: "surroundings", reason: "r" }] },
+      }),
+      e("view_result", { results: [{ request: "remove the power lines", status: "declined", reason: "surroundings" }] }, "v01"),
+      e("view_result", { results: [{ request: "remove the power lines", status: "not_needed", reason: "no lines" }] }, "v02"),
+      e("run_end", { ok: true, summary: "declined", ms: 100, usd: 0 }),
+    ]);
+    expect(state.origin).toBe("client");
+    expect(state.policy?.verdict).toBe("decline");
+    expect(state.viewResults.v01?.outcome).toBe("declined");
+    expect(state.viewResults.v02?.outcome).toBe("not_needed");
+  });
 });
+

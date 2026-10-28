@@ -1476,6 +1476,26 @@ kbd {
   font-size: var(--fs-title);
   color: var(--text);
 }
+.trace-policy {
+  display: grid;
+  gap: 4px;
+  margin: -4px 0 12px;
+  font-size: var(--fs-meta);
+  color: var(--text-2);
+}
+.trace-policy li {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 8px;
+}
+.trace-policy-verdict {
+  font-weight: 600;
+  font-size: var(--fs-label);
+  color: var(--agent-ink);
+}
+.trace-policy li[data-verdict="decline"] .trace-policy-verdict {
+  color: var(--fail);
+}
 .plan {
   margin-bottom: 12px;
   padding: 10px 12px;
@@ -2638,6 +2658,10 @@ button.chip-view {
   gap: 7px;
   font-size: var(--fs-label);
   color: var(--text-2);
+}
+.dv-sep {
+  margin: 0 5px;
+  color: var(--text-3);
 }
 .dv-dot {
   width: 7px;

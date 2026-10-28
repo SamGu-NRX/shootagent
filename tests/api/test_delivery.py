@@ -95,6 +95,7 @@ def test_undo_moves_the_photo_back(env):
 
 def test_kit_builds_and_downloads(env):
     http, store, sid, _ = env
+    assert http.get(f"/api/shoots/{sid}/kit", headers=PASS).json() is None  # nothing built yet
     info = http.post(f"/api/shoots/{sid}/kit", headers=PASS).json()
     assert info["photos"] == 2 and info["url"].endswith("latest.zip")
     z = http.get(info["url"], headers=PASS)
@@ -117,7 +118,7 @@ def test_photographer_rules_on_a_finding(env):
     from shootagent.store import Finding
 
     store.mutate(sid, lambda s: s.view("v01").findings.append(
-        Finding(id="f_x", type="paint_color", explanation="wall colour differs", status="open")))
+        Finding(id="f_x", type="paint_color", explanation="wall colour differs", status="open", confidence=0.7)))
     rep = http.get(f"/api/shoots/{sid}/compliance", headers=PASS).json()
     assert next(p for p in rep["photos"] if p["view"] == "v01")["status"] == "review" and not rep["ready"]
     r = http.post(f"/api/shoots/{sid}/views/v01/findings/f_x", json={"verdict": "not_alteration"}, headers=PASS)

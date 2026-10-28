@@ -187,6 +187,14 @@ const DISCLOSED: Record<string, string> = {
 };
 const ERASED = /\b(?:erased?|missing|removed|lost|absent|gone|translucent|smear\w*|disappear\w*|lacks?)\b/i;
 
+/** compliance/disclosure.py `_may_be_alteration`: unreviewed candidates count only when the detector is confident. */
+function mayAlter(type: string, status: string, explanation: string, note: string, confidence: number | null): boolean {
+  const erased = type === "camera_person_removal" && ERASED.test(`${explanation} ${note}`);
+  if (!(EDITOR[type] || type === "paint_color" || type === "wood_floor_color" || erased)) return false;
+  if (status === "failed" || note) return true;
+  return (confidence ?? 0) >= (erased ? 0.4 : 0.6);
+}
+
 function findingChanges(view: View): Change[] {
   const out: Change[] = [];
   for (const f of view.findings) {
@@ -199,10 +207,7 @@ function findingChanges(view: View): Change[] {
     } else if (f.status === "dismissed" && EDITOR[f.type]) {
       const [what, category] = EDITOR[f.type]!;
       out.push({ kind: "alteration", what, detail: note || f.explanation, by: "editor", requested_by: "order", category, finding: f.id });
-    } else if (
-      (f.status === "open" || f.status === "failed") &&
-      (EDITOR[f.type] || f.type === "paint_color" || f.type === "wood_floor_color" || (f.type === "camera_person_removal" && ERASED.test(`${f.explanation} ${note}`)))
-    ) {
+    } else if ((f.status === "open" || f.status === "failed") && mayAlter(f.type, f.status, f.explanation, note, f.confidence)) {
       out.push({ kind: "possible_alteration", what: f.explanation, detail: `QC finding ${f.status === "open" ? "unresolved" : "could not be repaired"}`, by: "editor", requested_by: "qc", category: f.type, finding: f.id });
     }
   }

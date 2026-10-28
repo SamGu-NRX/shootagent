@@ -57,7 +57,14 @@ function CopyButton({ text, label = "Copy link" }: { text: string; label?: strin
   );
 }
 
+/** Demo data lives in this tab's memory, so its links open here; live links open a new tab. */
+function useLinkTarget(): { target?: string; rel?: string } {
+  const mode = useStore((s) => s.apiMode);
+  return mode === "mock" ? {} : { target: "_blank", rel: "noreferrer" };
+}
+
 export function DeliverPanel() {
+  const linkTarget = useLinkTarget();
   const shoot = useStore((s) => s.shoot);
   const api = useStore((s) => s.api);
   const select = useStore((s) => s.selectView);
@@ -194,8 +201,14 @@ export function DeliverPanel() {
               <>
                 <span className={report.stale ? "dv-dot dv-dot-stale" : "dv-dot"} aria-hidden />
                 <span>
-                  Published v{pub.version} · {relTime(pub.created_at)}
-                  {report.stale ? " · photos changed since" : ""}
+                  Published v{pub.version}
+                  <span className="dv-sep" aria-hidden>·</span>
+                  {relTime(pub.created_at)}
+                  {report.stale && (
+                    <>
+                      <span className="dv-sep" aria-hidden>·</span>photos changed since
+                    </>
+                  )}
                 </span>
               </>
             ) : (
@@ -204,7 +217,7 @@ export function DeliverPanel() {
           </div>
           <div className="dv-actions">
             {pub && (
-              <a className="btn btn-sm" href={`#/d/${encodeURIComponent(pub.token)}`} target="_blank" rel="noreferrer">
+              <a className="btn btn-sm" href={`#/d/${encodeURIComponent(pub.token)}`} {...linkTarget}>
                 <ExternalLink size={13} aria-hidden /> Public page
               </a>
             )}
@@ -375,6 +388,7 @@ function ReviewSection({
   onOpenView: (view: string) => void;
 }) {
   const shoot = useStore((s) => s.shoot);
+  const linkTarget = useLinkTarget();
   const url = share ? appLink(`/r/${encodeURIComponent(share.token)}`) : "";
   const recent = [...comments].reverse().slice(0, 6);
   const label = (view: string) => shoot?.views.find((v) => v.id === view)?.label || view;
@@ -405,7 +419,7 @@ function ReviewSection({
           </div>
           <div className="dv-actions">
             <CopyButton text={url} />
-            <a className="btn btn-sm" href={`#/r/${encodeURIComponent(share.token)}`} target="_blank" rel="noreferrer">
+            <a className="btn btn-sm" href={`#/r/${encodeURIComponent(share.token)}`} {...linkTarget}>
               <ExternalLink size={13} aria-hidden /> Open as client
             </a>
             <button className="btn btn-sm btn-quiet" onClick={() => onRevoke(share.token)} disabled={busy === "share"}>

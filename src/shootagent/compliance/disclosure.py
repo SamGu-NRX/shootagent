@@ -22,6 +22,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from ..qc.candidates import HIGH_CONFIDENCE
 from ..store import Change, Shoot, ShootStore, View, Version, now_iso
 from ..trace import read_events
 from .policy import classify_clause
@@ -191,6 +192,20 @@ def classify_version(shoot: Shoot, view: View, v: Version, run: dict) -> Change 
     return Change(kind="alteration", what=f"edited ({op.replace('_', ' ')})", category="change", **base)
 
 
+def _may_be_alteration(f, note: str) -> bool:
+    """Whether an unresolved finding could mean the editor changed the scene, worth the photographer's ruling.
+
+    The agent's QC pass rules on every candidate; one it left open on purpose (with a note) or failed to fix always
+    counts. A candidate nobody has looked at yet counts only when the detector is confident: from 0.4 for something
+    that went missing (an undisclosed removal is the costliest miss), from QC's own high-confidence bar otherwise."""
+    erased = f.type == "camera_person_removal" and bool(_ERASED.search(f"{f.explanation} {note}"))
+    if not (f.type in MAY_ALTER or erased):
+        return False
+    if f.status == "failed" or note:
+        return True
+    return (f.confidence or 0) >= (0.4 if erased else HIGH_CONFIDENCE)
+
+
 def _finding_changes(view: View) -> list[Change]:
     """The editor's changes, from the QC verdicts on its finished photo."""
     out: list[Change] = []
@@ -215,9 +230,7 @@ def _finding_changes(view: View) -> list[Change]:
                 what, cat = EDITOR_ALTERATIONS[f.type]
                 out.append(Change(kind="alteration", what=what, detail=note or f.explanation, by="editor",
                                   requested_by="order", category=cat, finding=f.id))
-        elif f.status in ("open", "failed") and (
-            f.type in MAY_ALTER or (f.type == "camera_person_removal" and _ERASED.search(f"{f.explanation} {note}"))
-        ):
+        elif f.status in ("open", "failed") and _may_be_alteration(f, note):
             prefix = "unresolved" if f.status == "open" else "could not be repaired"
             out.append(Change(kind="possible_alteration", what=_short(f.explanation, 120),
                               detail=f"QC finding {prefix}: {note or f.explanation}", by="editor",
@@ -287,6 +300,11 @@ def photo_report(store: ShootStore, shoot: Shoot, view: View, runs: _Runs | None
         notes.append("The editor's own changes have not been checked against the brackets; run QC.")
     if not has_brackets:
         notes.append("No camera brackets: the delivered photo stands in for the original.")
+    unreviewed = [f for f in view.findings if f.status == "open" and not f.evidence.get("agent_note")
+                  and not any(c.finding == f.id for c in changes)]
+    if unreviewed:
+        notes.append(f"QC raised {len(unreviewed)} candidate{'s' if len(unreviewed) > 1 else ''} nobody has ruled on yet; "
+                     "the agent's QC pass reviews them.")
     head = view.head_version if view.head else None
     return PhotoReport(
         view=view.id,

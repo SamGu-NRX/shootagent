@@ -48,7 +48,10 @@ def _alt_text(shoot: Shoot, p: PublishedPhoto, total: int) -> str:
     if isinstance(custom, str) and custom.strip():
         return custom.strip()
     where = shoot.listing.address or shoot.title
-    return f"{_caption(p)}, photo {p.order} of {total} of {where}."
+    caption = _caption(p)
+    if caption.startswith("Photo "):  # no room label yet
+        return f"Photo {p.order} of {total} of {where}."
+    return f"{caption}, photo {p.order} of {total} of {where}."
 
 
 def _readme(shoot: Shoot, pub: Publication, base: str, altered: int, files: list[str]) -> str:

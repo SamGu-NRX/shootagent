@@ -170,8 +170,22 @@ function TraceView({ trace }: { trace: TraceState }) {
       <div className="trace-scroll" ref={scroller}>
         {trace.request && (
           <p className="trace-request">
-            <span className="eyebrow">Request</span>“{trace.request}”
+            <span className="eyebrow">{trace.origin === "client" ? "Client request · review link" : "Request"}</span>“{trace.request}”
           </p>
+        )}
+        {trace.policy && trace.policy.items.some((i) => i.verdict === "decline" || i.verdict === "disclose") && (
+          <ul className="trace-policy" aria-label="Listing photo policy">
+            {trace.policy.items
+              .filter((i) => i.verdict === "decline" || i.verdict === "disclose")
+              .map((i, k) => (
+                <li key={k} data-verdict={i.verdict}>
+                  <span className="trace-policy-verdict">{i.verdict === "decline" ? "Declined" : "Disclosed"}</span>
+                  <span>
+                    “{i.text}” <span className="muted">· {i.category}</span>
+                  </span>
+                </li>
+              ))}
+          </ul>
         )}
         {trace.plan.steps.length > 0 && <Plan trace={trace} />}
         <ol className="timeline" aria-label="Agent steps">
