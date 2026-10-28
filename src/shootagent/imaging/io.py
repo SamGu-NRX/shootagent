@@ -34,12 +34,13 @@ def load_rgb(path: str | Path, max_long: int | None = None) -> np.ndarray:
     """Load an image as sRGB uint8 with EXIF orientation applied.
 
     `max_long` downsizes so the long edge is at most that many pixels. For JPEGs it uses the decoder's
-    DCT scaling first (much faster than decoding 8k pixels and resizing).
+    DCT scaling first (much faster than decoding 8k pixels and resizing); the result may then be up to
+    ~8% smaller than `max_long` (a 6048 px bracket decodes at 1/4 = 1512 px instead of 1/2 = 3024 px).
     """
     with Image.open(path) as im:
         if max_long and im.format == "JPEG":
             w, h = im.size
-            scale = max(w, h) / max_long
+            scale = max(w, h) / (max_long * 0.92)
             if scale >= 2:
                 im.draft("RGB", (int(w / scale) + 1, int(h / scale) + 1))
         im.load()
