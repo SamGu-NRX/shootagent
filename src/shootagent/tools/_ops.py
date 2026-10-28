@@ -299,6 +299,23 @@ def generative(
     )
 
 
+def remove(
+    ctx, img: np.ndarray, mask: np.ndarray, what: str, method: str, view: str | None = None
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Object removal via models.remove (grown mask, cast shadow absorbed, grain matched).
+    Returns (image, region it changed, usage info); `Removal.region` already includes the absorbed shadow."""
+    res = _fn("models.remove", "remove_object")(img, mask, what=what, method=method)
+    usd = float(res.usd or 0)
+    if usd:
+        ctx.trace.emit(
+            "usage", view=view, model=res.model or ctx.settings.image_edit_model, usd=round(usd, 6),
+            purpose="generative_edit", ms=res.ms,
+        )
+    return res.image, res.region, {
+        "method": res.method, "image_model": res.model, "image_usd": round(usd, 4), "grow_px": res.grow_px,
+    }
+
+
 def judge(
     before: np.ndarray,
     after: np.ndarray,

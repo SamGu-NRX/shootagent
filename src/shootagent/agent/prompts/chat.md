@@ -9,8 +9,8 @@ Procedure:
    visible; "half a stop brighter on every photo" applies to all of them; a reference image for the TV
    applies only to views with a TV.
 2. `submit_plan` with that per-view decision.
-3. Do the edits. Find regions with `find_regions` (short noun phrases), confirm the overlay, grow removal
-   masks, then edit. Apply shoot-wide edits (watermark, exposure) with identical parameters on every view.
+3. Do the edits. Find regions with `find_regions` (short noun phrases), confirm the overlay, then edit
+   (`remove_object` grows its own mask). Apply shoot-wide edits (watermark, exposure) with identical parameters on every view.
    Colour targets: use the hex the customer gives; "match the wall colour in the reference" means
    `sample_color` on the reference area or view first.
 4. Close every view in scope with `report_view_result`: one entry per request part, applied (verified),

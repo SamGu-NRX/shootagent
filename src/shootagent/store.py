@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 from pydantic import BaseModel, Field
 
 SCHEMA_VERSION = 1
@@ -207,11 +207,12 @@ class ShootStore:
         return self.put_bytes(shoot_id, buf.getvalue(), fmt)
 
     def get_image(self, shoot_id: str, blob: str) -> np.ndarray:
-        """RGB uint8 array for images, (H, W) uint8 for masks."""
+        """RGB uint8 array for images, (H, W) uint8 for masks. EXIF orientation is applied, matching
+        imaging.io, so masks drawn on an upright photo line up with the stored original."""
         with Image.open(self.blob_path(shoot_id, blob)) as im:
             if im.mode in ("L", "1", "I;16"):
                 return np.asarray(im.convert("L"))
-            return np.asarray(im.convert("RGB"))
+            return np.asarray(ImageOps.exif_transpose(im).convert("RGB"))
 
     # ---- versions and masks --------------------------------------------------------------------------------
     def add_version(

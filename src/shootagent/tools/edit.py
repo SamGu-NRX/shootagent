@@ -213,14 +213,15 @@ class RemoveIn(EditIn):
     mask: str = Field(
         description="Mask id covering the object, its shadow and a few pixels of margin (grow_mask)."
     )
-    method: Literal["lama", "generative"] = Field(
-        "lama",
-        description="'lama' (fast, local) fills from surrounding texture: best for small or mid-size objects on "
-        "simple backgrounds (bins, cords, signs on a lawn). 'generative' redraws the area with an image model: "
-        "use for large objects, complex backgrounds (cars in front of a house), or after lama left a smudge.",
+    method: Literal["auto", "generative", "lama+generative", "lama"] = Field(
+        "auto",
+        description="'auto' (default) redraws the area with the image model, growing the mask and taking in the "
+        "object's cast shadow; it passes the vision check on most real photos. 'lama+generative' fills locally "
+        "first, then refines: try it when 'auto' left a trace. 'lama' alone is fast and offline but smears "
+        "anything bulky; use it only for tiny marks.",
     )
-    prompt: str | None = Field(
-        None, description="For 'generative': what should be there instead, e.g. 'empty concrete driveway'."
+    what: str = Field(
+        "object", description="What is being removed, in a few words ('blue trash bin', 'silver car', 'power cord')."
     )
 
 
@@ -236,17 +237,7 @@ def remove_object(ctx: ToolContext, args: RemoveIn) -> ToolResult:
     lv = load_view(ctx, args.view)
     before, vid = version_image(ctx, lv.view)
     mask = load_mask(ctx, lv.shoot, lv.view, args.mask, before.shape[:2])
-    usage: dict[str, Any] = {}
-    if args.method == "lama":
-        raw, region = _ops.lama(before, mask)
-    else:
-        raw, region, usage = _ops.generative(
-            ctx,
-            before,
-            mask,
-            args.prompt or "remove the object; reconstruct the background naturally",
-            view=lv.view.id,
-        )
+    raw, region, usage = _ops.remove(ctx, before, mask, args.what, args.method, view=lv.view.id)
     res = _commit_region(
         ctx,
         lv,
@@ -255,9 +246,9 @@ def remove_object(ctx: ToolContext, args: RemoveIn) -> ToolResult:
         region,
         vid,
         "remove_object",
-        {"method": args.method, "prompt": args.prompt, "object_mask": args.mask},
+        {"method": usage.get("method", args.method), "what": args.what, "object_mask": args.mask},
         args.intent,
-        f"Removed {args.mask} on {lv.view.id} with {args.method}.",
+        f"Removed the {args.what} on {lv.view.id} ({usage.get('method', args.method)}).",
     )
     res.data.update(usage)
     return res
