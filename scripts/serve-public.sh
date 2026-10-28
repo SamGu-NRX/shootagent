@@ -8,8 +8,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# .env.public (git-ignored) may hold DEMO_PASSCODE and ANTHROPIC_API_KEY.
-if [ -f .env.public ]; then set -a; . ./.env.public; set +a; fi
+# .env.local (git-ignored) may hold DEMO_PASSCODE and ANTHROPIC_API_KEY.
+if [ -f .env.local ]; then set -a; . ./.env.local; set +a; fi
 if [ -z "${DEMO_PASSCODE:-}" ]; then
   echo "Set DEMO_PASSCODE: the public URL spends this machine's model credits, so it needs a passcode." >&2
   exit 1
@@ -18,7 +18,7 @@ command -v cloudflared >/dev/null || { echo "Install cloudflared first (scoop in
 [ -f web/dist/index.html ] || (cd web && npm ci && npm run build)
 
 export DEMO_PASSCODE
-# Public traffic bills a real Anthropic key (git-ignored .env.public: ANTHROPIC_API_KEY=...) rather than the
+# Public traffic bills a real Anthropic key (git-ignored .env.local: ANTHROPIC_API_KEY=...) rather than the
 # local gateway. Blanking the gateway variables makes the app send that key to Anthropic's API; image edits
 # keep using OPENAI_* from .env.
 if [ -n "${ANTHROPIC_API_KEY:-}" ]; then

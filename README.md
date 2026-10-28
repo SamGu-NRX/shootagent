@@ -134,6 +134,10 @@ backend.
 | `AUTOHDR_DEFECT_DIR`, `AUTOHDR_CUSTOMER_DIR`, `AUTOHDR_EDITOR_REQUESTS` | demo shoots and evals | paths to the unzipped datasets |
 | `DEMO_PASSCODE` | a public deployment | every `/api` request then needs it |
 
+Secrets for the public deployment (`DEMO_PASSCODE`, and an `ANTHROPIC_API_KEY` that public traffic
+should bill instead of a local gateway) go in `.env.local`, which is git-ignored and loaded only by
+`scripts/serve-public.sh`.
+
 Local model weights (Grounding DINO base, SAM 2.1 hiera-large, big-lama) download on first use, about
 2 GB in total.
 
