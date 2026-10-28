@@ -58,5 +58,10 @@ torchvision = { index = "pytorch-cu128", marker = "sys_platform != 'darwin'" }
 line-length = 110
 target-version = "py311"
 
+[tool.ruff.lint]
+# Bug-catching rules only: syntax errors, undefined/unused names, mutable or call defaults, and re-raises
+# that drop the cause. Ruff 0.17's broader defaults flag style choices the codebase makes on purpose.
+select = ["E9", "F", "B006", "B008", "B904"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
