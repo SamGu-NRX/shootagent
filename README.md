@@ -115,7 +115,9 @@ LaMa alone passes 2 of 12.
 ## Quick start
 
 Requirements: Python 3.11 or 3.12, Node 20, ffmpeg on PATH, and [uv](https://docs.astral.sh/uv/).
-An NVIDIA GPU with 8 GB runs the local models; Apple MPS and CPU work but are slower.
+An NVIDIA GPU with 8 GB runs the local models. On an Apple-silicon laptop, run them on CPU with the
+smaller settings in `.env.example`: on MPS a QC run held 8-10 GiB, on CPU 3.5-4.2 GiB, and a showcase QC run
+took 182 s.
 
 ```bash
 git clone https://github.com/SamGu-NRX/shootagent && cd shootagent
