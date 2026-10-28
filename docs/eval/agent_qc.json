@@ -1,0 +1,651 @@
+{
+ "summary": {
+  "cases": 63,
+  "crashed_runs": 0,
+  "seconds_per_view": 23.5,
+  "usd_per_view": 0.0453,
+  "checks_passed": 5,
+  "checks_failed": 8,
+  "retries": 7
+ },
+ "by_family": {
+  "ghosting_grouping": {
+   "flagged": 1,
+   "fixed": 20
+  },
+  "camera_person_removal": {
+   "missed": 10,
+   "fixed": 4
+  },
+  "tv_art": {
+   "missed": 1
+  },
+  "geometry_lens": {
+   "missed": 4
+  },
+  "fireplace": {
+   "missed": 7
+  },
+  "wood_floor_color": {
+   "missed": 1,
+   "flagged": 1
+  },
+  "paint_color": {
+   "missed": 6
+  },
+  "clean control": {
+   "clean_ok": 4
+  },
+  "window_sky": {
+   "missed": 4
+  }
+ },
+ "runs": [
+  {
+   "shoot": "3ad2d604f3",
+   "run": "20261027-232423-fcf1f9",
+   "cases": [
+    "defect_train_0001",
+    "defect_train_0002",
+    "defect_train_0003",
+    "defect_train_0004",
+    "defect_train_0005",
+    "defect_train_0006",
+    "defect_train_0007",
+    "defect_train_0008"
+   ],
+   "ok": true,
+   "seconds": 260.3,
+   "usd": 0.4248,
+   "checks_passed": 1,
+   "checks_failed": 0,
+   "retries": 0,
+   "summary": "QC now covers every view, including the split ones, and none of the eight split views has any candidate defects. v01-a and v01-b come from the split I reverted, so they are not part of the delivery. v01 itself stays at the delivered photo.\n\n**Fixed**\n- **Exterior (v04):** A semi-transparent hand in "
+  },
+  {
+   "shoot": "fa22af3444",
+   "run": "20261027-232828-f30a31",
+   "cases": [
+    "defect_train_0009",
+    "defect_train_0010",
+    "defect_train_0011",
+    "defect_train_0013",
+    "defect_train_0014",
+    "defect_train_0015",
+    "defect_train_0016",
+    "defect_train_0017"
+   ],
+   "ok": true,
+   "seconds": 223.8,
+   "usd": 0.5232,
+   "checks_passed": 2,
+   "checks_failed": 5,
+   "retries": 4,
+   "summary": "QC pass done on all eight views: two fixes made, one defect I could not fix, and the other five views left as delivered.\n\n**Fixed**\n- **Exterior (v07):** the stop sign and its pole had been erased from the street corner. I restored them from the brackets and the check passed. My first restore clippe"
+  },
+  {
+   "shoot": "ee09ecbc58",
+   "run": "20261027-233222-9a84aa",
+   "cases": [
+    "defect_train_0018",
+    "defect_train_0021",
+    "defect_train_0022",
+    "defect_train_0023",
+    "defect_train_0024",
+    "defect_train_0025",
+    "defect_train_0026",
+    "defect_train_0027"
+   ],
+   "ok": true,
+   "seconds": 274.8,
+   "usd": 0.4987,
+   "checks_passed": 1,
+   "checks_failed": 2,
+   "retries": 2,
+   "summary": "QC pass is done: I fixed two views (the bathroom, v06, and the front exterior, v07) and left the other six as delivered. I didn't re-check the fixes on the contact sheet afterwards.\n\n**Fixed**\n- **Bathroom (v06):** The 15 brackets came from two camera positions (shower and vanity, and the freestandi"
+  },
+  {
+   "shoot": "727a7d5e30",
+   "run": "20261027-233700-6a1b09",
+   "cases": [
+    "defect_train_0028",
+    "defect_train_0029",
+    "defect_train_0030",
+    "defect_train_0031",
+    "defect_train_0032",
+    "defect_train_0033",
+    "defect_train_0034",
+    "defect_train_0035"
+   ],
+   "ok": true,
+   "seconds": 95.5,
+   "usd": 0.2663,
+   "checks_passed": 1,
+   "checks_failed": 0,
+   "retries": 0,
+   "summary": "I made one fix across the eight views, in the bathroom (v01), and left the other seven exactly as delivered.\n\n**Fixed:** The finished bathroom photo still showed a faint ghost of the tripod in the mirror. I removed it, and the check passed with nothing changed outside the mirror area.\n\n**Left alone:"
+  },
+  {
+   "shoot": "ffd94e31d8",
+   "run": "20261027-233837-c65506",
+   "cases": [
+    "defect_train_0036",
+    "defect_train_0037",
+    "defect_train_0038",
+    "defect_train_0039",
+    "defect_train_0040",
+    "defect_train_0041",
+    "defect_train_0042",
+    "defect_train_0043"
+   ],
+   "ok": true,
+   "seconds": 56.1,
+   "usd": 0.1554,
+   "checks_passed": 0,
+   "checks_failed": 0,
+   "retries": 0,
+   "summary": "I ran the QC pass on all eight views and found no real defects, so I left every photo as delivered.\n\nI dismissed every flagged candidate as a legitimate edit or a false alarm:\n\n- **Exterior (v01):** The dusk sky replacement is intended. The pool deck still reads as warm travertine, and nothing was e"
+  },
+  {
+   "shoot": "7b7de24880",
+   "run": "20261027-233943-120bec",
+   "cases": [
+    "defect_train_0044",
+    "defect_train_0045",
+    "defect_train_0046",
+    "defect_train_0047",
+    "defect_train_0048",
+    "defect_train_0049",
+    "defect_train_0050",
+    "defect_train_0051"
+   ],
+   "ok": true,
+   "seconds": 237.9,
+   "usd": 0.4141,
+   "checks_passed": 0,
+   "checks_failed": 1,
+   "retries": 1,
+   "summary": "QC is complete. I fixed the five views that mixed two camera positions and left both patient rooms alone. The staircase in v08 still needs your eye.\n\n**Fixed.** Each of v01 to v05 blended brackets from two camera positions into one ghosted photo, so I split each into two clean views. QC on all ten n"
+  },
+  {
+   "shoot": "3c5b8a9605",
+   "run": "20261027-234345-17d772",
+   "cases": [
+    "defect_train_0052",
+    "defect_train_0053",
+    "defect_train_0054",
+    "defect_train_0055",
+    "defect_train_0056",
+    "defect_train_0057",
+    "defect_train_0058",
+    "defect_train_0059"
+   ],
+   "ok": true,
+   "seconds": 192.0,
+   "usd": 0.3266,
+   "checks_passed": 0,
+   "checks_failed": 0,
+   "retries": 0,
+   "summary": "QC on all twelve regrouped views came back clean, with no candidate defects on any of them.\n\n**What changed:** I split six views, which were each blending two camera positions, into separate photos:\n- The primary bedroom (v03) is now v03-a and v03-b.\n- The primary bathroom (v04) is now v04-a and v04"
+  },
+  {
+   "shoot": "ac52496389",
+   "run": "20261027-234705-a7d26e",
+   "cases": [
+    "defect_train_0060",
+    "defect_train_0061",
+    "defect_train_0062",
+    "defect_train_0063",
+    "defect_train_0064",
+    "defect_train_0065",
+    "defect_train_0066"
+   ],
+   "ok": true,
+   "seconds": 139.7,
+   "usd": 0.2419,
+   "checks_passed": 0,
+   "checks_failed": 0,
+   "retries": 0,
+   "summary": "QC has now run on all eight split views (v01-a, v01-b, v02-a, v02-b, v03-a, v03-b, v04-a, v04-b), and none of them has any candidate defects. Each finished photo agrees with its own brackets, so the regroup fixed the ghosting without leaving anything new behind. I only read the check results, not th"
+  }
+ ],
+ "cases": [
+  {
+   "outcome": "flagged",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0001",
+   "subtype": "misaligned_same_view_brackets"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0002",
+   "subtype": "partial_shadow_removal"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0003",
+   "subtype": "partial_shadow_removal"
+  },
+  {
+   "outcome": "fixed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 1,
+   "case": "defect_train_0004",
+   "subtype": "missed_hand_removal"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0005",
+   "subtype": "partial_photographer_removal"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0006",
+   "subtype": "different_rooms_misgrouped"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0007",
+   "subtype": "different_rooms_misgrouped"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0008",
+   "subtype": "different_viewpoints_misgrouped"
+  },
+  {
+   "outcome": "missed",
+   "family": "tv_art",
+   "off_target_fixes": 0,
+   "case": "defect_train_0009",
+   "subtype": "artwork_false_positive"
+  },
+  {
+   "outcome": "missed",
+   "family": "geometry_lens",
+   "off_target_fixes": 0,
+   "case": "defect_train_0010",
+   "subtype": "uncorrected_curved_architectural_edge"
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0011",
+   "subtype": "missed_fire_addition"
+  },
+  {
+   "outcome": "missed",
+   "family": "wood_floor_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0013",
+   "subtype": "blue_tile_desaturation"
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0014",
+   "subtype": "fire_in_nonfireplace_gramophone_alcove"
+  },
+  {
+   "outcome": "fixed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0015",
+   "subtype": "false_tripod_shaped_lamp_removal"
+  },
+  {
+   "outcome": "fixed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0016",
+   "subtype": "false_stop_sign_removal"
+  },
+  {
+   "outcome": "missed",
+   "family": "paint_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0017",
+   "subtype": "localized_cyan_shift_on_black_door"
+  },
+  {
+   "outcome": "clean_ok",
+   "family": null,
+   "case": "defect_train_0018",
+   "subtype": null
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0021",
+   "subtype": "fire_spills_onto_solid_upper_panel"
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0022",
+   "subtype": "fire_added_to_solid_upper_panel"
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0023",
+   "subtype": "false_fire_embers_added"
+  },
+  {
+   "outcome": "missed",
+   "family": "geometry_lens",
+   "off_target_fixes": 0,
+   "case": "defect_train_0024",
+   "subtype": "missing_or_insufficient_barrel_lens_correction"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0025",
+   "subtype": "wrong_view_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0026",
+   "subtype": "same_view_bracket_alignment_ghosting"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0027",
+   "subtype": "missed_photographer_and_false_utility_removal"
+  },
+  {
+   "outcome": "fixed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0028",
+   "subtype": "partial_camera_tripod_removal"
+  },
+  {
+   "outcome": "missed",
+   "family": "paint_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0029",
+   "subtype": "blue_accent_wall_neutralized"
+  },
+  {
+   "outcome": "missed",
+   "family": "paint_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0030",
+   "subtype": "blue_clock_wall_neutralized"
+  },
+  {
+   "outcome": "missed",
+   "family": "paint_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0031",
+   "subtype": "blue_wall_and_soffit_neutralized"
+  },
+  {
+   "outcome": "missed",
+   "family": "paint_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0032",
+   "subtype": "blue_wall_and_soffit_neutralized"
+  },
+  {
+   "outcome": "missed",
+   "family": "paint_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0033",
+   "subtype": "blue_wall_and_soffit_neutralized"
+  },
+  {
+   "outcome": "missed",
+   "family": "window_sky",
+   "off_target_fixes": 0,
+   "case": "defect_train_0034",
+   "subtype": "incomplete_sky_mask_blue_remnants"
+  },
+  {
+   "outcome": "missed",
+   "family": "window_sky",
+   "off_target_fixes": 0,
+   "case": "defect_train_0035",
+   "subtype": "incomplete_sky_mask_blue_remnants"
+  },
+  {
+   "outcome": "missed",
+   "family": "window_sky",
+   "off_target_fixes": 0,
+   "case": "defect_train_0036",
+   "subtype": "incomplete_sky_mask_blue_remnants"
+  },
+  {
+   "outcome": "clean_ok",
+   "family": null,
+   "case": "defect_train_0037",
+   "subtype": null
+  },
+  {
+   "outcome": "clean_ok",
+   "family": null,
+   "case": "defect_train_0038",
+   "subtype": null
+  },
+  {
+   "outcome": "clean_ok",
+   "family": null,
+   "case": "defect_train_0039",
+   "subtype": null
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0040",
+   "subtype": "camera_removal_artifact"
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0041",
+   "subtype": "unrequested_fire_added"
+  },
+  {
+   "outcome": "missed",
+   "family": "fireplace",
+   "off_target_fixes": 0,
+   "case": "defect_train_0042",
+   "subtype": "unrequested_fire_added"
+  },
+  {
+   "outcome": "missed",
+   "family": "geometry_lens",
+   "off_target_fixes": 0,
+   "case": "defect_train_0043",
+   "subtype": "missing_or_insufficient_lens_correction"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0044",
+   "subtype": "wrong_view_bracket_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0045",
+   "subtype": "wrong_view_bracket_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0046",
+   "subtype": "wrong_view_bracket_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0047",
+   "subtype": "wrong_view_bracket_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0048",
+   "subtype": "wrong_view_bracket_fusion"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0049",
+   "subtype": "false_person_and_wheelchair_removal"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0050",
+   "subtype": "false_wheelchair_support_removal"
+  },
+  {
+   "outcome": "flagged",
+   "family": "wood_floor_color",
+   "off_target_fixes": 0,
+   "case": "defect_train_0051",
+   "subtype": "cross_shot_wood_and_tile_color_mismatch"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0052",
+   "subtype": "false_furniture_removal_during_camera_removal"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0053",
+   "subtype": "false_tripod_like_easel_and_printed_person_removal"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0054",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0055",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0056",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0057",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0058",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0059",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0060",
+   "subtype": "wrong_capture_group_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0061",
+   "subtype": "wrong_room_cross_capture_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0062",
+   "subtype": "wrong_room_cross_capture_fusion"
+  },
+  {
+   "outcome": "fixed",
+   "family": "ghosting_grouping",
+   "off_target_fixes": 0,
+   "case": "defect_train_0063",
+   "subtype": "wrong_room_cross_capture_fusion"
+  },
+  {
+   "outcome": "missed",
+   "family": "window_sky",
+   "off_target_fixes": 0,
+   "case": "defect_train_0064",
+   "subtype": "sky_replacement_on_water"
+  },
+  {
+   "outcome": "missed",
+   "family": "geometry_lens",
+   "off_target_fixes": 0,
+   "case": "defect_train_0065",
+   "subtype": "incorrect_perspective_correction_introduced_lean"
+  },
+  {
+   "outcome": "missed",
+   "family": "camera_person_removal",
+   "off_target_fixes": 0,
+   "case": "defect_train_0066",
+   "subtype": "false_object_removal_lamp_collateral_damage"
+  }
+ ]
+}

@@ -1,0 +1,4656 @@
+{
+ "summary": {
+  "cases": 63,
+  "high_confidence_threshold": 0.6,
+  "families": {
+   "camera_person_removal": {
+    "cases": 14,
+    "hit_any": 9,
+    "hit_high": 0
+   },
+   "fireplace": {
+    "cases": 7,
+    "hit_any": 4,
+    "hit_high": 4
+   },
+   "geometry_lens": {
+    "cases": 4,
+    "hit_any": 0,
+    "hit_high": 0
+   },
+   "ghosting_grouping": {
+    "cases": 21,
+    "hit_any": 21,
+    "hit_high": 21
+   },
+   "paint_color": {
+    "cases": 6,
+    "hit_any": 2,
+    "hit_high": 0
+   },
+   "tv_art": {
+    "cases": 1,
+    "hit_any": 0,
+    "hit_high": 0
+   },
+   "window_sky": {
+    "cases": 4,
+    "hit_any": 3,
+    "hit_high": 2
+   },
+   "wood_floor_color": {
+    "cases": 2,
+    "hit_any": 1,
+    "hit_high": 0
+   }
+  },
+  "defect_recall_any": 0.678,
+  "defect_recall_high": 0.458,
+  "clean_controls": 4,
+  "clean_with_high_candidates": 0,
+  "clean_high_candidates_total": 0,
+  "defect_unmatched_high_total": 7,
+  "grouping_accuracy": 1.0,
+  "grouping_cases": 59,
+  "grouping_accuracy_multi_view": 1.0,
+  "grouping_multi_view_cases": 19,
+  "seconds_median": 7.34,
+  "seconds_max": 20.02,
+  "errors": []
+ },
+ "cases": [
+  {
+   "case": "defect_train_0001",
+   "family": "ghosting_grouping",
+   "subtype": "misaligned_same_view_brackets",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 5,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.767,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "ghosting"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.481,
+     "region": [
+      0.8662,
+      0.3214,
+      0.9281,
+      0.3882
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.17,
+     "region": [
+      0.8,
+      0.3496,
+      0.9838,
+      0.7246
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.159,
+     "region": [
+      0.0,
+      0.3289,
+      0.2812,
+      0.8017
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.158,
+     "region": [
+      0.5687,
+      0.3534,
+      0.7994,
+      0.5883
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.38,
+   "error": null
+  },
+  {
+   "case": "defect_train_0002",
+   "family": "camera_person_removal",
+   "subtype": "partial_shadow_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 8,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "window_sky",
+     "confidence": 0.544,
+     "region": [
+      0.0,
+      0.0,
+      0.2325,
+      0.1422
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.539,
+     "region": [
+      0.8231,
+      0.0,
+      1.0,
+      0.1076
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.448,
+     "region": [
+      0.0587,
+      0.2563,
+      0.1737,
+      0.3199
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.44,
+     "region": [
+      0.3706,
+      0.8092,
+      0.5425,
+      1.0
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.421,
+     "region": [
+      0.0,
+      0.0234,
+      0.0681,
+      0.0964
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.17,
+   "error": null
+  },
+  {
+   "case": "defect_train_0003",
+   "family": "camera_person_removal",
+   "subtype": "partial_shadow_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 8,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "window_sky",
+     "confidence": 0.585,
+     "region": [
+      0.0,
+      0.0,
+      0.2506,
+      0.2451
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.487,
+     "region": [
+      0.0694,
+      0.2395,
+      0.1363,
+      0.2881
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.403,
+     "region": [
+      0.8275,
+      0.2283,
+      0.91,
+      0.2881
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.309,
+     "region": [
+      0.8263,
+      0.0,
+      0.9363,
+      0.0861
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.236,
+     "region": [
+      0.2369,
+      0.0,
+      0.3312,
+      0.0225
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 8.79,
+   "error": null
+  },
+  {
+   "case": "defect_train_0004",
+   "family": "camera_person_removal",
+   "subtype": "missed_hand_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 8,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.588,
+     "region": [
+      0.4094,
+      0.5416,
+      1.0,
+      0.9841
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.561,
+     "region": [
+      0.6787,
+      0.5903,
+      0.8512,
+      0.6586
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.264,
+     "region": [
+      0.0,
+      0.0,
+      0.545,
+      0.2067
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.239,
+     "region": [
+      0.0,
+      0.0,
+      0.265,
+      0.1422
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.216,
+     "region": [
+      0.805,
+      0.0,
+      0.8781,
+      0.0393
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 8.28,
+   "error": null
+  },
+  {
+   "case": "defect_train_0005",
+   "family": "camera_person_removal",
+   "subtype": "partial_photographer_removal",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 6,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.49,
+     "region": [
+      0.7323,
+      0.0976,
+      0.8871,
+      0.1228
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.325,
+     "region": [
+      0.4246,
+      0.0989,
+      0.5814,
+      0.1514
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.169,
+     "region": [
+      0.8082,
+      0.8712,
+      0.9351,
+      1.0
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.159,
+     "region": [
+      0.3936,
+      0.7563,
+      0.5514,
+      0.832
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.148,
+     "region": [
+      0.6623,
+      0.5286,
+      0.8352,
+      0.5452
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     6
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.3,
+   "error": null
+  },
+  {
+   "case": "defect_train_0006",
+   "family": "ghosting_grouping",
+   "subtype": "different_rooms_misgrouped",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 10.68,
+   "error": null
+  },
+  {
+   "case": "defect_train_0007",
+   "family": "ghosting_grouping",
+   "subtype": "different_rooms_misgrouped",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 12.69,
+   "error": null
+  },
+  {
+   "case": "defect_train_0008",
+   "family": "ghosting_grouping",
+   "subtype": "different_viewpoints_misgrouped",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 13.06,
+   "error": null
+  },
+  {
+   "case": "defect_train_0009",
+   "family": "tv_art",
+   "subtype": "artwork_false_positive",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 5,
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "fireplace",
+     "confidence": 0.675,
+     "region": [
+      0.1037,
+      0.8997,
+      0.1562,
+      0.9663
+     ]
+    }
+   ],
+   "top": [
+    {
+     "type": "fireplace",
+     "confidence": 0.675,
+     "region": [
+      0.1037,
+      0.8997,
+      0.1562,
+      0.9663
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.576,
+     "region": [
+      0.1706,
+      0.2165,
+      0.31,
+      0.7516
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.355,
+     "region": [
+      0.7044,
+      0.4021,
+      0.8056,
+      0.5595
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.207,
+     "region": [
+      0.0606,
+      0.9681,
+      0.0844,
+      1.0
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.128,
+     "region": [
+      0.2137,
+      0.5033,
+      0.3025,
+      0.6026
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": null,
+   "group_ok": null,
+   "seconds": 9.13,
+   "error": null
+  },
+  {
+   "case": "defect_train_0010",
+   "family": "geometry_lens",
+   "subtype": "uncorrected_curved_architectural_edge",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 2,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.214,
+     "region": [
+      0.1731,
+      0.6211,
+      0.219,
+      0.6899
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.181,
+     "region": [
+      0.0116,
+      0.0,
+      0.042,
+      0.2926
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": null,
+   "group_ok": null,
+   "seconds": 4.74,
+   "error": null
+  },
+  {
+   "case": "defect_train_0011",
+   "family": "fireplace",
+   "subtype": "missed_fire_addition",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 0,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": null,
+   "group_ok": null,
+   "seconds": 5.19,
+   "error": null
+  },
+  {
+   "case": "defect_train_0013",
+   "family": "wood_floor_color",
+   "subtype": "blue_tile_desaturation",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 5,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.583,
+     "region": [
+      0.0488,
+      0.7827,
+      0.4519,
+      1.0
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.414,
+     "region": [
+      0.0906,
+      0.6669,
+      0.3781,
+      0.9009
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.318,
+     "region": [
+      0.3856,
+      0.0,
+      0.5394,
+      0.1424
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.19,
+     "region": [
+      0.0894,
+      0.2007,
+      0.5344,
+      0.8926
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.14,
+     "region": [
+      0.1013,
+      0.3189,
+      0.2444,
+      0.3722
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": null,
+   "group_ok": null,
+   "seconds": 6.82,
+   "error": null
+  },
+  {
+   "case": "defect_train_0014",
+   "family": "fireplace",
+   "subtype": "fire_in_nonfireplace_gramophone_alcove",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 8,
+   "n_high": 2,
+   "unmatched_high": [
+    {
+     "type": "fireplace",
+     "confidence": 0.774,
+     "region": [
+      0.6694,
+      0.5258,
+      0.7269,
+      0.5829
+     ]
+    }
+   ],
+   "top": [
+    {
+     "type": "fireplace",
+     "confidence": 0.787,
+     "region": [
+      0.7781,
+      0.5136,
+      0.8263,
+      0.582
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.774,
+     "region": [
+      0.6694,
+      0.5258,
+      0.7269,
+      0.5829
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.517,
+     "region": [
+      0.5381,
+      0.4995,
+      0.61,
+      0.553
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.414,
+     "region": [
+      0.6344,
+      0.4892,
+      0.7031,
+      0.5661
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.307,
+     "region": [
+      0.755,
+      0.0731,
+      0.8213,
+      0.1603
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.88,
+   "error": null
+  },
+  {
+   "case": "defect_train_0015",
+   "family": "camera_person_removal",
+   "subtype": "false_tripod_shaped_lamp_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 3,
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.798,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.798,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "ghosting"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.223,
+     "region": [
+      0.4838,
+      0.5431,
+      0.5563,
+      0.7603
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.132,
+     "region": [
+      0.9231,
+      0.6301,
+      0.9525,
+      0.7697
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 5.93,
+   "error": null
+  },
+  {
+   "case": "defect_train_0016",
+   "family": "camera_person_removal",
+   "subtype": "false_stop_sign_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 6,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.43,
+     "region": [
+      0.2,
+      0.3723,
+      0.2425,
+      0.4668
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.22,
+     "region": [
+      0.9187,
+      0.0617,
+      1.0,
+      0.1197
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.182,
+     "region": [
+      0.2412,
+      0.1918,
+      0.2888,
+      0.2657
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.17,
+     "region": [
+      0.0,
+      0.3106,
+      0.0856,
+      0.3517
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.167,
+     "region": [
+      0.0,
+      0.0,
+      0.1581,
+      0.0992
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 5.89,
+   "error": null
+  },
+  {
+   "case": "defect_train_0017",
+   "family": "paint_color",
+   "subtype": "localized_cyan_shift_on_black_door",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 1,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.14,
+     "region": [
+      0.9413,
+      0.3927,
+      0.9694,
+      0.6664
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.22,
+   "error": null
+  },
+  {
+   "case": "defect_train_0018",
+   "family": "clean",
+   "subtype": null,
+   "clean": true,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 3,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.419,
+     "region": [
+      0.8263,
+      0.7095,
+      0.9194,
+      0.8172
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.415,
+     "region": [
+      0.8006,
+      0.3599,
+      0.8719,
+      0.4142
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.175,
+     "region": [
+      0.3894,
+      0.6429,
+      0.4244,
+      0.7554
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.54,
+   "error": null
+  },
+  {
+   "case": "defect_train_0021",
+   "family": "fireplace",
+   "subtype": "fire_spills_onto_solid_upper_panel",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 8,
+   "n_high": 2,
+   "unmatched_high": [
+    {
+     "type": "fireplace",
+     "confidence": 0.9,
+     "region": [
+      0.6475,
+      0.7751,
+      0.8337,
+      0.9494
+     ]
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.615,
+     "region": [
+      0.6106,
+      0.8257,
+      0.6269,
+      0.8604
+     ]
+    }
+   ],
+   "top": [
+    {
+     "type": "fireplace",
+     "confidence": 0.9,
+     "region": [
+      0.6475,
+      0.7751,
+      0.8337,
+      0.9494
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.615,
+     "region": [
+      0.6106,
+      0.8257,
+      0.6269,
+      0.8604
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.493,
+     "region": [
+      0.6225,
+      0.7891,
+      0.7362,
+      0.866
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.459,
+     "region": [
+      0.1025,
+      0.5014,
+      0.1925,
+      0.6092
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.436,
+     "region": [
+      0.1469,
+      0.0,
+      0.3719,
+      0.1799
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 10.92,
+   "error": null
+  },
+  {
+   "case": "defect_train_0022",
+   "family": "fireplace",
+   "subtype": "fire_added_to_solid_upper_panel",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 8,
+   "n_high": 2,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "fireplace",
+     "confidence": 0.736,
+     "region": [
+      0.7944,
+      0.6148,
+      0.8812,
+      0.672
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.616,
+     "region": [
+      0.84,
+      0.6242,
+      0.8669,
+      0.6645
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.492,
+     "region": [
+      0.22,
+      0.7563,
+      0.4688,
+      0.8229
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.347,
+     "region": [
+      0.5875,
+      0.0,
+      1.0,
+      0.671
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.309,
+     "region": [
+      0.1744,
+      0.7488,
+      0.5325,
+      1.0
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 10.28,
+   "error": null
+  },
+  {
+   "case": "defect_train_0023",
+   "family": "fireplace",
+   "subtype": "false_fire_embers_added",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 7,
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.608,
+     "region": [
+      0.2306,
+      0.4114,
+      0.3013,
+      0.5098
+     ]
+    }
+   ],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.608,
+     "region": [
+      0.2306,
+      0.4114,
+      0.3013,
+      0.5098
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.253,
+     "region": [
+      0.1075,
+      0.6626,
+      0.1437,
+      0.7891
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.229,
+     "region": [
+      0.1794,
+      0.298,
+      0.3038,
+      0.3355
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.224,
+     "region": [
+      0.1619,
+      0.3627,
+      0.3019,
+      0.4405
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.155,
+     "region": [
+      0.0,
+      0.2399,
+      0.0056,
+      0.6748
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.93,
+   "error": null
+  },
+  {
+   "case": "defect_train_0024",
+   "family": "geometry_lens",
+   "subtype": "missing_or_insufficient_barrel_lens_correction",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 0,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.9,
+   "error": null
+  },
+  {
+   "case": "defect_train_0025",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_view_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 6,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.433,
+     "region": [
+      0.6563,
+      0.8113,
+      0.9492,
+      1.0
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.378,
+     "region": [
+      0.7128,
+      0.6931,
+      0.758,
+      0.8113
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.219,
+     "region": [
+      0.6309,
+      0.3681,
+      1.0,
+      1.0
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.147,
+     "region": [
+      0.2844,
+      0.5444,
+      0.661,
+      0.5956
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     12,
+     13,
+     14
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     12,
+     13,
+     14
+    ],
+    [
+     4,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 20.02,
+   "error": null
+  },
+  {
+   "case": "defect_train_0026",
+   "family": "ghosting_grouping",
+   "subtype": "same_view_bracket_alignment_ghosting",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 5,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.858,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "ghosting"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.239,
+     "region": [
+      0.1819,
+      0.625,
+      0.7267,
+      0.6675
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.213,
+     "region": [
+      0.2187,
+      0.4988,
+      0.3186,
+      0.5881
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.125,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      0.5913
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.121,
+     "region": [
+      0.0,
+      0.4637,
+      0.8982,
+      0.7113
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.25,
+   "error": null
+  },
+  {
+   "case": "defect_train_0027",
+   "family": "camera_person_removal",
+   "subtype": "missed_photographer_and_false_utility_removal",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 8,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.317,
+     "region": [
+      0.3025,
+      0.2352,
+      0.4813,
+      0.3205
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.296,
+     "region": [
+      0.8688,
+      0.6092,
+      0.98,
+      0.701
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.246,
+     "region": [
+      0.6694,
+      0.2174,
+      0.9956,
+      0.3561
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.187,
+     "region": [
+      0.0,
+      0.3224,
+      0.1487,
+      0.4396
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.186,
+     "region": [
+      0.0,
+      0.0,
+      0.165,
+      0.104
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 4.42,
+   "error": null
+  },
+  {
+   "case": "defect_train_0028",
+   "family": "camera_person_removal",
+   "subtype": "partial_camera_tripod_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 5,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.438,
+     "region": [
+      0.4506,
+      0.4911,
+      0.4925,
+      0.5886
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.42,
+     "region": [
+      0.4969,
+      0.0,
+      0.7875,
+      0.2962
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.412,
+     "region": [
+      0.1388,
+      0.0,
+      0.4619,
+      0.3308
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.258,
+     "region": [
+      0.0,
+      0.0225,
+      0.0413,
+      0.2971
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.136,
+     "region": [
+      0.0,
+      0.3327,
+      0.0387,
+      0.5661
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.94,
+   "error": null
+  },
+  {
+   "case": "defect_train_0029",
+   "family": "paint_color",
+   "subtype": "blue_accent_wall_neutralized",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 3,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.525,
+     "region": [
+      0.2794,
+      0.7605,
+      0.3613,
+      0.9654
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.18,
+     "region": [
+      0.2137,
+      0.3368,
+      0.4869,
+      0.6614
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.141,
+     "region": [
+      0.0031,
+      0.3826,
+      0.0856,
+      0.7166
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.08,
+   "error": null
+  },
+  {
+   "case": "defect_train_0030",
+   "family": "paint_color",
+   "subtype": "blue_clock_wall_neutralized",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 6,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.593,
+     "region": [
+      0.605,
+      0.2909,
+      0.8825,
+      0.6773
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.528,
+     "region": [
+      0.0144,
+      0.3611,
+      0.1744,
+      0.479
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.444,
+     "region": [
+      0.0394,
+      0.6632,
+      0.4169,
+      1.0
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.408,
+     "region": [
+      0.5719,
+      0.6436,
+      0.9131,
+      1.0
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.291,
+     "region": [
+      0.1237,
+      0.6548,
+      0.28,
+      0.7175
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.74,
+   "error": null
+  },
+  {
+   "case": "defect_train_0031",
+   "family": "paint_color",
+   "subtype": "blue_wall_and_soffit_neutralized",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 5,
+   "n_high": 1,
+   "unmatched_high": [
+    {
+     "type": "paint_color",
+     "confidence": 0.652,
+     "region": [
+      0.0625,
+      0.6838,
+      0.1737,
+      0.9607
+     ]
+    }
+   ],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.652,
+     "region": [
+      0.0625,
+      0.6838,
+      0.1737,
+      0.9607
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.401,
+     "region": [
+      0.5506,
+      0.7839,
+      0.6069,
+      0.8831
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.291,
+     "region": [
+      0.5269,
+      0.1815,
+      0.7675,
+      0.2975
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.165,
+     "region": [
+      0.0,
+      0.3929,
+      0.1844,
+      0.6548
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.146,
+     "region": [
+      0.0431,
+      0.4051,
+      0.0806,
+      0.5772
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 5.58,
+   "error": null
+  },
+  {
+   "case": "defect_train_0032",
+   "family": "paint_color",
+   "subtype": "blue_wall_and_soffit_neutralized",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 0,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.4,
+   "error": null
+  },
+  {
+   "case": "defect_train_0033",
+   "family": "paint_color",
+   "subtype": "blue_wall_and_soffit_neutralized",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 0,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.58,
+   "error": null
+  },
+  {
+   "case": "defect_train_0034",
+   "family": "window_sky",
+   "subtype": "incomplete_sky_mask_blue_remnants",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 8,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "window_sky",
+     "confidence": 0.637,
+     "region": [
+      0.3125,
+      0.0,
+      0.9844,
+      0.3336
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.474,
+     "region": [
+      0.0525,
+      0.1865,
+      0.09,
+      0.2737
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.467,
+     "region": [
+      0.2231,
+      0.4405,
+      0.6088,
+      0.5773
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.455,
+     "region": [
+      0.6462,
+      0.3843,
+      0.7406,
+      0.4883
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.404,
+     "region": [
+      0.5687,
+      0.3618,
+      0.7425,
+      0.5033
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 8.41,
+   "error": null
+  },
+  {
+   "case": "defect_train_0035",
+   "family": "window_sky",
+   "subtype": "incomplete_sky_mask_blue_remnants",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 8,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "window_sky",
+     "confidence": 0.665,
+     "region": [
+      0.1694,
+      0.0,
+      0.9437,
+      0.3462
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.538,
+     "region": [
+      0.0762,
+      0.2355,
+      0.12,
+      0.3518
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.427,
+     "region": [
+      0.355,
+      0.5188,
+      0.4781,
+      0.5938
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.353,
+     "region": [
+      0.0988,
+      0.0,
+      0.1988,
+      0.0572
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.321,
+     "region": [
+      0.1412,
+      0.151,
+      0.2238,
+      0.2824
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 11.75,
+   "error": null
+  },
+  {
+   "case": "defect_train_0036",
+   "family": "window_sky",
+   "subtype": "incomplete_sky_mask_blue_remnants",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 4,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "window_sky",
+     "confidence": 0.561,
+     "region": [
+      0.5325,
+      0.0,
+      0.7775,
+      0.2427
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.398,
+     "region": [
+      0.5837,
+      0.1818,
+      0.7937,
+      0.3121
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.249,
+     "region": [
+      0.2487,
+      0.5473,
+      0.755,
+      0.9522
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.241,
+     "region": [
+      0.8638,
+      0.2521,
+      0.9656,
+      0.313
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.27,
+   "error": null
+  },
+  {
+   "case": "defect_train_0037",
+   "family": "clean",
+   "subtype": null,
+   "clean": true,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 4,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.497,
+     "region": [
+      0.1775,
+      0.7854,
+      0.2894,
+      1.0
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.321,
+     "region": [
+      0.4363,
+      0.7788,
+      0.5231,
+      0.9625
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.157,
+     "region": [
+      0.4425,
+      0.3468,
+      0.4981,
+      0.4171
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.152,
+     "region": [
+      0.44,
+      0.4339,
+      0.5012,
+      0.5173
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.57,
+   "error": null
+  },
+  {
+   "case": "defect_train_0038",
+   "family": "clean",
+   "subtype": null,
+   "clean": true,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 1,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.314,
+     "region": [
+      0.4188,
+      0.15,
+      0.6225,
+      0.5286
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.1,
+   "error": null
+  },
+  {
+   "case": "defect_train_0039",
+   "family": "clean",
+   "subtype": null,
+   "clean": true,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 0,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.66,
+   "error": null
+  },
+  {
+   "case": "defect_train_0040",
+   "family": "camera_person_removal",
+   "subtype": "camera_removal_artifact",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 1,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.14,
+     "region": [
+      0.7756,
+      0.3065,
+      0.8631,
+      0.4339
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.34,
+   "error": null
+  },
+  {
+   "case": "defect_train_0041",
+   "family": "fireplace",
+   "subtype": "unrequested_fire_added",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 4,
+   "n_high": 2,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "fireplace",
+     "confidence": 0.673,
+     "region": [
+      0.47,
+      0.5698,
+      0.5288,
+      0.6945
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.614,
+     "region": [
+      0.4906,
+      0.6036,
+      0.5231,
+      0.6654
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.336,
+     "region": [
+      0.2519,
+      0.3224,
+      0.3594,
+      0.4564
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.254,
+     "region": [
+      0.0069,
+      0.8022,
+      0.0712,
+      0.8894
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.09,
+   "error": null
+  },
+  {
+   "case": "defect_train_0042",
+   "family": "fireplace",
+   "subtype": "unrequested_fire_added",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 8,
+   "n_high": 2,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "fireplace",
+     "confidence": 0.79,
+     "region": [
+      0.4637,
+      0.5567,
+      0.5094,
+      0.6495
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.727,
+     "region": [
+      0.4544,
+      0.5267,
+      0.5337,
+      0.6963
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.465,
+     "region": [
+      0.195,
+      0.2427,
+      0.3225,
+      0.5014
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.311,
+     "region": [
+      0.5031,
+      0.5548,
+      0.5519,
+      0.6795
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.29,
+     "region": [
+      0.5025,
+      0.7263,
+      0.6088,
+      0.7526
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.83,
+   "error": null
+  },
+  {
+   "case": "defect_train_0043",
+   "family": "geometry_lens",
+   "subtype": "missing_or_insufficient_lens_correction",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 0,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 5.06,
+   "error": null
+  },
+  {
+   "case": "defect_train_0044",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_view_bracket_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.96,
+   "error": null
+  },
+  {
+   "case": "defect_train_0045",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_view_bracket_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 10.51,
+   "error": null
+  },
+  {
+   "case": "defect_train_0046",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_view_bracket_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 9,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.319,
+     "region": [
+      0.0588,
+      0.1188,
+      0.3888,
+      0.4139
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.293,
+     "region": [
+      0.8424,
+      0.9204,
+      0.8878,
+      1.0
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.246,
+     "region": [
+      0.3046,
+      0.8177,
+      0.3714,
+      0.9204
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.17,
+     "region": [
+      0.7234,
+      0.1682,
+      0.7568,
+      0.3152
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 12.54,
+   "error": null
+  },
+  {
+   "case": "defect_train_0047",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_view_bracket_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 9,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.424,
+     "region": [
+      0.5097,
+      0.1742,
+      0.5718,
+      0.2669
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.406,
+     "region": [
+      0.0,
+      0.5458,
+      0.2592,
+      0.8983
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.367,
+     "region": [
+      0.3761,
+      0.1782,
+      0.4081,
+      0.2568
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.351,
+     "region": [
+      0.8631,
+      0.1793,
+      0.9205,
+      0.2457
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 12.18,
+   "error": null
+  },
+  {
+   "case": "defect_train_0048",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_view_bracket_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 3,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.247,
+     "region": [
+      0.0976,
+      0.5363,
+      0.6176,
+      0.7692
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.125,
+     "region": [
+      0.6176,
+      0.0,
+      0.889,
+      0.1573
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.51,
+   "error": null
+  },
+  {
+   "case": "defect_train_0049",
+   "family": "camera_person_removal",
+   "subtype": "false_person_and_wheelchair_removal",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 4,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.266,
+     "region": [
+      0.9487,
+      0.4456,
+      0.99,
+      0.6041
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.212,
+     "region": [
+      0.2081,
+      0.531,
+      0.3719,
+      0.7467
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.166,
+     "region": [
+      0.9556,
+      0.0,
+      1.0,
+      0.1116
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.165,
+     "region": [
+      0.9369,
+      0.0,
+      1.0,
+      0.7946
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 4.1,
+   "error": null
+  },
+  {
+   "case": "defect_train_0050",
+   "family": "camera_person_removal",
+   "subtype": "false_wheelchair_support_removal",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 1,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "window_sky",
+     "confidence": 0.126,
+     "region": [
+      0.5587,
+      0.4677,
+      0.6,
+      0.5623
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 3.81,
+   "error": null
+  },
+  {
+   "case": "defect_train_0051",
+   "family": "wood_floor_color",
+   "subtype": "cross_shot_wood_and_tile_color_mismatch",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 7,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.295,
+     "region": [
+      0.4725,
+      0.1837,
+      0.6219,
+      0.2849
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.247,
+     "region": [
+      0.2275,
+      0.2081,
+      0.4175,
+      0.6036
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.212,
+     "region": [
+      0.6456,
+      0.6373,
+      0.6931,
+      0.8135
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.187,
+     "region": [
+      0.6625,
+      0.1921,
+      0.85,
+      0.3168
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.173,
+     "region": [
+      0.4487,
+      0.3046,
+      0.6375,
+      0.7545
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 6.06,
+   "error": null
+  },
+  {
+   "case": "defect_train_0052",
+   "family": "camera_person_removal",
+   "subtype": "false_furniture_removal_during_camera_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 6,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.271,
+     "region": [
+      0.8229,
+      0.5417,
+      1.0,
+      0.9884
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.199,
+     "region": [
+      0.0,
+      0.3837,
+      0.8165,
+      0.8595
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.188,
+     "region": [
+      0.8854,
+      0.626,
+      1.0,
+      0.7306
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.168,
+     "region": [
+      0.7257,
+      0.282,
+      0.8995,
+      0.3343
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.168,
+     "region": [
+      0.4977,
+      0.2984,
+      0.5808,
+      0.4041
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 5.81,
+   "error": null
+  },
+  {
+   "case": "defect_train_0053",
+   "family": "camera_person_removal",
+   "subtype": "false_tripod_like_easel_and_printed_person_removal",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 2,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.153,
+     "region": [
+      0.0,
+      0.47,
+      0.8096,
+      0.8946
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "window_sky",
+     "confidence": 0.133,
+     "region": [
+      0.872,
+      0.4323,
+      0.9048,
+      0.5474
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 4.47,
+   "error": null
+  },
+  {
+   "case": "defect_train_0054",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 9,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.476,
+     "region": [
+      0.9313,
+      0.2762,
+      0.9544,
+      0.6305
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.42,
+     "region": [
+      0.38,
+      0.3195,
+      0.4225,
+      0.4505
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.382,
+     "region": [
+      0.6506,
+      0.6362,
+      0.6944,
+      0.7512
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.299,
+     "region": [
+      0.4894,
+      0.0,
+      0.6275,
+      0.1235
+     ],
+     "kind": "missing"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 12.71,
+   "error": null
+  },
+  {
+   "case": "defect_train_0055",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 7,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.497,
+     "region": [
+      0.845,
+      0.7936,
+      0.8962,
+      0.918
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.268,
+     "region": [
+      0.0,
+      0.8558,
+      0.1462,
+      0.8831
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.251,
+     "region": [
+      0.2894,
+      0.8577,
+      0.3656,
+      1.0
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.185,
+     "region": [
+      0.0,
+      0.0434,
+      0.1806,
+      0.9105
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 13.58,
+   "error": null
+  },
+  {
+   "case": "defect_train_0056",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 2,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "wood_floor_color",
+     "confidence": 0.259,
+     "region": [
+      0.18,
+      0.8213,
+      0.295,
+      0.8644
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.12,
+   "error": null
+  },
+  {
+   "case": "defect_train_0057",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 3,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.228,
+     "region": [
+      0.9256,
+      0.2375,
+      1.0,
+      0.901
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.146,
+     "region": [
+      0.0369,
+      0.4364,
+      0.2019,
+      0.5495
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 13.26,
+   "error": null
+  },
+  {
+   "case": "defect_train_0058",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 11.2,
+   "error": null
+  },
+  {
+   "case": "defect_train_0059",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 10.05,
+   "error": null
+  },
+  {
+   "case": "defect_train_0060",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_capture_group_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 9,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.8,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.49,
+     "region": [
+      0.57,
+      0.5881,
+      0.6512,
+      0.6682
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.468,
+     "region": [
+      0.6713,
+      0.5401,
+      0.7844,
+      0.5683
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.297,
+     "region": [
+      0.3137,
+      0.5419,
+      0.4744,
+      0.7851
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.21,
+     "region": [
+      0.0912,
+      0.5401,
+      0.2631,
+      0.6324
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 13.75,
+   "error": null
+  },
+  {
+   "case": "defect_train_0061",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_room_cross_capture_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.41,
+   "error": null
+  },
+  {
+   "case": "defect_train_0062",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_room_cross_capture_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 9.66,
+   "error": null
+  },
+  {
+   "case": "defect_train_0063",
+   "family": "ghosting_grouping",
+   "subtype": "wrong_room_cross_capture_fusion",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": true,
+   "n_candidates": 1,
+   "n_high": 1,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "ghosting_grouping",
+     "confidence": 0.95,
+     "region": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "kind": "grouping"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.79,
+   "error": null
+  },
+  {
+   "case": "defect_train_0064",
+   "family": "window_sky",
+   "subtype": "sky_replacement_on_water",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 1,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.41,
+     "region": [
+      0.88,
+      0.0967,
+      0.9663,
+      0.1956
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 4.56,
+   "error": null
+  },
+  {
+   "case": "defect_train_0065",
+   "family": "geometry_lens",
+   "subtype": "incorrect_perspective_correction_introduced_lean",
+   "clean": false,
+   "hit_any": false,
+   "hit_high": false,
+   "n_candidates": 5,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "paint_color",
+     "confidence": 0.539,
+     "region": [
+      0.5131,
+      0.2821,
+      0.7837,
+      0.4283
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.469,
+     "region": [
+      0.2013,
+      0.298,
+      0.25,
+      0.3646
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.231,
+     "region": [
+      0.8812,
+      0.0778,
+      1.0,
+      0.135
+     ],
+     "kind": "chroma"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.147,
+     "region": [
+      0.3444,
+      0.0,
+      0.8069,
+      0.1575
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "paint_color",
+     "confidence": 0.135,
+     "region": [
+      0.0,
+      0.2118,
+      0.0587,
+      0.3065
+     ],
+     "kind": "chroma"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 8.33,
+   "error": null
+  },
+  {
+   "case": "defect_train_0066",
+   "family": "camera_person_removal",
+   "subtype": "false_object_removal_lamp_collateral_damage",
+   "clean": false,
+   "hit_any": true,
+   "hit_high": false,
+   "n_candidates": 7,
+   "n_high": 0,
+   "unmatched_high": [],
+   "top": [
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.529,
+     "region": [
+      0.6481,
+      0.43,
+      0.7419,
+      0.5286
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.428,
+     "region": [
+      0.8175,
+      0.4,
+      0.8419,
+      0.5728
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.326,
+     "region": [
+      0.5381,
+      0.4451,
+      0.5856,
+      0.5671
+     ],
+     "kind": "missing"
+    },
+    {
+     "type": "fireplace",
+     "confidence": 0.313,
+     "region": [
+      0.7044,
+      0.43,
+      0.7419,
+      0.4742
+     ],
+     "kind": "added"
+    },
+    {
+     "type": "camera_person_removal",
+     "confidence": 0.211,
+     "region": [
+      0.0,
+      0.3399,
+      0.1569,
+      0.9765
+     ],
+     "kind": "added"
+    }
+   ],
+   "groups_pred": [
+    [
+     0,
+     1,
+     2,
+     3
+    ]
+   ],
+   "groups_gt": [
+    [
+     0,
+     1,
+     2,
+     3
+    ]
+   ],
+   "group_ok": true,
+   "seconds": 7.12,
+   "error": null
+  }
+ ]
+}
