@@ -7,11 +7,12 @@ import { LiveClock } from "./LiveClock";
 import { MessageText } from "./MessageText";
 import { radioKeys } from "./radioKeys";
 
+// Short labels keep the chips to a row or two in the side panel; each sends its full request.
 const QUICK = [
-  "Remove the cars and trash bins",
-  "Put the reference image on the TV screen",
-  "Match the wall colour to the reference",
-  "Add a 'Listed by Acme Realty' watermark bottom-right on every photo",
+  { label: "Remove cars and bins", request: "Remove the cars and trash bins" },
+  { label: "Reference image on the TV", request: "Put the reference image on the TV screen" },
+  { label: "Match wall colour", request: "Match the wall colour to the reference" },
+  { label: "Add a watermark", request: "Add a 'Listed by Acme Realty' watermark bottom-right on every photo" },
 ];
 
 const OUTCOME_TEXT: Record<ViewOutcome, string> = {
@@ -226,8 +227,8 @@ function Composer() {
     >
       <div className="quick" role="group" aria-label="Suggested requests">
         {QUICK.map((q) => (
-          <button key={q} type="button" className="quick-btn" onClick={() => void submit(q)} disabled={!shoot || sending}>
-            {q}
+          <button key={q.label} type="button" className="quick-btn" title={q.request} onClick={() => void submit(q.request)} disabled={!shoot || sending}>
+            {q.label}
           </button>
         ))}
       </div>
