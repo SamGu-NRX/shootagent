@@ -22,8 +22,8 @@ edit stay byte-identical. After every edit the loop runs a check: outside-mask d
 a vision judge. A failed check reverts the edit and forces a different approach. Approved photos become a
 9:16 listing reel. Every plan, tool call, check and retry streams to a live trace.
 
-**Impact.** On AutoHDR's 63 defect cases it fixed 20 of 21 grouping and ghosting errors, and 24 of 59
-defects overall, without editing any clean photo. It costs about $0.05 and 24 seconds per photo. Seven
+**Impact.** On AutoHDR's 63 defect cases it fixed 20 of 21 grouping and ghosting errors, and 30 of 59
+defects overall, without editing any clean photo. It costs about $0.07 and 26 seconds per photo. Seven
 saved customer requests passed from chat, including removals of cars, bins and wires.
 
 ## Loom shot list (target 3:30)
@@ -42,8 +42,8 @@ saved customer requests passed from chat, including removals of cars, bins and w
    delta of 0 in the check row.
 4. **2:30 to 3:10, reel.** Approve the photos, press Build reel, and play the 9:16 result. The agent
    ordered the rooms and chose the camera moves; the trace shows its reasoning.
-5. **3:10 to 3:30, numbers.** The README Results table: 20/21 grouping fixed, 24/59 overall, 0 clean
-   photos touched, $0.05 per photo. Close on the repo URL.
+5. **3:10 to 3:30, numbers.** The README Results table: 20/21 grouping fixed, 30/59 overall, 0 clean
+   photos touched, $0.07 per photo. Close on the repo URL.
 
 Record at 1920x1080 with the browser at 100% zoom. Start the QC run before recording if the room is slow,
 and cut to it when the trace is streaming; the Loom should show real runs, not the demo-mode replay.

@@ -30,6 +30,11 @@ views and fuse each one.
 whole shoot, decides per photo whether the request applies, finds the region with Grounding DINO and
 SAM 2.1, edits, and reports each photo as applied, not needed (with the reason), or failed.
 
+![The workspace during a live QC run](web/screenshots/live-01-qc-midrun-check.jpg)
+
+*A live QC run in the workspace: photos on the left, before/after in the middle, and the trace on the
+right with the plan, tool calls, a failed self-check and its retry.*
+
 **Self-check and retry.** The loop, not the model, runs a check after every edit. It measures the change
 outside the mask (it must be zero), measures region targets such as delta-E to a hex colour or the EV
 change, and asks a Claude vision judge to compare before and after against the stated intent. A failed
@@ -57,27 +62,30 @@ its fix passed the self-check. "Flagged" means it confirmed the defect but left 
 
 | Family | Cases | Fixed | Flagged | Missed |
 |---|---|---|---|---|
-| ghosting / grouping | 21 | 20 | 1 | 0 |
-| camera, tripod, person removal | 14 | 4 | 0 | 10 |
-| fireplace | 7 | 0 | 0 | 7 |
-| paint colour | 6 | 0 | 0 | 6 |
+| ghosting / grouping | 21 | 20 | 0 | 1 |
+| camera, tripod, person removal | 14 | 5 | 1 | 8 |
+| fireplace | 7 | 1 | 2 | 4 |
+| paint colour | 6 | 4 | 0 | 2 |
 | window / sky | 4 | 0 | 0 | 4 |
 | lens geometry | 4 | 0 | 0 | 4 |
-| floor colour | 2 | 0 | 1 | 1 |
+| floor colour | 2 | 0 | 0 | 2 |
 | TV / art | 1 | 0 | 0 | 1 |
 | **clean controls** | 4 | 4 kept byte-identical | | |
 
-24 of 59 defects fixed and 2 flagged; no clean photo edited; no run crashed. 23.5 s and $0.045 per view.
-The self-check failed 8 edits, all reverted; 7 retries followed.
+30 of 59 defects fixed and 3 flagged; no clean photo edited; no run crashed. 26.4 s and $0.073 per view.
+The self-check failed 15 edits, all reverted; 12 retries followed. (A first run, before the paint and
+fire work below, fixed 24 and flagged 2 at $0.045 per view.)
 
-The grouping result is the strong one. The detector splits brackets into camera positions with feature
-matching and matched the labelled groups on 59 of 59 cases; the agent then re-fused each group into its
-own photo. The other families are honest misses, mostly at the judgement step rather than detection: the
-deterministic detector flags 68% of all defects (`eval/qc_defects.py`, table in
-[docs/eval/qc_defects.md](docs/eval/qc_defects.md)), and the agent then dismissed most fire and paint
-candidates. It treats an added fire inside a real firebox as a requested edit (AutoHDR labels unrequested
-fire as a defect, and the case gives no order details) and explains a neutralised blue wall as a window
-colour cast.
+Grouping is the strongest result. The detector splits brackets into camera positions with feature
+matching and matched the labelled groups on 59 of 59 cases; the agent then re-fuses each group into its
+own photo. Paint colour went from 0 to 4 of 6 after adding a check that compares raw bracket colour with
+the finished colour on segmented walls: the earlier global colour fit absorbed pale blue walls, so the
+drift never showed. Fire depends on the order. Each case's `case.json` states what was requested
+("Fire addition is disabled"), and the agent restores fire the order forbids or fire painted onto
+something that is not a firebox, and leaves fire it cannot account for open for the photographer.
+The deterministic detector finds 73% of all defects (`eval/qc_defects.py`, table in
+[docs/eval/qc_defects.md](docs/eval/qc_defects.md)); most remaining losses are restores that fail the
+vision judge (a firebox left flat black, a faded patch) and families with no check yet (sky, lens).
 
 **Chat pass, saved customer requests** from AutoHDR's editor dataset, one view each:
 
@@ -190,9 +198,9 @@ variables at the unzipped folders.
 
 ## Limitations
 
-- QC misses most fire, paint, sky, lens and false-removal defects (see Results). Fire needs the order's
-  requested edits as input; paint needs a neutral reference in the scene before the agent will trust a
-  hue in the brackets over the finished photo.
+- QC misses most sky, lens and erased-object defects, and some fire (see Results). Restoring a firebox
+  from the brackets often fails the judge, and erased-object verdicts vary from run to run.
+- The wall paint check looks only at cool hues; warm walls flagged too often on photos with no defect.
 - The vision judge is a model. It is stricter than a human on close-ups and sometimes misses small
   leftovers such as a car antenna; edits it rejects are reverted, not shipped.
 - Generative removals cost about $0.025 each and take 20 to 40 s at the image endpoint, so a removal
@@ -202,8 +210,7 @@ variables at the unzipped folders.
 - The QC detector's confidence thresholds were chosen on the same 63 cases it is scored on.
 - Single-user: one agent run per shoot at a time, files on local disk, no accounts.
 
-Next steps: take the order's requested edits (fire, sky, TV) as QC input; a neutral-reference check for
-paint drift; lens-geometry checks from straight architectural lines; batch generative removals per shoot.
+Next steps: a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight architectural lines; batch generative removals per shoot.
 
 ## License
 
