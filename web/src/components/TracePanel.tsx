@@ -68,7 +68,7 @@ const IMAGE_TOOLS = new Set([
   "revert",
 ]);
 
-const MODE_LABEL: Record<string, string> = { qc: "QC pass", chat: "Chat request", reel: "Reel" };
+const MODE_LABEL: Record<string, string> = { qc: "QC pass", chat: "Chat request", reel: "Reel", copy: "Listing copy" };
 
 export function TracePanel() {
   const runs = useStore((s) => s.runs);

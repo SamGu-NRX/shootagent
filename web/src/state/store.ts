@@ -74,6 +74,7 @@ interface State {
   runQc(): Promise<void>;
   sendChat(text: string, scope: "all" | "view"): Promise<boolean>;
   buildReel(): Promise<void>;
+  draftCopy(): Promise<void>;
   moveHead(viewId: string, versionId: string, instant?: boolean): Promise<void>;
   undo(instant?: boolean): Promise<void>;
   redo(instant?: boolean): Promise<void>;
@@ -332,6 +333,19 @@ export const useStore = create<State>()((set, get) => {
         set((st) => ({
           traceRunId: run_id,
           runs: [...st.runs, { id: run_id, mode: "reel", started: new Date().toISOString(), done: false, usd: 0, summary: null }],
+        }));
+        watchRun(shoot.id, run_id);
+      });
+    },
+
+    async draftCopy() {
+      const shoot = get().shoot;
+      if (!shoot) return;
+      await guard("copy", async () => {
+        const { run_id } = await get().api.draftCopy(shoot.id);
+        set((st) => ({
+          traceRunId: run_id,
+          runs: [...st.runs, { id: run_id, mode: "copy", started: new Date().toISOString(), done: false, usd: 0, summary: null }],
         }));
         watchRun(shoot.id, run_id);
       });

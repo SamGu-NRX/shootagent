@@ -36,7 +36,11 @@ def slug(text: str) -> str:
     return s[:48] or "listing"
 
 
-def _caption(p: PublishedPhoto) -> str:
+def _caption(p: PublishedPhoto, shoot: Shoot | None = None) -> str:
+    if shoot is not None:
+        custom = shoot.view(p.view).meta.get("caption")
+        if isinstance(custom, str) and custom.strip():
+            return custom.strip()
     room = (p.room or "").strip()
     label = room.title() if room else p.label
     return label if not re.match(r"^(?:defect_train|request-)", label) else f"Photo {p.order}"
@@ -48,7 +52,7 @@ def _alt_text(shoot: Shoot, p: PublishedPhoto, total: int) -> str:
     if isinstance(custom, str) and custom.strip():
         return custom.strip()
     where = shoot.listing.address or shoot.title
-    caption = _caption(p)
+    caption = _caption(p, shoot)
     if caption.startswith("Photo "):  # no room label yet
         return f"Photo {p.order} of {total} of {where}."
     return f"{caption}, photo {p.order} of {total} of {where}."
@@ -132,7 +136,7 @@ def build_kit(store: ShootStore, shoot_id: str, base_url: str, include_reel: boo
         rows = []
         disclosures = []
         for p in pub.photos:
-            stem = f"{p.order:02d}-{slug(_caption(p))}"
+            stem = f"{p.order:02d}-{slug(_caption(p, shoot))}"
             final = blob_bytes(p.final.blob)
             put(f"photos/{stem}.jpg", final, False)
             url = public_url(base_url, pub.token, p.view)
@@ -150,12 +154,12 @@ def build_kit(store: ShootStore, shoot_id: str, base_url: str, include_reel: boo
             if p.original is not None and p.disclosure:
                 original_file = f"originals/{stem}-original.jpg"
                 put(original_file, blob_bytes(p.original.blob), False)
-                disclosures.append(f"{stem}.jpg ({_caption(p)}): {p.disclosure} Unaltered original: {url}")
+                disclosures.append(f"{stem}.jpg ({_caption(p, shoot)}): {p.disclosure} Unaltered original: {url}")
             rows.append({
                 "order": p.order,
                 "file": f"photos/{stem}.jpg",
                 "room": _caption(p),
-                "caption": _caption(p),
+                "caption": _caption(p, shoot),
                 "alt_text": _alt_text(shoot, p, total),
                 "digitally_altered": "yes" if p.disclosure else "no",
                 "disclosure": p.disclosure or "",

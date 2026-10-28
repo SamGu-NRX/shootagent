@@ -437,3 +437,60 @@ export function reelScript(shoot: Shoot): Step[] {
   s.push(200, "run_end", null, () => ({ ok: true, summary: "Reel rendered.", ms: 0, usd: 0 }));
   return s.steps;
 }
+
+/** Copy mode: a first draft the fair-housing check refuses, the rewrite, then captions for every photo. */
+export function copyScript(shoot: Shoot): Step[] {
+  const s = new Script();
+  const live = shoot.views.filter((v) => v.head && !(v.meta.split_into as string[] | undefined)?.length);
+  const scope = (live.some((v) => v.approved) ? live.filter((v) => v.approved) : live).map((v) => v.id);
+  const where = shoot.listing.address ?? shoot.title;
+  const headline = `Light-filled home with a great room and garden views at ${where}`.slice(0, 88);
+  const remarks =
+    "Arrive by a wide drive to a two-car garage and a deep, sunny lawn. Inside, the living room opens to a deck through a full wall of sliding glass, " +
+    "and the great room carries the light through to the dining area and its row of pendant lights. The kitchen has black granite counters, " +
+    "white cabinets, a gas range and a window over the sink. The nursery and bedrooms are bright and quiet, the primary bath has a glass shower and " +
+    "double vanity, and the laundry room opens to the yard.";
+  const CAPTIONS: Record<string, [string, string]> = {
+    living_room: ["Living room", "Living room with a grey sectional sofa, a ceiling fan and sliding glass doors to a deck."],
+    kitchen: ["Kitchen", "Kitchen with white cabinets, black granite counters, a black range and a window over the sink."],
+    bedroom: ["Nursery", "Bright nursery with a daybed, a grey crib and a ceiling fan."],
+    laundry: ["Laundry", "Laundry room with a stacked washer and dryer and a glass door to the yard."],
+    exterior: ["Garage and drive", "Two-car garage with grey siding, a wide asphalt drive and a lawn under a blue sky."],
+    bathroom: ["Primary bath", "Primary bathroom with a double vanity and a glass-walled shower."],
+  };
+  s.push(0, "run_start", null, () => ({ mode: "copy", views: scope }));
+  s.usage(300, 8200, 300, 0.0291);
+  s.push(400, "plan", null, () => ({
+    text: "Look at the rooms, write the remarks in showing order, then a caption and alt text for every photo.",
+    steps: [
+      { intent: "Write the headline and remarks", tool: "write_listing_copy" },
+      { intent: "Caption every photo with alt text", tool: "set_photo_captions" },
+    ],
+  }));
+  s.tool(350, "v02", "view_photo", { view: "v02", source: "head" }, 500, () => ({ summary: "Kitchen: black granite, white shaker cabinets, gas range." }));
+  s.tool(250, "v07", "view_photo", { view: "v07", source: "head" }, 500, () => ({ summary: "Great room: dining table under pendant lights, wall of windows." }));
+  s.usage(200, 9100, 420, 0.034);
+  s.tool(400, null, "write_listing_copy", { headline, remarks: "Perfect for a growing family: " + remarks.slice(0, 80) + "…" }, 120, () => ({
+    ok: false,
+    summary:
+      "Refused by the fair-housing check, nothing saved: \"Perfect for a growing family\": Says who should live there (familial status, age). Try: Describe the space instead.",
+  }));
+  s.thought(300, null, "The opening said who the home is for. Rewriting it to describe the rooms instead.");
+  s.tool(350, null, "write_listing_copy", { headline, remarks }, 140, (ctx) => {
+    ctx.shoot.listing = { ...ctx.shoot.listing, headline, description: remarks };
+    return { summary: `Saved the headline and ${remarks.length} characters of remarks.` };
+  });
+  s.tool(300, null, "set_photo_captions", { captions: scope.map((id) => ({ view: id })) }, 120, (ctx) => {
+    for (const id of scope) {
+      const v = view(ctx.shoot, id);
+      const [caption, alt] = CAPTIONS[v.room ?? ""] ?? [v.label, `${v.label}.`];
+      v.meta = { ...v.meta, caption: v.label === "Great room" ? "Great room" : caption, alt_text: v.label === "Great room" ? "Great room with a long dining table under pendant lights and a wall of windows." : alt };
+    }
+    return { summary: `Saved captions and alt text for ${scope.length} photos.`, data: { views: scope } };
+  });
+  s.push(300, "message", null, () => ({
+    text: `Wrote the headline, ${remarks.length} characters of remarks and captions for ${scope.length} photos. The first draft opened with "perfect for a growing family"; the fair-housing check refused it and I rewrote it to describe the rooms.`,
+  }));
+  s.push(250, "run_end", null, () => ({ ok: true, summary: "Listing copy written.", ms: 0, usd: 0 }));
+  return s.steps;
+}

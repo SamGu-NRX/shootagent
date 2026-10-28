@@ -4,7 +4,7 @@ import { ApiError, type Api, type MaskPoint } from "../client";
 import type { Comment, CommentView, KitInfo, Mask, ReviewShoot, RunSummary, Shoot, ShootSummary, TraceEvent } from "../types";
 import { makeShoot } from "./data";
 import { classifyRequest, complianceReport, lintListing, publishMock, type RunInfo } from "./delivery";
-import { chatScript, qcScript, reelScript, type Step } from "./scripts";
+import { chatScript, copyScript, qcScript, reelScript, type Step } from "./scripts";
 
 interface MockRun {
   id: string;
@@ -312,6 +312,10 @@ export function createMockApi(speed = 1): Api {
         throw new ApiError(400, "nothing_approved", "Approve at least one photo before building a reel.");
       }
       return queueOrStart(shoot, "reel", () => reelScript(shoot));
+    },
+    async draftCopy(id) {
+      const shoot = get(id);
+      return queueOrStart(shoot, "copy", () => copyScript(shoot), { mode: "copy" });
     },
     async listRuns(id): Promise<RunSummary[]> {
       return delay(

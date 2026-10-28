@@ -306,6 +306,11 @@ def create_app(
         load(shoot_id)
         return start(shoot_id, "reel")
 
+    @app.post("/api/shoots/{shoot_id}/copy")
+    def copy(shoot_id: str):
+        load(shoot_id)
+        return start(shoot_id, "copy")
+
     @app.get("/api/shoots/{shoot_id}/reel/latest.mp4")
     def reel_latest(shoot_id: str):
         load(shoot_id)

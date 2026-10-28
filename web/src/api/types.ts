@@ -120,7 +120,7 @@ export interface ShootSummary {
   thumb: string | null;
 }
 
-export type RunMode = "qc" | "chat" | "reel";
+export type RunMode = "qc" | "chat" | "reel" | "copy";
 
 export interface RunSummary {
   id: string;

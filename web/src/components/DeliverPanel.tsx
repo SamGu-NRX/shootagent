@@ -1,8 +1,9 @@
-import { Check, ChevronRight, Copy, Download, ExternalLink, FileArchive, Link2, Link2Off, ShieldCheck } from "lucide-react";
+import { Check, ChevronRight, Copy, Download, ExternalLink, FileArchive, Link2, Link2Off, ShieldCheck, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Change, CommentView, ComplianceReport, KitInfo, LintResult, Listing, PhotoReport } from "../api/types";
 import { relTime } from "../lib/format";
 import { message, useStore } from "../state/store";
+import { LiveClock } from "./LiveClock";
 
 /** Absolute link to a hash route on this app, keeping ?api=mock so demo links open in demo mode. */
 export function appLink(route: string): string {
@@ -470,9 +471,19 @@ function KitSection({
   onBuild: () => void;
 }) {
   const api = useStore((s) => s.api);
+  const runs = useStore((s) => s.runs);
+  const traces = useStore((s) => s.traces);
+  const draftCopy = useStore((s) => s.draftCopy);
+  const busyAction = useStore((s) => s.busyAction);
+  const setTab = useStore((s) => s.setTab);
+  const setRun = useStore((s) => s.setTraceRun);
   const [form, setForm] = useState(() => toForm(listing));
   const [lint, setLint] = useState<LintResult | null>(null);
   const dirty = JSON.stringify(form) !== JSON.stringify(toForm(listing));
+  const copyRuns = runs.filter((r) => r.mode === "copy");
+  const lastCopy = copyRuns[copyRuns.length - 1];
+  const copyTrace = lastCopy ? traces[lastCopy.id] : undefined;
+  const drafting = !!lastCopy && !lastCopy.done && copyTrace?.status !== "done" && copyTrace?.status !== "failed";
 
   useEffect(() => setForm(toForm(listing)), [listing]);
   const copy = `${form.headline} ${form.description}`.trim();
@@ -532,6 +543,30 @@ function KitSection({
           <span>Headline</span>
           <input value={form.headline} onChange={set("headline")} placeholder="Light-filled craftsman on a quiet street" />
         </label>
+        <div className="dv-draft dv-wide">
+          <button type="button" className="btn btn-sm btn-agent" onClick={() => void draftCopy()} disabled={drafting || busyAction === "copy"}>
+            <Sparkles size={13} aria-hidden /> {drafting ? "Drafting…" : form.description ? "Redraft with ShootAgent" : "Draft with ShootAgent"}
+          </button>
+          {drafting ? (
+            <span className="dv-quiet">
+              Looking at the rooms and writing <LiveClock since={copyTrace?.startedAt ?? null} />
+            </span>
+          ) : (
+            <span className="dv-quiet">Headline, remarks, captions and alt text from the photos, checked for fair-housing wording.</span>
+          )}
+          {lastCopy && (
+            <button
+              type="button"
+              className="link link-quiet"
+              onClick={() => {
+                setRun(lastCopy.id);
+                setTab("trace");
+              }}
+            >
+              Trace
+            </button>
+          )}
+        </div>
         <label className="dv-field dv-wide">
           <span>Remarks</span>
           <textarea value={form.description} onChange={set("description")} rows={3} placeholder="Describe the home: rooms, light, materials, updates." />

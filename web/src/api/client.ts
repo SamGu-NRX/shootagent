@@ -51,6 +51,8 @@ export interface Api {
   runQc(id: string, views?: string[]): Promise<{ run_id: string }>;
   chat(id: string, body: ChatBody): Promise<{ run_id: string }>;
   reel(id: string): Promise<{ run_id: string }>;
+  /** copy mode: the agent writes the headline, remarks, captions and alt text */
+  draftCopy(id: string): Promise<{ run_id: string }>;
   listRuns(id: string): Promise<RunSummary[]>;
   cancelRun(id: string, run: string): Promise<void>;
   /** Streams past events first, then live ones. `onEnd` fires once the stream ends after run_end. */
@@ -260,6 +262,7 @@ export function createHttpApi(): Api {
     runQc: (id, views) => request("POST", `${s(id)}/qc`, views ? { views } : {}),
     chat: (id, body) => request("POST", `${s(id)}/chat`, body),
     reel: (id) => request("POST", `${s(id)}/reel`, {}),
+    draftCopy: (id) => request("POST", `${s(id)}/copy`, {}),
     listRuns: (id) => request("GET", `${s(id)}/runs`),
     cancelRun: async (id, run) => {
       await request("POST", `${s(id)}/runs/${run}/cancel`);

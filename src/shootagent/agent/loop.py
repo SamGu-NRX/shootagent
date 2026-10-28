@@ -82,6 +82,7 @@ MODE_TOOLS: dict[str, list[str]] = {
         "set_listing",
     ],
     "reel": ["submit_plan", "list_views", "view_photo", "label_views", "render_reel", "set_listing"],
+    "copy": ["submit_plan", "list_views", "view_photo", "label_views", "write_listing_copy", "set_photo_captions"],
 }
 
 
@@ -164,6 +165,10 @@ class AgentRun:
             scope = [shoot.masks[self.mask].view]
         elif self.mode == "reel":
             scope = [v.id for v in shoot.views if v.approved and v.head] or [v.id for v in shoot.views if v.head]
+        elif self.mode == "copy":
+            # The listing set: approved photos, else every photo a regroup did not replace.
+            live = [v for v in shoot.views if v.head and not v.meta.get("split_into")]
+            scope = [v.id for v in live if v.approved] or [v.id for v in live]
         else:
             scope = all_ids
         self.scope: list[str] = scope
@@ -482,6 +487,16 @@ class AgentRun:
         elif self.mode == "reel":
             lines.insert(0, "Assemble the listing reel from the views in scope. Listing: "
                          + shoot.listing.model_dump_json(exclude_none=True))
+        elif self.mode == "copy":
+            from ..compliance.disclosure import build_report
+
+            lines.insert(0, "Write the listing copy for the views in scope. Listing: "
+                         + shoot.listing.model_dump_json(exclude_none=True, exclude={"description"}))
+            disclosed = {p.view: p.disclosure for p in build_report(self.store, self.shoot_id).photos
+                         if p.view in self.allowed and p.disclosure}
+            if disclosed:
+                lines.append("Photos with a disclosure on the listing (do not describe what was removed or changed as "
+                             "a feature): " + json.dumps(disclosed, ensure_ascii=False))
         else:
             lines.insert(0, "Run the autonomous QC pass on the views in scope.")
         if self.mask:
@@ -548,6 +563,16 @@ class AgentRun:
                 for e in self._events()
             )
             return "" if rendered else "call render_reel to produce the reel."
+        if self.mode == "copy":
+            ok = [e["data"] for e in self._events() if e["kind"] == "tool_result" and e["data"].get("ok")]
+            missing: list[str] = []
+            if not any(d.get("tool") == "write_listing_copy" for d in ok):
+                missing.append("save the headline and remarks with write_listing_copy")
+            captioned = {v for d in ok if d.get("tool") == "set_photo_captions" for v in d.get("data", {}).get("views", [])}
+            uncaptioned = [v for v in self.scope if v not in captioned]
+            if uncaptioned:
+                missing.append(f"call set_photo_captions for {', '.join(uncaptioned)}")
+            return "; ".join(missing)
         if self.mode == "chat":
             missing = [
                 v
