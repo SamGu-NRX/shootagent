@@ -18,7 +18,7 @@ import numpy as np
 from PIL import Image
 
 from ..store import Publication, PublishedImage, PublishedPhoto, Shoot, ShootStore, View, now_iso
-from .disclosure import PhotoReport, build_report, head_chain
+from .disclosure import PhotoReport, build_report, head_chain, listing_views
 from .provenance import Chain, root_hash, sha256_file
 
 LISTING_LONG_EDGE = 2048  # MLS systems accept 2048 px on the long edge; most resize anything larger
@@ -110,17 +110,6 @@ class _Hashes:
 
 
 # ---- the listing set ------------------------------------------------------------------------------------
-
-
-def listing_views(shoot: Shoot, report_photos: list[PhotoReport]) -> list[PhotoReport]:
-    """Approved photos (every deliverable photo when none is approved), in showing order."""
-    from ..reel.spec import room_rank
-
-    live = [p for p in report_photos if p.deliver and p.final_blob]
-    approved = [p for p in live if shoot.view(p.view).approved]
-    chosen = approved or live
-    index = {v.id: i for i, v in enumerate(shoot.views)}
-    return sorted(chosen, key=lambda p: (room_rank(p.room or p.label), index.get(p.view, 0)))
 
 
 def is_stale(store: ShootStore, shoot_id: str) -> bool:

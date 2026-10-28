@@ -65,8 +65,19 @@ EDITOR_ALTERATIONS: dict[str, tuple[str, str]] = {
     "tv_art": ("TV screen picture replaced", "screen"),
     "detail_hallucination": ("details redrawn", "change"),
 }
-# Types where an unresolved or unfixed finding may mean the scene was changed (an erased object, a drifted wall).
-MAY_ALTER = set(EDITOR_ALTERATIONS) | {"camera_person_removal", "paint_color", "wood_floor_color", "rendering_artifact"}
+# Types where an unresolved or unfixed finding may mean the scene was changed (a drifted wall colour, an added
+# fire). camera_person_removal counts only when the finding says something real went missing: a leftover tripod or
+# hand is a defect in the photo, not a change to the property.
+MAY_ALTER = set(EDITOR_ALTERATIONS) | {"paint_color", "wood_floor_color", "rendering_artifact"}
+_ERASED = re.compile(r"\b(?:erased?|missing|removed|lost|absent|gone|translucent|smear\w*|disappear\w*|lacks?)\b", re.I)
+
+# What a buyer is told when the photographer rules that a QC finding is an alteration to disclose.
+DISCLOSED_FINDING = {
+    "camera_person_removal": "object removed",
+    "paint_color": "paint colour changed",
+    "wood_floor_color": "floor colour changed",
+    "rendering_artifact": "details redrawn",
+}
 
 _GEAR_NOTE = re.compile(r"\b(?:tripod|camera|photographer|reflection|light\s+stand|flash)\b", re.I)
 _ITEMS_NOTE = re.compile(r"\b(?:clutter|declutter|bins?|cars?|cords?|hoses?|signs?|personal|items?|toys?)\b", re.I)
@@ -185,7 +196,14 @@ def _finding_changes(view: View) -> list[Change]:
     out: list[Change] = []
     for f in view.findings:
         note = str(f.evidence.get("agent_note") or "")
-        if f.status == "dismissed":
+        verdict = f.evidence.get("photographer")
+        if f.status == "dismissed" and verdict == "disclose":
+            what = DISCLOSED_FINDING.get(f.type) or EDITOR_ALTERATIONS.get(f.type, ("scene edited", ""))[0]
+            out.append(Change(kind="alteration", what=what, detail=f"{f.explanation} {note}".strip(),
+                              by="editor", requested_by="order", category=f.type, finding=f.id))
+        elif f.status == "dismissed" and verdict == "not_alteration":
+            continue
+        elif f.status == "dismissed":
             if f.type == "camera_person_removal":
                 if _ITEMS_NOTE.search(note) and not _GEAR_NOTE.search(note):
                     out.append(Change(kind="alteration", what="items removed", detail=note, by="editor",
@@ -197,7 +215,9 @@ def _finding_changes(view: View) -> list[Change]:
                 what, cat = EDITOR_ALTERATIONS[f.type]
                 out.append(Change(kind="alteration", what=what, detail=note or f.explanation, by="editor",
                                   requested_by="order", category=cat, finding=f.id))
-        elif f.status in ("open", "failed") and f.type in MAY_ALTER:
+        elif f.status in ("open", "failed") and (
+            f.type in MAY_ALTER or (f.type == "camera_person_removal" and _ERASED.search(f"{f.explanation} {note}"))
+        ):
             prefix = "unresolved" if f.status == "open" else "could not be repaired"
             out.append(Change(kind="possible_alteration", what=_short(f.explanation, 120),
                               detail=f"QC finding {prefix}: {note or f.explanation}", by="editor",
@@ -230,7 +250,7 @@ def disclosure_text(changes: list[Change]) -> str | None:
     staged = any(c.category == "staging" for c in alts)
     whats: list[str] = []
     for c in alts:
-        w = c.what if not staged or c.category != "staging" else ""
+        w = (c.what if not staged or c.category != "staging" else "").strip().rstrip(".;:,")
         if w and w not in whats:
             whats.append(w)
     head = "Virtually staged" if staged else "Digitally altered"
@@ -285,18 +305,30 @@ def photo_report(store: ShootStore, shoot: Shoot, view: View, runs: _Runs | None
     )
 
 
+def listing_views(shoot: Shoot, report_photos: list[PhotoReport]) -> list[PhotoReport]:
+    """The photos that will be published: the approved ones (every deliverable photo when none is approved), in
+    showing order. Same rule as the reel."""
+    from ..reel.spec import room_rank
+
+    live = [p for p in report_photos if p.deliver and p.final_blob]
+    approved = [p for p in live if shoot.view(p.view).approved]
+    chosen = approved or live
+    index = {v.id: i for i, v in enumerate(shoot.views)}
+    return sorted(chosen, key=lambda p: (room_rank(p.room or p.label), index.get(p.view, 0)))
+
+
 def build_report(store: ShootStore, shoot_id: str) -> ComplianceReport:
     shoot = store.load(shoot_id)
     runs = _Runs(store, shoot_id)
     photos = [photo_report(store, shoot, v, runs) for v in shoot.views if v.head]
-    live = [p for p in photos if p.deliver]
+    live = listing_views(shoot, photos)
     counts = {s: sum(p.status == s for p in photos) for s in ("altered", "unaltered", "unverified", "review", "superseded")}
     issues: list[str] = []
     review = [p for p in live if p.status == "review"]
     if review:
         issues.append(
-            f"{len(review)} photo{'s' if len(review) > 1 else ''} need{'' if len(review) > 1 else 's'} a decision on a "
-            "QC finding before publishing: " + ", ".join(p.label for p in review) + "."
+            f"{len(review)} photo{'s' if len(review) > 1 else ''} in the listing need{'' if len(review) > 1 else 's'} a "
+            "decision on a QC finding before publishing: " + ", ".join(p.label for p in review) + "."
         )
     unverified = [p for p in live if p.status == "unverified" or (p.has_brackets and not p.qc_checked)]
     if unverified:

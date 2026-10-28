@@ -135,3 +135,34 @@ def test_listing_kit_pairs_altered_photos_with_originals_and_verifies(tmp_path):
         captions = z.read(next(n for n in z.namelist() if n.endswith("captions.csv"))).decode()
     assert "example.test/#/d/" in captions and "Digitally altered: car removed." in captions
     assert verify_kit(Path(info["path"]))["ok"]
+
+
+def test_a_leftover_defect_is_not_an_alteration_and_the_photographer_rules_on_findings(tmp_path):
+    store, sid = make_shoot(tmp_path, n_views=2)
+    mark_qc(store, sid, "v01", "v02")
+
+    def findings(s):
+        s.view("v01").findings.append(Finding(id="f_hand", type="camera_person_removal",
+                                              explanation="A hand enters the sky from the upper-left edge.", status="failed"))
+        s.view("v02").findings.append(Finding(id="f_lamp", type="camera_person_removal",
+                                              explanation="The floor lamp's stand is missing.", status="open"))
+    store.mutate(sid, findings)
+    r = report_of(store, sid)
+    assert r["v01"].status == "unaltered" and r["v02"].status == "review"
+
+    def rule(s):
+        f = s.view("v02").findings[0]
+        f.status, f.evidence = "dismissed", {"photographer": "disclose"}
+    store.mutate(sid, rule)
+    r = report_of(store, sid)
+    assert r["v02"].status == "altered" and r["v02"].disclosure == "Digitally altered: object removed."
+
+
+def test_readiness_counts_only_the_listing_set(tmp_path):
+    store, sid = make_shoot(tmp_path, n_views=2)
+    mark_qc(store, sid, "v01", "v02")
+    store.mutate(sid, lambda s: s.view("v02").findings.append(
+        Finding(type="paint_color", explanation="wall colour differs", status="open")))
+    assert not build_report(store, sid).ready
+    store.mutate(sid, lambda s: setattr(s.view("v01"), "approved", True))  # v02 leaves the listing set
+    assert build_report(store, sid).ready

@@ -110,3 +110,17 @@ def test_lint_routes(env):
     assert not r["ok"] and {f["severity"] for f in r["flags"]} == {"avoid", "review"}
     p = http.post("/api/lint/request", json={"text": "fix the crack in the driveway"}, headers=PASS).json()
     assert p["verdict"] == "decline"
+
+
+def test_photographer_rules_on_a_finding(env):
+    http, store, sid, _ = env
+    from shootagent.store import Finding
+
+    store.mutate(sid, lambda s: s.view("v01").findings.append(
+        Finding(id="f_x", type="paint_color", explanation="wall colour differs", status="open")))
+    rep = http.get(f"/api/shoots/{sid}/compliance", headers=PASS).json()
+    assert next(p for p in rep["photos"] if p["view"] == "v01")["status"] == "review" and not rep["ready"]
+    r = http.post(f"/api/shoots/{sid}/views/v01/findings/f_x", json={"verdict": "not_alteration"}, headers=PASS)
+    assert r.status_code == 200 and r.json()["findings"][0]["evidence"]["photographer"] == "not_alteration"
+    rep = http.get(f"/api/shoots/{sid}/compliance", headers=PASS).json()
+    assert rep["ready"]

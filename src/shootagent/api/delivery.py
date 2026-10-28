@@ -22,7 +22,8 @@ from ..compliance.disclosure import ComplianceReport, build_report
 from ..compliance.fairhousing import lint_dict
 from ..compliance.kit import build_kit, latest_kit
 from ..compliance.policy import classify_request
-from ..compliance.publish import listing_views, publish, published_blobs
+from ..compliance.disclosure import listing_views
+from ..compliance.publish import publish, published_blobs
 from ..config import Settings, anthropic_client_kwargs
 from ..store import ClientReview, Comment, Publication, Share, Shoot, ShootStore
 from ..trace import read_events
@@ -56,6 +57,14 @@ class TextBody(BaseModel):
 
 class VerdictBody(BaseModel):
     status: Literal["approved", "changes_requested"] | None
+
+
+class FindingVerdictBody(BaseModel):
+    verdict: Literal["disclose", "not_alteration"] = Field(
+        description="'disclose': the editor changed the scene here; disclose it. 'not_alteration': nothing in the "
+        "property changed (a leftover defect, a tone difference)."
+    )
+    note: str = Field("", max_length=300)
 
 
 class CommentBody(BaseModel):
@@ -233,6 +242,25 @@ def register(app: FastAPI, ctx: Ctx) -> None:
         shoot = store.load(shoot_id)
         tokens[pub.token] = shoot_id
         return publication_summary(shoot, pub)
+
+    @app.post("/api/shoots/{shoot_id}/views/{view_id}/findings/{finding_id}")
+    def finding_verdict(shoot_id: str, view_id: str, finding_id: str, body: FindingVerdictBody):
+        """The photographer's ruling on a QC finding that might be an alteration. Recorded on the finding, so the
+        disclosure (and the provenance record) says who decided."""
+        view = ctx.view_of(ctx.load(shoot_id), view_id)
+        if not any(f.id == finding_id for f in view.findings):
+            raise ApiError(404, "finding_not_found", f"View {view_id} has no finding {finding_id!r}.")
+
+        def apply(s: Shoot):
+            for f in s.view(view_id).findings:
+                if f.id == finding_id:
+                    f.status = "dismissed"
+                    f.evidence = {**f.evidence, "photographer": body.verdict,
+                                  "agent_note": body.note or f.evidence.get("agent_note") or (
+                                      "Photographer: disclose as altered." if body.verdict == "disclose"
+                                      else "Photographer: not an alteration of the property.")}
+
+        return ctx.dump(store.mutate(shoot_id, apply).view(view_id))
 
     @app.post("/api/shoots/{shoot_id}/shares")
     def create_share(shoot_id: str, body: ShareBody | None = None):
