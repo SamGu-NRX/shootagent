@@ -34,13 +34,26 @@ fi
 if command -v uv >/dev/null; then run=(uv run); else run=(python -m uv run); fi
 env "${server_env[@]}" "${run[@]}" shootagent serve --host 127.0.0.1 --port 8000 &
 server=$!
-trap 'kill $server 2>/dev/null' EXIT
-until curl -fsS -o /dev/null http://127.0.0.1:8000/; do sleep 1; done
+tunnel=""
+trap 'kill $server $tunnel 2>/dev/null' EXIT
+trap 'exit 143' TERM INT
+until curl -fsS -o /dev/null http://127.0.0.1:8000/; do
+  kill -0 "$server" 2>/dev/null || { echo "App server exited during startup." >&2; exit 1; }
+  sleep 1
+done
 
 # The tunnel needs no credentials of ours; strip any it would otherwise inherit from this shell.
 tunnel_env=(env -u DEMO_PASSCODE -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY)
 if [ -n "${TUNNEL:-}" ]; then
-  "${tunnel_env[@]}" cloudflared tunnel run --url http://127.0.0.1:8000 "$TUNNEL"
+  "${tunnel_env[@]}" cloudflared tunnel run --url http://127.0.0.1:8000 "$TUNNEL" &
 else
-  "${tunnel_env[@]}" cloudflared tunnel --url http://127.0.0.1:8000
+  "${tunnel_env[@]}" cloudflared tunnel --url http://127.0.0.1:8000 &
 fi
+tunnel=$!
+
+# Exit when either process dies, so a supervisor (launchd KeepAlive) restarts both. Without this a dead app
+# server leaves the tunnel up and the public URL answers 502 until someone notices. Polling, because macOS
+# /bin/bash 3.2 has no `wait -n`.
+while kill -0 "$server" 2>/dev/null && kill -0 "$tunnel" 2>/dev/null; do sleep 5; done
+echo "$(date -u +%FT%TZ) serve-public: $(kill -0 "$server" 2>/dev/null && echo tunnel || echo 'app server') exited; stopping." >&2
+exit 1

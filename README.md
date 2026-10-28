@@ -158,6 +158,21 @@ uv run shootagent chat <shoot-id> "add a 'Listed by Acme Realty' watermark botto
 
 Or open the UI, pick a demo shoot on the start screen, and press Run QC.
 
+### Public demo link
+
+`scripts/serve-public.sh` serves the app through a Cloudflare tunnel behind `DEMO_PASSCODE`, and exits when
+either the app or the tunnel dies so a supervisor can restart both. The live demo at
+https://shootagent.sillion.app runs on the demo MacBook as a LaunchAgent
+([scripts/macos/app.sillion.shootagent.plist](scripts/macos/app.sillion.shootagent.plist)), which starts it at
+login and restarts it within about 15 seconds after a crash.
+
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/app.sillion.shootagent.plist   # start (and at login)
+launchctl kickstart -k gui/$(id -u)/app.sillion.shootagent                              # restart
+launchctl bootout gui/$(id -u)/app.sillion.shootagent                                   # stop
+tail -f data/logs/public.log                                                            # logs
+```
+
 ## How it works
 
 ```mermaid
