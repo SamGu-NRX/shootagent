@@ -184,7 +184,16 @@ def place_on_screen(img: np.ndarray, mask: np.ndarray, ref: np.ndarray) -> tuple
 # starts it for every view in the background while the model plans; run_qc_checks then waits for the
 # in-flight job instead of computing the same view twice. Two workers: OpenCV already uses several cores
 # per job, and eight parallel jobs ran slower in total than this.
-_qc_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="qc-prewarm")
+_qc_pool: ThreadPoolExecutor | None = None  # created on first use, sized by settings.qc_workers
+
+
+def _pool() -> ThreadPoolExecutor:
+    global _qc_pool
+    if _qc_pool is None:
+        from ..config import get_settings
+
+        _qc_pool = ThreadPoolExecutor(max_workers=max(1, get_settings().qc_workers), thread_name_prefix="qc-prewarm")
+    return _qc_pool
 _qc_inflight: dict[tuple[str, str], Future] = {}
 _qc_lock = threading.Lock()
 
@@ -195,7 +204,7 @@ def _analysis_job(store, shoot_id: str, view_id: str) -> Future:
         fut = _qc_inflight.get(key)
         fresh = fut is None or (fut.done() and fut.exception() is not None)
         if fresh:
-            fut = _qc_pool.submit(_fn("qc", "analyze_view"), store, shoot_id, view_id, None)
+            fut = _pool().submit(_fn("qc", "analyze_view"), store, shoot_id, view_id, None)
             _qc_inflight[key] = fut
     if fresh:
         # Outside the lock: a job that already finished runs the callback immediately, and _qc_done takes

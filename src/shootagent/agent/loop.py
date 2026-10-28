@@ -34,9 +34,6 @@ from .verify import verify_edit
 PROMPTS = Path(__file__).parent / "prompts"
 MAX_IMAGES_PER_RESULT = 4
 MAX_NUDGES = 2
-# Views edited in parallel. Each full-resolution (24 MP) edit holds ~1 GB of float intermediates; six at once
-# raised MemoryError on the 32 GB dev laptop (run 20261027-223947), four did not.
-TOOL_WORKERS = 4
 
 MODE_TOOLS: dict[str, list[str]] = {
     "qc": [
@@ -313,7 +310,7 @@ class AgentRun:
             for group in by_view.values():
                 run_group(group)
         else:
-            with ThreadPoolExecutor(max_workers=TOOL_WORKERS) as pool:
+            with ThreadPoolExecutor(max_workers=max(1, self.settings.tool_workers)) as pool:
                 for f in [pool.submit(run_group, g) for g in by_view.values()]:
                     f.result()
         return [results[b.id] for b in blocks]

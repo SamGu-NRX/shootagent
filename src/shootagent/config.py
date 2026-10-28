@@ -37,6 +37,13 @@ class Settings(BaseSettings):
     sam_model: str = "facebook/sam2.1-hiera-large"
     lama_url: str = "https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt"
 
+    # Memory budget. Defaults suit a 32 GB PC with an 8 GB GPU. On a laptop with unified memory (Apple
+    # silicon) a QC run with these defaults peaked near 10 GiB, which a memory guard on the demo MacBook
+    # killed; lower values trade speed for a smaller peak.
+    tool_workers: int = 4  # views edited in parallel by one agent run
+    qc_workers: int = 2  # bracket analyses run in the background at once
+    fusion_long_edge: int = 4096  # long edge of the bracket fusion used for restores and split views
+
     # Agent limits.
     max_agent_steps: int = 40
     max_fix_attempts: int = 3

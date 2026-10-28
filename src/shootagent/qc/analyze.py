@@ -23,13 +23,13 @@ from ..imaging.align import register
 from ..imaging.color import colour_match, lab_to_rgb, rgb_to_lab
 from ..imaging.diffmap import apply_style, fit_style, heatmap
 from ..imaging.io import image_size, load_rgb, resize_to
+from ..config import get_settings
 from ..store import Bracket, ShootStore, Version, View, now_iso
 from ..trace import TraceRun
 from .candidates import EXTERIOR_WINDOW_FRAC, HIGH_CONFIDENCE, Candidate, build_candidates, wall_paint_candidates
 from .pipeline import WORK_LONG_EDGE, RawAnalysis, analyze_arrays
 
 ANALYSIS_VERSION = 3  # 2: wall paint check, three-panel crops; 3: mask for same-view ghosting
-REGROUP_LONG_EDGE = 4096  # fusion resolution for split views; Mertens on 5 x 66 MP frames does not fit in RAM
 
 
 @dataclass
@@ -285,13 +285,14 @@ def _emit(trace: TraceRun | None, va: ViewAnalysis) -> None:
 
 
 # ---- full-resolution reference for fixes ---------------------------------------------------------------
-def reference_for_fix(store: ShootStore, shoot_id: str, view_id: str, long_edge: int = REGROUP_LONG_EDGE,
+def reference_for_fix(store: ShootStore, shoot_id: str, view_id: str, long_edge: int | None = None,
                       target_blob: str | None = None) -> tuple[np.ndarray, np.ndarray]:
     """Bracket fusion registered onto the view's current image at that image's full resolution.
 
     Fuses the reference group (from the last analysis, else all brackets) at `long_edge`, registers it
     on the target image and warps it up to full size. Returns (reference RGB uint8, valid bool mask).
     Raises ValueError when the brackets cannot be registered to the image."""
+    long_edge = long_edge or get_settings().fusion_long_edge
     shoot = store.load(shoot_id)
     view = shoot.view(view_id)
     blob = target_blob or _analysed_blob(view)
@@ -329,7 +330,7 @@ def _style_transfer_stats(src: np.ndarray, ref: np.ndarray) -> np.ndarray:
 
 
 def regroup_view(store: ShootStore, shoot_id: str, view_id: str, groups: list[list[int]] | None = None,
-                 trace: TraceRun | None = None, long_edge: int = REGROUP_LONG_EDGE) -> list[str]:
+                 trace: TraceRun | None = None, long_edge: int | None = None) -> list[str]:
     """Split a misgrouped view into one new view per bracket group.
 
     Each new view's finished photo is that group's aligned Mertens fusion restyled toward the original
@@ -337,6 +338,7 @@ def regroup_view(store: ShootStore, shoot_id: str, view_id: str, groups: list[li
     it matches best and then applied to every group (they were shot together, so one grade fits all).
     `groups` are source bracket indices; default: the groups from the last analysis. New views record
     `derived_from` and `groups`; the original view gets `groups` and `meta["split_into"]`."""
+    long_edge = long_edge or get_settings().fusion_long_edge
     shoot = store.load(shoot_id)
     view = shoot.view(view_id)
     if groups is None:
