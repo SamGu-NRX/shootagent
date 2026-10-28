@@ -207,10 +207,12 @@ class AgentRun:
     def _loop(self) -> None:
         if self.mode == "qc":
             from ..tools import _ops
+            from ..tools.perceive import bracket_problem
 
             shoot = self.store.load(self.shoot_id)
+            # Same guard as run_qc_checks: views without real brackets are never analysed.
             _ops.prewarm_analysis(
-                self.store, self.shoot_id, [v for v in self.scope if shoot.view(v).brackets]
+                self.store, self.shoot_id, [v for v in self.scope if bracket_problem(shoot.view(v)) is None]
             )
         self.messages.append({"role": "user", "content": self._opening()})
         nudges = 0

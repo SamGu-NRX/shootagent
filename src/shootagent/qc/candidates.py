@@ -190,6 +190,11 @@ WALL_MIN_CHROMA = 3.0  # Lab chroma of the wall in the brackets
 WALL_MIN_LOSS = 3.5  # chroma the finished wall lost along the bracket hue
 WALL_MAX_WINDOW_FRAC = 0.15  # walls mostly made of windows take the sky's colour; labelled walls were <= 0.03
 WALL_MIN_AREA = 0.005  # fraction of the frame
+# A ceiling that carried at least this share of the wall's bracket hue, and lost at least this share of the
+# wall's loss, means the whole frame's cast was neutralised (white balance), not the paint. Chosen by
+# reasoning, not fitted: no labelled case has a blue-lit ceiling, so no data backs these two numbers.
+GLOBAL_CAST_HUE_SHARE = 0.5
+GLOBAL_CAST_LOSS_SHARE = 0.6
 
 
 def hue_name(a: float, b: float) -> str:
@@ -221,8 +226,10 @@ def wall_paint_candidates(reference: np.ndarray, finished: np.ndarray, valid: np
         usable &= ~window
     h, w = valid.shape
     neutral_ev = None
+    ceiling_ab = None
     if neutral is not None and (neutral & usable).sum() >= WALL_MIN_AREA * h * w:
         nr, nf = _median_lab(ref_lab, neutral & usable), _median_lab(fin_lab, neutral & usable)
+        ceiling_ab = (nr[1:], nf[1:])
         neutral_ev = {"ceiling_ab_brackets": [round(float(v), 1) for v in nr[1:]],
                       "ceiling_ab_finished": [round(float(v), 1) for v in nf[1:]]}
     out = []
@@ -240,6 +247,11 @@ def wall_paint_candidates(reference: np.ndarray, finished: np.ndarray, valid: np
         loss = c_ref - along
         if loss < WALL_MIN_LOSS:
             continue
+        if ceiling_ab is not None:
+            u = np.array([r[1], r[2]]) / c_ref  # the wall's bracket hue direction
+            ceil_ref, ceil_fin = float(ceiling_ab[0] @ u), float(ceiling_ab[1] @ u)
+            if ceil_ref >= GLOBAL_CAST_HUE_SHARE * c_ref and ceil_ref - ceil_fin >= GLOBAL_CAST_LOSS_SHARE * loss:
+                continue  # the ceiling lost the same cast: white balance, not paint
         name = hue_name(r[1], r[2])
         # The bracket hue at the finished photo's lightness: what to recolour the wall back to. (The brackets
         # colour-matched to the finished photo frame-wide came out almost grey on 0029 and 0033, so that

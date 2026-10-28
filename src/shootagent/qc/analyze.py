@@ -186,8 +186,10 @@ def _wall_candidates(ra: RawAnalysis, finished: np.ndarray, find_surfaces: Surfa
     try:
         walls = find_surfaces(finished, "wall")
         ceilings = find_surfaces(finished, "ceiling")[:1]
-    except ImportError as e:  # installs without the `local` extra have no segmentation model
-        notes.append(f"wall paint check skipped: segmentation unavailable ({e})")
+    except Exception as e:  # noqa: BLE001  the wall check is optional evidence; QC must survive without it
+        # ImportError without the `local` extra; OSError/RuntimeError when weights are missing or GPU/MPS
+        # memory runs out. Any of them skips this one check and says so in the analysis notes.
+        notes.append(f"wall paint check skipped: segmentation failed ({type(e).__name__}: {e})")
         return [], None
     ceiling = ceilings[0] if ceilings else None
     cands = wall_paint_candidates(ra.reference_aligned, finished, ra.valid, walls, ceiling, ra.window_mask)

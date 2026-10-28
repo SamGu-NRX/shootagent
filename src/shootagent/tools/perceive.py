@@ -54,6 +54,10 @@ def bracket_problem(view) -> str | None:
         return "no brackets"
     if view.meta.get("source") == "editor_request":
         return "no original brackets (its images are the request's previews, not exposure captures)"
+    if len(view.brackets) < 2:
+        # One image cannot show what the merge or the style model changed; comparing a finished photo with a
+        # single capture flags ordinary exposure and style differences as defects.
+        return "only one bracket; QC needs at least two exposures"
     return None
 
 

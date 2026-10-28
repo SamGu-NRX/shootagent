@@ -513,6 +513,8 @@ def regroup_brackets(ctx: ToolContext, args: RegroupIn) -> ToolResult:
             "areas (the ghosting candidate's mask)."
         )
     n = len(lv.view.brackets)
+    if any(not g for g in args.groups):
+        raise ToolError(f"Every group needs at least one bracket; got {args.groups}.")
     flat = [i for g in args.groups for i in g]
     if sorted(flat) != sorted(set(flat)) or any(i < 0 or i >= n for i in flat):
         raise ToolError(f"Groups must use each bracket index 0..{n - 1} at most once; got {args.groups}.")

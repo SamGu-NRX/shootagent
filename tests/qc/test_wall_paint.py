@@ -51,3 +51,14 @@ def test_walls_white_balance_explains_are_not_reported(wall_ref, window_frac):
     rows = round((WALL[0].stop - WALL[0].start) * window_frac)
     window[WALL[0].start : WALL[0].start + rows, WALL[1]] = True
     assert wall_paint_candidates(ref, fin, np.ones((H, W), bool), [wall_mask()], None, window) == []
+
+
+def test_a_room_whose_whole_cast_was_neutralised_is_not_reported():
+    # fails if a blue-lit room (wall AND ceiling blue in the brackets, both neutral in the finished photo)
+    # yields a paint candidate: that is white balance, and the QC prompt would have the agent recolour a
+    # clean wall (found by review of the wall check, reproduced with these values)
+    ref = lab_image((50, -1.5, -5.5), (48, -1.5, -5.5))  # ceiling rows share the wall's blue cast
+    fin = lab_image((75, -0.5, 2.0), (75, -0.5, 2.0))
+    ceiling = np.zeros((H, W), bool)
+    ceiling[:8] = True
+    assert wall_paint_candidates(ref, fin, np.ones((H, W), bool), [wall_mask()], ceiling) == []

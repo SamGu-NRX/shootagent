@@ -66,16 +66,24 @@ class Settings(BaseSettings):
 
 
 def anthropic_client_kwargs(s: Settings) -> dict:
-    """Credential for anthropic.Anthropic. A gateway token (with its base URL) wins when set; otherwise an
-    API key, sent to ANTHROPIC_BASE_URL if one is set and to Anthropic's API if not. An empty base URL means
-    unset, so a deployment can blank the gateway URL from the environment."""
-    # Explicit default: with base_url=None the SDK falls back to the ANTHROPIC_BASE_URL environment
-    # variable, and a blanked one yields an empty URL.
-    base_url = s.anthropic_base_url or "https://api.anthropic.com"
-    if s.anthropic_auth_token:
-        return {"auth_token": s.anthropic_auth_token, "base_url": base_url}
+    """Credential for anthropic.Anthropic.
+
+    - A gateway token goes only to its gateway: ANTHROPIC_AUTH_TOKEN is used when ANTHROPIC_BASE_URL is set.
+    - Otherwise ANTHROPIC_API_KEY, sent to ANTHROPIC_BASE_URL if set (a proxy) and to Anthropic's API if not.
+    - A gateway token with no gateway URL is refused rather than sent to Anthropic's API.
+    An empty base URL means unset, so a deployment can blank the gateway URL from the environment. The URL is
+    always passed explicitly: with base_url=None the SDK falls back to the ANTHROPIC_BASE_URL environment
+    variable, and a blanked one yields an empty URL."""
+    gateway = (s.anthropic_base_url or "").strip()
+    if s.anthropic_auth_token and gateway:
+        return {"auth_token": s.anthropic_auth_token, "base_url": gateway}
     if s.anthropic_api_key:
-        return {"api_key": s.anthropic_api_key, "base_url": base_url}
+        return {"api_key": s.anthropic_api_key, "base_url": gateway or "https://api.anthropic.com"}
+    if s.anthropic_auth_token:
+        raise RuntimeError(
+            "ANTHROPIC_AUTH_TOKEN is set without ANTHROPIC_BASE_URL. Set the gateway URL with the token, or use "
+            "ANTHROPIC_API_KEY for Anthropic's API."
+        )
     raise RuntimeError("Set ANTHROPIC_API_KEY, or ANTHROPIC_BASE_URL and ANTHROPIC_AUTH_TOKEN, in .env.")
 
 

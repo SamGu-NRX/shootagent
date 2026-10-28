@@ -94,3 +94,41 @@ def test_set_finding_rejects_types_outside_autohdr_taxonomy():
     with pytest.raises(pydantic.ValidationError):
         SetFindingIn(view="v01", finding="new", status="open", note="x", type="erased_object")
     assert SetFindingIn(view="v01", finding="new", status="open", note="x", type="camera_person_removal").type
+
+
+def test_a_single_bracket_is_not_qc_ground_truth(tmp_path):
+    # fails if QC compares a finished photo with one capture, which flags ordinary exposure and style
+    # differences as defects on a clean photo (review finding)
+    from shootagent.tools.perceive import bracket_problem
+
+    store, sid = make_shoot(tmp_path, n_views=1)
+    _with_brackets(store, sid, "v01", n=1)
+    assert "only one bracket" in bracket_problem(store.load(sid).view("v01"))
+    ctx = ToolContext(store, sid, TraceRun(store.shoot_dir(sid), "qc"), settings(tmp_path))
+    res = run_tool(ctx, "run_qc_checks", {"view": "v01"})
+    assert res.ok and res.data["candidates"] == []
+
+
+def test_regroup_refuses_an_empty_group(tmp_path):
+    store, sid = make_shoot(tmp_path, n_views=1)
+    _with_brackets(store, sid, "v01")
+    ctx = ToolContext(store, sid, TraceRun(store.shoot_dir(sid), "qc"), settings(tmp_path))
+    res = run_tool(ctx, "regroup_brackets", {"view": "v01", "groups": [[0, 1, 2], []]})
+    assert not res.ok and "at least one bracket" in res.summary
+    assert [v.id for v in store.load(sid).views] == ["v01"]
+
+
+def test_qc_prewarm_skips_views_without_real_brackets(tmp_path, monkeypatch):
+    # fails if the background analysis started at run start bypasses the run_qc_checks guard and analyses an
+    # editor request's previews as camera brackets (review finding)
+    from shootagent.tools import _ops
+
+    store, sid = make_shoot(tmp_path, n_views=2)
+    _with_brackets(store, sid, "v01")
+    _with_brackets(store, sid, "v02", source="editor_request")
+    warmed: list[str] = []
+    monkeypatch.setattr(_ops, "prewarm_analysis", lambda store, shoot_id, view_ids: warmed.extend(view_ids))
+    run = AgentRun(store, sid, "qc", TraceRun(store.shoot_dir(sid), "qc"), settings(tmp_path),
+                   ScriptedClient([reply(text="done")]))
+    run.run()
+    assert warmed == ["v01"]
