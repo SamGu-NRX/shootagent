@@ -19,7 +19,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from ..config import get_settings
+from ..config import anthropic_client_kwargs, get_settings
 
 MAX_LONG_EDGE = 1568  # Claude's vision encoder downsizes anything larger; sending more only costs upload time
 JPEG_QUALITY = 90
@@ -74,15 +74,7 @@ def encode_image(img: np.ndarray, long_edge: int = MAX_LONG_EDGE) -> tuple[str, 
 def _client():
     import anthropic
 
-    s = get_settings()
-    kwargs: dict[str, Any] = {"base_url": s.anthropic_base_url, "max_retries": 3, "timeout": 300}
-    if s.anthropic_api_key:
-        kwargs["api_key"] = s.anthropic_api_key
-    elif s.anthropic_auth_token:
-        kwargs["auth_token"] = s.anthropic_auth_token
-    else:
-        raise RuntimeError("set ANTHROPIC_API_KEY, or ANTHROPIC_BASE_URL with ANTHROPIC_AUTH_TOKEN, for vision checks")
-    return anthropic.Anthropic(**kwargs)
+    return anthropic.Anthropic(max_retries=3, timeout=300, **anthropic_client_kwargs(get_settings()))
 
 
 def build_request(

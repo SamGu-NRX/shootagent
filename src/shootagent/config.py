@@ -58,6 +58,20 @@ class Settings(BaseSettings):
         return self.data_dir / "models"
 
 
+def anthropic_client_kwargs(s: Settings) -> dict:
+    """Credential for anthropic.Anthropic. A gateway token (with its base URL) wins when set; otherwise an
+    API key, sent to ANTHROPIC_BASE_URL if one is set and to Anthropic's API if not. An empty base URL means
+    unset, so a deployment can blank the gateway URL from the environment."""
+    # Explicit default: with base_url=None the SDK falls back to the ANTHROPIC_BASE_URL environment
+    # variable, and a blanked one yields an empty URL.
+    base_url = s.anthropic_base_url or "https://api.anthropic.com"
+    if s.anthropic_auth_token:
+        return {"auth_token": s.anthropic_auth_token, "base_url": base_url}
+    if s.anthropic_api_key:
+        return {"api_key": s.anthropic_api_key, "base_url": base_url}
+    raise RuntimeError("Set ANTHROPIC_API_KEY, or ANTHROPIC_BASE_URL and ANTHROPIC_AUTH_TOKEN, in .env.")
+
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()

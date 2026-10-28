@@ -16,6 +16,13 @@ command -v cloudflared >/dev/null || { echo "Install cloudflared first (scoop in
 [ -f web/dist/index.html ] || (cd web && npm ci && npm run build)
 
 export DEMO_PASSCODE
+# Public traffic bills a real Anthropic key (git-ignored .env.public: ANTHROPIC_API_KEY=...) rather than the
+# local gateway. Blanking the gateway variables makes the app send that key to Anthropic's API; image edits
+# keep using OPENAI_* from .env.
+if [ -f .env.public ]; then
+  set -a; . ./.env.public; set +a
+  export ANTHROPIC_BASE_URL="" ANTHROPIC_AUTH_TOKEN=""
+fi
 uv run shootagent serve --host 127.0.0.1 --port 8000 &
 server=$!
 trap 'kill $server 2>/dev/null' EXIT
