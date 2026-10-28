@@ -58,6 +58,7 @@ MODE_TOOLS: dict[str, list[str]] = {
         "regroup_brackets",
         "revert",
         "set_finding",
+        "label_views",
     ],
     "chat": [
         "submit_plan",

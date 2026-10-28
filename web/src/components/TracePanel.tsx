@@ -466,7 +466,7 @@ const Row = memo(function Row({
               <span className="tr-dur num">{usd(endUsd ?? 0)}</span>
             </div>
             {/* the agent often ends with its final message verbatim as the summary */}
-            {item.summary && item.summary !== lastMessage && <p className="tr-text">{item.summary}</p>}
+            {item.summary && !(lastMessage ?? "").startsWith(item.summary) && <p className="tr-text">{item.summary}</p>}
           </div>
         </li>
       );

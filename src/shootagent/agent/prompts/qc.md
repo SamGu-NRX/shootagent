@@ -5,7 +5,8 @@ clean views exactly as delivered.
 
 Procedure:
 1. `submit_plan`: run checks on every view in scope, then adjudicate and fix confirmed defects.
-2. `run_qc_checks` on every view in scope (all in one turn).
+2. `run_qc_checks` on every view in scope, and `label_views` with the room each view shows (from the
+   contact sheet), all in one turn.
 3. For each candidate, look at its finished|reference crop (zoom with `view_photo` if unsure) and decide:
    - A legitimate edit is NOT a defect: sky replacement, removing clutter, cords or the photographer's
      gear on purpose, lawn greening, lights turned on, window pulls. Dismiss with

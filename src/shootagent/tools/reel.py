@@ -41,9 +41,16 @@ def label_views(ctx: ToolContext, args: LabelViewsIn) -> ToolResult:
         unknown = sorted(set(labels) - ids)
         if unknown:
             raise ToolError(f"Unknown views {', '.join(unknown)}; views are {', '.join(sorted(ids))}.")
+        seen: dict[str, int] = {}
         for v in shoot.views:
+            room = labels.get(v.id, v.room)
             if v.id in labels:
-                v.room = labels[v.id]
+                v.room = room
+            if room:
+                # The display label follows the room ("Kitchen", "Bedroom 2"); dataset ids stay in meta.
+                seen[room] = seen.get(room, 0) + 1
+                if v.id in labels:
+                    v.label = room.title() + (f" {seen[room]}" if seen[room] > 1 else "")
 
     ctx.store.mutate(ctx.shoot_id, apply)
     return ToolResult(summary="Labelled " + ", ".join(f"{k} as {v}" for k, v in labels.items()) + ".")
