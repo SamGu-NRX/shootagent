@@ -97,7 +97,10 @@ def create_app(
     @app.middleware("http")
     async def passcode(request: Request, call_next):
         code = settings.demo_passcode
-        if code and request.url.path.startswith("/api") and request.method != "OPTIONS":
+        # The public disclosure page and the client review link carry their own token in the path; the token
+        # is the credential, so the people they are sent to never need the photographer's passcode.
+        tokened = request.url.path.startswith(("/api/public/", "/api/review/"))
+        if code and request.url.path.startswith("/api") and request.method != "OPTIONS" and not tokened:
             # EventSource and <img> cannot send headers, so a query parameter or cookie also works.
             given = (
                 request.headers.get("x-demo-passcode")
@@ -142,6 +145,10 @@ def create_app(
         return model.model_dump(mode="json", by_alias=True)
 
     def start(shoot_id: str, mode: str, **kw) -> dict:
+        trace = start_trace(shoot_id, mode, **kw)
+        return {"run_id": trace.id}
+
+    def start_trace(shoot_id: str, mode: str, **kw):
         try:
             trace = loop.start_run(
                 store, shoot_id, mode, settings=settings, client=client, manager=manager, **kw
@@ -150,7 +157,7 @@ def create_app(
             raise ApiError(400, "bad_run_request", str(e)) from None
         except RuntimeError as e:
             raise ApiError(503, "agent_unavailable", str(e)) from None
-        return {"run_id": trace.id}
+        return trace
 
     # ---- shoots -----------------------------------------------------------------------------------------
     @app.get("/api/shoots")
@@ -338,9 +345,7 @@ def create_app(
             )
         return out
 
-    @app.get("/api/shoots/{shoot_id}/runs/{run_id}/events")
-    async def run_events(shoot_id: str, run_id: str, request: Request):
-        load(shoot_id)
+    def run_stream(shoot_id: str, run_id: str, request: Request) -> EventSourceResponse:
         if not ID_RE.match(run_id):
             raise ApiError(400, "bad_id", "Bad run id.")
         path = store.shoot_dir(shoot_id) / "runs" / f"{run_id}.jsonl"
@@ -401,10 +406,21 @@ def create_app(
 
         return EventSourceResponse(live() if handle is not None else replay(), ping=15)
 
+    @app.get("/api/shoots/{shoot_id}/runs/{run_id}/events")
+    async def run_events(shoot_id: str, run_id: str, request: Request):
+        load(shoot_id)
+        return run_stream(shoot_id, run_id, request)
+
     @app.post("/api/shoots/{shoot_id}/runs/{run_id}/cancel")
     def cancel(shoot_id: str, run_id: str):
         load(shoot_id)
         return {"ok": manager.cancel(run_id)}
+
+    # ---- delivery: disclosures, publication, client review, listing kit ---------------------------------------
+    from .delivery import Ctx, register
+
+    register(app, Ctx(settings=settings, store=store, manager=manager, client=client, load=load, view_of=view_of,
+                      dump=dump, start_trace=start_trace, run_stream=run_stream))
 
     # ---- web UI -----------------------------------------------------------------------------------------
     if WEB_DIST.is_dir():

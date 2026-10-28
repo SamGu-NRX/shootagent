@@ -114,9 +114,10 @@ def set_finding(ctx: ToolContext, args: SetFindingIn) -> ToolResult:
 class RequestResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
     request: str = Field(description="The part of the customer's request this covers, in a few words.")
-    status: Literal["applied", "not_needed", "failed"] = Field(
+    status: Literal["applied", "not_needed", "failed", "declined"] = Field(
         description="'applied' after a verified edit, 'not_needed' when it does not apply to this photo, "
-        "'failed' when every attempt failed its check."
+        "'failed' when every attempt failed its check, 'declined' when the listing photo policy forbids it "
+        "(it would misrepresent the property)."
     )
     reason: str = Field(description="One sentence: what was done, or why it was not needed.")
 
@@ -129,8 +130,9 @@ class ReportViewIn(ToolInput):
 @tool(
     "report_view_result",
     "In chat mode, close out one view: for each part of the customer's request say whether it was applied, "
-    "not needed (does not apply to this photo, e.g. 'remove the car' on an interior), or failed. Call it once "
-    "for every view in scope, including untouched ones, after any edits on that view.",
+    "not needed (does not apply to this photo, e.g. 'remove the car' on an interior), failed, or declined (the "
+    "listing photo policy forbids it). Call it once for every view in scope, including untouched ones, after any "
+    "edits on that view.",
     kind="shoot",
 )
 def report_view_result(ctx: ToolContext, args: ReportViewIn) -> ToolResult:
@@ -143,7 +145,7 @@ def report_view_result(ctx: ToolContext, args: ReportViewIn) -> ToolResult:
 
     ctx.store.mutate(ctx.shoot_id, apply)
     ctx.trace.emit("view_result", view=args.view, results=results)
-    counts = {s: sum(r["status"] == s for r in results) for s in ("applied", "not_needed", "failed")}
+    counts = {s: sum(r["status"] == s for r in results) for s in ("applied", "not_needed", "failed", "declined")}
     return ToolResult(
         summary=f"{args.view}: " + ", ".join(f"{r['request']} {r['status']}" for r in results) + ".",
         data={"view": args.view, "results": results, "counts": counts},

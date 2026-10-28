@@ -90,6 +90,7 @@ class View(BaseModel):
     head: str | None = None
     findings: list[Finding] = Field(default_factory=list)
     approved: bool = False
+    client: "ClientReview | None" = None  # the client's verdict from the review link
     meta: dict[str, Any] = Field(default_factory=dict)  # dataset case id, dimensions, etc.
 
     def version(self, version_id: str) -> Version:
@@ -123,6 +124,102 @@ class Listing(BaseModel):
     baths: float | None = None
     sqft: int | None = None
     headline: str | None = None
+    description: str | None = None  # listing remarks for the kit (checked for fair-housing wording)
+
+
+# ---- delivery: disclosures, publication and client review (compliance/) ------------------------------------
+
+
+class Change(BaseModel):
+    """One difference between what the camera captured and the listing photo. compliance/disclosure.py derives
+    these from the op log, the QC verdicts and the order; AB 723 requires disclosing the alterations."""
+
+    kind: Literal["alteration", "adjustment", "restoration", "overlay", "possible_alteration"]
+    what: str  # public phrase, e.g. "grey car removed"
+    detail: str = ""  # longer note for the photographer (the edit's intent, the QC verdict)
+    by: Literal["shootagent", "editor"] = "shootagent"
+    requested_by: Literal["customer", "client", "qc", "order", "unknown"] = "unknown"
+    category: str | None = None  # policy category: removal, colour, sky, staging, ...
+    version: str | None = None
+    finding: str | None = None
+    request: str | None = None  # the customer's words, for edits made from chat
+
+
+class PublishedImage(BaseModel):
+    blob: str  # JPEG blob served at the publication's public URL
+    sha256: str  # of the blob's bytes, so anyone can check the file they were given
+    width: int
+    height: int
+
+
+class ChainEntry(BaseModel):
+    hash: str  # sha256 of `body`
+    body: str  # canonical JSON (sorted keys, no spaces); its "prev" is the previous entry's hash
+
+
+class PublishedPhoto(BaseModel):
+    view: str
+    label: str
+    room: str | None = None
+    order: int  # showing order, 1-based
+    status: str  # compliance status at publication: altered, unaltered, unverified, review
+    disclosure: str | None = None
+    changes: list[Change] = Field(default_factory=list)
+    head: str
+    final: PublishedImage
+    original: PublishedImage | None = None  # the unaltered original paired with an altered photo
+    original_kind: Literal["capture", "delivered"] | None = None
+    capture: PublishedImage | None = None  # what the camera captured (bracket fusion), when brackets exist
+    chain: list[ChainEntry] = Field(default_factory=list)
+
+
+class Publication(BaseModel):
+    """A snapshot of the listing photos with their disclosures and provenance, served read-only at
+    /#/d/<token>. Republishing keeps the token, so printed QR codes stay valid."""
+
+    token: str
+    version: int = 1
+    created_at: str = Field(default_factory=now_iso)
+    heads: dict[str, str] = Field(default_factory=dict)  # view -> head version when published
+    photos: list[PublishedPhoto] = Field(default_factory=list)
+    root: str = ""  # sha256 over every photo's last chain hash, in order
+    manifest_blob: str | None = None
+
+
+class Share(BaseModel):
+    """A client review link (/#/r/<token>): the client sees the photos, approves them and asks for changes."""
+
+    token: str
+    role: Literal["client"] = "client"
+    label: str = ""
+    created_at: str = Field(default_factory=now_iso)
+    revoked: bool = False
+    max_requests: int = 20  # agent runs this link may start; it pays for model calls
+
+
+class Comment(BaseModel):
+    """A change request on one photo, from the client link or the photographer. The live status comes from the
+    run it started (api/review.py); `status` stores what has no run: sent, declined, undone."""
+
+    id: str = Field(default_factory=lambda: "c_" + uuid.uuid4().hex[:8])
+    view: str
+    text: str
+    author: Literal["client", "photographer"] = "client"
+    share: str | None = None
+    point: list[float] | None = None  # normalised [x, y] the client tapped
+    mask: str | None = None
+    run: str | None = None
+    base_version: str | None = None  # head when the comment was made, for undo
+    policy: dict[str, Any] | None = None
+    status: Literal["sent", "declined", "started", "undone"] = "sent"
+    note: str = ""  # why it was declined, or why no run started
+    created_at: str = Field(default_factory=now_iso)
+
+
+class ClientReview(BaseModel):
+    status: Literal["approved", "changes_requested"]
+    at: str = Field(default_factory=now_iso)
+    share: str | None = None
 
 
 class Shoot(BaseModel):
@@ -135,8 +232,15 @@ class Shoot(BaseModel):
     views: list[View] = Field(default_factory=list)
     masks: dict[str, Mask] = Field(default_factory=dict)
     runs: list[str] = Field(default_factory=list)
+    public_token: str | None = None
+    publication: Publication | None = None
+    shares: list[Share] = Field(default_factory=list)
+    comments: list[Comment] = Field(default_factory=list)
 
     model_config = {"populate_by_name": True}
+
+    def share(self, token: str) -> Share | None:
+        return next((s for s in self.shares if s.token == token and not s.revoked), None)
 
     def view(self, view_id: str) -> View:
         for v in self.views:
@@ -326,3 +430,6 @@ class ShootStore:
 
 def dump_json(obj: Any) -> str:
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
+
+
+View.model_rebuild()  # View.client refers to ClientReview, defined after it
