@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python lint and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      # The `local` extra (torch, transformers) is left out: CI has no GPU and tests that need
+      # local models skip when torch is missing.
+      - run: uv sync --extra dev
+      - run: uv run ruff check src tests eval
+      - run: uv run pytest -q
+
+  web:
+    name: Web typecheck and build
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('web/package.json') != '' }}
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build

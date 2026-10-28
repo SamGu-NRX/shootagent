@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     max_agent_steps: int = 40
     max_fix_attempts: int = 3
 
+    # Unzipped AutoHDR hackathon datasets, for ingest and demo presets.
+    autohdr_defect_dir: Path | None = None
+    autohdr_customer_dir: Path | None = None
+    autohdr_editor_requests: Path | None = None
+
     # Optional shared passcode for a public deployment. Empty disables the check.
     demo_passcode: str = ""
 
