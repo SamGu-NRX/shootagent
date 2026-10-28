@@ -158,6 +158,8 @@ export interface TraceDataByKind {
   };
   retry: { attempt: number; reason: string; next: string };
   finding: { finding: Finding };
+  /** chat outcome for one view, from the agent's report_view_result call (authoritative) */
+  view_result: { results: { request: string; status: "applied" | "not_needed" | "failed"; reason: string }[] };
   message: { text: string };
   /** usd is absent when the model is unpriced (agent/usage.py) */
   usage: { model: string; input_tokens?: number; output_tokens?: number; usd?: number; purpose?: string };
@@ -189,6 +191,7 @@ export const TRACE_KINDS: readonly TraceKind[] = [
   "check",
   "retry",
   "finding",
+  "view_result",
   "message",
   "usage",
   "run_end",

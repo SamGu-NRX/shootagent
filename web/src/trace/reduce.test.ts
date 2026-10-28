@@ -99,3 +99,19 @@ describe("reduceTrace", () => {
     });
   });
 });
+
+describe("view_result", () => {
+  it("is authoritative over outcomes inferred from checks, including a later passed check", () => {
+    const e = stream();
+    const s = reduceAll([
+      e("run_start", { mode: "chat", request: "remove the car", views: ["v01", "v02"] }),
+      e("view_result", { results: [{ request: "remove the car", status: "not_needed", reason: "No car in this kitchen." }] }, "v01"),
+      // a stray passed check on v01 after the report must not flip it to applied
+      e("check", { call_id: "c9", version: "v01.1", passed: true, metrics: {} }, "v01"),
+      e("view_result", { results: [{ request: "remove the car", status: "failed", reason: "Every fill left a seam." }] }, "v02"),
+      e("run_end", { ok: true, summary: "", ms: 1, usd: 0 }),
+    ]);
+    expect(s.viewResults.v01).toMatchObject({ outcome: "not_needed", reason: "No car in this kitchen." });
+    expect(s.viewResults.v02).toMatchObject({ outcome: "failed", reason: "Every fill left a seam." });
+  });
+});

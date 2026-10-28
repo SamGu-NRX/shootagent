@@ -129,6 +129,7 @@ def report_view_result(ctx: ToolContext, args: ReportViewIn) -> ToolResult:
         meta["instruction_results"] = {"run": ctx.trace.id, "results": results}
 
     ctx.store.mutate(ctx.shoot_id, apply)
+    ctx.trace.emit("view_result", view=args.view, results=results)
     counts = {s: sum(r["status"] == s for r in results) for s in ("applied", "not_needed", "failed")}
     return ToolResult(
         summary=f"{args.view}: " + ", ".join(f"{r['request']} {r['status']}" for r in results) + ".",

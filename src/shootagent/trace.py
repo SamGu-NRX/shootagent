@@ -11,6 +11,7 @@ data for the UI to render it without another request. Event kinds:
     check        {call_id?, version, passed, metrics: {...}, judge?: {verdict, reason, model}}
     retry        {attempt, reason, next}        the agent is trying a different approach
     finding      {finding}                      a located defect (store.Finding as dict)
+    view_result  {results: [{request, status, reason}]}  chat outcome for one view
     message      {text}                         the agent's reply to the user
     usage        {model, input_tokens, output_tokens, usd}
     run_end      {ok, summary, ms, usd, counts}

@@ -93,6 +93,8 @@ export interface TraceState {
   editByCall: Record<string, { view: string | null; version: string; summary: string }>;
   lastNoteByView: Record<string, string>;
   lastFailByView: Record<string, string>;
+  /** views the agent closed with report_view_result; their outcome is final */
+  reportedViews: Record<string, true>;
 }
 
 export function emptyTrace(): TraceState {
@@ -127,6 +129,7 @@ export function emptyTrace(): TraceState {
     editByCall: {},
     lastNoteByView: {},
     lastFailByView: {},
+    reportedViews: {},
   };
 }
 
@@ -265,7 +268,7 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
         if (callId && callId in s.pendingStepByCall) {
           s.plan = { ...s.plan, steps: markStep(s.plan.steps, s.pendingStepByCall[callId]!) };
         }
-        if (view && view in s.viewResults) {
+        if (view && view in s.viewResults && !s.reportedViews[view]) {
           s.viewResults = {
             ...s.viewResults,
             [view]: { outcome: "applied", reason: edit?.summary ?? d.judge?.reason ?? "", version: d.version },
@@ -274,6 +277,23 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       } else if (view) {
         s.lastFailByView = { ...s.lastFailByView, [view]: checkFailReason(d) };
       }
+      return s;
+    }
+    case "view_result": {
+      const view = event.view;
+      if (!view) return s;
+      const res = event.data.results ?? [];
+      const outcome: ViewOutcome = res.some((x) => x.status === "applied")
+        ? "applied"
+        : res.some((x) => x.status === "failed")
+          ? "failed"
+          : "not_needed";
+      const prev = s.viewResults[view];
+      s.viewResults = {
+        ...s.viewResults,
+        [view]: { outcome, reason: res.map((x) => x.reason).filter(Boolean).join(" "), version: prev?.version },
+      };
+      s.reportedViews = { ...s.reportedViews, [view]: true };
       return s;
     }
     case "retry": {
