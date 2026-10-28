@@ -1,0 +1,177 @@
+{
+  "clip": "experiments\\film\\out\\synth\\0058_pan_good.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "first frame vs start photo do not match: 8 homography inliers, edge SSIM 0.268, worst tile 0.045 at [0.5, 0.667, 0.75, 0.833]",
+    "21% of a frame shows area outside the start photo, which cannot be checked"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": false,
+      "matches": 86,
+      "inliers": 8,
+      "inlier_ratio": 0.093,
+      "edge_ssim": 0.268,
+      "min_tile_ssim": 0.045,
+      "worst_tile": [
+        0.5,
+        0.667,
+        0.75,
+        0.833
+      ],
+      "coverage": 0.829
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.03,
+      "at_s": 1.75,
+      "cell": [
+        0.83,
+        0.467,
+        0.948,
+        0.533
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.02,
+        0.03,
+        0.03,
+        0.03,
+        0.03,
+        0.03,
+        0.04,
+        0.02,
+        0.03,
+        0.02,
+        0.02,
+        0.03,
+        0.02,
+        0.04,
+        0.03,
+        0.03,
+        0.03,
+        0.03,
+        0.02,
+        0.05,
+        0.03,
+        0.03,
+        0.03
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": true,
+      "segments": 80,
+      "bend_px": 0.25,
+      "bend_at_s": 0.75,
+      "bend_box": [
+        0.237,
+        0.285,
+        0.239,
+        0.561
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": false,
+      "max_out_of_photo": 0.207
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      720,
+      1280
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\wrong_start_0057\\0058_pan_good.sheet.jpg",
+  "timing_s": {
+    "decode": 0.46,
+    "endpoint": 0.39,
+    "flow": 2.6,
+    "motion_appearance": 1.08,
+    "lines": 3.63,
+    "total": 8.27
+  }
+}

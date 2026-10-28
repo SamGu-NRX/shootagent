@@ -1,0 +1,146 @@
+[
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_dolly.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0057/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_truck.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0057/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_dolly.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0060/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_truck.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0060/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_dolly.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0058/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0058/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_dolly.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0054/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_truck.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0054/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0055_dolly.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0055/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0055_truck.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0055/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_dolly_p24.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0057/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "dolly",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_truck_p24.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0057/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "truck",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_dolly_p24.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0060/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "dolly",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_truck_p24.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0060/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "truck",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_dolly_p24.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0058/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "dolly",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck_p24.mp4",
+    "start": "C:/Users/sgu07/datasets/autohdr/defect/defect_train_0058/edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "truck",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  }
+]

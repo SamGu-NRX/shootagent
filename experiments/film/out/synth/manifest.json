@@ -1,0 +1,272 @@
+[
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "small window copied onto the wall between the doorways"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "right jamb of the left window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "small window copied onto the wall between the doorways"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "right jamb of the left window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "door copied onto the pillar beside it"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "left edge of the right-hand door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "door copied onto the pillar beside it"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "left edge of the right-hand door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "window trim column copied across the centre window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "centre window's vertical mullion"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "window trim column copied across the centre window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "centre window's vertical mullion"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "left window copied onto the right wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "glass edge of the patio door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "left window copied onto the right wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "glass edge of the patio door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "pendant light copied onto the back wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "right edge of the right-hand art frame"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "pendant light copied onto the back wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "right edge of the right-hand art frame"
+  }
+]

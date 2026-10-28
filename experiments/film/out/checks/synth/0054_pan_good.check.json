@@ -1,0 +1,188 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_good.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+  "end": null,
+  "verdict": "pass",
+  "reasons": [],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 569,
+      "inliers": 522,
+      "inlier_ratio": 0.917,
+      "edge_ssim": 0.974,
+      "min_tile_ssim": 0.964,
+      "worst_tile": [
+        0.5,
+        0.75,
+        0.667,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.03,
+      "at_s": 3.25,
+      "cell": [
+        0.0,
+        0.711,
+        0.067,
+        0.83
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.02,
+        0.03,
+        0.03,
+        0.03,
+        0.02,
+        0.04,
+        0.02,
+        0.03,
+        0.02,
+        0.03,
+        0.03,
+        0.05,
+        0.03,
+        0.03,
+        0.02,
+        0.03,
+        0.02,
+        0.03,
+        0.04,
+        0.02,
+        0.02,
+        0.02,
+        0.05
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": true,
+      "segments": 80,
+      "bend_px": 0.15,
+      "bend_at_s": 5.75,
+      "bend_box": [
+        0.621,
+        0.263,
+        0.621,
+        0.487
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": true,
+      "changed": false,
+      "changes": [],
+      "confidence": "low",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0055
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_good.sheet.jpg",
+  "timing_s": {
+    "decode": 0.34,
+    "endpoint": 0.23,
+    "flow": 1.11,
+    "motion_appearance": 0.65,
+    "lines": 2.05,
+    "judge": 2.67,
+    "total": 7.11
+  },
+  "expected": "pass",
+  "case": "defect_train_0054",
+  "move": "pan",
+  "variant": "good",
+  "corruption": ""
+}

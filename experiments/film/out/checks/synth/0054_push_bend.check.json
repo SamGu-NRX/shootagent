@@ -1,0 +1,198 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_bend.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "a straight edge bends by 5.77 px from t=5.5s at [0.22, 0.162, 0.232, 0.491]",
+    "judge (medium confidence): left window frame (large window beside the artwork) changed_shape at t=3.5s (upper left, right edge of the window frame bows and curves)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 600,
+      "inliers": 541,
+      "inlier_ratio": 0.902,
+      "edge_ssim": 0.961,
+      "min_tile_ssim": 0.911,
+      "worst_tile": [
+        0.833,
+        0.75,
+        1.0,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.62,
+      "at_s": 5.5,
+      "cell": [
+        0.2,
+        0.356,
+        0.267,
+        0.474
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        0.998,
+        0.997,
+        0.994,
+        0.997,
+        0.995,
+        0.998,
+        0.999,
+        0.996,
+        0.984,
+        0.969,
+        0.961,
+        0.957,
+        0.953,
+        0.942,
+        0.937,
+        0.942,
+        0.943,
+        0.934,
+        0.93,
+        0.925,
+        0.926,
+        0.893,
+        0.914
+      ],
+      "series_px": [
+        0.0,
+        0.06,
+        0.06,
+        0.09,
+        0.06,
+        0.1,
+        0.1,
+        0.1,
+        0.12,
+        0.16,
+        0.23,
+        0.23,
+        0.29,
+        0.37,
+        0.32,
+        0.36,
+        0.43,
+        0.49,
+        0.49,
+        0.66,
+        0.55,
+        0.56,
+        0.62,
+        0.62,
+        0.63
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 5.77,
+      "bend_at_s": 5.5,
+      "bend_box": [
+        0.22,
+        0.162,
+        0.232,
+        0.491
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "left window frame (large window beside the artwork)",
+          "change": "changed_shape",
+          "first_frame": "t=3.5s",
+          "where": "upper left, right edge of the window frame bows and curves"
+        }
+      ],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0062
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_bend.sheet.jpg",
+  "timing_s": {
+    "decode": 0.44,
+    "endpoint": 0.27,
+    "flow": 1.51,
+    "motion_appearance": 0.86,
+    "lines": 1.98,
+    "judge": 2.93,
+    "total": 8.04
+  },
+  "expected": "fail",
+  "case": "defect_train_0054",
+  "move": "push",
+  "variant": "bend",
+  "corruption": "right jamb of the left window"
+}

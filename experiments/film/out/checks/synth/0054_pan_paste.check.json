@@ -1,0 +1,209 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 0.54% of the frame from t=4.25s at [0.715, 0.307, 0.784, 0.493]",
+    "new straight edges (0.393 frame diagonals) from t=5.75s at [0.692, 0.167, 0.757, 0.189]",
+    "judge (high confidence): window with lamp (extra window on wall) appeared at t=3.5s (right-center wall between the bathroom doorway and the open door, above the foot of the bed)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 569,
+      "inliers": 522,
+      "inlier_ratio": 0.917,
+      "edge_ssim": 0.974,
+      "min_tile_ssim": 0.964,
+      "worst_tile": [
+        0.5,
+        0.75,
+        0.667,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.03,
+      "at_s": 3.25,
+      "cell": [
+        0.0,
+        0.593,
+        0.067,
+        0.711
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.02,
+        0.03,
+        0.03,
+        0.03,
+        0.02,
+        0.03,
+        0.01,
+        0.03,
+        0.03,
+        0.04,
+        0.03,
+        0.04,
+        0.03,
+        0.04,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.03,
+        0.03,
+        0.03
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0054,
+      "at_s": 4.25,
+      "box": [
+        0.715,
+        0.307,
+        0.784,
+        0.493
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0005,
+        0.0038,
+        0.0033,
+        0.0024,
+        0.0034,
+        0.0047,
+        0.0055,
+        0.0054,
+        0.0077,
+        0.0042,
+        0.0055,
+        0.0041,
+        0.0044,
+        0.0055
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 0.12,
+      "bend_at_s": 0.75,
+      "bend_box": [
+        0.007,
+        0.014,
+        0.01,
+        0.263
+      ],
+      "new_diag": 0.393,
+      "new_at_s": 5.75,
+      "new_box": [
+        0.692,
+        0.167,
+        0.757,
+        0.189
+      ],
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "window with lamp (extra window on wall)",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "right-center wall between the bathroom doorway and the open door, above the foot of the bed"
+        }
+      ],
+      "confidence": "high",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0081
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.44,
+    "endpoint": 0.37,
+    "flow": 1.1,
+    "motion_appearance": 0.7,
+    "lines": 2.14,
+    "judge": 5.05,
+    "total": 9.85
+  },
+  "expected": "fail",
+  "case": "defect_train_0054",
+  "move": "pan",
+  "variant": "paste",
+  "corruption": "small window copied onto the wall between the doorways"
+}

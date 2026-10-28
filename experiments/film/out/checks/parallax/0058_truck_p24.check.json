@@ -1,0 +1,173 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck_p24.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "end": null,
+  "verdict": "pass",
+  "reasons": [],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1394,
+      "inliers": 1297,
+      "inlier_ratio": 0.93,
+      "edge_ssim": 0.979,
+      "min_tile_ssim": 0.972,
+      "worst_tile": [
+        0.5,
+        0.167,
+        0.75,
+        0.333
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.25,
+      "at_s": 4.53,
+      "cell": [
+        0.474,
+        0.8,
+        0.593,
+        0.867
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        0.999,
+        0.999,
+        0.998,
+        0.999,
+        0.999,
+        0.999,
+        1.0,
+        1.0,
+        0.996,
+        0.994,
+        0.991,
+        0.985,
+        0.981,
+        0.978,
+        0.976,
+        0.969,
+        0.965,
+        0.963
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.03,
+        0.03,
+        0.09,
+        0.06,
+        0.06,
+        0.08,
+        0.13,
+        0.14,
+        0.22,
+        0.12,
+        0.2,
+        0.09,
+        0.08,
+        0.09,
+        0.08,
+        0.26,
+        0.25,
+        0.4
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": true,
+      "segments": 80,
+      "bend_px": 1.44,
+      "bend_at_s": 4.8,
+      "bend_box": [
+        0.809,
+        0.686,
+        0.815,
+        0.8
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": true,
+      "changed": false,
+      "changes": [],
+      "confidence": "low",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0075
+    }
+  },
+  "frames": {
+    "fps": 30.0,
+    "decoded": 150,
+    "sampled": 20,
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_truck_p24.sheet.jpg",
+  "timing_s": {
+    "decode": 0.65,
+    "endpoint": 0.27,
+    "flow": 0.89,
+    "motion_appearance": 0.58,
+    "lines": 2.79,
+    "judge": 4.88,
+    "total": 10.12
+  },
+  "expected": "pass",
+  "case": "defect_train_0058",
+  "move": "truck",
+  "variant": "parallax_p24",
+  "corruption": "test photo, 24 px"
+}

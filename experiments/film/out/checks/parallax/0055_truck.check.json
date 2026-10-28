@@ -1,0 +1,188 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0055_truck.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "judge (low confidence): glass shower door with black handle (open door panel at left) disappeared at t=2.1s (left side of frame, where the open door and handle were); white paneled door with black hinges beside the glass door disappeared at t=2.1s (left side of frame)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 416,
+      "inliers": 353,
+      "inlier_ratio": 0.849,
+      "edge_ssim": 0.974,
+      "min_tile_ssim": 0.956,
+      "worst_tile": [
+        0.75,
+        0.833,
+        1.0,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.07,
+      "at_s": 1.6,
+      "cell": [
+        0.0,
+        0.0,
+        0.119,
+        0.067
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.987,
+        0.987,
+        0.97,
+        0.948,
+        0.94,
+        0.958,
+        0.906,
+        0.948,
+        0.965,
+        0.95,
+        0.958,
+        0.958,
+        0.958,
+        0.958
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.04,
+        0.01,
+        0.03,
+        0.04,
+        0.07,
+        0.07,
+        0.06,
+        0.05,
+        0.07,
+        0.03,
+        0.03,
+        0.03,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": true,
+      "segments": 73,
+      "bend_px": 0.36,
+      "bend_at_s": 2.13,
+      "bend_box": [
+        0.474,
+        0.449,
+        0.48,
+        0.732
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "glass shower door with black handle (open door panel at left)",
+          "change": "disappeared",
+          "first_frame": "t=2.1s",
+          "where": "left side of frame, where the open door and handle were"
+        },
+        {
+          "object": "white paneled door with black hinges beside the glass door",
+          "change": "disappeared",
+          "first_frame": "t=2.1s",
+          "where": "left side of frame"
+        }
+      ],
+      "confidence": "low",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0087
+    }
+  },
+  "frames": {
+    "fps": 30.0,
+    "decoded": 150,
+    "sampled": 20,
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0055_truck.sheet.jpg",
+  "timing_s": {
+    "decode": 0.63,
+    "endpoint": 0.22,
+    "flow": 0.75,
+    "motion_appearance": 0.55,
+    "lines": 1.4,
+    "judge": 3.57,
+    "total": 7.18
+  },
+  "expected": "pass",
+  "case": "defect_train_0055",
+  "move": "truck",
+  "variant": "parallax",
+  "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+}

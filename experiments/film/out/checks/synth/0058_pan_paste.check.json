@@ -1,0 +1,222 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 0.42% of the frame from t=4.5s at [0.567, 0.347, 0.644, 0.546]",
+    "a straight edge bends by 47.69 px from t=3.25s at [0.347, -0.101, 27.928, 12.853]",
+    "new straight edges (0.536 frame diagonals) from t=3.5s at [0.679, 0.276, 0.681, 0.405]",
+    "straight edges vanished (0.063 frame diagonals) from t=3.75s at [0.604, 0.123, 0.698, 0.246]",
+    "judge (medium confidence): window with dark roller shade (duplicate of left window) and chandelier beads fragment duplicated at t=3.5s (right side of frame, next to the door, upper-middle right); white wall/trim panel with bright rectangular patch appeared at t=3.5s (right-center, around the lower window and below, with a light rectangular block edge)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1115,
+      "inliers": 1013,
+      "inlier_ratio": 0.909,
+      "edge_ssim": 0.975,
+      "min_tile_ssim": 0.957,
+      "worst_tile": [
+        0.5,
+        0.167,
+        0.75,
+        0.333
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.07,
+      "at_s": 3.5,
+      "cell": [
+        0.593,
+        0.6,
+        0.711,
+        0.667
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.997,
+        0.997,
+        0.994,
+        0.992,
+        0.992,
+        0.991,
+        0.991,
+        0.991,
+        0.99,
+        0.989,
+        0.989,
+        0.989,
+        0.988,
+        0.988
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.02,
+        0.03,
+        0.03,
+        0.03,
+        0.02,
+        0.03,
+        0.04,
+        0.03,
+        0.02,
+        0.06,
+        0.17,
+        0.03,
+        0.26,
+        0.07,
+        0.07,
+        0.02,
+        0.04,
+        0.05,
+        0.03,
+        0.34,
+        0.06,
+        0.11,
+        0.07
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0042,
+      "at_s": 4.5,
+      "box": [
+        0.567,
+        0.347,
+        0.644,
+        0.546
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0008,
+        0.0023,
+        0.0053,
+        0.0037,
+        0.0035,
+        0.0031,
+        0.0042,
+        0.0062,
+        0.0032,
+        0.0027,
+        0.0027,
+        0.0021,
+        0.0026
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 47.69,
+      "bend_at_s": 3.25,
+      "bend_box": [
+        0.347,
+        -0.101,
+        27.928,
+        12.853
+      ],
+      "new_diag": 0.536,
+      "new_at_s": 3.5,
+      "new_box": [
+        0.679,
+        0.276,
+        0.681,
+        0.405
+      ],
+      "gone_diag": 0.063,
+      "gone_at_s": 3.75,
+      "gone_box": [
+        0.604,
+        0.123,
+        0.698,
+        0.246
+      ]
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "window with dark roller shade (duplicate of left window) and chandelier beads fragment",
+          "change": "duplicated",
+          "first_frame": "t=3.5s",
+          "where": "right side of frame, next to the door, upper-middle right"
+        },
+        {
+          "object": "white wall/trim panel with bright rectangular patch",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "right-center, around the lower window and below, with a light rectangular block edge"
+        }
+      ],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.009
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      720,
+      1280
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.35,
+    "endpoint": 0.25,
+    "flow": 1.13,
+    "motion_appearance": 0.69,
+    "lines": 2.4,
+    "judge": 3.88,
+    "total": 8.75
+  },
+  "expected": "fail",
+  "case": "defect_train_0058",
+  "move": "pan",
+  "variant": "paste",
+  "corruption": "left window copied onto the right wall"
+}

@@ -1,0 +1,5983 @@
+[
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 600,
+        "inliers": 541,
+        "inlier_ratio": 0.902,
+        "edge_ssim": 0.961,
+        "min_tile_ssim": 0.911,
+        "worst_tile": [
+          0.833,
+          0.75,
+          1.0,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.44,
+        "at_s": 5.5,
+        "cell": [
+          0.667,
+          0.711,
+          0.733,
+          0.83
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.998,
+          0.997,
+          0.996,
+          0.998,
+          0.998,
+          0.999,
+          1.0,
+          0.998,
+          0.998,
+          0.996,
+          0.994,
+          0.995,
+          0.995,
+          0.991,
+          0.986,
+          0.986,
+          0.985,
+          0.979,
+          0.973,
+          0.969,
+          0.969,
+          0.966,
+          0.964
+        ],
+        "series_px": [
+          0.0,
+          0.04,
+          0.06,
+          0.1,
+          0.06,
+          0.12,
+          0.08,
+          0.1,
+          0.17,
+          0.14,
+          0.12,
+          0.24,
+          0.22,
+          0.28,
+          0.27,
+          0.3,
+          0.37,
+          0.35,
+          0.36,
+          0.41,
+          0.38,
+          0.39,
+          0.44,
+          0.44,
+          0.4
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.17,
+        "bend_at_s": 5.5,
+        "bend_box": [
+          0.749,
+          0.465,
+          0.749,
+          0.615
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0072
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.38,
+      "endpoint": 0.22,
+      "flow": 1.17,
+      "motion_appearance": 0.71,
+      "lines": 1.91,
+      "judge": 11.5,
+      "total": 15.97
+    },
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.55% of the frame from t=5.25s at [0.777, 0.285, 0.857, 0.494]",
+      "a straight edge bends by 2.04 px from t=4.5s at [0.839, 0.031, 0.865, 1.196]",
+      "new straight edges (0.371 frame diagonals) from t=5.5s at [0.787, 0.48, 0.849, 0.481]",
+      "judge (high confidence): window (or mirror) with lamp reflection on the wall between bathroom doorway and open door appeared at t=3.5s (right-center of frame, on the wall left of the open door)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 600,
+        "inliers": 541,
+        "inlier_ratio": 0.902,
+        "edge_ssim": 0.961,
+        "min_tile_ssim": 0.911,
+        "worst_tile": [
+          0.833,
+          0.75,
+          1.0,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.44,
+        "at_s": 5.75,
+        "cell": [
+          0.4,
+          0.474,
+          0.467,
+          0.593
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.998,
+          0.997,
+          0.996,
+          0.998,
+          0.998,
+          0.999,
+          1.0,
+          0.996,
+          0.998,
+          0.996,
+          0.994,
+          0.995,
+          0.995,
+          0.992,
+          0.988,
+          0.986,
+          0.985,
+          0.982,
+          0.976,
+          0.974,
+          0.967,
+          0.967,
+          0.966
+        ],
+        "series_px": [
+          0.0,
+          0.04,
+          0.06,
+          0.1,
+          0.06,
+          0.12,
+          0.08,
+          0.1,
+          0.16,
+          0.17,
+          0.22,
+          0.2,
+          0.22,
+          0.26,
+          0.27,
+          0.31,
+          0.3,
+          0.35,
+          0.36,
+          0.41,
+          0.38,
+          0.4,
+          0.43,
+          0.44,
+          0.44
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0055,
+        "at_s": 5.25,
+        "box": [
+          0.777,
+          0.285,
+          0.857,
+          0.494
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0021,
+          0.0033,
+          0.005,
+          0.0053,
+          0.0038,
+          0.0054,
+          0.0055,
+          0.0052,
+          0.0039,
+          0.0055,
+          0.0055,
+          0.0055,
+          0.004
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 2.04,
+        "bend_at_s": 4.5,
+        "bend_box": [
+          0.839,
+          0.031,
+          0.865,
+          1.196
+        ],
+        "new_diag": 0.371,
+        "new_at_s": 5.5,
+        "new_box": [
+          0.787,
+          0.48,
+          0.849,
+          0.481
+        ],
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window (or mirror) with lamp reflection on the wall between bathroom doorway and open door",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "right-center of frame, on the wall left of the open door"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0091
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.35,
+      "endpoint": 0.24,
+      "flow": 1.22,
+      "motion_appearance": 0.69,
+      "lines": 1.9,
+      "judge": 5.34,
+      "total": 9.79
+    },
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "small window copied onto the wall between the doorways"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 5.77 px from t=5.5s at [0.22, 0.162, 0.232, 0.491]",
+      "judge (medium confidence): left window frame (large window beside the artwork) changed_shape at t=3.5s (upper left, right edge of the window frame bows and curves)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 600,
+        "inliers": 541,
+        "inlier_ratio": 0.902,
+        "edge_ssim": 0.961,
+        "min_tile_ssim": 0.911,
+        "worst_tile": [
+          0.833,
+          0.75,
+          1.0,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.62,
+        "at_s": 5.5,
+        "cell": [
+          0.2,
+          0.356,
+          0.267,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.998,
+          0.997,
+          0.994,
+          0.997,
+          0.995,
+          0.998,
+          0.999,
+          0.996,
+          0.984,
+          0.969,
+          0.961,
+          0.957,
+          0.953,
+          0.942,
+          0.937,
+          0.942,
+          0.943,
+          0.934,
+          0.93,
+          0.925,
+          0.926,
+          0.893,
+          0.914
+        ],
+        "series_px": [
+          0.0,
+          0.06,
+          0.06,
+          0.09,
+          0.06,
+          0.1,
+          0.1,
+          0.1,
+          0.12,
+          0.16,
+          0.23,
+          0.23,
+          0.29,
+          0.37,
+          0.32,
+          0.36,
+          0.43,
+          0.49,
+          0.49,
+          0.66,
+          0.55,
+          0.56,
+          0.62,
+          0.62,
+          0.63
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 5.77,
+        "bend_at_s": 5.5,
+        "bend_box": [
+          0.22,
+          0.162,
+          0.232,
+          0.491
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "left window frame (large window beside the artwork)",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "upper left, right edge of the window frame bows and curves"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0062
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_push_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.44,
+      "endpoint": 0.27,
+      "flow": 1.51,
+      "motion_appearance": 0.86,
+      "lines": 1.98,
+      "judge": 2.93,
+      "total": 8.04
+    },
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "right jamb of the left window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 569,
+        "inliers": 522,
+        "inlier_ratio": 0.917,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.964,
+        "worst_tile": [
+          0.5,
+          0.75,
+          0.667,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 3.25,
+        "cell": [
+          0.0,
+          0.711,
+          0.067,
+          0.83
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.03,
+          0.02,
+          0.04,
+          0.02,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.05,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.02,
+          0.03,
+          0.04,
+          0.02,
+          0.02,
+          0.02,
+          0.05
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.15,
+        "bend_at_s": 5.75,
+        "bend_box": [
+          0.621,
+          0.263,
+          0.621,
+          0.487
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.34,
+      "endpoint": 0.23,
+      "flow": 1.11,
+      "motion_appearance": 0.65,
+      "lines": 2.05,
+      "judge": 2.67,
+      "total": 7.11
+    },
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.54% of the frame from t=4.25s at [0.715, 0.307, 0.784, 0.493]",
+      "new straight edges (0.393 frame diagonals) from t=5.75s at [0.692, 0.167, 0.757, 0.189]",
+      "judge (high confidence): window with lamp (extra window on wall) appeared at t=3.5s (right-center wall between the bathroom doorway and the open door, above the foot of the bed)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 569,
+        "inliers": 522,
+        "inlier_ratio": 0.917,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.964,
+        "worst_tile": [
+          0.5,
+          0.75,
+          0.667,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 3.25,
+        "cell": [
+          0.0,
+          0.593,
+          0.067,
+          0.711
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.01,
+          0.03,
+          0.03,
+          0.04,
+          0.03,
+          0.04,
+          0.03,
+          0.04,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.03,
+          0.03,
+          0.03
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0054,
+        "at_s": 4.25,
+        "box": [
+          0.715,
+          0.307,
+          0.784,
+          0.493
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0005,
+          0.0038,
+          0.0033,
+          0.0024,
+          0.0034,
+          0.0047,
+          0.0055,
+          0.0054,
+          0.0077,
+          0.0042,
+          0.0055,
+          0.0041,
+          0.0044,
+          0.0055
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 0.12,
+        "bend_at_s": 0.75,
+        "bend_box": [
+          0.007,
+          0.014,
+          0.01,
+          0.263
+        ],
+        "new_diag": 0.393,
+        "new_at_s": 5.75,
+        "new_box": [
+          0.692,
+          0.167,
+          0.757,
+          0.189
+        ],
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window with lamp (extra window on wall)",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "right-center wall between the bathroom doorway and the open door, above the foot of the bed"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0081
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.44,
+      "endpoint": 0.37,
+      "flow": 1.1,
+      "motion_appearance": 0.7,
+      "lines": 2.14,
+      "judge": 5.05,
+      "total": 9.85
+    },
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "small window copied onto the wall between the doorways"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0054_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 6.55 px from t=4.75s at [0.09, 0.131, 0.219, 1.841]",
+      "judge (low confidence): window on left wall (frame edge bowed/curved) changed_shape at t=3.5s (left edge of frame, window and wall edge curved)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 569,
+        "inliers": 522,
+        "inlier_ratio": 0.917,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.964,
+        "worst_tile": [
+          0.5,
+          0.75,
+          0.667,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.27,
+        "at_s": 4.25,
+        "cell": [
+          0.067,
+          0.356,
+          0.133,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.981,
+          0.963,
+          0.952,
+          0.948,
+          0.95,
+          0.947,
+          0.944,
+          0.944,
+          0.943,
+          0.943,
+          0.939,
+          0.942,
+          0.941,
+          0.942,
+          0.942
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.02,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.04,
+          0.03,
+          0.07,
+          0.09,
+          0.06,
+          0.13,
+          0.15,
+          0.19,
+          0.14,
+          0.13,
+          0.27,
+          0.29,
+          0.24,
+          0.19,
+          0.19,
+          0.2,
+          0.17,
+          0.15
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 6.55,
+        "bend_at_s": 4.75,
+        "bend_box": [
+          0.09,
+          0.131,
+          0.219,
+          1.841
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window on left wall (frame edge bowed/curved)",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "left edge of frame, window and wall edge curved"
+          }
+        ],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0062
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0054_pan_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.24,
+      "flow": 1.12,
+      "motion_appearance": 0.7,
+      "lines": 2.13,
+      "judge": 3.44,
+      "total": 8.01
+    },
+    "expected": "fail",
+    "case": "defect_train_0054",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "right jamb of the left window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 488,
+        "inliers": 402,
+        "inlier_ratio": 0.824,
+        "edge_ssim": 0.964,
+        "min_tile_ssim": 0.947,
+        "worst_tile": [
+          0.0,
+          0.75,
+          0.167,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.45,
+        "at_s": 5.75,
+        "cell": [
+          0.933,
+          0.474,
+          1.0,
+          0.593
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.997,
+          0.997,
+          0.997,
+          0.997,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.994,
+          0.994,
+          0.994,
+          0.991,
+          0.988,
+          0.988,
+          0.991,
+          0.985,
+          0.979,
+          0.985,
+          0.979,
+          0.982,
+          0.982
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.05,
+          0.05,
+          0.06,
+          0.05,
+          0.05,
+          0.06,
+          0.14,
+          0.1,
+          0.13,
+          0.11,
+          0.12,
+          0.11,
+          0.17,
+          0.19,
+          0.21,
+          0.22,
+          0.21,
+          0.27,
+          0.31,
+          0.42,
+          0.43,
+          0.45,
+          0.45
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0002,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.29,
+        "bend_at_s": 0.75,
+        "bend_box": [
+          0.7,
+          0.027,
+          0.701,
+          0.572
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.38,
+      "endpoint": 0.24,
+      "flow": 1.01,
+      "motion_appearance": 0.67,
+      "lines": 2.24,
+      "judge": 6.41,
+      "total": 10.99
+    },
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.10% of the frame from t=5.75s at [0.673, 0.517, 0.707, 0.556]",
+      "new straight edges (1.126 frame diagonals) from t=5.75s at [0.678, 0.192, 0.679, 0.498]",
+      "judge (medium confidence): white paneled door-like panel on the pillar face appeared at t=3.5s (center-right, on the front face of the wide pillar right of the shower)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 488,
+        "inliers": 402,
+        "inlier_ratio": 0.824,
+        "edge_ssim": 0.964,
+        "min_tile_ssim": 0.947,
+        "worst_tile": [
+          0.0,
+          0.75,
+          0.167,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.43,
+        "at_s": 5.75,
+        "cell": [
+          0.933,
+          0.474,
+          1.0,
+          0.593
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.997,
+          0.997,
+          0.997,
+          0.997,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.994,
+          0.994,
+          0.991,
+          0.991,
+          0.988,
+          0.988,
+          0.988,
+          0.988,
+          0.985,
+          0.988,
+          0.979,
+          0.982,
+          0.979
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.05,
+          0.05,
+          0.06,
+          0.05,
+          0.05,
+          0.06,
+          0.15,
+          0.11,
+          0.13,
+          0.11,
+          0.13,
+          0.13,
+          0.18,
+          0.22,
+          0.21,
+          0.28,
+          0.21,
+          0.3,
+          0.32,
+          0.43,
+          0.43,
+          0.43,
+          0.44
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.001,
+        "at_s": 5.75,
+        "box": [
+          0.673,
+          0.517,
+          0.707,
+          0.556
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0006,
+          0.0009,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001,
+          0.001
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 0.29,
+        "bend_at_s": 0.75,
+        "bend_box": [
+          0.7,
+          0.027,
+          0.701,
+          0.572
+        ],
+        "new_diag": 1.126,
+        "new_at_s": 5.75,
+        "new_box": [
+          0.678,
+          0.192,
+          0.679,
+          0.498
+        ],
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "white paneled door-like panel on the pillar face",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "center-right, on the front face of the wide pillar right of the shower"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0086
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.41,
+      "endpoint": 0.26,
+      "flow": 1.13,
+      "motion_appearance": 0.67,
+      "lines": 2.28,
+      "judge": 5.6,
+      "total": 10.38
+    },
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "door copied onto the pillar beside it"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 5.74 px from t=5.25s at [0.767, 0.171, 0.777, 0.759]",
+      "judge (high confidence): wall column/pillar right of the shower (straight edge) changed_shape at t=3.5s (right-center, the beige column beside the shower glass bends and waves along its right edge)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 488,
+        "inliers": 402,
+        "inlier_ratio": 0.824,
+        "edge_ssim": 0.964,
+        "min_tile_ssim": 0.947,
+        "worst_tile": [
+          0.0,
+          0.75,
+          0.167,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.49,
+        "at_s": 5.25,
+        "cell": [
+          0.533,
+          0.593,
+          0.6,
+          0.711
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.997,
+          0.997,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.992,
+          0.963,
+          0.957,
+          0.951,
+          0.948,
+          0.929,
+          0.929,
+          0.928,
+          0.912,
+          0.921,
+          0.915,
+          0.909,
+          0.912,
+          0.905,
+          0.908,
+          0.905
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.06,
+          0.04,
+          0.05,
+          0.03,
+          0.05,
+          0.06,
+          0.15,
+          0.11,
+          0.14,
+          0.14,
+          0.16,
+          0.18,
+          0.23,
+          0.21,
+          0.31,
+          0.39,
+          0.4,
+          0.4,
+          0.45,
+          0.5,
+          0.49,
+          0.49,
+          0.47
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 5.74,
+        "bend_at_s": 5.25,
+        "bend_box": [
+          0.767,
+          0.171,
+          0.777,
+          0.759
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "wall column/pillar right of the shower (straight edge)",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "right-center, the beige column beside the shower glass bends and waves along its right edge"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0063
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.37,
+      "endpoint": 0.25,
+      "flow": 1.0,
+      "motion_appearance": 0.65,
+      "lines": 2.49,
+      "judge": 3.37,
+      "total": 8.18
+    },
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "left edge of the right-hand door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 396,
+        "inliers": 336,
+        "inlier_ratio": 0.848,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.955,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.167,
+          0.25
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 1.25,
+        "cell": [
+          0.4,
+          0.237,
+          0.467,
+          0.356
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "series_px": [
+          0.0,
+          0.01,
+          0.02,
+          0.01,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.04,
+          0.01,
+          0.02,
+          0.02,
+          0.02,
+          0.04,
+          0.03,
+          0.02,
+          0.02,
+          0.03
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.19,
+        "bend_at_s": 2.5,
+        "bend_box": [
+          0.879,
+          0.04,
+          0.881,
+          0.745
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.22,
+      "flow": 1.11,
+      "motion_appearance": 0.65,
+      "lines": 2.09,
+      "judge": 5.98,
+      "total": 10.42
+    },
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.12% of the frame from t=4.5s at [0.59, 0.519, 0.626, 0.559]",
+      "new straight edges (1.232 frame diagonals) from t=5.5s at [0.569, 0.161, 0.571, 0.505]",
+      "judge (medium confidence): white paneled door (duplicated door next to the existing door, beside the pillar) duplicated at t=3.5s (center-right, between the shower and the existing door, in front of the pillar area)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 396,
+        "inliers": 336,
+        "inlier_ratio": 0.848,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.955,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.167,
+          0.25
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 4.5,
+        "cell": [
+          0.2,
+          0.83,
+          0.267,
+          0.948
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "series_px": [
+          0.0,
+          0.01,
+          0.02,
+          0.01,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.0,
+          0.01,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.02,
+          0.03,
+          0.01,
+          0.02,
+          0.03,
+          0.03,
+          0.03,
+          0.02,
+          0.02,
+          0.03,
+          0.02
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0012,
+        "at_s": 4.5,
+        "box": [
+          0.59,
+          0.519,
+          0.626,
+          0.559
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0008,
+          0.0011,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012,
+          0.0012
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 0.18,
+        "bend_at_s": 3.25,
+        "bend_box": [
+          0.77,
+          0.113,
+          0.772,
+          0.773
+        ],
+        "new_diag": 1.232,
+        "new_at_s": 5.5,
+        "new_box": [
+          0.569,
+          0.161,
+          0.571,
+          0.505
+        ],
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "white paneled door (duplicated door next to the existing door, beside the pillar)",
+            "change": "duplicated",
+            "first_frame": "t=3.5s",
+            "where": "center-right, between the shower and the existing door, in front of the pillar area"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0063
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.22,
+      "flow": 1.0,
+      "motion_appearance": 0.7,
+      "lines": 2.15,
+      "judge": 3.32,
+      "total": 7.76
+    },
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "door copied onto the pillar beside it"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 9.33 px from t=5.0s at [0.618, 0.05, 0.634, 0.927]",
+      "judge (high confidence): white wall pillar/column right of shower changed_shape at t=3.5s (center-right, the vertical pillar edge bends and curves in the frames)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 396,
+        "inliers": 336,
+        "inlier_ratio": 0.848,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.955,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.167,
+          0.25
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.08,
+        "at_s": 4.0,
+        "cell": [
+          0.533,
+          0.237,
+          0.6,
+          0.356
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.991,
+          0.954,
+          0.932,
+          0.914,
+          0.895,
+          0.893,
+          0.893,
+          0.89,
+          0.887,
+          0.874,
+          0.874,
+          0.878,
+          0.874,
+          0.874,
+          0.874,
+          0.871
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.02,
+          0.01,
+          0.02,
+          0.03,
+          0.02,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.03,
+          0.05,
+          0.05,
+          0.03,
+          0.07,
+          0.08,
+          0.08,
+          0.04,
+          0.04,
+          0.05,
+          0.08,
+          0.07,
+          0.07,
+          0.08
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 9.33,
+        "bend_at_s": 5.0,
+        "bend_box": [
+          0.618,
+          0.05,
+          0.634,
+          0.927
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "white wall pillar/column right of shower",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "center-right, the vertical pillar edge bends and curves in the frames"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0062
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_pan_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.23,
+      "flow": 0.98,
+      "motion_appearance": 0.63,
+      "lines": 2.04,
+      "judge": 2.78,
+      "total": 7.04
+    },
+    "expected": "fail",
+    "case": "defect_train_0055",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "left edge of the right-hand door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 994,
+        "inliers": 900,
+        "inlier_ratio": 0.905,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.954,
+        "worst_tile": [
+          0.0,
+          0.75,
+          0.167,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.45,
+        "at_s": 5.75,
+        "cell": [
+          0.467,
+          0.0,
+          0.533,
+          0.119
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.997,
+          1.0,
+          0.995,
+          0.996,
+          0.996,
+          0.991,
+          0.996,
+          0.996,
+          0.994,
+          0.994,
+          0.998,
+          0.996,
+          0.993,
+          0.993,
+          0.991,
+          0.993,
+          0.988,
+          0.983,
+          0.971,
+          0.973,
+          0.966,
+          0.966
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.04,
+          0.04,
+          0.06,
+          0.07,
+          0.08,
+          0.11,
+          0.1,
+          0.18,
+          0.21,
+          0.2,
+          0.22,
+          0.21,
+          0.24,
+          0.24,
+          0.23,
+          0.28,
+          0.29,
+          0.37,
+          0.31,
+          0.36,
+          0.36,
+          0.45,
+          0.45
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.18,
+        "bend_at_s": 4.5,
+        "bend_box": [
+          0.137,
+          -0.02,
+          64369.658,
+          0.369
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.34,
+      "endpoint": 0.22,
+      "flow": 0.99,
+      "motion_appearance": 0.7,
+      "lines": 2.5,
+      "judge": 2.42,
+      "total": 7.21
+    },
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.80% of the frame from t=4.75s at [0.446, 0.346, 0.535, 0.709]",
+      "a straight edge bends by 58.88 px from t=5.75s at [0.368, 0.247, 0.619, 0.541]",
+      "new straight edges (1.214 frame diagonals) from t=5.75s at [0.458, 0.073, 0.458, 0.235]",
+      "straight edges vanished (0.219 frame diagonals) from t=3.75s at [0.48, 0.125, 0.512, 0.587]",
+      "judge (medium confidence): window mullion/post (new vertical white column in the center window) appeared at t=3.5s (center of frame, from the top down to the bowl, in front of the center window); wooden bowl on table duplicated at t=3.5s (center of the table; a second smaller bowl shape appears beside the original, split by the column)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 994,
+        "inliers": 900,
+        "inlier_ratio": 0.905,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.954,
+        "worst_tile": [
+          0.0,
+          0.75,
+          0.167,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.45,
+        "at_s": 5.75,
+        "cell": [
+          0.467,
+          0.0,
+          0.533,
+          0.119
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.997,
+          1.0,
+          0.995,
+          0.998,
+          0.996,
+          0.992,
+          0.996,
+          0.996,
+          0.994,
+          0.992,
+          0.991,
+          0.991,
+          0.993,
+          0.988,
+          0.988,
+          0.987,
+          0.985,
+          0.977,
+          0.964,
+          0.964,
+          0.961,
+          0.961
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.04,
+          0.04,
+          0.05,
+          0.08,
+          0.07,
+          0.13,
+          0.14,
+          0.17,
+          0.23,
+          0.19,
+          0.36,
+          0.22,
+          0.23,
+          0.24,
+          0.23,
+          0.31,
+          0.3,
+          0.39,
+          0.34,
+          0.39,
+          0.35,
+          0.45,
+          0.46
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.008,
+        "at_s": 4.75,
+        "box": [
+          0.446,
+          0.346,
+          0.535,
+          0.709
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0007,
+          0.0025,
+          0.0053,
+          0.0046,
+          0.011,
+          0.0049,
+          0.004,
+          0.0104,
+          0.008,
+          0.0048,
+          0.0058,
+          0.0056,
+          0.0056
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 58.88,
+        "bend_at_s": 5.75,
+        "bend_box": [
+          0.368,
+          0.247,
+          0.619,
+          0.541
+        ],
+        "new_diag": 1.214,
+        "new_at_s": 5.75,
+        "new_box": [
+          0.458,
+          0.073,
+          0.458,
+          0.235
+        ],
+        "gone_diag": 0.219,
+        "gone_at_s": 3.75,
+        "gone_box": [
+          0.48,
+          0.125,
+          0.512,
+          0.587
+        ]
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window mullion/post (new vertical white column in the center window)",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "center of frame, from the top down to the bowl, in front of the center window"
+          },
+          {
+            "object": "wooden bowl on table",
+            "change": "duplicated",
+            "first_frame": "t=3.5s",
+            "where": "center of the table; a second smaller bowl shape appears beside the original, split by the column"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0069
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.23,
+      "flow": 1.04,
+      "motion_appearance": 0.64,
+      "lines": 2.44,
+      "judge": 3.94,
+      "total": 8.67
+    },
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "window trim column copied across the centre window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 5.17 px from t=5.75s at [0.482, 0.176, 0.492, 0.66]"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 994,
+        "inliers": 900,
+        "inlier_ratio": 0.905,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.954,
+        "worst_tile": [
+          0.0,
+          0.75,
+          0.167,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.47,
+        "at_s": 5.75,
+        "cell": [
+          0.467,
+          0.0,
+          0.533,
+          0.119
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.997,
+          1.0,
+          0.995,
+          0.996,
+          0.996,
+          0.992,
+          0.982,
+          0.941,
+          0.912,
+          0.902,
+          0.87,
+          0.883,
+          0.882,
+          0.841,
+          0.863,
+          0.859,
+          0.826,
+          0.853,
+          0.841,
+          0.843,
+          0.843,
+          0.835
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.04,
+          0.03,
+          0.06,
+          0.07,
+          0.1,
+          0.14,
+          0.2,
+          0.15,
+          0.18,
+          0.16,
+          0.2,
+          0.21,
+          0.23,
+          0.25,
+          0.25,
+          0.32,
+          0.29,
+          0.35,
+          0.31,
+          0.34,
+          0.42,
+          0.47,
+          0.47
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 5.17,
+        "bend_at_s": 5.75,
+        "bend_box": [
+          0.482,
+          0.176,
+          0.492,
+          0.66
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.34,
+      "endpoint": 0.22,
+      "flow": 1.02,
+      "motion_appearance": 0.75,
+      "lines": 2.46,
+      "judge": 2.61,
+      "total": 7.46
+    },
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "centre window's vertical mullion"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 693,
+        "inliers": 615,
+        "inlier_ratio": 0.887,
+        "edge_ssim": 0.961,
+        "min_tile_ssim": 0.909,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.167,
+          0.25
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 0.75,
+        "cell": [
+          0.867,
+          0.356,
+          0.933,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.01,
+          0.03,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.05,
+          0.02,
+          0.01,
+          0.02,
+          0.02,
+          0.02,
+          0.06,
+          0.01,
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.37,
+        "bend_at_s": 5.25,
+        "bend_box": [
+          0.749,
+          0.013,
+          0.751,
+          0.172
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.32,
+      "endpoint": 0.25,
+      "flow": 0.98,
+      "motion_appearance": 0.66,
+      "lines": 2.22,
+      "judge": 2.8,
+      "total": 7.28
+    },
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 1.34% of the frame from t=3.5s at [0.393, 0.387, 0.491, 0.807]",
+      "a straight edge bends by 61.47 px from t=4.5s at [0.249, -0.675, 93.336, 1.53]",
+      "new straight edges (1.602 frame diagonals) from t=4.75s at [0.339, 0.035, 0.339, 0.266]",
+      "straight edges vanished (0.345 frame diagonals) from t=3.75s at [0.403, 0.031, 0.437, 0.748]",
+      "judge (high confidence): window frame / mullion (new vertical white post) appeared at t=3.5s (center of frame, running from top to the table, in front of the bowl)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 693,
+        "inliers": 615,
+        "inlier_ratio": 0.887,
+        "edge_ssim": 0.961,
+        "min_tile_ssim": 0.909,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.167,
+          0.25
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.1,
+        "at_s": 3.25,
+        "cell": [
+          0.467,
+          0.356,
+          0.533,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.992,
+          0.989,
+          0.994,
+          0.993,
+          0.993,
+          0.993,
+          0.992,
+          0.991,
+          0.991,
+          0.991,
+          0.991,
+          0.991,
+          0.991
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.01,
+          0.03,
+          0.03,
+          0.01,
+          0.01,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.05,
+          0.1,
+          0.1,
+          0.2,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.08,
+          0.04,
+          0.03,
+          0.05,
+          0.04,
+          0.05
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0134,
+        "at_s": 3.5,
+        "box": [
+          0.393,
+          0.387,
+          0.491,
+          0.807
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0009,
+          0.0033,
+          0.0145,
+          0.0134,
+          0.0063,
+          0.0078,
+          0.0081,
+          0.0056,
+          0.0066,
+          0.0101,
+          0.0114,
+          0.0075,
+          0.0072
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 61.47,
+        "bend_at_s": 4.5,
+        "bend_box": [
+          0.249,
+          -0.675,
+          93.336,
+          1.53
+        ],
+        "new_diag": 1.602,
+        "new_at_s": 4.75,
+        "new_box": [
+          0.339,
+          0.035,
+          0.339,
+          0.266
+        ],
+        "gone_diag": 0.345,
+        "gone_at_s": 3.75,
+        "gone_box": [
+          0.403,
+          0.031,
+          0.437,
+          0.748
+        ]
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window frame / mullion (new vertical white post)",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "center of frame, running from top to the table, in front of the bowl"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0062
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.22,
+      "flow": 1.02,
+      "motion_appearance": 0.67,
+      "lines": 2.22,
+      "judge": 4.52,
+      "total": 9.03
+    },
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "window trim column copied across the centre window"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 7.81 px from t=5.75s at [0.35, 0.046, 0.364, 0.679]"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 737,
+        "inliers": 645,
+        "inlier_ratio": 0.875,
+        "edge_ssim": 0.964,
+        "min_tile_ssim": 0.921,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.167,
+          0.25
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.07,
+        "at_s": 4.25,
+        "cell": [
+          0.467,
+          0.356,
+          0.533,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.956,
+          0.918,
+          0.875,
+          0.854,
+          0.844,
+          0.838,
+          0.817,
+          0.783,
+          0.78,
+          0.752,
+          0.757,
+          0.739,
+          0.743,
+          0.743,
+          0.739,
+          0.747
+        ],
+        "series_px": [
+          0.0,
+          0.01,
+          0.02,
+          0.02,
+          0.01,
+          0.02,
+          0.02,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.03,
+          0.05,
+          0.04,
+          0.04,
+          0.05,
+          0.09,
+          0.07,
+          0.05,
+          0.06,
+          0.05,
+          0.05,
+          0.05,
+          0.05
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 7.81,
+        "bend_at_s": 5.75,
+        "bend_box": [
+          0.35,
+          0.046,
+          0.364,
+          0.679
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.34,
+      "endpoint": 0.22,
+      "flow": 1.0,
+      "motion_appearance": 0.67,
+      "lines": 2.24,
+      "judge": 2.87,
+      "total": 7.39
+    },
+    "expected": "fail",
+    "case": "defect_train_0057",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "centre window's vertical mullion"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1375,
+        "inliers": 1281,
+        "inlier_ratio": 0.932,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.952,
+        "worst_tile": [
+          0.5,
+          0.0,
+          0.75,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.4,
+        "at_s": 5.5,
+        "cell": [
+          0.237,
+          0.0,
+          0.356,
+          0.067
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.996,
+          0.99,
+          0.99,
+          0.99,
+          0.987,
+          0.989,
+          0.985,
+          0.989,
+          0.99,
+          0.994,
+          0.993,
+          0.997,
+          0.996,
+          0.993,
+          0.991,
+          0.987,
+          0.988,
+          0.985,
+          0.982,
+          0.977,
+          0.977,
+          0.974
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.05,
+          0.06,
+          0.13,
+          0.27,
+          0.12,
+          0.19,
+          0.16,
+          0.19,
+          0.38,
+          0.33,
+          0.17,
+          0.29,
+          0.24,
+          0.29,
+          0.37,
+          0.33,
+          0.29,
+          0.32,
+          0.39,
+          0.39,
+          0.42,
+          0.4,
+          0.39
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.21,
+        "bend_at_s": 3.5,
+        "bend_box": [
+          0.635,
+          0.173,
+          0.945,
+          3.192
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.008
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.4,
+      "endpoint": 0.26,
+      "flow": 1.16,
+      "motion_appearance": 0.73,
+      "lines": 2.66,
+      "judge": 2.3,
+      "total": 7.56
+    },
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 4.71% of the frame from t=4.0s at [0.706, 0.141, 0.965, 0.671]",
+      "a straight edge bends by 48.54 px from t=5.0s at [0.274, 0.485, 0.794, 0.711]",
+      "new straight edges (1.975 frame diagonals) from t=3.75s at [0.727, 0.227, 0.866, 0.245]",
+      "straight edges vanished (0.16 frame diagonals) from t=4.5s at [0.761, 0.121, 0.786, 0.226]",
+      "judge (medium confidence): window with dark shade (new window on right wall where the plant was) appeared at t=3.5s (right side of frame, mid-height, replacing the wall and plant area)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1375,
+        "inliers": 1281,
+        "inlier_ratio": 0.932,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.952,
+        "worst_tile": [
+          0.5,
+          0.0,
+          0.75,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.41,
+        "at_s": 5.5,
+        "cell": [
+          0.237,
+          0.0,
+          0.356,
+          0.067
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.996,
+          0.99,
+          0.991,
+          0.991,
+          0.989,
+          0.99,
+          0.987,
+          0.992,
+          0.987,
+          0.993,
+          0.989,
+          0.99,
+          0.988,
+          0.986,
+          0.981,
+          0.979,
+          0.981,
+          0.975,
+          0.975,
+          0.967,
+          0.967,
+          0.965
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.05,
+          0.06,
+          0.13,
+          0.31,
+          0.15,
+          0.19,
+          0.14,
+          0.15,
+          0.22,
+          0.32,
+          0.29,
+          0.26,
+          0.25,
+          0.29,
+          0.39,
+          0.38,
+          0.32,
+          0.33,
+          0.39,
+          0.37,
+          0.41,
+          0.42,
+          0.41
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0471,
+        "at_s": 4.0,
+        "box": [
+          0.706,
+          0.141,
+          0.965,
+          0.671
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0058,
+          0.0262,
+          0.0375,
+          0.0286,
+          0.0471,
+          0.0485,
+          0.0469,
+          0.0357,
+          0.0312,
+          0.0286,
+          0.036,
+          0.0347,
+          0.0261
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 48.54,
+        "bend_at_s": 5.0,
+        "bend_box": [
+          0.274,
+          0.485,
+          0.794,
+          0.711
+        ],
+        "new_diag": 1.975,
+        "new_at_s": 3.75,
+        "new_box": [
+          0.727,
+          0.227,
+          0.866,
+          0.245
+        ],
+        "gone_diag": 0.16,
+        "gone_at_s": 4.5,
+        "gone_box": [
+          0.761,
+          0.121,
+          0.786,
+          0.226
+        ]
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window with dark shade (new window on right wall where the plant was)",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "right side of frame, mid-height, replacing the wall and plant area"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0083
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.42,
+      "endpoint": 0.36,
+      "flow": 1.21,
+      "motion_appearance": 0.72,
+      "lines": 2.5,
+      "judge": 3.62,
+      "total": 8.88
+    },
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "left window copied onto the right wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 8.01 px from t=5.0s at [0.334, 0.217, 0.363, 0.648]",
+      "judge (medium confidence): glass door (left edge of door frame / door glass pane) changed_shape at t=3.5s (center of frame, the door's left edge and glass pane bow and curve, most visibly at t=4.8s and t=6.0s)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1375,
+        "inliers": 1281,
+        "inlier_ratio": 0.932,
+        "edge_ssim": 0.972,
+        "min_tile_ssim": 0.952,
+        "worst_tile": [
+          0.5,
+          0.0,
+          0.75,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.48,
+        "at_s": 5.75,
+        "cell": [
+          0.474,
+          0.6,
+          0.593,
+          0.667
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.996,
+          0.989,
+          0.991,
+          0.991,
+          0.99,
+          0.991,
+          0.986,
+          0.97,
+          0.964,
+          0.952,
+          0.942,
+          0.936,
+          0.921,
+          0.916,
+          0.909,
+          0.908,
+          0.905,
+          0.89,
+          0.892,
+          0.881,
+          0.884,
+          0.881
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.05,
+          0.06,
+          0.14,
+          0.26,
+          0.12,
+          0.19,
+          0.18,
+          0.17,
+          0.21,
+          0.37,
+          0.43,
+          0.28,
+          0.34,
+          0.37,
+          0.38,
+          0.41,
+          0.44,
+          0.46,
+          0.43,
+          0.48,
+          0.46,
+          0.48,
+          0.49
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 8.01,
+        "bend_at_s": 5.0,
+        "bend_box": [
+          0.334,
+          0.217,
+          0.363,
+          0.648
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "glass door (left edge of door frame / door glass pane)",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "center of frame, the door's left edge and glass pane bow and curve, most visibly at t=4.8s and t=6.0s"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0085
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.37,
+      "endpoint": 0.26,
+      "flow": 1.21,
+      "motion_appearance": 0.77,
+      "lines": 2.56,
+      "judge": 7.03,
+      "total": 12.25
+    },
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "glass edge of the patio door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1115,
+        "inliers": 1013,
+        "inlier_ratio": 0.909,
+        "edge_ssim": 0.975,
+        "min_tile_ssim": 0.957,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 1.75,
+        "cell": [
+          0.83,
+          0.467,
+          0.948,
+          0.533
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.03,
+          0.03,
+          0.03,
+          0.04,
+          0.02,
+          0.03,
+          0.02,
+          0.02,
+          0.03,
+          0.02,
+          0.04,
+          0.03,
+          0.03,
+          0.03,
+          0.03,
+          0.02,
+          0.05,
+          0.03,
+          0.03,
+          0.03
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.25,
+        "bend_at_s": 0.75,
+        "bend_box": [
+          0.237,
+          0.285,
+          0.239,
+          0.561
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0075
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.38,
+      "endpoint": 0.24,
+      "flow": 1.02,
+      "motion_appearance": 0.68,
+      "lines": 2.39,
+      "judge": 3.35,
+      "total": 8.11
+    },
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.42% of the frame from t=4.5s at [0.567, 0.347, 0.644, 0.546]",
+      "a straight edge bends by 47.69 px from t=3.25s at [0.347, -0.101, 27.928, 12.853]",
+      "new straight edges (0.536 frame diagonals) from t=3.5s at [0.679, 0.276, 0.681, 0.405]",
+      "straight edges vanished (0.063 frame diagonals) from t=3.75s at [0.604, 0.123, 0.698, 0.246]",
+      "judge (medium confidence): window with dark roller shade (duplicate of left window) and chandelier beads fragment duplicated at t=3.5s (right side of frame, next to the door, upper-middle right); white wall/trim panel with bright rectangular patch appeared at t=3.5s (right-center, around the lower window and below, with a light rectangular block edge)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1115,
+        "inliers": 1013,
+        "inlier_ratio": 0.909,
+        "edge_ssim": 0.975,
+        "min_tile_ssim": 0.957,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.07,
+        "at_s": 3.5,
+        "cell": [
+          0.593,
+          0.6,
+          0.711,
+          0.667
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.997,
+          0.994,
+          0.992,
+          0.992,
+          0.991,
+          0.991,
+          0.991,
+          0.99,
+          0.989,
+          0.989,
+          0.989,
+          0.988,
+          0.988
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.04,
+          0.03,
+          0.02,
+          0.06,
+          0.17,
+          0.03,
+          0.26,
+          0.07,
+          0.07,
+          0.02,
+          0.04,
+          0.05,
+          0.03,
+          0.34,
+          0.06,
+          0.11,
+          0.07
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0042,
+        "at_s": 4.5,
+        "box": [
+          0.567,
+          0.347,
+          0.644,
+          0.546
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0008,
+          0.0023,
+          0.0053,
+          0.0037,
+          0.0035,
+          0.0031,
+          0.0042,
+          0.0062,
+          0.0032,
+          0.0027,
+          0.0027,
+          0.0021,
+          0.0026
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 47.69,
+        "bend_at_s": 3.25,
+        "bend_box": [
+          0.347,
+          -0.101,
+          27.928,
+          12.853
+        ],
+        "new_diag": 0.536,
+        "new_at_s": 3.5,
+        "new_box": [
+          0.679,
+          0.276,
+          0.681,
+          0.405
+        ],
+        "gone_diag": 0.063,
+        "gone_at_s": 3.75,
+        "gone_box": [
+          0.604,
+          0.123,
+          0.698,
+          0.246
+        ]
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "window with dark roller shade (duplicate of left window) and chandelier beads fragment",
+            "change": "duplicated",
+            "first_frame": "t=3.5s",
+            "where": "right side of frame, next to the door, upper-middle right"
+          },
+          {
+            "object": "white wall/trim panel with bright rectangular patch",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "right-center, around the lower window and below, with a light rectangular block edge"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.009
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.35,
+      "endpoint": 0.25,
+      "flow": 1.13,
+      "motion_appearance": 0.69,
+      "lines": 2.4,
+      "judge": 3.88,
+      "total": 8.75
+    },
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "left window copied onto the right wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 8.62 px from t=4.25s at [0.196, 0.217, 0.223, 0.654]",
+      "judge (medium confidence): glass door (balcony door) glass pane/frame edge changed_shape at t=3.5s (center-left; the door's left frame and glass edge bend into a wavy curve)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1115,
+        "inliers": 1013,
+        "inlier_ratio": 0.909,
+        "edge_ssim": 0.975,
+        "min_tile_ssim": 0.957,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.09,
+        "at_s": 4.25,
+        "cell": [
+          0.356,
+          0.6,
+          0.474,
+          0.667
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.993,
+          0.96,
+          0.943,
+          0.929,
+          0.904,
+          0.89,
+          0.85,
+          0.858,
+          0.851,
+          0.829,
+          0.82,
+          0.803,
+          0.815,
+          0.806,
+          0.798,
+          0.801
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.02,
+          0.04,
+          0.04,
+          0.03,
+          0.02,
+          0.04,
+          0.06,
+          0.03,
+          0.03,
+          0.04,
+          0.06,
+          0.06,
+          0.07,
+          0.07,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.08,
+          0.08,
+          0.09,
+          0.07,
+          0.1
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 8.62,
+        "bend_at_s": 4.25,
+        "bend_box": [
+          0.196,
+          0.217,
+          0.223,
+          0.654
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "glass door (balcony door) glass pane/frame edge",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "center-left; the door's left frame and glass edge bend into a wavy curve"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0083
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        720,
+        1280
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_pan_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.42,
+      "endpoint": 0.29,
+      "flow": 1.13,
+      "motion_appearance": 0.7,
+      "lines": 2.41,
+      "judge": 3.82,
+      "total": 8.83
+    },
+    "expected": "fail",
+    "case": "defect_train_0058",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "glass edge of the patio door"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1141,
+        "inliers": 1065,
+        "inlier_ratio": 0.933,
+        "edge_ssim": 0.973,
+        "min_tile_ssim": 0.957,
+        "worst_tile": [
+          0.0,
+          0.25,
+          0.167,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.66,
+        "at_s": 5.75,
+        "cell": [
+          0.933,
+          0.948,
+          1.0,
+          1.0
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.991,
+          0.992,
+          0.992,
+          0.994,
+          0.992,
+          0.992,
+          0.992,
+          0.987,
+          0.988,
+          0.993,
+          0.989,
+          0.988,
+          0.986,
+          0.984,
+          0.987,
+          0.985,
+          0.977,
+          0.977,
+          0.975,
+          0.968,
+          0.965,
+          0.965
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.03,
+          0.05,
+          0.1,
+          0.1,
+          0.07,
+          0.09,
+          0.14,
+          0.16,
+          0.27,
+          0.27,
+          0.24,
+          0.36,
+          0.41,
+          0.47,
+          0.56,
+          0.64,
+          0.53,
+          0.49,
+          0.54,
+          0.57,
+          0.61,
+          0.66,
+          0.69
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.14,
+        "bend_at_s": 3.5,
+        "bend_box": [
+          0.376,
+          0.679,
+          0.38,
+          0.936
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.34,
+      "endpoint": 0.27,
+      "flow": 1.06,
+      "motion_appearance": 0.65,
+      "lines": 2.7,
+      "judge": 2.78,
+      "total": 7.85
+    },
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "push",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.82% of the frame from t=4.0s at [0.465, 0.013, 0.552, 0.317]",
+      "new straight edges (0.228 frame diagonals) from t=3.25s at [0.476, 0.027, 0.571, 0.031]",
+      "judge (high confidence): gray pendant light (fourth pendant) appeared at t=3.5s (upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1141,
+        "inliers": 1065,
+        "inlier_ratio": 0.933,
+        "edge_ssim": 0.973,
+        "min_tile_ssim": 0.957,
+        "worst_tile": [
+          0.0,
+          0.25,
+          0.167,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.66,
+        "at_s": 5.75,
+        "cell": [
+          0.933,
+          0.948,
+          1.0,
+          1.0
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.991,
+          0.992,
+          0.992,
+          0.994,
+          0.992,
+          0.992,
+          0.992,
+          0.986,
+          0.988,
+          0.991,
+          0.989,
+          0.988,
+          0.986,
+          0.983,
+          0.984,
+          0.984,
+          0.977,
+          0.975,
+          0.975,
+          0.967,
+          0.963,
+          0.962
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.03,
+          0.05,
+          0.1,
+          0.1,
+          0.07,
+          0.09,
+          0.19,
+          0.15,
+          0.17,
+          0.21,
+          0.24,
+          0.35,
+          0.37,
+          0.41,
+          0.38,
+          0.62,
+          0.51,
+          0.51,
+          0.54,
+          0.54,
+          0.6,
+          0.66,
+          0.7
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0082,
+        "at_s": 4.0,
+        "box": [
+          0.465,
+          0.013,
+          0.552,
+          0.317
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0008,
+          0.0026,
+          0.0078,
+          0.0049,
+          0.0082,
+          0.0082,
+          0.0051,
+          0.0049,
+          0.007,
+          0.0096,
+          0.0073,
+          0.009,
+          0.0074
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 0.13,
+        "bend_at_s": 4.25,
+        "bend_box": [
+          0.185,
+          0.29,
+          0.186,
+          0.495
+        ],
+        "new_diag": 0.228,
+        "new_at_s": 3.25,
+        "new_box": [
+          0.476,
+          0.027,
+          0.571,
+          0.031
+        ],
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "gray pendant light (fourth pendant)",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0063
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.35,
+      "endpoint": 0.28,
+      "flow": 1.3,
+      "motion_appearance": 0.69,
+      "lines": 2.73,
+      "judge": 3.17,
+      "total": 8.57
+    },
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "push",
+    "variant": "paste",
+    "corruption": "pendant light copied onto the back wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 7.47 px from t=4.75s at [0.273, 0.28, 0.285, 0.505]",
+      "judge (high confidence): right framed art print (right of the two wall frames) changed_shape at t=3.5s (upper left of frame, right-hand picture frame, its right edge bows and waves)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1141,
+        "inliers": 1065,
+        "inlier_ratio": 0.933,
+        "edge_ssim": 0.973,
+        "min_tile_ssim": 0.957,
+        "worst_tile": [
+          0.0,
+          0.25,
+          0.167,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.59,
+        "at_s": 4.75,
+        "cell": [
+          0.733,
+          0.948,
+          0.8,
+          1.0
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          0.991,
+          0.992,
+          0.992,
+          0.994,
+          0.992,
+          0.99,
+          0.99,
+          0.983,
+          0.982,
+          0.976,
+          0.967,
+          0.962,
+          0.96,
+          0.958,
+          0.96,
+          0.953,
+          0.947,
+          0.949,
+          0.942,
+          0.938,
+          0.94,
+          0.936
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.03,
+          0.05,
+          0.1,
+          0.09,
+          0.06,
+          0.09,
+          0.13,
+          0.15,
+          0.19,
+          0.23,
+          0.27,
+          0.28,
+          0.3,
+          0.31,
+          0.32,
+          0.35,
+          0.36,
+          0.59,
+          0.63,
+          0.42,
+          0.42,
+          0.44,
+          0.48
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 7.47,
+        "bend_at_s": 4.75,
+        "bend_box": [
+          0.273,
+          0.28,
+          0.285,
+          0.505
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "right framed art print (right of the two wall frames)",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "upper left of frame, right-hand picture frame, its right edge bows and waves"
+          }
+        ],
+        "confidence": "high",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0063
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.24,
+      "flow": 1.04,
+      "motion_appearance": 0.67,
+      "lines": 2.78,
+      "judge": 3.17,
+      "total": 8.29
+    },
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "push",
+    "variant": "bend",
+    "corruption": "right edge of the right-hand art frame"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_pan_good.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1500,
+        "inliers": 1439,
+        "inlier_ratio": 0.959,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.949,
+        "worst_tile": [
+          0.5,
+          0.25,
+          0.667,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.04,
+        "at_s": 4.75,
+        "cell": [
+          0.0,
+          0.356,
+          0.067,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.996,
+          0.998,
+          0.998,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.998,
+          1.0,
+          0.998,
+          0.998
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.03,
+          0.02,
+          0.04,
+          0.02,
+          0.03,
+          0.02,
+          0.02,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.04,
+          0.04,
+          0.02,
+          0.03,
+          0.03,
+          0.04
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0002,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.52,
+        "bend_at_s": 3.75,
+        "bend_box": [
+          0.802,
+          0.679,
+          0.876,
+          1.515
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0055
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_pan_good.sheet.jpg",
+    "timing_s": {
+      "decode": 0.35,
+      "endpoint": 0.25,
+      "flow": 1.06,
+      "motion_appearance": 0.68,
+      "lines": 2.42,
+      "judge": 2.5,
+      "total": 7.31
+    },
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "pan",
+    "variant": "good",
+    "corruption": ""
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_pan_paste.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.58% of the frame from t=4.75s at [0.355, 0.143, 0.449, 0.294]",
+      "new straight edges (0.093 frame diagonals) from t=4.25s at [0.377, 0.011, 0.377, 0.181]",
+      "judge (medium confidence): gray pendant light (extra fourth pendant) with light rectangular soffit block appeared at t=3.5s (top center-left of frame, above the left wall near the picture frames)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1500,
+        "inliers": 1439,
+        "inlier_ratio": 0.959,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.949,
+        "worst_tile": [
+          0.5,
+          0.25,
+          0.667,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.03,
+        "at_s": 5.5,
+        "cell": [
+          0.667,
+          0.593,
+          0.733,
+          0.711
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.996,
+          0.998,
+          0.998,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.998,
+          1.0,
+          0.998,
+          0.998
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.03,
+          0.02,
+          0.04,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.02,
+          0.02,
+          0.02,
+          0.01,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.03,
+          0.02,
+          0.05,
+          0.03,
+          0.02,
+          0.04,
+          0.03,
+          0.05
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0058,
+        "at_s": 4.75,
+        "box": [
+          0.355,
+          0.143,
+          0.449,
+          0.294
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0008,
+          0.0039,
+          0.0043,
+          0.0058,
+          0.0077,
+          0.0045,
+          0.0045,
+          0.0094,
+          0.0058,
+          0.0059,
+          0.0045,
+          0.0093,
+          0.0044
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 0.5,
+        "bend_at_s": 2.25,
+        "bend_box": [
+          0.897,
+          0.679,
+          0.917,
+          0.855
+        ],
+        "new_diag": 0.093,
+        "new_at_s": 4.25,
+        "new_box": [
+          0.377,
+          0.011,
+          0.377,
+          0.181
+        ],
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "gray pendant light (extra fourth pendant) with light rectangular soffit block",
+            "change": "appeared",
+            "first_frame": "t=3.5s",
+            "where": "top center-left of frame, above the left wall near the picture frames"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0077
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_pan_paste.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.25,
+      "flow": 1.05,
+      "motion_appearance": 0.66,
+      "lines": 2.38,
+      "judge": 4.37,
+      "total": 9.08
+    },
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "pan",
+    "variant": "paste",
+    "corruption": "pendant light copied onto the back wall"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_pan_bend.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 9.92 px from t=4.25s at [-0.954, -4.161, 0.177, 0.568]",
+      "judge (medium confidence): left framed art print (right of the two frames) changed_shape at t=2.5s (left side of the frame, upper wall; the frame's right edge bows and warps); left framed art print (left frame) changed_shape at t=3.5s (far left edge, wall; frame edges bend and wave)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1500,
+        "inliers": 1439,
+        "inlier_ratio": 0.959,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.949,
+        "worst_tile": [
+          0.5,
+          0.25,
+          0.667,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.07,
+        "at_s": 4.25,
+        "cell": [
+          0.133,
+          0.356,
+          0.2,
+          0.474
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.996,
+          0.998,
+          0.998,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.987,
+          0.979,
+          0.967,
+          0.962,
+          0.962,
+          0.959,
+          0.958,
+          0.958,
+          0.956,
+          0.956,
+          0.954,
+          0.952,
+          0.953,
+          0.95,
+          0.95
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.03,
+          0.02,
+          0.03,
+          0.01,
+          0.03,
+          0.03,
+          0.03,
+          0.04,
+          0.04,
+          0.08,
+          0.03,
+          0.05,
+          0.07,
+          0.11,
+          0.05,
+          0.06,
+          0.04,
+          0.04,
+          0.04,
+          0.04
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 9.92,
+        "bend_at_s": 4.25,
+        "bend_box": [
+          -0.954,
+          -4.161,
+          0.177,
+          0.568
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "left framed art print (right of the two frames)",
+            "change": "changed_shape",
+            "first_frame": "t=2.5s",
+            "where": "left side of the frame, upper wall; the frame's right edge bows and warps"
+          },
+          {
+            "object": "left framed art print (left frame)",
+            "change": "changed_shape",
+            "first_frame": "t=3.5s",
+            "where": "far left edge, wall; frame edges bend and wave"
+          }
+        ],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0068
+      }
+    },
+    "frames": {
+      "fps": 24.0,
+      "decoded": 144,
+      "sampled": 25,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_pan_bend.sheet.jpg",
+    "timing_s": {
+      "decode": 0.33,
+      "endpoint": 0.27,
+      "flow": 1.02,
+      "motion_appearance": 0.64,
+      "lines": 2.41,
+      "judge": 3.29,
+      "total": 8.01
+    },
+    "expected": "fail",
+    "case": "defect_train_0060",
+    "move": "pan",
+    "variant": "bend",
+    "corruption": "right edge of the right-hand art frame"
+  }
+]

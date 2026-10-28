@@ -1,0 +1,6 @@
+# Clips are rebuilt by synth.py and parallax.py; the contact sheets and JSON results are kept.
+out/**/*.mp4
+out/checks_dev/
+out/*.log
+out/parallax/*_depth_*.jpg
+out/synth_sweep/**/*.sheet.jpg

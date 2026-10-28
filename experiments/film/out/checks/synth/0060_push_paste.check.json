@@ -1,0 +1,209 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0060_push_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 0.82% of the frame from t=4.0s at [0.465, 0.013, 0.552, 0.317]",
+    "new straight edges (0.228 frame diagonals) from t=3.25s at [0.476, 0.027, 0.571, 0.031]",
+    "judge (high confidence): gray pendant light (fourth pendant) appeared at t=3.5s (upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1141,
+      "inliers": 1065,
+      "inlier_ratio": 0.933,
+      "edge_ssim": 0.973,
+      "min_tile_ssim": 0.957,
+      "worst_tile": [
+        0.0,
+        0.25,
+        0.167,
+        0.5
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.66,
+      "at_s": 5.75,
+      "cell": [
+        0.933,
+        0.948,
+        1.0,
+        1.0
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        0.991,
+        0.992,
+        0.992,
+        0.994,
+        0.992,
+        0.992,
+        0.992,
+        0.986,
+        0.988,
+        0.991,
+        0.989,
+        0.988,
+        0.986,
+        0.983,
+        0.984,
+        0.984,
+        0.977,
+        0.975,
+        0.975,
+        0.967,
+        0.963,
+        0.962
+      ],
+      "series_px": [
+        0.0,
+        0.02,
+        0.03,
+        0.05,
+        0.1,
+        0.1,
+        0.07,
+        0.09,
+        0.19,
+        0.15,
+        0.17,
+        0.21,
+        0.24,
+        0.35,
+        0.37,
+        0.41,
+        0.38,
+        0.62,
+        0.51,
+        0.51,
+        0.54,
+        0.54,
+        0.6,
+        0.66,
+        0.7
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0082,
+      "at_s": 4.0,
+      "box": [
+        0.465,
+        0.013,
+        0.552,
+        0.317
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0008,
+        0.0026,
+        0.0078,
+        0.0049,
+        0.0082,
+        0.0082,
+        0.0051,
+        0.0049,
+        0.007,
+        0.0096,
+        0.0073,
+        0.009,
+        0.0074
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 0.13,
+      "bend_at_s": 4.25,
+      "bend_box": [
+        0.185,
+        0.29,
+        0.186,
+        0.495
+      ],
+      "new_diag": 0.228,
+      "new_at_s": 3.25,
+      "new_box": [
+        0.476,
+        0.027,
+        0.571,
+        0.031
+      ],
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "gray pendant light (fourth pendant)",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "upper center-left of frame, left of the existing three pendants, hanging from the ceiling beam"
+        }
+      ],
+      "confidence": "high",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0063
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0060_push_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.35,
+    "endpoint": 0.28,
+    "flow": 1.3,
+    "motion_appearance": 0.69,
+    "lines": 2.73,
+    "judge": 3.17,
+    "total": 8.57
+  },
+  "expected": "fail",
+  "case": "defect_train_0060",
+  "move": "push",
+  "variant": "paste",
+  "corruption": "pendant light copied onto the back wall"
+}

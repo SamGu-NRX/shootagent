@@ -1,0 +1,209 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0055_push_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 0.10% of the frame from t=5.75s at [0.673, 0.517, 0.707, 0.556]",
+    "new straight edges (1.126 frame diagonals) from t=5.75s at [0.678, 0.192, 0.679, 0.498]",
+    "judge (medium confidence): white paneled door-like panel on the pillar face appeared at t=3.5s (center-right, on the front face of the wide pillar right of the shower)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 488,
+      "inliers": 402,
+      "inlier_ratio": 0.824,
+      "edge_ssim": 0.964,
+      "min_tile_ssim": 0.947,
+      "worst_tile": [
+        0.0,
+        0.75,
+        0.167,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.43,
+      "at_s": 5.75,
+      "cell": [
+        0.933,
+        0.474,
+        1.0,
+        0.593
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        0.997,
+        0.997,
+        0.997,
+        0.997,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.994,
+        0.994,
+        0.991,
+        0.991,
+        0.988,
+        0.988,
+        0.988,
+        0.988,
+        0.985,
+        0.988,
+        0.979,
+        0.982,
+        0.979
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.05,
+        0.05,
+        0.06,
+        0.05,
+        0.05,
+        0.06,
+        0.15,
+        0.11,
+        0.13,
+        0.11,
+        0.13,
+        0.13,
+        0.18,
+        0.22,
+        0.21,
+        0.28,
+        0.21,
+        0.3,
+        0.32,
+        0.43,
+        0.43,
+        0.43,
+        0.44
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.001,
+      "at_s": 5.75,
+      "box": [
+        0.673,
+        0.517,
+        0.707,
+        0.556
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0006,
+        0.0009,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 0.29,
+      "bend_at_s": 0.75,
+      "bend_box": [
+        0.7,
+        0.027,
+        0.701,
+        0.572
+      ],
+      "new_diag": 1.126,
+      "new_at_s": 5.75,
+      "new_box": [
+        0.678,
+        0.192,
+        0.679,
+        0.498
+      ],
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "white paneled door-like panel on the pillar face",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "center-right, on the front face of the wide pillar right of the shower"
+        }
+      ],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0086
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0055_push_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.41,
+    "endpoint": 0.26,
+    "flow": 1.13,
+    "motion_appearance": 0.67,
+    "lines": 2.28,
+    "judge": 5.6,
+    "total": 10.38
+  },
+  "expected": "fail",
+  "case": "defect_train_0055",
+  "move": "push",
+  "variant": "paste",
+  "corruption": "door copied onto the pillar beside it"
+}

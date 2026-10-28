@@ -1,0 +1,2818 @@
+[
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_dolly.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 644,
+        "inliers": 560,
+        "inlier_ratio": 0.87,
+        "edge_ssim": 0.982,
+        "min_tile_ssim": 0.97,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.44,
+        "at_s": 4.0,
+        "cell": [
+          0.474,
+          -0.067,
+          0.593,
+          0.0
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.992,
+          0.956,
+          0.92,
+          0.875,
+          0.802,
+          0.79,
+          0.708,
+          0.71,
+          0.625,
+          0.579,
+          0.569,
+          0.645,
+          0.574,
+          0.636
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.03,
+          0.04,
+          0.06,
+          0.06,
+          0.08,
+          0.19,
+          0.1,
+          0.18,
+          0.23,
+          0.29,
+          0.38,
+          0.44,
+          0.42,
+          0.44,
+          0.47,
+          0.27,
+          0.31,
+          0.27
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 69,
+        "bend_px": 0.89,
+        "bend_at_s": 2.67,
+        "bend_box": [
+          0.014,
+          0.985,
+          0.501,
+          0.991
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_dolly.sheet.jpg",
+    "timing_s": {
+      "decode": 0.59,
+      "endpoint": 0.24,
+      "flow": 0.9,
+      "motion_appearance": 0.58,
+      "lines": 1.5,
+      "judge": 11.02,
+      "total": 14.91
+    },
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_truck.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "structure not in the first frame: 0.08% of the frame from t=4.53s at [0.196, 0.06, 0.241, 0.13]"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 652,
+        "inliers": 513,
+        "inlier_ratio": 0.787,
+        "edge_ssim": 0.978,
+        "min_tile_ssim": 0.954,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.25,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.3,
+        "at_s": 3.73,
+        "cell": [
+          0.356,
+          0.067,
+          0.474,
+          0.133
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.92,
+          0.849,
+          0.816,
+          0.765,
+          0.728,
+          0.691,
+          0.681,
+          0.757,
+          0.72,
+          0.702,
+          0.645,
+          0.709,
+          0.699,
+          0.678,
+          0.687
+        ],
+        "series_px": [
+          0.0,
+          0.01,
+          0.02,
+          0.03,
+          0.03,
+          0.1,
+          0.06,
+          0.08,
+          0.07,
+          0.17,
+          0.49,
+          0.12,
+          0.37,
+          0.13,
+          0.3,
+          0.46,
+          0.13,
+          0.13,
+          0.15,
+          0.16
+        ]
+      },
+      "appearance": {
+        "pass": false,
+        "peak_frac": 0.0008,
+        "at_s": 4.53,
+        "box": [
+          0.196,
+          0.06,
+          0.241,
+          0.13
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0001,
+          0.0006,
+          0.0007,
+          0.0007,
+          0.0009,
+          0.0008,
+          0.0007
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 70,
+        "bend_px": 0.84,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.234,
+          0.822,
+          0.253,
+          0.884
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_truck.sheet.jpg",
+    "timing_s": {
+      "decode": 0.63,
+      "endpoint": 0.23,
+      "flow": 0.88,
+      "motion_appearance": 0.55,
+      "lines": 1.55,
+      "judge": 3.16,
+      "total": 7.06
+    },
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_dolly.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 1.87 px from t=4.8s at [0.927, 0.637, 0.937, 0.876]"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 490,
+        "inliers": 407,
+        "inlier_ratio": 0.831,
+        "edge_ssim": 0.97,
+        "min_tile_ssim": 0.95,
+        "worst_tile": [
+          0.25,
+          0.333,
+          0.5,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.31,
+        "at_s": 4.27,
+        "cell": [
+          0.711,
+          0.667,
+          0.83,
+          0.733
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          0.996,
+          0.996,
+          0.988,
+          0.973,
+          0.961,
+          0.949,
+          0.922,
+          0.906,
+          0.91,
+          0.867,
+          0.867,
+          0.847,
+          0.827,
+          0.804,
+          0.792,
+          0.792
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.03,
+          0.03,
+          0.04,
+          0.06,
+          0.09,
+          0.1,
+          0.16,
+          0.17,
+          0.14,
+          0.17,
+          0.22,
+          0.19,
+          0.21,
+          0.27,
+          0.31,
+          0.31,
+          0.32,
+          0.31
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0007,
+        "at_s": 4.8,
+        "box": [
+          0.733,
+          0.992,
+          0.854,
+          1.0
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0002,
+          0.0007,
+          0.0006,
+          0.0007,
+          0.0006,
+          0.0005,
+          0.0007,
+          0.0007,
+          0.0007
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 63,
+        "bend_px": 1.87,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.927,
+          0.637,
+          0.937,
+          0.876
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_dolly.sheet.jpg",
+    "timing_s": {
+      "decode": 0.6,
+      "endpoint": 0.25,
+      "flow": 0.79,
+      "motion_appearance": 0.56,
+      "lines": 1.24,
+      "judge": 3.17,
+      "total": 6.65
+    },
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_truck.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 6.89 px from t=4.8s at [0.082, 0.6, 0.097, 0.672]"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1066,
+        "inliers": 983,
+        "inlier_ratio": 0.922,
+        "edge_ssim": 0.975,
+        "min_tile_ssim": 0.953,
+        "worst_tile": [
+          0.5,
+          0.333,
+          0.75,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.18,
+        "at_s": 4.27,
+        "cell": [
+          0.237,
+          0.867,
+          0.356,
+          0.933
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.987,
+          0.827,
+          0.786,
+          0.719,
+          0.569,
+          0.652,
+          0.525,
+          0.496,
+          0.481,
+          0.432,
+          0.402,
+          0.443,
+          0.504,
+          0.374
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.03,
+          0.04,
+          0.05,
+          0.09,
+          0.09,
+          0.07,
+          0.1,
+          0.08,
+          0.06,
+          0.13,
+          0.1,
+          0.19,
+          0.17,
+          0.08,
+          0.23,
+          0.18,
+          0.15,
+          0.15
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0002,
+        "at_s": 2.4,
+        "box": [
+          0.133,
+          0.645,
+          0.144,
+          0.668
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0006,
+          0.0002,
+          0.0003,
+          0.0,
+          0.0001,
+          0.0002,
+          0.0001,
+          0.0001,
+          0.0001,
+          0.0001,
+          0.0001
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 6.89,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.082,
+          0.6,
+          0.097,
+          0.672
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.017
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0075
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_truck.sheet.jpg",
+    "timing_s": {
+      "decode": 0.61,
+      "endpoint": 0.24,
+      "flow": 0.82,
+      "motion_appearance": 0.55,
+      "lines": 1.41,
+      "judge": 3.73,
+      "total": 7.51
+    },
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_dolly.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1340,
+        "inliers": 1249,
+        "inlier_ratio": 0.932,
+        "edge_ssim": 0.981,
+        "min_tile_ssim": 0.974,
+        "worst_tile": [
+          0.25,
+          0.167,
+          0.5,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.41,
+        "at_s": 4.0,
+        "cell": [
+          0.0,
+          0.8,
+          0.119,
+          0.867
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.996,
+          0.992,
+          0.992,
+          0.989,
+          0.985,
+          0.982,
+          0.98,
+          0.975,
+          0.971,
+          0.968,
+          0.965,
+          0.965
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.05,
+          0.07,
+          0.08,
+          0.07,
+          0.15,
+          0.18,
+          0.15,
+          0.27,
+          0.4,
+          0.32,
+          0.28,
+          0.37,
+          0.39,
+          0.43,
+          0.41,
+          0.37,
+          0.36,
+          0.36
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.51,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.369,
+          0.233,
+          0.372,
+          0.638
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_dolly.sheet.jpg",
+    "timing_s": {
+      "decode": 0.64,
+      "endpoint": 0.34,
+      "flow": 0.87,
+      "motion_appearance": 0.62,
+      "lines": 2.14,
+      "judge": 3.94,
+      "total": 8.61
+    },
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "a straight edge bends by 1.69 px from t=4.53s at [0.306, 0.249, 0.316, 0.637]"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1332,
+        "inliers": 1258,
+        "inlier_ratio": 0.944,
+        "edge_ssim": 0.977,
+        "min_tile_ssim": 0.969,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.19,
+        "at_s": 3.47,
+        "cell": [
+          0.119,
+          0.867,
+          0.237,
+          0.933
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          0.999,
+          1.0,
+          0.998,
+          0.997,
+          0.992,
+          0.987,
+          0.968,
+          0.949,
+          0.907,
+          0.884,
+          0.857,
+          0.85,
+          0.851,
+          0.839,
+          0.837,
+          0.833
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.02,
+          0.06,
+          0.03,
+          0.08,
+          0.12,
+          0.11,
+          0.13,
+          0.16,
+          0.2,
+          0.16,
+          0.17,
+          0.19,
+          0.28,
+          0.13,
+          0.16,
+          0.16,
+          0.15,
+          0.15
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": false,
+        "segments": 80,
+        "bend_px": 1.69,
+        "bend_at_s": 4.53,
+        "bend_box": [
+          0.306,
+          0.249,
+          0.316,
+          0.637
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_truck.sheet.jpg",
+    "timing_s": {
+      "decode": 0.67,
+      "endpoint": 0.25,
+      "flow": 0.85,
+      "motion_appearance": 0.58,
+      "lines": 2.14,
+      "judge": 3.02,
+      "total": 7.56
+    },
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "test photo, 40 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_dolly.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1190,
+        "inliers": 1113,
+        "inlier_ratio": 0.935,
+        "edge_ssim": 0.985,
+        "min_tile_ssim": 0.977,
+        "worst_tile": [
+          0.25,
+          0.667,
+          0.5,
+          0.833
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.26,
+        "at_s": 2.67,
+        "cell": [
+          0.593,
+          1.0,
+          0.711,
+          1.0
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.999,
+          0.999,
+          0.999,
+          0.995,
+          0.995,
+          0.996,
+          0.996,
+          0.997,
+          0.983,
+          0.977,
+          0.978,
+          0.96,
+          0.943,
+          0.931,
+          0.949,
+          0.941,
+          0.935,
+          0.935
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.03,
+          0.04,
+          0.06,
+          0.05,
+          0.05,
+          0.07,
+          0.07,
+          0.23,
+          0.26,
+          0.28,
+          0.15,
+          0.18,
+          0.15,
+          0.18,
+          0.17,
+          0.18,
+          0.17,
+          0.17
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0003,
+        "at_s": 3.47,
+        "box": [
+          0.356,
+          0.0,
+          0.415,
+          0.006
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0008,
+          0.0001,
+          0.0001,
+          0.0004,
+          0.0003,
+          0.0003,
+          0.0001,
+          0.0002,
+          0.0002,
+          0.0001
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 56,
+        "bend_px": 0.53,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.55,
+          0.333,
+          0.552,
+          0.434
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0054_dolly.sheet.jpg",
+    "timing_s": {
+      "decode": 0.73,
+      "endpoint": 0.28,
+      "flow": 1.05,
+      "motion_appearance": 0.66,
+      "lines": 1.66,
+      "judge": 3.87,
+      "total": 8.31
+    },
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_truck.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 862,
+        "inliers": 809,
+        "inlier_ratio": 0.939,
+        "edge_ssim": 0.983,
+        "min_tile_ssim": 0.975,
+        "worst_tile": [
+          0.0,
+          0.0,
+          0.25,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.12,
+        "at_s": 2.67,
+        "cell": [
+          0.0,
+          0.667,
+          0.119,
+          0.733
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          0.999,
+          0.999,
+          0.999,
+          0.995,
+          0.975,
+          0.934,
+          0.911,
+          0.89,
+          0.897,
+          0.881,
+          0.839,
+          0.812,
+          0.84,
+          0.844,
+          0.802,
+          0.819
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.02,
+          0.02,
+          0.06,
+          0.05,
+          0.05,
+          0.16,
+          0.07,
+          0.11,
+          0.12,
+          0.14,
+          0.04,
+          0.09,
+          0.03,
+          0.05,
+          0.09,
+          0.06,
+          0.07,
+          0.07
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 63,
+        "bend_px": 0.89,
+        "bend_at_s": 4.27,
+        "bend_box": [
+          0.203,
+          0.329,
+          0.206,
+          0.462
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0075
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0054_truck.sheet.jpg",
+    "timing_s": {
+      "decode": 0.71,
+      "endpoint": 0.26,
+      "flow": 1.02,
+      "motion_appearance": 0.57,
+      "lines": 1.53,
+      "judge": 2.72,
+      "total": 6.87
+    },
+    "expected": "pass",
+    "case": "defect_train_0054",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0055_dolly.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 378,
+        "inliers": 342,
+        "inlier_ratio": 0.905,
+        "edge_ssim": 0.968,
+        "min_tile_ssim": 0.954,
+        "worst_tile": [
+          0.25,
+          0.0,
+          0.5,
+          0.167
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.15,
+        "at_s": 4.8,
+        "cell": [
+          0.0,
+          0.8,
+          0.119,
+          0.867
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.989,
+          0.986,
+          0.975,
+          0.969,
+          0.953,
+          0.925,
+          0.914,
+          0.9,
+          0.889,
+          0.897,
+          0.897,
+          0.894
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.01,
+          0.02,
+          0.03,
+          0.04,
+          0.03,
+          0.03,
+          0.03,
+          0.04,
+          0.12,
+          0.07,
+          0.1,
+          0.08,
+          0.06,
+          0.08,
+          0.08,
+          0.13,
+          0.16,
+          0.15
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 68,
+        "bend_px": 0.74,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.567,
+          0.15,
+          0.827,
+          0.155
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0055_dolly.sheet.jpg",
+    "timing_s": {
+      "decode": 0.64,
+      "endpoint": 0.23,
+      "flow": 0.82,
+      "motion_appearance": 0.56,
+      "lines": 1.35,
+      "judge": 3.05,
+      "total": 6.71
+    },
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "dolly",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0055_truck.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0055\\edited.jpg",
+    "end": null,
+    "verdict": "fail",
+    "reasons": [
+      "judge (low confidence): glass shower door with black handle (open door panel at left) disappeared at t=2.1s (left side of frame, where the open door and handle were); white paneled door with black hinges beside the glass door disappeared at t=2.1s (left side of frame)"
+    ],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 416,
+        "inliers": 353,
+        "inlier_ratio": 0.849,
+        "edge_ssim": 0.974,
+        "min_tile_ssim": 0.956,
+        "worst_tile": [
+          0.75,
+          0.833,
+          1.0,
+          1.0
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.07,
+        "at_s": 1.6,
+        "cell": [
+          0.0,
+          0.0,
+          0.119,
+          0.067
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.987,
+          0.987,
+          0.97,
+          0.948,
+          0.94,
+          0.958,
+          0.906,
+          0.948,
+          0.965,
+          0.95,
+          0.958,
+          0.958,
+          0.958,
+          0.958
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.04,
+          0.01,
+          0.03,
+          0.04,
+          0.07,
+          0.07,
+          0.06,
+          0.05,
+          0.07,
+          0.03,
+          0.03,
+          0.03,
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 73,
+        "bend_px": 0.36,
+        "bend_at_s": 2.13,
+        "bend_box": [
+          0.474,
+          0.449,
+          0.48,
+          0.732
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": false,
+        "changed": true,
+        "changes": [
+          {
+            "object": "glass shower door with black handle (open door panel at left)",
+            "change": "disappeared",
+            "first_frame": "t=2.1s",
+            "where": "left side of frame, where the open door and handle were"
+          },
+          {
+            "object": "white paneled door with black hinges beside the glass door",
+            "change": "disappeared",
+            "first_frame": "t=2.1s",
+            "where": "left side of frame"
+          }
+        ],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0087
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0055_truck.sheet.jpg",
+    "timing_s": {
+      "decode": 0.63,
+      "endpoint": 0.22,
+      "flow": 0.75,
+      "motion_appearance": 0.55,
+      "lines": 1.4,
+      "judge": 3.57,
+      "total": 7.18
+    },
+    "expected": "pass",
+    "case": "defect_train_0055",
+    "move": "truck",
+    "variant": "parallax",
+    "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_dolly_p24.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 657,
+        "inliers": 555,
+        "inlier_ratio": 0.845,
+        "edge_ssim": 0.982,
+        "min_tile_ssim": 0.97,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.34,
+        "at_s": 4.8,
+        "cell": [
+          0.119,
+          0.467,
+          0.237,
+          0.533
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.992,
+          0.97,
+          0.942,
+          0.919,
+          0.869,
+          0.885,
+          0.832,
+          0.818,
+          0.81,
+          0.804,
+          0.798,
+          0.793
+        ],
+        "series_px": [
+          0.0,
+          0.01,
+          0.04,
+          0.02,
+          0.04,
+          0.07,
+          0.1,
+          0.12,
+          0.15,
+          0.18,
+          0.08,
+          0.25,
+          0.11,
+          0.15,
+          0.31,
+          0.33,
+          0.32,
+          0.33,
+          0.34,
+          0.34
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 63,
+        "bend_px": 0.91,
+        "bend_at_s": 4.53,
+        "bend_box": [
+          0.014,
+          0.985,
+          0.499,
+          0.991
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_dolly_p24.sheet.jpg",
+    "timing_s": {
+      "decode": 0.67,
+      "endpoint": 0.24,
+      "flow": 0.79,
+      "motion_appearance": 0.56,
+      "lines": 1.47,
+      "judge": 4.49,
+      "total": 8.26
+    },
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "dolly",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0057_truck_p24.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 624,
+        "inliers": 528,
+        "inlier_ratio": 0.846,
+        "edge_ssim": 0.98,
+        "min_tile_ssim": 0.969,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.2,
+        "at_s": 3.2,
+        "cell": [
+          0.474,
+          0.067,
+          0.593,
+          0.133
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.997,
+          0.897,
+          0.834,
+          0.796,
+          0.779,
+          0.77,
+          0.76,
+          0.793,
+          0.785,
+          0.78,
+          0.708,
+          0.723,
+          0.748,
+          0.665
+        ],
+        "series_px": [
+          0.0,
+          0.01,
+          0.02,
+          0.02,
+          0.02,
+          0.06,
+          0.06,
+          0.11,
+          0.09,
+          0.13,
+          0.16,
+          0.19,
+          0.31,
+          0.2,
+          0.18,
+          0.42,
+          0.17,
+          0.17,
+          0.16,
+          0.16
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0003,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0,
+          0.0002,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 68,
+        "bend_px": 0.48,
+        "bend_at_s": 4.53,
+        "bend_box": [
+          0.24,
+          0.823,
+          0.262,
+          0.9
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0057_truck_p24.sheet.jpg",
+    "timing_s": {
+      "decode": 0.67,
+      "endpoint": 0.24,
+      "flow": 0.82,
+      "motion_appearance": 0.55,
+      "lines": 1.47,
+      "judge": 2.53,
+      "total": 6.34
+    },
+    "expected": "pass",
+    "case": "defect_train_0057",
+    "move": "truck",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_dolly_p24.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 484,
+        "inliers": 401,
+        "inlier_ratio": 0.829,
+        "edge_ssim": 0.97,
+        "min_tile_ssim": 0.95,
+        "worst_tile": [
+          0.25,
+          0.333,
+          0.5,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.19,
+        "at_s": 4.27,
+        "cell": [
+          0.119,
+          0.6,
+          0.237,
+          0.667
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.996,
+          0.996,
+          0.996,
+          0.985,
+          0.977,
+          0.977,
+          0.961,
+          0.954,
+          0.95,
+          0.931,
+          0.927,
+          0.919,
+          0.915,
+          0.915,
+          0.915
+        ],
+        "series_px": [
+          0.0,
+          0.0,
+          0.01,
+          0.05,
+          0.04,
+          0.05,
+          0.05,
+          0.07,
+          0.1,
+          0.1,
+          0.08,
+          0.12,
+          0.12,
+          0.16,
+          0.2,
+          0.18,
+          0.19,
+          0.22,
+          0.18,
+          0.15
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0002,
+        "at_s": 4.8,
+        "box": [
+          0.819,
+          0.994,
+          0.863,
+          1.0
+        ],
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0003,
+          0.0002,
+          0.0002,
+          0.0002
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 59,
+        "bend_px": 1.09,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.925,
+          0.637,
+          0.93,
+          0.872
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_dolly_p24.sheet.jpg",
+    "timing_s": {
+      "decode": 0.63,
+      "endpoint": 0.23,
+      "flow": 0.76,
+      "motion_appearance": 0.53,
+      "lines": 1.21,
+      "judge": 2.4,
+      "total": 5.82
+    },
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "dolly",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_truck_p24.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1068,
+        "inliers": 1001,
+        "inlier_ratio": 0.937,
+        "edge_ssim": 0.975,
+        "min_tile_ssim": 0.954,
+        "worst_tile": [
+          0.5,
+          0.333,
+          0.75,
+          0.5
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.18,
+        "at_s": 4.27,
+        "cell": [
+          0.237,
+          0.867,
+          0.356,
+          0.933
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.995,
+          0.967,
+          0.914,
+          0.852,
+          0.813,
+          0.797,
+          0.769,
+          0.702,
+          0.649,
+          0.711,
+          0.649,
+          0.673,
+          0.664
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.02,
+          0.05,
+          0.05,
+          0.04,
+          0.05,
+          0.1,
+          0.05,
+          0.06,
+          0.07,
+          0.09,
+          0.05,
+          0.12,
+          0.05,
+          0.06,
+          0.2,
+          0.18,
+          0.17,
+          0.17
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 1.12,
+        "bend_at_s": 2.67,
+        "bend_box": [
+          0.077,
+          0.645,
+          0.08,
+          0.855
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0060_truck_p24.sheet.jpg",
+    "timing_s": {
+      "decode": 0.61,
+      "endpoint": 0.23,
+      "flow": 0.91,
+      "motion_appearance": 0.63,
+      "lines": 1.34,
+      "judge": 3.13,
+      "total": 6.9
+    },
+    "expected": "pass",
+    "case": "defect_train_0060",
+    "move": "truck",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_dolly_p24.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1323,
+        "inliers": 1233,
+        "inlier_ratio": 0.932,
+        "edge_ssim": 0.981,
+        "min_tile_ssim": 0.973,
+        "worst_tile": [
+          0.25,
+          0.167,
+          0.5,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.17,
+        "at_s": 4.27,
+        "cell": [
+          0.0,
+          0.533,
+          0.119,
+          0.6
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.999,
+          0.998,
+          0.995,
+          0.995,
+          0.992,
+          0.992,
+          0.991,
+          0.99,
+          0.988,
+          0.988,
+          0.988
+        ],
+        "series_px": [
+          0.0,
+          0.02,
+          0.04,
+          0.05,
+          0.08,
+          0.05,
+          0.09,
+          0.09,
+          0.09,
+          0.11,
+          0.22,
+          0.12,
+          0.11,
+          0.14,
+          0.12,
+          0.17,
+          0.19,
+          0.17,
+          0.15,
+          0.15
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 0.72,
+        "bend_at_s": 4.27,
+        "bend_box": [
+          0.056,
+          0.234,
+          0.061,
+          0.599
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "medium",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0076
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_dolly_p24.sheet.jpg",
+    "timing_s": {
+      "decode": 0.64,
+      "endpoint": 0.3,
+      "flow": 0.89,
+      "motion_appearance": 0.59,
+      "lines": 2.07,
+      "judge": 3.81,
+      "total": 8.36
+    },
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "dolly",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  },
+  {
+    "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck_p24.mp4",
+    "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+    "end": null,
+    "verdict": "pass",
+    "reasons": [],
+    "signals": {
+      "endpoint_start": {
+        "pass": true,
+        "matches": 1394,
+        "inliers": 1297,
+        "inlier_ratio": 0.93,
+        "edge_ssim": 0.979,
+        "min_tile_ssim": 0.972,
+        "worst_tile": [
+          0.5,
+          0.167,
+          0.75,
+          0.333
+        ],
+        "coverage": 1.0
+      },
+      "endpoint_end": null,
+      "motion": {
+        "pass": true,
+        "peak_px": 0.25,
+        "at_s": 4.53,
+        "cell": [
+          0.474,
+          0.8,
+          0.593,
+          0.867
+        ],
+        "models": "FFFFFFFFFFFFFFFFFFF",
+        "h_inlier_frac": [
+          1.0,
+          0.999,
+          0.999,
+          0.998,
+          0.999,
+          0.999,
+          0.999,
+          1.0,
+          1.0,
+          0.996,
+          0.994,
+          0.991,
+          0.985,
+          0.981,
+          0.978,
+          0.976,
+          0.969,
+          0.965,
+          0.963
+        ],
+        "series_px": [
+          0.0,
+          0.03,
+          0.03,
+          0.03,
+          0.09,
+          0.06,
+          0.06,
+          0.08,
+          0.13,
+          0.14,
+          0.22,
+          0.12,
+          0.2,
+          0.09,
+          0.08,
+          0.09,
+          0.08,
+          0.26,
+          0.25,
+          0.4
+        ]
+      },
+      "appearance": {
+        "pass": true,
+        "peak_frac": 0.0,
+        "at_s": 0.0,
+        "box": null,
+        "series_frac": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "lines": {
+        "pass": true,
+        "segments": 80,
+        "bend_px": 1.44,
+        "bend_at_s": 4.8,
+        "bend_box": [
+          0.809,
+          0.686,
+          0.815,
+          0.8
+        ],
+        "new_diag": 0.0,
+        "new_at_s": 0.0,
+        "new_box": null,
+        "gone_diag": 0.0,
+        "gone_at_s": 0.0,
+        "gone_box": null
+      },
+      "coverage": {
+        "pass": true,
+        "max_out_of_photo": 0.0
+      },
+      "judge": {
+        "pass": true,
+        "changed": false,
+        "changes": [],
+        "confidence": "low",
+        "model": "claude-sonnet-5-5",
+        "usd": 0.0075
+      }
+    },
+    "frames": {
+      "fps": 30.0,
+      "decoded": 150,
+      "sampled": 20,
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+    "limits": {
+      "endpoint_min_inliers": 30,
+      "endpoint_min_edge_ssim": 0.5,
+      "endpoint_min_tile_ssim": 0.4,
+      "motion_max_px": 2.0,
+      "appear_max_frac": 0.0008,
+      "line_max_bend_px": 1.5,
+      "line_max_new": 0.05,
+      "out_of_photo_max": 0.2
+    },
+    "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0058_truck_p24.sheet.jpg",
+    "timing_s": {
+      "decode": 0.65,
+      "endpoint": 0.27,
+      "flow": 0.89,
+      "motion_appearance": 0.58,
+      "lines": 2.79,
+      "judge": 4.88,
+      "total": 10.12
+    },
+    "expected": "pass",
+    "case": "defect_train_0058",
+    "move": "truck",
+    "variant": "parallax_p24",
+    "corruption": "test photo, 24 px"
+  }
+]

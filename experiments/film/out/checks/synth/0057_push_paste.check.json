@@ -1,0 +1,222 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_push_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 0.80% of the frame from t=4.75s at [0.446, 0.346, 0.535, 0.709]",
+    "a straight edge bends by 58.88 px from t=5.75s at [0.368, 0.247, 0.619, 0.541]",
+    "new straight edges (1.214 frame diagonals) from t=5.75s at [0.458, 0.073, 0.458, 0.235]",
+    "straight edges vanished (0.219 frame diagonals) from t=3.75s at [0.48, 0.125, 0.512, 0.587]",
+    "judge (medium confidence): window mullion/post (new vertical white column in the center window) appeared at t=3.5s (center of frame, from the top down to the bowl, in front of the center window); wooden bowl on table duplicated at t=3.5s (center of the table; a second smaller bowl shape appears beside the original, split by the column)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 994,
+      "inliers": 900,
+      "inlier_ratio": 0.905,
+      "edge_ssim": 0.972,
+      "min_tile_ssim": 0.954,
+      "worst_tile": [
+        0.0,
+        0.75,
+        0.167,
+        1.0
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.45,
+      "at_s": 5.75,
+      "cell": [
+        0.467,
+        0.0,
+        0.533,
+        0.119
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        0.997,
+        1.0,
+        0.995,
+        0.998,
+        0.996,
+        0.992,
+        0.996,
+        0.996,
+        0.994,
+        0.992,
+        0.991,
+        0.991,
+        0.993,
+        0.988,
+        0.988,
+        0.987,
+        0.985,
+        0.977,
+        0.964,
+        0.964,
+        0.961,
+        0.961
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.04,
+        0.04,
+        0.05,
+        0.08,
+        0.07,
+        0.13,
+        0.14,
+        0.17,
+        0.23,
+        0.19,
+        0.36,
+        0.22,
+        0.23,
+        0.24,
+        0.23,
+        0.31,
+        0.3,
+        0.39,
+        0.34,
+        0.39,
+        0.35,
+        0.45,
+        0.46
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.008,
+      "at_s": 4.75,
+      "box": [
+        0.446,
+        0.346,
+        0.535,
+        0.709
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0007,
+        0.0025,
+        0.0053,
+        0.0046,
+        0.011,
+        0.0049,
+        0.004,
+        0.0104,
+        0.008,
+        0.0048,
+        0.0058,
+        0.0056,
+        0.0056
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 58.88,
+      "bend_at_s": 5.75,
+      "bend_box": [
+        0.368,
+        0.247,
+        0.619,
+        0.541
+      ],
+      "new_diag": 1.214,
+      "new_at_s": 5.75,
+      "new_box": [
+        0.458,
+        0.073,
+        0.458,
+        0.235
+      ],
+      "gone_diag": 0.219,
+      "gone_at_s": 3.75,
+      "gone_box": [
+        0.48,
+        0.125,
+        0.512,
+        0.587
+      ]
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "window mullion/post (new vertical white column in the center window)",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "center of frame, from the top down to the bowl, in front of the center window"
+        },
+        {
+          "object": "wooden bowl on table",
+          "change": "duplicated",
+          "first_frame": "t=3.5s",
+          "where": "center of the table; a second smaller bowl shape appears beside the original, split by the column"
+        }
+      ],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0069
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_push_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.33,
+    "endpoint": 0.23,
+    "flow": 1.04,
+    "motion_appearance": 0.64,
+    "lines": 2.44,
+    "judge": 3.94,
+    "total": 8.67
+  },
+  "expected": "fail",
+  "case": "defect_train_0057",
+  "move": "push",
+  "variant": "paste",
+  "corruption": "window trim column copied across the centre window"
+}

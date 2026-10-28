@@ -1,0 +1,156 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth_sweep\\0.006\\0058_push_bend6.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "motion no rigid camera explains: 3.86 px from t=5.5s in cell [0.356, 0.467, 0.474, 0.533]",
+    "a straight edge bends by 5.81 px from t=3.5s at [0.349, 0.234, 0.368, 0.643]"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1375,
+      "inliers": 1281,
+      "inlier_ratio": 0.932,
+      "edge_ssim": 0.972,
+      "min_tile_ssim": 0.952,
+      "worst_tile": [
+        0.5,
+        0.0,
+        0.75,
+        0.167
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": false,
+      "peak_px": 3.86,
+      "at_s": 5.5,
+      "cell": [
+        0.356,
+        0.467,
+        0.474,
+        0.533
+      ],
+      "models": "HHHHHHHHHHHHHHHHHHHHHHHH",
+      "series_px": [
+        0.0,
+        0.08,
+        0.09,
+        0.11,
+        0.39,
+        0.63,
+        0.27,
+        0.5,
+        0.42,
+        0.53,
+        0.88,
+        1.28,
+        1.69,
+        2.19,
+        2.65,
+        3.05,
+        3.37,
+        3.51,
+        3.67,
+        3.52,
+        3.53,
+        3.8,
+        3.94,
+        3.86,
+        3.83
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 5.81,
+      "bend_at_s": 3.5,
+      "bend_box": [
+        0.349,
+        0.234,
+        0.368,
+        0.643
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      720,
+      1280
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth_sweep\\0.006\\checks\\0058_push_bend6.sheet.jpg",
+  "timing_s": {
+    "decode": 0.45,
+    "endpoint": 0.31,
+    "flow": 1.5,
+    "motion_appearance": 0.77,
+    "lines": 2.81,
+    "total": 5.91
+  },
+  "expected": "fail",
+  "case": "defect_train_0058",
+  "move": "push",
+  "variant": "bend",
+  "corruption": "glass edge of the patio door"
+}

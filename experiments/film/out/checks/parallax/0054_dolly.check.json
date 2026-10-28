@@ -1,0 +1,178 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0054_dolly.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0054\\edited.jpg",
+  "end": null,
+  "verdict": "pass",
+  "reasons": [],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1190,
+      "inliers": 1113,
+      "inlier_ratio": 0.935,
+      "edge_ssim": 0.985,
+      "min_tile_ssim": 0.977,
+      "worst_tile": [
+        0.25,
+        0.667,
+        0.5,
+        0.833
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.26,
+      "at_s": 2.67,
+      "cell": [
+        0.593,
+        1.0,
+        0.711,
+        1.0
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        0.999,
+        0.999,
+        0.999,
+        0.995,
+        0.995,
+        0.996,
+        0.996,
+        0.997,
+        0.983,
+        0.977,
+        0.978,
+        0.96,
+        0.943,
+        0.931,
+        0.949,
+        0.941,
+        0.935,
+        0.935
+      ],
+      "series_px": [
+        0.0,
+        0.02,
+        0.03,
+        0.04,
+        0.06,
+        0.05,
+        0.05,
+        0.07,
+        0.07,
+        0.23,
+        0.26,
+        0.28,
+        0.15,
+        0.18,
+        0.15,
+        0.18,
+        0.17,
+        0.18,
+        0.17,
+        0.17
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0003,
+      "at_s": 3.47,
+      "box": [
+        0.356,
+        0.0,
+        0.415,
+        0.006
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0008,
+        0.0001,
+        0.0001,
+        0.0004,
+        0.0003,
+        0.0003,
+        0.0001,
+        0.0002,
+        0.0002,
+        0.0001
+      ]
+    },
+    "lines": {
+      "pass": true,
+      "segments": 56,
+      "bend_px": 0.53,
+      "bend_at_s": 4.8,
+      "bend_box": [
+        0.55,
+        0.333,
+        0.552,
+        0.434
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": true,
+      "changed": false,
+      "changes": [],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0076
+    }
+  },
+  "frames": {
+    "fps": 30.0,
+    "decoded": 150,
+    "sampled": 20,
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\parallax\\0054_dolly.sheet.jpg",
+  "timing_s": {
+    "decode": 0.73,
+    "endpoint": 0.28,
+    "flow": 1.05,
+    "motion_appearance": 0.66,
+    "lines": 1.66,
+    "judge": 3.87,
+    "total": 8.31
+  },
+  "expected": "pass",
+  "case": "defect_train_0054",
+  "move": "dolly",
+  "variant": "parallax",
+  "corruption": "held-out photo, 40 px, rendered after the checker's last change"
+}

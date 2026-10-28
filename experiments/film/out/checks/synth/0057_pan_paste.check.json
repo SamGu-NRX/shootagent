@@ -1,0 +1,216 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0057_pan_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0057\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 1.34% of the frame from t=3.5s at [0.393, 0.387, 0.491, 0.807]",
+    "a straight edge bends by 61.47 px from t=4.5s at [0.249, -0.675, 93.336, 1.53]",
+    "new straight edges (1.602 frame diagonals) from t=4.75s at [0.339, 0.035, 0.339, 0.266]",
+    "straight edges vanished (0.345 frame diagonals) from t=3.75s at [0.403, 0.031, 0.437, 0.748]",
+    "judge (high confidence): window frame / mullion (new vertical white post) appeared at t=3.5s (center of frame, running from top to the table, in front of the bowl)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 693,
+      "inliers": 615,
+      "inlier_ratio": 0.887,
+      "edge_ssim": 0.961,
+      "min_tile_ssim": 0.909,
+      "worst_tile": [
+        0.0,
+        0.0,
+        0.167,
+        0.25
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.1,
+      "at_s": 3.25,
+      "cell": [
+        0.467,
+        0.356,
+        0.533,
+        0.474
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.992,
+        0.989,
+        0.994,
+        0.993,
+        0.993,
+        0.993,
+        0.992,
+        0.991,
+        0.991,
+        0.991,
+        0.991,
+        0.991,
+        0.991
+      ],
+      "series_px": [
+        0.0,
+        0.02,
+        0.01,
+        0.03,
+        0.03,
+        0.01,
+        0.01,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.05,
+        0.1,
+        0.1,
+        0.2,
+        0.03,
+        0.02,
+        0.03,
+        0.03,
+        0.08,
+        0.04,
+        0.03,
+        0.05,
+        0.04,
+        0.05
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0134,
+      "at_s": 3.5,
+      "box": [
+        0.393,
+        0.387,
+        0.491,
+        0.807
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0009,
+        0.0033,
+        0.0145,
+        0.0134,
+        0.0063,
+        0.0078,
+        0.0081,
+        0.0056,
+        0.0066,
+        0.0101,
+        0.0114,
+        0.0075,
+        0.0072
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 61.47,
+      "bend_at_s": 4.5,
+      "bend_box": [
+        0.249,
+        -0.675,
+        93.336,
+        1.53
+      ],
+      "new_diag": 1.602,
+      "new_at_s": 4.75,
+      "new_box": [
+        0.339,
+        0.035,
+        0.339,
+        0.266
+      ],
+      "gone_diag": 0.345,
+      "gone_at_s": 3.75,
+      "gone_box": [
+        0.403,
+        0.031,
+        0.437,
+        0.748
+      ]
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "window frame / mullion (new vertical white post)",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "center of frame, running from top to the table, in front of the bowl"
+        }
+      ],
+      "confidence": "high",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0062
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0057_pan_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.33,
+    "endpoint": 0.22,
+    "flow": 1.02,
+    "motion_appearance": 0.67,
+    "lines": 2.22,
+    "judge": 4.52,
+    "total": 9.03
+  },
+  "expected": "fail",
+  "case": "defect_train_0057",
+  "move": "pan",
+  "variant": "paste",
+  "corruption": "window trim column copied across the centre window"
+}

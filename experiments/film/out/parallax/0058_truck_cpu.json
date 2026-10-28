@@ -1,0 +1,24 @@
+{
+  "move": "truck",
+  "parallax_px": 40.0,
+  "tz": 0.0,
+  "focal_x_baseline_px": 60.0,
+  "window_travel_out_px": 133.6,
+  "disoccluded_mean": 0.00171,
+  "disoccluded_max": 0.00379,
+  "frames": 150,
+  "render_s": 78.04,
+  "photo": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0058_truck_cpu.mp4",
+  "depth_s": 1.3,
+  "work_size": [
+    1693,
+    2553
+  ],
+  "device": "cpu",
+  "torch": "2.11.0+cu128",
+  "threads": 8,
+  "cpu": "AMD64 Family 25 Model 116 Stepping 1, AuthenticAMD",
+  "gpu": null,
+  "model_load_s": 13.42
+}

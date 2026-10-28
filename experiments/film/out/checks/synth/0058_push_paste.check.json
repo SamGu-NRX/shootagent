@@ -1,0 +1,216 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_paste.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "end": null,
+  "verdict": "fail",
+  "reasons": [
+    "structure not in the first frame: 4.71% of the frame from t=4.0s at [0.706, 0.141, 0.965, 0.671]",
+    "a straight edge bends by 48.54 px from t=5.0s at [0.274, 0.485, 0.794, 0.711]",
+    "new straight edges (1.975 frame diagonals) from t=3.75s at [0.727, 0.227, 0.866, 0.245]",
+    "straight edges vanished (0.16 frame diagonals) from t=4.5s at [0.761, 0.121, 0.786, 0.226]",
+    "judge (medium confidence): window with dark shade (new window on right wall where the plant was) appeared at t=3.5s (right side of frame, mid-height, replacing the wall and plant area)"
+  ],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1375,
+      "inliers": 1281,
+      "inlier_ratio": 0.932,
+      "edge_ssim": 0.972,
+      "min_tile_ssim": 0.952,
+      "worst_tile": [
+        0.5,
+        0.0,
+        0.75,
+        0.167
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.41,
+      "at_s": 5.5,
+      "cell": [
+        0.237,
+        0.0,
+        0.356,
+        0.067
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        0.996,
+        0.99,
+        0.991,
+        0.991,
+        0.989,
+        0.99,
+        0.987,
+        0.992,
+        0.987,
+        0.993,
+        0.989,
+        0.99,
+        0.988,
+        0.986,
+        0.981,
+        0.979,
+        0.981,
+        0.975,
+        0.975,
+        0.967,
+        0.967,
+        0.965
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.05,
+        0.06,
+        0.13,
+        0.31,
+        0.15,
+        0.19,
+        0.14,
+        0.15,
+        0.22,
+        0.32,
+        0.29,
+        0.26,
+        0.25,
+        0.29,
+        0.39,
+        0.38,
+        0.32,
+        0.33,
+        0.39,
+        0.37,
+        0.41,
+        0.42,
+        0.41
+      ]
+    },
+    "appearance": {
+      "pass": false,
+      "peak_frac": 0.0471,
+      "at_s": 4.0,
+      "box": [
+        0.706,
+        0.141,
+        0.965,
+        0.671
+      ],
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0058,
+        0.0262,
+        0.0375,
+        0.0286,
+        0.0471,
+        0.0485,
+        0.0469,
+        0.0357,
+        0.0312,
+        0.0286,
+        0.036,
+        0.0347,
+        0.0261
+      ]
+    },
+    "lines": {
+      "pass": false,
+      "segments": 80,
+      "bend_px": 48.54,
+      "bend_at_s": 5.0,
+      "bend_box": [
+        0.274,
+        0.485,
+        0.794,
+        0.711
+      ],
+      "new_diag": 1.975,
+      "new_at_s": 3.75,
+      "new_box": [
+        0.727,
+        0.227,
+        0.866,
+        0.245
+      ],
+      "gone_diag": 0.16,
+      "gone_at_s": 4.5,
+      "gone_box": [
+        0.761,
+        0.121,
+        0.786,
+        0.226
+      ]
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": false,
+      "changed": true,
+      "changes": [
+        {
+          "object": "window with dark shade (new window on right wall where the plant was)",
+          "change": "appeared",
+          "first_frame": "t=3.5s",
+          "where": "right side of frame, mid-height, replacing the wall and plant area"
+        }
+      ],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.0083
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      720,
+      1280
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_paste.sheet.jpg",
+  "timing_s": {
+    "decode": 0.42,
+    "endpoint": 0.36,
+    "flow": 1.21,
+    "motion_appearance": 0.72,
+    "lines": 2.5,
+    "judge": 3.62,
+    "total": 8.88
+  },
+  "expected": "fail",
+  "case": "defect_train_0058",
+  "move": "push",
+  "variant": "paste",
+  "corruption": "left window copied onto the right wall"
+}

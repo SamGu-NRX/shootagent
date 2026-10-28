@@ -1,0 +1,24 @@
+{
+  "move": "truck",
+  "parallax_px": 40.0,
+  "tz": 0.0,
+  "focal_x_baseline_px": 60.0,
+  "window_travel_out_px": 651.0,
+  "disoccluded_mean": 0.0043,
+  "disoccluded_max": 0.00973,
+  "frames": 150,
+  "render_s": 10.79,
+  "photo": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0060\\edited.jpg",
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\parallax\\0060_truck.mp4",
+  "depth_s": 0.33,
+  "work_size": [
+    3851,
+    2553
+  ],
+  "device": "cuda",
+  "torch": "2.11.0+cu128",
+  "threads": 8,
+  "cpu": "AMD64 Family 25 Model 116 Stepping 1, AuthenticAMD",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "model_load_s": 13.55
+}

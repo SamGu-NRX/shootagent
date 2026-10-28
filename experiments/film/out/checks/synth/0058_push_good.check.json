@@ -1,0 +1,188 @@
+{
+  "clip": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\synth\\0058_push_good.mp4",
+  "start": "C:\\Users\\sgu07\\datasets\\autohdr\\defect\\defect_train_0058\\edited.jpg",
+  "end": null,
+  "verdict": "pass",
+  "reasons": [],
+  "signals": {
+    "endpoint_start": {
+      "pass": true,
+      "matches": 1375,
+      "inliers": 1281,
+      "inlier_ratio": 0.932,
+      "edge_ssim": 0.972,
+      "min_tile_ssim": 0.952,
+      "worst_tile": [
+        0.5,
+        0.0,
+        0.75,
+        0.167
+      ],
+      "coverage": 1.0
+    },
+    "endpoint_end": null,
+    "motion": {
+      "pass": true,
+      "peak_px": 0.4,
+      "at_s": 5.5,
+      "cell": [
+        0.237,
+        0.0,
+        0.356,
+        0.067
+      ],
+      "models": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "h_inlier_frac": [
+        1.0,
+        1.0,
+        0.996,
+        0.99,
+        0.99,
+        0.99,
+        0.987,
+        0.989,
+        0.985,
+        0.989,
+        0.99,
+        0.994,
+        0.993,
+        0.997,
+        0.996,
+        0.993,
+        0.991,
+        0.987,
+        0.988,
+        0.985,
+        0.982,
+        0.977,
+        0.977,
+        0.974
+      ],
+      "series_px": [
+        0.0,
+        0.03,
+        0.05,
+        0.06,
+        0.13,
+        0.27,
+        0.12,
+        0.19,
+        0.16,
+        0.19,
+        0.38,
+        0.33,
+        0.17,
+        0.29,
+        0.24,
+        0.29,
+        0.37,
+        0.33,
+        0.29,
+        0.32,
+        0.39,
+        0.39,
+        0.42,
+        0.4,
+        0.39
+      ]
+    },
+    "appearance": {
+      "pass": true,
+      "peak_frac": 0.0,
+      "at_s": 0.0,
+      "box": null,
+      "series_frac": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "lines": {
+      "pass": true,
+      "segments": 80,
+      "bend_px": 0.21,
+      "bend_at_s": 3.5,
+      "bend_box": [
+        0.635,
+        0.173,
+        0.945,
+        3.192
+      ],
+      "new_diag": 0.0,
+      "new_at_s": 0.0,
+      "new_box": null,
+      "gone_diag": 0.0,
+      "gone_at_s": 0.0,
+      "gone_box": null
+    },
+    "coverage": {
+      "pass": true,
+      "max_out_of_photo": 0.0
+    },
+    "judge": {
+      "pass": true,
+      "changed": false,
+      "changes": [],
+      "confidence": "medium",
+      "model": "claude-sonnet-5-5",
+      "usd": 0.008
+    }
+  },
+  "frames": {
+    "fps": 24.0,
+    "decoded": 144,
+    "sampled": 25,
+    "size": [
+      720,
+      1280
+    ]
+  },
+  "units": "px at 960 px long edge; boxes are [x0, y0, x1, y1] fractions of the frame",
+  "limits": {
+    "endpoint_min_inliers": 30,
+    "endpoint_min_edge_ssim": 0.5,
+    "endpoint_min_tile_ssim": 0.4,
+    "motion_max_px": 2.0,
+    "appear_max_frac": 0.0008,
+    "line_max_bend_px": 1.5,
+    "line_max_new": 0.05,
+    "out_of_photo_max": 0.2
+  },
+  "sheet": "C:\\Users\\sgu07\\Programming Projects\\shootagent-lab\\experiments\\film\\out\\checks\\synth\\0058_push_good.sheet.jpg",
+  "timing_s": {
+    "decode": 0.4,
+    "endpoint": 0.26,
+    "flow": 1.16,
+    "motion_appearance": 0.73,
+    "lines": 2.66,
+    "judge": 2.3,
+    "total": 7.56
+  },
+  "expected": "pass",
+  "case": "defect_train_0058",
+  "move": "push",
+  "variant": "good",
+  "corruption": ""
+}
