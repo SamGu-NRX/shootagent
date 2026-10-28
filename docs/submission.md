@@ -53,7 +53,9 @@ and cut to it when the trace is streaming; the Loom should show real runs, not t
 - [x] Public repo with quick start, stack, architecture diagram, `.env.example`, datasets and provenance,
       limitations and next steps
 - [ ] Loom, 2 to 5 minutes
-- [ ] Deployed URL for AutoHDR Track 3 (their form:
-      https://docs.google.com/forms/d/e/1FAIpQLSdDi6tLfJ_eglXgwOMU3p2QoSTvKf0CxKr4t82ZeDjoWZdR9A/viewform)
-- [ ] Team roster
+- [ ] Deployed URL for AutoHDR Track 3: https://shootagent.sillion.app (served from the demo MacBook through a
+      named Cloudflare tunnel; passcode in the git-ignored .env.public on that machine). Their form:
+      https://docs.google.com/forms/d/e/1FAIpQLSdDi6tLfJ_eglXgwOMU3p2QoSTvKf0CxKr4t82ZeDjoWZdR9A/viewform
+- Tracks: AutoHDR Track 3 (conversational editing) and Antler (Agents). No separate Track 2 entry.
+- [x] Team roster: Sam Gu, Bryan Wang
 - [x] Write-up, 150 to 300 words (above)

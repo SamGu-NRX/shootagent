@@ -212,6 +212,10 @@ variables at the unzipped folders.
 
 Next steps: a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight architectural lines; batch generative removals per shoot.
 
+## Team
+
+Sam Gu, Bryan Wang.
+
 ## License
 
 MIT. ffmpeg is called as an external program and is not redistributed. The bundled fonts are under the

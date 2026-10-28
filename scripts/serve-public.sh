@@ -2,12 +2,14 @@
 # Serve ShootAgent from this machine at a public HTTPS URL through a Cloudflare tunnel.
 # The tunnel exposes only the app on 127.0.0.1:8000; model keys stay in .env on this machine.
 #
-#   DEMO_PASSCODE=... scripts/serve-public.sh            # quick tunnel: random *.trycloudflare.com URL
+#   scripts/serve-public.sh                              # quick tunnel: random *.trycloudflare.com URL
 #   DEMO_PASSCODE=... TUNNEL=shootagent scripts/serve-public.sh   # named tunnel with a stable hostname
 #                                                        # (needs `cloudflared tunnel login` + `tunnel create`)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# .env.public (git-ignored) may hold DEMO_PASSCODE and ANTHROPIC_API_KEY.
+if [ -f .env.public ]; then set -a; . ./.env.public; set +a; fi
 if [ -z "${DEMO_PASSCODE:-}" ]; then
   echo "Set DEMO_PASSCODE: the public URL spends this machine's model credits, so it needs a passcode." >&2
   exit 1
@@ -19,11 +21,11 @@ export DEMO_PASSCODE
 # Public traffic bills a real Anthropic key (git-ignored .env.public: ANTHROPIC_API_KEY=...) rather than the
 # local gateway. Blanking the gateway variables makes the app send that key to Anthropic's API; image edits
 # keep using OPENAI_* from .env.
-if [ -f .env.public ]; then
-  set -a; . ./.env.public; set +a
+if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
   export ANTHROPIC_BASE_URL="" ANTHROPIC_AUTH_TOKEN=""
 fi
-uv run shootagent serve --host 127.0.0.1 --port 8000 &
+if command -v uv >/dev/null; then run=(uv run); else run=(python -m uv run); fi
+"${run[@]}" shootagent serve --host 127.0.0.1 --port 8000 &
 server=$!
 trap 'kill $server 2>/dev/null' EXIT
 until curl -fsS -o /dev/null http://127.0.0.1:8000/; do sleep 1; done
