@@ -1,4 +1,4 @@
-// How each agent looks on the presenter's stage: an icon for its job and its colour, lifted for a dark stage.
+// How each agent looks on the presenter's stage: an icon for its job, in the walkthrough's ink.
 
 import {
   Activity,
@@ -53,17 +53,17 @@ export const AGENT_JOB: Record<string, string> = {
   algorithm: "Thinks like the feed: stop power, watch time",
 };
 
-function rgb(hex: string): [number, number, number] | null {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
-  if (!m) return null;
-  return [parseInt(m[1]!.slice(0, 2), 16), parseInt(m[1]!.slice(2, 4), 16), parseInt(m[1]!.slice(4, 6), 16)];
+/** Agents share the walkthrough's ink: identity comes from the icon and the name, not from colour. */
+export function stageColor(_hex?: string): string {
+  return "#141414";
 }
 
-/** The agent's colour, lifted toward white until it reads on a near-black stage. */
-export function stageColor(hex: string): string {
-  const c = rgb(hex);
-  if (!c) return "#cfcfcf";
-  const lum = (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255;
+/** For the dark dashboard (not the walkthrough): the agent's own colour, lifted until it reads on near-black. */
+export function dashColor(hex: string): string {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return "#cfcfcf";
+  const c = [0, 2, 4].map((i) => parseInt(m[1]!.slice(i, i + 2), 16));
+  const lum = (0.2126 * c[0]! + 0.7152 * c[1]! + 0.0722 * c[2]!) / 255;
   const t = lum >= 0.55 ? 0 : Math.min(0.5, (0.55 - lum) * 0.9);
   return `rgb(${c.map((v) => Math.round(v + (255 - v) * t)).join(" ")})`;
 }

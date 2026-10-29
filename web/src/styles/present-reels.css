@@ -1,5 +1,7 @@
 /* Presenter scene 4, before / after (src/creator/present/SceneReels.tsx). Phones sit bottom-aligned on the
-   left half of the 1920x1080 stage; the headline, the hook and the comparisons fill the right. */
+   left half of the 1920x1080 stage; the headline, the hook and the comparisons fill the right.
+   Palette: the shared .pz tokens only. The reels bring their own colour; everything around them is ink and
+   greys, with the AI reel's side carried by ink, weight and size, and one small green check for the verdict. */
 .pz-reels {
   position: absolute;
   inset: 0;
@@ -28,9 +30,9 @@
   height: 100%;
   border-radius: 26px;
   overflow: hidden;
-  background: #000;
-  border: 1px solid rgb(255 255 255 / 0.12);
-  box-shadow: 0 30px 80px rgb(0 0 0 / 0.55);
+  background: var(--pz-panel-2);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
 }
 .pz-reels-phone[data-kind="template"] .pz-reels-screen {
   border-radius: 22px;
@@ -42,13 +44,14 @@
   object-fit: cover;
 }
 .pz-reels-phone[data-kind="template"] video {
-  filter: saturate(0.5) brightness(0.88);
+  filter: saturate(0.6);
 }
+/* the verdict's outline on the AI reel: 2px of ink over the frame's hairline */
 .pz-reels-ring {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 2px var(--pz-violet);
+  border-radius: 26px;
+  border: 2px solid var(--pz-ink);
   opacity: var(--ring, 0);
   pointer-events: none;
 }
@@ -68,12 +71,12 @@
   align-self: flex-start;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 0.18);
+  background: var(--pz-panel-2);
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--pz-dim);
+  color: var(--pz-ink);
 }
 .pz-reels-label-main {
   font-size: 26px;
@@ -89,7 +92,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--pz-violet);
+  color: var(--pz-ink);
 }
 .pz-reels-label-title {
   font-size: 34px;
@@ -108,7 +111,8 @@
   place-items: center;
   border-radius: 50%;
   background: var(--pz-panel);
-  border: 1px solid rgb(255 255 255 / 0.14);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
   color: var(--pz-dim);
 }
 
@@ -128,12 +132,13 @@
   line-height: 1.05;
   font-weight: 650;
   letter-spacing: -0.035em;
+  color: var(--pz-ink);
 }
 .pz-reels-title span {
   display: block;
 }
 .pz-reels-title-dim {
-  color: #74747d;
+  color: var(--pz-faint);
 }
 
 .pz-reels-hook {
@@ -152,7 +157,7 @@
   color: var(--pz-ink);
 }
 .pz-reels-q {
-  color: var(--pz-violet);
+  color: var(--pz-ink);
 }
 .pz-reels-untyped {
   color: transparent;
@@ -162,7 +167,7 @@
   width: 3px;
   height: 0.9em;
   margin: 0 2px -0.1em;
-  background: var(--pz-violet);
+  background: var(--pz-ink);
   vertical-align: baseline;
 }
 .pz-reels-caret[data-on] {
@@ -174,7 +179,7 @@
   }
 }
 
-/* comparisons */
+/* comparisons: the template's numbers recede in faint grey, the AI reel's are bold ink */
 .pz-reels-rows {
   margin-top: auto;
   display: flex;
@@ -196,24 +201,25 @@
 }
 .pz-reels-a {
   font-size: 30px;
-  color: #77777f;
+  color: var(--pz-faint);
 }
 .pz-reels-row-arrow {
-  color: #55555c;
+  color: var(--pz-faint);
   align-self: center;
 }
 .pz-reels-b {
   font-size: 46px;
-  font-weight: 500;
-  color: var(--pz-green);
+  font-weight: 700;
+  color: var(--pz-ink);
 }
 .pz-reels-x {
   margin-left: auto;
   padding: 3px 12px;
   border-radius: 999px;
-  border: 1px solid rgb(95 208 138 / 0.4);
+  background: var(--pz-panel-2);
   font-size: 22px;
-  color: var(--pz-green);
+  font-weight: 600;
+  color: var(--pz-ink);
   align-self: center;
 }
 .pz-reels-bars {
@@ -221,16 +227,24 @@
   gap: 5px;
   margin-top: 10px;
 }
-.pz-reels-bars span {
+.pz-reels-track {
   display: block;
   height: 4px;
   border-radius: 2px;
+  background: var(--pz-panel-2);
+  overflow: hidden;
+}
+.pz-reels-bar-a,
+.pz-reels-bar-b {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
 }
 .pz-reels-bar-a {
-  background: #4a4a51;
+  background: var(--pz-faint);
 }
 .pz-reels-bar-b {
-  background: var(--pz-green);
+  background: var(--pz-ink);
 }
 
 .pz-reels-foot {

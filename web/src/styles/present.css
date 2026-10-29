@@ -8,22 +8,30 @@
  * CSS animations inside a scene pause with the presenter (data-paused).
  */
 .pz {
-  --pz-bg: #09090b;
-  --pz-panel: #131316;
-  --pz-line: rgb(255 255 255 / 0.09);
-  --pz-ink: #f4f4f5;
-  --pz-dim: #a1a1aa;
-  --pz-faint: #63636b;
-  --pz-violet: #a593ff;
-  --pz-violet-2: #c9bfff;
-  --pz-gold: #f5c35b;
-  --pz-red: #ff6b5e;
-  --pz-green: #5fd08a;
+  /* one palette for the whole walkthrough: off-white paper, near-black ink, greys. Colour only means
+     something: red = rejected (cliches, kills, false claims, what the template gets wrong);
+     green = approved (greenlit, checks), used sparingly. The listing photos and reels bring their own colour. */
+  --pz-bg: #f6f5f1;
+  --pz-panel: #ffffff;
+  --pz-panel-2: #edebe6;
+  --pz-line: #dcd9d2;
+  --pz-ink: #141414;
+  --pz-dim: #5c5b57;
+  --pz-faint: #9b9892;
+  --pz-red: #c4382c;
+  --pz-red-wash: #f6e3e0;
+  --pz-green: #1e7a4b;
+  --pz-green-wash: #e1efe6;
+  --pz-shadow: 0 1px 2px rgb(20 20 20 / 0.06), 0 8px 24px rgb(20 20 20 / 0.06);
+  /* retired accents, mapped onto the palette so nothing renders in them */
+  --pz-violet: var(--pz-ink);
+  --pz-violet-2: var(--pz-dim);
+  --pz-gold: var(--pz-ink);
   --pz-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: #000;
+  background: var(--pz-bg);
   color: var(--pz-ink);
   font-family: var(--sans);
   overflow: hidden;
@@ -90,11 +98,13 @@
   max-width: 1400px;
   padding: 14px 26px;
   border-radius: 14px;
-  background: rgb(0 0 0 / 0.72);
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
   font-size: 30px;
   line-height: 1.35;
   text-align: center;
-  color: #fff;
+  color: var(--pz-ink);
   z-index: 50;
 }
 
@@ -109,8 +119,9 @@
   gap: 16px;
   padding: 8px 10px 8px 14px;
   border-radius: 14px;
-  background: rgb(20 20 22 / 0.86);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
   opacity: 0.2;
   transition: opacity 200ms ease;
   z-index: 10;
@@ -131,13 +142,13 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: 5px;
-  color: #8a8a92;
+  color: var(--pz-faint);
 }
 .pz-seg::before {
   content: "";
   height: 3px;
   border-radius: 2px;
-  background: rgb(255 255 255 / 0.16);
+  background: var(--pz-panel-2);
   order: 2;
 }
 .pz-seg-fill {
@@ -146,7 +157,7 @@
   bottom: 0;
   height: 3px;
   border-radius: 2px;
-  background: #fff;
+  background: var(--pz-ink);
 }
 .pz-seg-label {
   font-size: 11px;
@@ -156,7 +167,7 @@
   text-align: left;
 }
 .pz-seg[aria-selected="true"] {
-  color: #fff;
+  color: var(--pz-ink);
 }
 .pz-buttons {
   display: flex;
@@ -168,31 +179,32 @@
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  color: #d4d4d8;
+  color: var(--pz-dim);
 }
 .pz-buttons button:hover:not(:disabled) {
-  background: rgb(255 255 255 / 0.08);
-  color: #fff;
+  background: var(--pz-panel-2);
+  color: var(--pz-ink);
 }
 .pz-buttons button:disabled {
   opacity: 0.3;
 }
 .pz-buttons button[aria-pressed="true"] {
-  color: var(--pz-violet);
+  color: var(--pz-ink);
+  background: var(--pz-panel-2);
 }
 .pz-wait {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  color: #8a8a92;
+  color: var(--pz-faint);
   font-size: 15px;
 }
 .pz-exit {
   position: absolute;
   top: 16px;
   right: 16px;
-  color: #a1a1aa;
+  color: var(--pz-dim);
 }
 
 .pz-placeholder {

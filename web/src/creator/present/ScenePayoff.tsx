@@ -201,7 +201,7 @@ function Economics({ t, story, minutes }: { t: number; story: SceneProps["story"
           <Clock size={32} strokeWidth={1.8} aria-hidden /> in <b>{minutes} min</b>
         </span>
         <span>
-          <Coins size={32} strokeWidth={1.8} aria-hidden /> for <b className="pz-payoff-gold">{usd(story.usd)}</b>
+          <Coins size={32} strokeWidth={1.8} aria-hidden /> for <b>{usd(story.usd)}</b>
         </span>
       </p>
       <p className="pz-payoff-econ-sub">

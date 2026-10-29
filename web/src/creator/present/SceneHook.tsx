@@ -118,8 +118,12 @@ function buildWall(lab: LabState): { rows: Tile[][]; hits: number } {
   return { rows: out, hits: scored.length };
 }
 
-// grey tile -> red tile
-const mix = (a: number, b: number, k: number) => Math.round(a + (b - a) * k);
+// quiet grey pill -> red cliché pill (h: 0..1), mixed from the palette tokens; the unmatched lines fade to faint
+const pct = (k: number) => `${Math.round(k * 1000) / 10}%`;
+const tileInk = (h: number, dim: number) =>
+  h > 0 ? `color-mix(in srgb, var(--pz-red) ${pct(h)}, var(--pz-dim))` : `color-mix(in srgb, var(--pz-faint) ${pct(dim)}, var(--pz-dim))`;
+const tileFill = (h: number) => `color-mix(in srgb, var(--pz-red-wash) ${pct(h)}, var(--pz-panel-2))`;
+const tileEdge = (h: number) => `color-mix(in srgb, var(--pz-red) ${pct(0.55 * h)}, var(--pz-panel-2))`;
 
 // ---- scene --------------------------------------------------------------------------------------------
 
@@ -169,9 +173,9 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
                   style={{
                     opacity: a * (h > 0 ? Math.max(base, 0.95) : base),
                     transform: `scale(${0.86 + 0.14 * a + 0.04 * h * (1 - dim)})`,
-                    color: `rgb(${mix(138, 255, h)} ${mix(138, 140, h)} ${mix(146, 130, h)})`,
-                    background: `rgb(${mix(255, 255, h)} ${mix(255, 107, h)} ${mix(255, 94, h)} / ${0.045 + 0.1 * h})`,
-                    borderColor: `rgb(${mix(255, 255, h)} ${mix(255, 107, h)} ${mix(255, 94, h)} / ${0.07 + 0.38 * h})`,
+                    color: tileInk(h, dim),
+                    background: tileFill(h),
+                    borderColor: tileEdge(h),
                   }}
                 >
                   {tile.label}

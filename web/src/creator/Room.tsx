@@ -3,7 +3,7 @@ import { memo, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } 
 import { AgentLanes } from "./AgentLanes";
 import { plannedReels } from "./Reels";
 import { CONTROL_AGENT, groupFeed } from "./phases";
-import { AGENT_JOB, agentIcon, stageColor } from "./present/cast";
+import { AGENT_JOB, agentIcon, dashColor } from "./present/cast";
 import { useCreator } from "./store";
 import { buildStory, criticScore, type CriticPick, type StoryStep } from "./story";
 import type { Critique, CritiqueVerdict, LabState, ReelConcept, RoomMessage } from "./types";
@@ -141,7 +141,7 @@ const Cast = memo(function Cast({ lab }: { lab: LabState }) {
                 {list.map((a) => {
                   const Icon = agentIcon(a.id);
                   return (
-                    <li key={a.id} data-speaking={a.id === speaking || undefined} title={a.lens} style={{ "--chip": stageColor(a.color) } as CSSProperties}>
+                    <li key={a.id} data-speaking={a.id === speaking || undefined} title={a.lens} style={{ "--chip": dashColor(a.color) } as CSSProperties}>
                       <span className="cl-cast-chip" aria-hidden>
                         <Icon size={14} />
                       </span>

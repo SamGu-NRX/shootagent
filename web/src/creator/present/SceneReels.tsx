@@ -103,8 +103,8 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
         </figcaption>
         <div className="pz-reels-screen">
           <video ref={heroVideo} src={fileUrl(heroReel.video)} poster={fileUrl(heroReel.poster)} muted playsInline loop preload="auto" />
-          <span className="pz-reels-ring" aria-hidden />
         </div>
+        <span className="pz-reels-ring" aria-hidden />
       </figure>
 
       <div className="pz-reels-side">
@@ -148,8 +148,12 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
                   )}
                 </p>
                 <span className="pz-reels-bars" aria-hidden>
-                  <span className="pz-reels-bar-a" style={{ width: `${(a / r.max) * 100}%` }} />
-                  <span className="pz-reels-bar-b" style={{ width: `${(b / r.max) * 100}%` }} />
+                  <span className="pz-reels-track">
+                    <span className="pz-reels-bar-a" style={{ width: `${(a / r.max) * 100}%` }} />
+                  </span>
+                  <span className="pz-reels-track">
+                    <span className="pz-reels-bar-b" style={{ width: `${(b / r.max) * 100}%` }} />
+                  </span>
                 </span>
               </li>
             );

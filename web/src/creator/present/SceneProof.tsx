@@ -7,7 +7,6 @@ import { useMemo, type CSSProperties } from "react";
 import { cloudEllipse } from "../CreativityMap";
 import { agreementLabel } from "../stats";
 import type { MapPoint } from "../types";
-import { stageColor } from "./cast";
 import { easeBack, easeInOut, easeOut, phase, type SceneProps } from "./types";
 
 // the map's drawing area; the right margin leaves room for the reel labels
@@ -76,7 +75,6 @@ export function SceneProof({ lab, story, t }: SceneProps) {
     return { cliches, zone, template: tp ? at(tp) : null, ideas };
   }, [ev.map]);
 
-  const colorOf = useMemo(() => new Map(lab.agents.map((a) => [a.id, stageColor(a.color)])), [lab.agents]);
   const reelOf = useMemo(() => new Map(lab.reels.filter((r) => r.kind !== "baseline").map((r) => [r.concept, r])), [lab.reels]);
 
   const jury = useMemo(
@@ -108,7 +106,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
         </p>
         <h2 className="pz-proof-title">
           <span style={fade(phase(t, 100, 700), 28)}>Creativity, measured.</span>
-          <span className="pz-proof-dim" style={fade(phase(t, 350, 700), 28)}>
+          <span className="pz-proof-title-dim" style={fade(phase(t, 350, 700), 28)}>
             Not by the agents that made it.
           </span>
         </h2>
@@ -150,14 +148,13 @@ export function SceneProof({ lab, story, t }: SceneProps) {
             if (k <= 0) return null;
             const cx = centre.x + (x - centre.x) * k;
             const cy = centre.y + (y - centre.y) * k;
-            const isHero = hero?.concept === p.id;
             const reel = reelOf.get(p.id);
             if (p.kind === "single_agent") {
               return <circle key={p.id} className="pz-proof-solo" cx={cx} cy={cy} r={6.5} style={{ opacity: k }} />;
             }
             return (
               <g key={p.id} style={{ opacity: k }}>
-                <circle cx={cx} cy={cy} r={p.kind === "finalist" || reel ? 9 : 7} fill={isHero ? "var(--pz-violet)" : (colorOf.get(p.agent ?? "") ?? "#cfcfcf")} />
+                <circle cx={cx} cy={cy} r={p.kind === "finalist" || reel ? 9 : 7} fill="var(--pz-ink)" />
               </g>
             );
           })}

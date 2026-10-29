@@ -9,7 +9,7 @@ import { CONTROL_AGENT } from "../phases";
 import { criticScore, firstSentence } from "../story";
 import type { AgentCard, CritiqueVerdict, LabState, ReelConcept } from "../types";
 import { focusStyle } from "../ui";
-import { AGENT_JOB, agentIcon, hdPhoto, roomCast, stageColor } from "./cast";
+import { AGENT_JOB, agentIcon, hdPhoto, roomCast } from "./cast";
 import { countUp, easeBack, easeInOut, linear, phase, type SceneProps } from "./types";
 
 // ---- layout, in stage pixels ----------------------------------------------------------------------
@@ -180,8 +180,6 @@ function plan(lab: LabState): Plan {
   };
 }
 
-const colorVar = (hex: string | undefined) => ({ "--c": stageColor(hex ?? "#bbbbbb") }) as CSSProperties;
-
 export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
   const p = useMemo(() => plan(lab), [lab]);
 
@@ -226,7 +224,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
             (p.cliche?.critic.id === a.id && clicheIn > 0.5) || (p.truth?.critic.id === a.id && truthIn > 0.5) || (scanOn > 0.5 && !p.cliche && !p.truth);
           const enter = phase(t, 150 + i * 120, 450);
           return (
-            <div key={a.id} className="pz-critique-critic" data-on={on || undefined} style={{ ...colorVar(a.color), opacity: enter, transform: `translateX(${(1 - enter) * -16}px)` }}>
+            <div key={a.id} className="pz-critique-critic" data-on={on || undefined} style={{ opacity: enter, transform: `translateX(${(1 - enter) * -16}px)` }}>
               <span className="pz-critique-critic-icon">
                 <Icon size={30} strokeWidth={1.8} aria-hidden />
                 {scanOn > 0.2 && <span className="pz-critique-live" aria-hidden />}
@@ -253,15 +251,18 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
           <article
             key={w.c.id}
             className="pz-critique-card"
-            style={{
-              ...colorVar(w.who?.color),
-              left: w.x,
-              top: w.y,
-              width: CARD_W,
-              height: CARD_H,
-              opacity: phase(t, 0, 350) * (1 - 0.58 * killed) * fade * dim,
-              transform: `translateY(${killed * 8}px)`,
-            }}
+            style={
+              {
+                left: w.x,
+                top: w.y,
+                width: CARD_W,
+                height: CARD_H,
+                // a kill fades the card's text to faint (in CSS) so the red stamp stays at full strength
+                "--kill": killed,
+                opacity: phase(t, 0, 350) * fade * dim,
+                transform: `translateY(${killed * 8}px)`,
+              } as CSSProperties
+            }
           >
             <p className="pz-critique-card-who">
               <Icon size={15} strokeWidth={2} aria-hidden /> {w.who?.name ?? w.c.agent}
@@ -319,7 +320,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
           const draw = phase(t, r.at - 280, 640, easeInOut);
           if (draw <= 0) return null;
           return (
-            <g key={r.c.id} style={colorVar(r.who?.color)}>
+            <g key={r.c.id}>
               <path d={d} pathLength={1} className="pz-critique-arc" style={{ strokeDasharray: 1, strokeDashoffset: 1 - draw }} />
               <circle cx={x1} cy={y1} r={4} className="pz-critique-arc-dot" />
               {draw > 0.97 && <circle cx={x2} cy={y2} r={4.5} className="pz-critique-arc-dot" />}
@@ -337,7 +338,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
           <article
             key={r.c.id}
             className="pz-critique-remix"
-            style={{ ...colorVar(r.who?.color), top: r.y, height: REMIX_H, opacity: enter * handoff, transform: `translateX(${(1 - enter) * 24}px)` }}
+            style={{ top: r.y, height: REMIX_H, opacity: enter * handoff, transform: `translateX(${(1 - enter) * 24}px)` }}
           >
             <p className="pz-critique-remix-steal">
               <Icon size={14} strokeWidth={2.2} aria-hidden />
@@ -403,7 +404,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
               <p className="pz-critique-fin-hook" style={{ opacity: 0.25 + 0.75 * hook, transform: `translateY(${(1 - hook) * 10}px)` }}>
                 “{f.c.hook.text}”
               </p>
-              <div className="pz-critique-fin-meta" style={colorVar(f.who?.color)}>
+              <div className="pz-critique-fin-meta">
                 <p className="pz-critique-fin-by">
                   <Icon size={17} strokeWidth={2} aria-hidden />
                   <span>
@@ -432,11 +433,11 @@ function Callout({ card, critic, tag, amount, top, children }: { card: WallCard;
   const y2 = top + 44;
   return (
     <>
-      <svg className="pz-critique-link" width={1920} height={1080} aria-hidden style={{ ...colorVar(critic.color), opacity: Math.min(1, amount) }}>
+      <svg className="pz-critique-link" width={1920} height={1080} aria-hidden style={{ opacity: Math.min(1, amount) }}>
         <path d={`M ${x1} ${y1} C ${x1 + 60} ${y1}, ${x2 - 70} ${y2}, ${x2} ${y2}`} pathLength={1} style={{ strokeDasharray: 1, strokeDashoffset: 1 - Math.min(1, amount) }} />
         <circle cx={x1} cy={y1} r={5} />
       </svg>
-      <aside className="pz-critique-callout" style={{ ...colorVar(critic.color), left: NOTE_X, top, width: NOTE_W, opacity: Math.min(1, amount * 1.3), transform: `translateX(${(1 - amount) * 18}px)` }}>
+      <aside className="pz-critique-callout" style={{ left: NOTE_X, top, width: NOTE_W, opacity: Math.min(1, amount * 1.3), transform: `translateX(${(1 - amount) * 18}px)` }}>
         <p className="pz-critique-callout-head">
           <span className="pz-critique-callout-icon">
             <Icon size={17} strokeWidth={2} aria-hidden />

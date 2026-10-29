@@ -6,7 +6,7 @@
 import "../styles/creator-lanes.css";
 import { Fragment, useMemo, useState, type CSSProperties } from "react";
 import { CONTROL_AGENT, messagePhase } from "./phases";
-import { agentIcon, roomCast, stageColor } from "./present/cast";
+import { agentIcon, roomCast, dashColor } from "./present/cast";
 import { useCreator } from "./store";
 import type { AgentCard, LabState, RoomKind, RoomMessage } from "./types";
 import { fmtClock, numberWord, useLabClock, useWidth } from "./ui";
@@ -226,7 +226,7 @@ export function AgentLanes() {
 
         {lanes.map((l, i) => {
           const Icon = agentIcon(l.agent.id);
-          const style = { "--ag": stageColor(l.agent.color), gridRow: i + 2 } as CSSProperties;
+          const style = { "--ag": dashColor(l.agent.color), gridRow: i + 2 } as CSSProperties;
           return (
             <Fragment key={l.agent.id}>
               <div className="cl-lanes-who" style={style} data-group-start={groupStart(i) || undefined} title={l.agent.lens}>

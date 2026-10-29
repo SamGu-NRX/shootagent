@@ -23,13 +23,18 @@
 .pz-payoff-l2 {
   display: block;
 }
+.pz-payoff-l1 {
+  color: var(--pz-ink);
+}
 .pz-payoff-l2 {
   color: var(--pz-faint);
 }
+/* the multiple: ink like the rest of line 1, only heavier */
 .pz-payoff-x {
   font-family: var(--sans);
   font-variant-numeric: tabular-nums;
-  color: var(--pz-violet);
+  font-weight: 700;
+  color: var(--pz-ink);
   letter-spacing: -0.04em;
 }
 
@@ -46,7 +51,7 @@
   overflow: visible;
 }
 .pz-payoff-grid line {
-  stroke: rgb(255 255 255 / 0.07);
+  stroke: var(--pz-line);
   stroke-width: 1;
 }
 .pz-payoff-grid text,
@@ -61,29 +66,29 @@
   stroke-linecap: round;
 }
 .pz-payoff-line[data-tone="hero"] {
-  stroke: var(--pz-violet);
-  stroke-width: 5;
+  stroke: var(--pz-ink);
+  stroke-width: 3;
 }
 .pz-payoff-line[data-tone="template"] {
-  stroke: #8a8a92;
-  stroke-width: 3.5;
+  stroke: var(--pz-faint);
+  stroke-width: 2;
 }
 .pz-payoff-line[data-tone="other"] {
-  stroke: rgb(255 255 255 / 0.16);
-  stroke-width: 2.5;
+  stroke: var(--pz-line);
+  stroke-width: 2;
 }
 .pz-payoff-now {
-  stroke: rgb(255 255 255 / 0.14);
+  stroke: var(--pz-line);
   stroke-width: 1.5;
   stroke-dasharray: 4 6;
 }
 .pz-payoff-dot[data-tone="hero"] {
-  fill: var(--pz-violet);
+  fill: var(--pz-ink);
   stroke: var(--pz-bg);
   stroke-width: 4;
 }
 .pz-payoff-dot[data-tone="template"] {
-  fill: #8a8a92;
+  fill: var(--pz-faint);
   stroke: var(--pz-bg);
   stroke-width: 3;
 }
@@ -99,13 +104,13 @@
   font-size: 17px;
 }
 .pz-payoff-end[data-tone="hero"] .pz-payoff-end-v {
-  fill: var(--pz-violet-2);
+  fill: var(--pz-ink);
 }
 .pz-payoff-end[data-tone="hero"] .pz-payoff-end-k {
   fill: var(--pz-dim);
 }
 .pz-payoff-end[data-tone="template"] .pz-payoff-end-v {
-  fill: #b4b4bb;
+  fill: var(--pz-dim);
 }
 .pz-payoff-end[data-tone="template"] .pz-payoff-end-k {
   fill: var(--pz-faint);
@@ -135,19 +140,21 @@
   content: "";
   display: inline-block;
   width: 22px;
-  height: 4px;
+  height: 3px;
   margin-right: 9px;
   border-radius: 2px;
   vertical-align: 4px;
 }
 .pz-payoff-legend [data-tone="hero"]::before {
-  background: var(--pz-violet);
+  height: 4px;
+  vertical-align: 3px;
+  background: var(--pz-ink);
 }
 .pz-payoff-legend [data-tone="template"]::before {
-  background: #8a8a92;
+  background: var(--pz-faint);
 }
 .pz-payoff-legend [data-tone="other"]::before {
-  background: rgb(255 255 255 / 0.2);
+  background: var(--pz-line);
 }
 .pz-payoff-sim {
   margin-top: 8px;
@@ -174,6 +181,7 @@
   border-radius: 20px;
   background: var(--pz-panel);
   border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
 }
 .pz-payoff-icon {
   flex: none;
@@ -182,8 +190,8 @@
   width: 60px;
   height: 60px;
   border-radius: 16px;
-  background: rgb(165 147 255 / 0.12);
-  color: var(--pz-violet);
+  background: var(--pz-panel-2);
+  color: var(--pz-ink);
 }
 .pz-payoff-tile-text {
   min-width: 0;
@@ -199,13 +207,14 @@
   display: inline-block;
   padding: 3px 11px;
   border-radius: 999px;
-  background: rgb(245 195 91 / 0.14);
-  color: var(--pz-gold);
+  background: var(--pz-panel-2);
+  color: var(--pz-ink);
   font-size: 17px;
   font-weight: 650;
 }
 .pz-payoff-tile-value {
   margin-top: 2px;
+  color: var(--pz-ink);
   font-size: 50px;
   line-height: 1.04;
   font-weight: 650;
@@ -215,7 +224,7 @@
 .pz-payoff-tile-vs {
   margin-top: 4px;
   font-size: 18px;
-  color: var(--pz-faint);
+  color: var(--pz-dim);
 }
 .pz-payoff-tile-vs b {
   font-weight: 600;
@@ -236,8 +245,9 @@
   bottom: 40px;
   padding: 26px 34px 18px;
   border-radius: 22px;
-  background: #121215;
+  background: var(--pz-panel);
   border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
 }
 .pz-payoff-econ-main {
   display: flex;
@@ -252,14 +262,11 @@
   gap: 14px;
 }
 .pz-payoff-econ-main svg {
-  color: var(--pz-violet);
+  color: var(--pz-ink);
 }
 .pz-payoff-econ-main b {
   font-weight: 650;
   color: var(--pz-ink);
-}
-.pz-payoff-gold {
-  color: var(--pz-gold) !important;
 }
 .pz-payoff-econ-sub {
   display: flex;
@@ -294,7 +301,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgb(9 9 11 / 0.97);
+  background: var(--pz-bg);
   z-index: 5;
 }
 .pz-payoff-endcard-inner {
@@ -307,9 +314,10 @@
   font-size: 136px;
   font-weight: 700;
   letter-spacing: -0.05em;
+  color: var(--pz-ink);
 }
 .pz-payoff-mark svg {
-  color: var(--pz-violet);
+  color: var(--pz-ink);
 }
 .pz-payoff-tagline {
   margin-top: 18px;
@@ -320,6 +328,6 @@
 .pz-payoff-credits {
   margin-top: 40px;
   font-size: 22px;
-  color: var(--pz-faint);
+  color: var(--pz-dim);
   letter-spacing: 0.01em;
 }

@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 import { useMemo, type CSSProperties } from "react";
 import { CONTROL_AGENT } from "../phases";
 import type { AgentCard, LabState, ReelConcept } from "../types";
-import { AGENT_JOB, agentIcon, hdPhoto, roomCast, stageColor } from "./cast";
+import { AGENT_JOB, agentIcon, hdPhoto, roomCast } from "./cast";
 import { countUp, easeOut, linear, phase, type SceneProps } from "./types";
 
 // ---- layout on the 1920x1080 stage ---------------------------------------------------------------------
@@ -35,7 +35,6 @@ const STATS_FROM = 6300;
 
 interface Lane {
   agent: AgentCard;
-  color: string;
   /** 0-1 of the pitch round, when this creator's pitches landed */
   done: number;
   concepts: ReelConcept[];
@@ -77,7 +76,6 @@ function buildPitch(lab: LabState): Pitch {
     const at = landed.length ? Math.max(...landed) : start + span;
     return {
       agent,
-      color: stageColor(agent.color),
       done: Math.min(1, Math.max(0.08, (at - start) / span)),
       concepts: ideas.filter((c) => c.agent === agent.id).sort((a, b) => a.id.localeCompare(b.id)),
     };
@@ -180,10 +178,10 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
               <p className="pz-pitch-lane-job">{AGENT_JOB[lane.agent.id] ?? lane.agent.lens}</p>
             </div>
             <span className="pz-pitch-track">
-              <span className="pz-pitch-fill" style={{ width: `${width * 100}%`, background: lane.color }} />
-              {tick > 0 && !finished && <span className="pz-pitch-head-dot" style={{ left: `${width * 100}%`, background: lane.color }} />}
+              <span className="pz-pitch-fill" style={{ width: `${width * 100}%` }} />
+              {tick > 0 && !finished && <span className="pz-pitch-head-dot" style={{ left: `${width * 100}%` }} />}
             </span>
-            <span className="pz-pitch-done" style={{ opacity: phase(t, doneAt, 300), color: lane.color }}>
+            <span className="pz-pitch-done" style={{ opacity: phase(t, doneAt, 300) }}>
               <Check size={15} strokeWidth={2.6} aria-hidden />
               <span>{lane.concepts.length}</span>
             </span>
@@ -208,13 +206,10 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
           <article
             key={c.id}
             className="pz-pitch-card"
-            style={
-              {
-                "--c": lane.color,
-                opacity: phase(t, launch, 260, linear),
-                transform: `translate(${cx - CARD_W / 2}px, ${cy - CARD_H / 2}px) scale(${s})`,
-              } as CSSProperties
-            }
+            style={{
+              opacity: phase(t, launch, 260, linear),
+              transform: `translate(${cx - CARD_W / 2}px, ${cy - CARD_H / 2}px) scale(${s})`,
+            }}
           >
             <p className="pz-pitch-card-by">
               <Icon size={14} strokeWidth={2.2} aria-hidden />
@@ -243,13 +238,9 @@ function rise(t: number, from: number, span = 700): CSSProperties {
 }
 
 function AgentDot({ agent, size, pulse = null }: { agent: AgentCard; size: number; pulse?: number | null }) {
-  const color = stageColor(agent.color);
   const Icon = agentIcon(agent.id);
   return (
-    <span
-      className="pz-pitch-icon"
-      style={{ width: size, height: size, color, background: `color-mix(in oklab, ${color} 16%, transparent)`, boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${color} 55%, transparent)` }}
-    >
+    <span className="pz-pitch-icon" style={{ width: size, height: size }}>
       <Icon size={Math.round(size * 0.46)} strokeWidth={2} aria-hidden />
       {pulse != null && <span className="pz-pitch-ring" style={{ transform: `scale(${1 + pulse * 0.45})`, opacity: 0.55 * (1 - pulse) }} />}
     </span>
