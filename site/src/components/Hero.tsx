@@ -326,7 +326,8 @@ export function Hero() {
         {controlIcon}
       </button>
       <p className="device-note">
-        An illustration made from ShootAgent’s real tool output on AutoHDR’s data, not a screen recording.
+        An illustration made from ShootAgent’s real tool output on AutoHDR’s data, not a screen recording.{" "}
+        <a href="#run">Watch a real run</a>.
       </p>
       </div>
 

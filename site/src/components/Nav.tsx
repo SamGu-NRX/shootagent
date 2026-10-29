@@ -20,6 +20,7 @@ export function Nav() {
         </a>
         <div className="nav-links">
           <a href="#how">How it works</a>
+          <a href="#run">Watch a run</a>
           <a href="#compliance">Compliance</a>
           <a href="#results">Results</a>
           <a href={GITHUB_URL}>GitHub</a>

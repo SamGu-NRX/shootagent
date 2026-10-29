@@ -1,9 +1,12 @@
 import { Compliance } from "./components/Compliance";
+import { Edits } from "./components/Edits";
 import { Film } from "./components/Film";
 import { Flow } from "./components/Flow";
 import { Hero } from "./components/Hero";
+import { LensDemo } from "./components/LensDemo";
 import { DemoButton, Nav } from "./components/Nav";
 import { Results } from "./components/Results";
+import { Tour } from "./components/Tour";
 import { GITHUB_URL, LICENSE_URL } from "./content";
 import { useInputMode } from "./lib/motion";
 
@@ -17,8 +20,11 @@ export function App() {
       <Nav />
       <main id="main" tabIndex={-1}>
         <Hero />
+        <LensDemo />
         <Film />
+        <Edits />
         <Flow />
+        <Tour />
         <Compliance />
         <Results />
         <section className="wrap closing" aria-labelledby="closing-title">

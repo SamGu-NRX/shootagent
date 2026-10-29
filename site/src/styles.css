@@ -292,6 +292,7 @@ h3 {
   gap: 2px;
 }
 .nav-links a {
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -465,6 +466,9 @@ h3 {
   font-size: 13.5px;
   line-height: 1.45;
   color: var(--text-3);
+}
+.device-note a {
+  color: var(--text-2);
 }
 /* A pause control on the picture itself, for layouts where the step list sits below it. */
 .device-toggle {
@@ -1985,7 +1989,13 @@ html[data-input="keyboard"] .kit-figure:not([data-exploding]) .sheet {
     gap: 14px;
   }
 }
-@media (max-width: 720px) {
+/* The nav keeps what fits: GitHub is also in the closing and the footer, and below 860 px only the demo stays. */
+@media (max-width: 1000px) {
+  .nav-links a[href^="https://github.com"] {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
   .nav-links a:not(.nav-cta) {
     display: none;
   }
