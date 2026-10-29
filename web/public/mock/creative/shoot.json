@@ -1,0 +1,46 @@
+{
+ "id": "64170ca0a0",
+ "title": "Demo listing: warm modern one-bedroom",
+ "listing": {
+  "address": "Unit 4B, demo listing",
+  "price": "$489,000",
+  "beds": 1.0,
+  "baths": 1.0,
+  "sqft": 640,
+  "headline": "Warm modern one-bedroom with an arched, backlit headboard wall"
+ },
+ "views": [
+  {
+   "id": "v01",
+   "label": "Entry Hall"
+  },
+  {
+   "id": "v02",
+   "label": "Kitchen"
+  },
+  {
+   "id": "v03",
+   "label": "Living Room"
+  },
+  {
+   "id": "v04",
+   "label": "Entry"
+  },
+  {
+   "id": "v05",
+   "label": "Dining Nook"
+  },
+  {
+   "id": "v06",
+   "label": "Dining And Living"
+  },
+  {
+   "id": "v07",
+   "label": "Bedroom"
+  },
+  {
+   "id": "v08",
+   "label": "Bedroom 2"
+  }
+ ]
+}

@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCheck, Play } from "lucide-react";
+import { ArrowLeft, CheckCheck, Play, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { openListRoute } from "../App";
 import { activeRun, useStore } from "../state/store";
@@ -136,6 +136,11 @@ function TopBar() {
             <span className="live-dot" aria-hidden />
             <span className="live-label">Agent working</span> <LiveClock since={live.startedAt} />
           </span>
+        )}
+        {shoot && (
+          <a className="btn" href={`#/creator/${encodeURIComponent(shoot.id)}`}>
+            <Sparkles size={13} aria-hidden /> Creative lab
+          </a>
         )}
         <button className="btn" onClick={approveAll} disabled={!shoot || approved === views.length || busy === "approve-all"}>
           <CheckCheck size={14} aria-hidden /> Approve all

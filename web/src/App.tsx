@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { ShootList } from "./components/ShootList";
 import { Toast } from "./components/Toast";
 import { Workspace } from "./components/Workspace";
 
-function parseHash(): { shootId: string | null } {
+const CreatorPage = lazy(() => import("./creator/CreatorPage"));
+
+function parseHash(): { shootId: string | null; creator: { shootId: string; labId: string | null } | null } {
   const m = location.hash.match(/^#\/s\/([^/?#]+)/);
-  return { shootId: m ? decodeURIComponent(m[1]!) : null };
+  const c = location.hash.match(/^#\/creator\/([^/?#]+)(?:\/([^/?#]+))?/);
+  return {
+    shootId: m ? decodeURIComponent(m[1]!) : null,
+    creator: c ? { shootId: decodeURIComponent(c[1]!), labId: c[2] ? decodeURIComponent(c[2]) : null } : null,
+  };
 }
 
 export const openShootRoute = (id: string) => {
@@ -24,7 +30,15 @@ export function App() {
   }, []);
   return (
     <>
-      {route.shootId ? <Workspace shootId={route.shootId} /> : <ShootList />}
+      {route.creator ? (
+        <Suspense fallback={null}>
+          <CreatorPage shootId={route.creator.shootId} labId={route.creator.labId} />
+        </Suspense>
+      ) : route.shootId ? (
+        <Workspace shootId={route.shootId} />
+      ) : (
+        <ShootList />
+      )}
       <Toast />
     </>
   );
