@@ -1,7 +1,9 @@
 import { ArrowDown, ArrowRight, Check, type LucideIcon, RotateCw, X } from "lucide-react";
-import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { AgentLanes } from "./AgentLanes";
 import { plannedReels } from "./Reels";
 import { CONTROL_AGENT, groupFeed } from "./phases";
+import { AGENT_JOB, agentIcon, stageColor } from "./present/cast";
 import { useCreator } from "./store";
 import { buildStory, criticScore, type CriticPick, type StoryStep } from "./story";
 import type { Critique, CritiqueVerdict, LabState, ReelConcept, RoomMessage } from "./types";
@@ -74,26 +76,35 @@ export function RoomSection() {
   const creators = lab.agents.filter((a) => a.role === "creator" && a.id !== CONTROL_AGENT).length;
   const critics = lab.agents.filter((a) => a.role === "critic").length;
   const remixes = room.filter((c) => c.parents.length).length;
+  const specialists = lab.agents.filter((a) => a.role === "showrunner" || a.role === "critic" || (a.role === "creator" && a.id !== CONTROL_AGENT)).length;
   const counts = [
-    `${room.length} concept${room.length === 1 ? "" : "s"}`,
     `${lab.critiques.length} critique${lab.critiques.length === 1 ? "" : "s"}`,
     remixes ? `${remixes} remix${remixes === 1 ? "" : "es"}` : null,
+    `${creators} creators · ${critics} critics`,
   ].filter(Boolean);
   return (
     <section id="cl-room" className="cl-section" aria-labelledby="cl-room-title">
       <SectionHead
         id="cl-room-title"
-        title="Writers' room"
+        title="Your AI creative team"
         sub={
-          <>
-            {creators ? numberWord(creators, true) : "The"} creators pitch, {critics ? numberWord(critics) : "the"} critics tear the pitches apart, and the showrunner
-            greenlights {lab.options.finalists === 1 ? "one" : numberWord(lab.options.finalists)}.
-          </>
+          room.length > 0 ? (
+            <>
+              {specialists ? numberWord(specialists, true) : "The"} specialists brainstormed {room.length} reel ideas for this listing, critiqued each other and remixed the
+              best. The showrunner greenlit {lab.options.finalists === 1 ? "one" : numberWord(lab.options.finalists)}.
+            </>
+          ) : (
+            <>
+              {specialists ? numberWord(specialists, true) : "The"} specialists brainstorm reel ideas for this listing, critique each other and remix the best; the
+              showrunner greenlights {lab.options.finalists === 1 ? "one" : numberWord(lab.options.finalists)}.
+            </>
+          )
         }
       >
         {room.length > 0 && <p className="cl-counts">{counts.join(" · ")}</p>}
       </SectionHead>
       <Cast lab={lab} />
+      <AgentLanes />
       <div className="cl-room">
         <div className="cl-room-story">
           {lab.status === "running" && <Latest lab={lab} />}
@@ -120,19 +131,28 @@ const Cast = memo(function Cast({ lab }: { lab: LabState }) {
     ["Critics", lab.agents.filter((a) => a.role === "critic")],
   ];
   return (
-    <div className="cl-cast" role="list" aria-label="The room">
+    <div className="cl-cast" role="list" aria-label="The creative team">
       {groups.map(
         ([label, list]) =>
           list.length > 0 && (
-            <div key={label} className="cl-cast-group" role="listitem">
+            <div key={label} className="cl-cast-group" role="listitem" data-group={label.toLowerCase()}>
               <p className="cl-cast-label">{label}</p>
               <ul>
-                {list.map((a) => (
-                  <li key={a.id} data-speaking={a.id === speaking || undefined} title={a.lens}>
-                    {a.name}
-                    <span className="sr-only">: {a.lens}</span>
-                  </li>
-                ))}
+                {list.map((a) => {
+                  const Icon = agentIcon(a.id);
+                  return (
+                    <li key={a.id} data-speaking={a.id === speaking || undefined} title={a.lens} style={{ "--chip": stageColor(a.color) } as CSSProperties}>
+                      <span className="cl-cast-chip" aria-hidden>
+                        <Icon size={14} />
+                      </span>
+                      <span className="cl-cast-text">
+                        <span className="cl-cast-name">{a.name}</span>
+                        <span className="cl-cast-job">{AGENT_JOB[a.id] ?? a.lens}</span>
+                      </span>
+                      <span className="sr-only">: {a.lens}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ),

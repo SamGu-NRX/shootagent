@@ -82,8 +82,8 @@ export function ReelsSection() {
         title="The reels"
         sub={
           <>
-            A is the template reel most listings post. The room's two picks sit beside it
-            {planned.some((p) => p.kind === "single_agent") ? ", with the single agent's best for comparison." : "."}
+            A typical listing reel next to your AI team's picks
+            {planned.some((p) => p.kind === "single_agent") ? " and a solo AI agent's best" : ""}. Press play to compare.
           </>
         }
       >

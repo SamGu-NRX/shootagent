@@ -60,11 +60,11 @@ export function LaunchSection() {
     <section id="cl-launch" className="cl-section" aria-labelledby="cl-launch-title">
       <SectionHead
         id="cl-launch-title"
-        title="Simulated launch"
-        sub={`Which reel would travel further? ${sims[0]?.hours ?? lab.options.hours} hours on an account with ${fmtInt(sims[0]?.followers ?? lab.options.followers)} followers, played back in ${PLAY_MS / 1000} seconds.`}
+        title={`Predicted first ${sims[0]?.hours ?? lab.options.hours} hours`}
+        sub={`How far each reel would travel and how many buyers would reach out if you posted it to ${fmtInt(sims[0]?.followers ?? lab.options.followers)} followers. Played back in ${PLAY_MS / 1000} seconds.`}
       />
       <p className="cl-honest">
-        <span>Simulated audience:</span> a model-based prediction from the evaluation panel, not platform data.
+        <span>Simulated audience:</span> a prediction from the AI viewer panel's reactions, not platform data.
       </p>
       {ready ? (
         <Launch lab={lab} sims={sims} viewers={viewers} />

@@ -1,0 +1,276 @@
+/* Presenter scene 2, "The creative team" (src/creator/present/ScenePitch.tsx). Positions are stage pixels. */
+.pz-pitch {
+  position: absolute;
+  inset: 0;
+}
+
+.pz-pitch-head {
+  position: absolute;
+  left: 120px;
+  top: 84px;
+  font-size: 66px;
+  line-height: 1.06;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.pz-pitch-head span {
+  display: block;
+}
+.pz-pitch-dim {
+  color: #7b7b84;
+}
+
+/* the brief */
+.pz-pitch-show {
+  position: absolute;
+  left: 120px;
+  top: 286px;
+  width: 680px;
+}
+.pz-pitch-node {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pz-pitch-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+}
+.pz-pitch-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  pointer-events: none;
+}
+.pz-pitch-name {
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.pz-pitch-job {
+  margin-top: 2px;
+  font-size: 17px;
+  color: var(--pz-dim);
+}
+.pz-pitch-film {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+.pz-pitch-film img {
+  width: 54px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.pz-pitch-heroes {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 19px;
+  color: #d4d4d8;
+}
+.pz-pitch-heroes li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-height: 27px;
+}
+.pz-pitch-heroes li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pz-gold);
+  translate: 0 -3px;
+}
+.pz-pitch-heroes li.pz-pitch-hero-empty::before {
+  content: none;
+}
+.pz-pitch-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: currentColor;
+}
+
+/* six creators, side by side */
+.pz-pitch-lanes-head {
+  position: absolute;
+  left: 120px;
+  top: 578px;
+  width: 690px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pz-pitch-lanes-title {
+  font-size: 22px;
+  font-weight: 650;
+}
+.pz-pitch-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgb(165 147 255 / 0.14);
+  color: var(--pz-violet-2);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.pz-pitch-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pz-violet);
+}
+.pz-pitch-ticker {
+  margin-left: auto;
+  font-size: 22px;
+  color: var(--pz-ink);
+}
+.pz-pitch-ticker small {
+  font-size: 15px;
+  color: var(--pz-faint);
+}
+.pz-pitch-lane {
+  position: absolute;
+  left: 120px;
+  width: 700px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pz-pitch-lane-text {
+  width: 226px;
+  min-width: 0;
+}
+.pz-pitch-lane-name {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.pz-pitch-lane-job {
+  font-size: 13.5px;
+  color: var(--pz-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pz-pitch-track {
+  position: absolute;
+  left: 290px;
+  top: 23px;
+  width: 360px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.07);
+}
+.pz-pitch-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 3px;
+  opacity: 0.9;
+}
+.pz-pitch-head-dot {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  translate: -50% -50%;
+  box-shadow: 0 0 0 4px rgb(9 9 11);
+}
+.pz-pitch-done {
+  position: absolute;
+  left: 664px;
+  top: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* the concept wall */
+.pz-pitch-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 216px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border-radius: 14px;
+  background: #141418;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-top: 3px solid var(--c);
+  transform-origin: center;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+.pz-pitch-card-by {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c);
+}
+.pz-pitch-card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.pz-pitch-card-hook {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.38;
+  color: var(--pz-dim);
+}
+
+.pz-pitch-stats {
+  position: absolute;
+  left: 880px;
+  top: 902px;
+  width: 920px;
+  display: flex;
+  align-items: flex-end;
+  gap: 72px;
+}
+.pz-pitch-stat b {
+  display: block;
+  font-size: 54px;
+  font-weight: 600;
+  line-height: 1;
+}
+.pz-pitch-stat span {
+  display: block;
+  margin-top: 8px;
+  font-size: 17px;
+  color: var(--pz-dim);
+}

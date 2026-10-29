@@ -1,0 +1,227 @@
+/*
+ * The presenter (src/creator/present). A 1920x1080 stage scaled to the window, made to be screen-recorded.
+ * Shared stage language for every scene:
+ *   --pz-bg near-black stage; --pz-ink text; --pz-dim / --pz-faint secondary text
+ *   --pz-violet the agents' "creative" accent; --pz-gold money and winners; --pz-red cliches and kills;
+ *   --pz-green checks and wins. Type: Instrument Sans, big and tight; numbers in IBM Plex Mono.
+ * Motion: scenes animate from the `t` prop (ms since the scene began) so a take replays identically;
+ * CSS animations inside a scene pause with the presenter (data-paused).
+ */
+.pz {
+  --pz-bg: #09090b;
+  --pz-panel: #131316;
+  --pz-line: rgb(255 255 255 / 0.09);
+  --pz-ink: #f4f4f5;
+  --pz-dim: #a1a1aa;
+  --pz-faint: #63636b;
+  --pz-violet: #a593ff;
+  --pz-violet-2: #c9bfff;
+  --pz-gold: #f5c35b;
+  --pz-red: #ff6b5e;
+  --pz-green: #5fd08a;
+  --pz-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  color: var(--pz-ink);
+  font-family: var(--sans);
+  overflow: hidden;
+  user-select: none;
+}
+.pz[data-paused] .pz-stage *,
+.pz[data-paused] .pz-stage *::before,
+.pz[data-paused] .pz-stage *::after {
+  animation-play-state: paused !important;
+}
+
+.pz-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: center;
+  background: var(--pz-bg);
+  overflow: hidden;
+}
+.pz-scene {
+  position: absolute;
+  inset: 0;
+}
+.pz .num,
+.pz-num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* shared type for scenes */
+.pz-kicker {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pz-dim);
+}
+.pz-title {
+  font-size: 84px;
+  line-height: 1.02;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.pz-sub {
+  font-size: 30px;
+  line-height: 1.35;
+  color: var(--pz-dim);
+  letter-spacing: -0.01em;
+}
+.pz-note {
+  font-size: 17px;
+  color: var(--pz-faint);
+}
+
+/* caption (narration), off unless asked for */
+.pz-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 54px;
+  translate: -50% 0;
+  max-width: 1400px;
+  padding: 14px 26px;
+  border-radius: 14px;
+  background: rgb(0 0 0 / 0.72);
+  font-size: 30px;
+  line-height: 1.35;
+  text-align: center;
+  color: #fff;
+  z-index: 50;
+}
+
+/* controls: outside the stage, so a cropped recording never shows them */
+.pz-ui {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 10px 8px 14px;
+  border-radius: 14px;
+  background: rgb(20 20 22 / 0.86);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  opacity: 0.2;
+  transition: opacity 200ms ease;
+  z-index: 10;
+}
+.pz-ui:hover,
+.pz[data-paused] .pz-ui {
+  opacity: 1;
+}
+.pz-progress {
+  display: flex;
+  gap: 6px;
+}
+.pz-seg {
+  position: relative;
+  width: 92px;
+  height: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 5px;
+  color: #8a8a92;
+}
+.pz-seg::before {
+  content: "";
+  height: 3px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.16);
+  order: 2;
+}
+.pz-seg-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+}
+.pz-seg-label {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.pz-seg[aria-selected="true"] {
+  color: #fff;
+}
+.pz-buttons {
+  display: flex;
+  gap: 2px;
+}
+.pz-buttons button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  color: #d4d4d8;
+}
+.pz-buttons button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.08);
+  color: #fff;
+}
+.pz-buttons button:disabled {
+  opacity: 0.3;
+}
+.pz-buttons button[aria-pressed="true"] {
+  color: var(--pz-violet);
+}
+.pz-wait {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #8a8a92;
+  font-size: 15px;
+}
+.pz-exit {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: #a1a1aa;
+}
+
+.pz-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 12px;
+}
+.pz-placeholder p {
+  font-size: 80px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+.pz-placeholder span {
+  font-family: var(--mono);
+  color: var(--pz-faint);
+  font-size: 22px;
+}
+
+@keyframes pz-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes pz-fade {
+  from {
+    opacity: 0;
+  }
+}

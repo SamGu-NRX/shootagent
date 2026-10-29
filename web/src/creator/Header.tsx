@@ -1,7 +1,8 @@
-import { ArrowLeft, Check, ChevronDown, Minus, Play, RotateCw, Square, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, Minus, MonitorPlay, Play, RotateCw, Square, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { radioKeys } from "../components/radioKeys";
 import { phaseLabel, SECTIONS, stepPhases, type StepPhase } from "./phases";
+import { usePresenter } from "./present/Presenter";
 import { creatorRoute, useCreator } from "./store";
 import { DEFAULT_OPTIONS, type LabOptions, type LabState, type PhaseStatus } from "./types";
 import { fmtClock, fmtSpan, fmtUsd, goToSection, useDismiss, useLabClock, useReducedMotion } from "./ui";
@@ -43,6 +44,11 @@ export function LabHeader() {
           )}
           {lab && <StatusPill lab={lab} elapsed={elapsed} />}
           <LabPicker />
+          {lab?.status === "done" && lab.evaluation && (
+            <button className="btn btn-primary" onClick={() => usePresenter.getState().show()} title="A one-minute, full-screen walkthrough of this lab">
+              <MonitorPlay size={14} aria-hidden /> Present
+            </button>
+          )}
           <RunControls />
         </div>
       </div>

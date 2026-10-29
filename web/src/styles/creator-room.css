@@ -6,46 +6,77 @@
 
 /* ---------- cast ---------------------------------------------------------------------------------- */
 .cl-cast {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+  gap: 20px 40px;
   margin-bottom: 8px;
+  padding: 20px 24px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
 }
 .cl-cast-group {
   min-width: 0;
 }
 .cl-cast-label {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-3);
 }
 .cl-cast-group ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 20px;
+  display: grid;
+  gap: 12px 24px;
+}
+.cl-cast-group[data-group="creators"] ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .cl-cast-group li {
   position: relative;
-  font-size: 14px;
-  color: var(--text-2);
-  white-space: nowrap;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
   cursor: default;
-  transition: color 160ms ease;
 }
-.cl-cast-group li[data-speaking] {
-  color: var(--text);
-}
-.cl-cast-group li[data-speaking]::before {
-  content: "";
-  position: absolute;
-  left: -11px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
+.cl-cast-chip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--agent);
+  background: color-mix(in srgb, var(--chip) 16%, transparent);
+  color: var(--chip);
+  transition: box-shadow 200ms ease;
+}
+.cl-cast-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: 1px;
+}
+.cl-cast-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cl-cast-job {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-3);
+}
+.cl-cast-group li[data-speaking] .cl-cast-chip {
+  box-shadow: 0 0 0 2px var(--panel), 0 0 0 3.5px var(--chip);
   animation: pulse 1.6s ease-in-out infinite;
+}
+.cl-cast-group li[data-speaking] .cl-cast-name {
+  color: var(--chip);
 }
 
 /* ---------- two columns: the story, the concepts ------------------------------------------------------ */
@@ -1008,6 +1039,10 @@
   }
 }
 @media (max-width: 1100px) {
+  .cl-cast {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .cl-room {
     grid-template-columns: minmax(0, 1fr);
     gap: 48px;
@@ -1027,7 +1062,7 @@
   .cl-fin,
   .cl-latest li,
   .cl-drawer[open],
-  .cl-cast-group li[data-speaking]::before {
+  .cl-cast-group li[data-speaking] .cl-cast-chip {
     animation: none;
   }
 }

@@ -5,22 +5,23 @@ import { useCreator } from "./store";
 import { firstSentence } from "./story";
 import { agreementLabel, DIMENSION_LABEL, DIMENSIONS, dimensionMeans, headToHead, kendallFromRatings } from "./stats";
 import type { Evaluation, LabState, Reel, ReelSummary } from "./types";
-import { Disclosure, fmtPct, numberWord, ReelBadge, SectionHead, useAgents } from "./ui";
+import { Disclosure, fmtPct, ReelBadge, SectionHead, useAgents } from "./ui";
 
 export function ScorecardSection() {
   const lab = useCreator((s) => s.lab)!;
   const ev = lab.evaluation;
-  const nJudges = ev?.judges.length ?? 0;
+  const nJudges = ev?.judges.filter((j) => j.id !== "head_judge").length ?? 0;
   const nViewers = ev?.viewers.length ?? 0;
+  const nCliches = ev?.map?.points.filter((p) => p.kind === "cliche").length ?? 0;
   return (
     <section id="cl-scorecard" className="cl-section" aria-labelledby="cl-scorecard-title">
       <SectionHead
         id="cl-scorecard-title"
-        title="Scorecard"
+        title="Why it wins"
         sub={
           <>
-            An independent panel that never saw the room's notes: {nJudges ? numberWord(nJudges) : "the"} judges rate the reels blind and vote head to head,{" "}
-            {nViewers ? numberWord(nViewers) : "the"} viewer agents react as their audience segment, and novelty is measured, not judged.
+            Judged blind by {nJudges + nViewers ? nJudges + nViewers : "independent"} AI viewers and judges who never saw the team's notes; originality is measured
+            against {nCliches ? `${nCliches} ` : ""}real-estate clichés, not guessed.
           </>
         }
       />
@@ -109,11 +110,11 @@ function Ranking({ reels, ev, summaries }: { reels: Reel[]; ev: Evaluation; summ
             <span>
               won <span className="num">{row.wins}</span> of <span className="num">{row.games}</span>
             </span>
-            <small>head-to-heads</small>
+            <small>blind matchups</small>
           </span>
           <span className="cl-rank-fact">
-            <span className="num">{row.novelty != null ? row.novelty.toFixed(2) : "–"}</span>
-            <small>novelty</small>
+            <span className="num">{row.novelty != null ? Math.round(row.novelty * 100) : "–"}</span>
+            <small title="Distance from the closest real-estate cliché, 0-100">originality</small>
           </span>
         </li>
       ))}

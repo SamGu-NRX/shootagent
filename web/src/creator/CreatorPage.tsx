@@ -9,7 +9,9 @@ import { Play } from "lucide-react";
 import { useEffect } from "react";
 import { useStore } from "../state/store";
 import { ConceptDrawer } from "./ConceptDrawer";
+import { Presenter, usePresenter } from "./present/Presenter";
 import { LabHeader, StageBar } from "./Header";
+import { Hero } from "./Hero";
 import { LaunchSection } from "./Launch";
 import { ReelsSection } from "./Reels";
 import { RoomSection } from "./Room";
@@ -25,6 +27,7 @@ export default function CreatorPage({ shootId, labId }: { shootId: string; labId
   const stale = useCreator((s) => s.stale);
   const notice = useCreator((s) => s.notice);
   const labsLoaded = useCreator((s) => s.labsLoaded);
+  const presenting = usePresenter((s) => s.open);
 
   useEffect(() => {
     void useCreator.getState().open(creativeApi(apiMode), shootId, labId);
@@ -60,6 +63,7 @@ export default function CreatorPage({ shootId, labId }: { shootId: string; labId
           <ErrorState message={error} />
         ) : lab ? (
           <>
+            <Hero key={`hero-${lab.id}`} />
             <RoomSection key={`room-${lab.id}`} />
             <ReelsSection key={`reels-${lab.id}`} />
             <ScorecardSection key={`score-${lab.id}`} />
@@ -74,6 +78,7 @@ export default function CreatorPage({ shootId, labId }: { shootId: string; labId
         )}
       </main>
       <ConceptDrawer />
+      {presenting && <Presenter />}
     </div>
   );
 }

@@ -652,3 +652,8 @@
     position: static;
   }
 }
+
+/* the embedding model and projection are technical detail; the legend says what the map shows */
+.cl-map-method {
+  display: none;
+}

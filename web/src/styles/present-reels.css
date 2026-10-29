@@ -1,0 +1,251 @@
+/* Presenter scene 4, before / after (src/creator/present/SceneReels.tsx). Phones sit bottom-aligned on the
+   left half of the 1920x1080 stage; the headline, the hook and the comparisons fill the right. */
+.pz-reels {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- phones ---- */
+.pz-reels-phone {
+  position: absolute;
+  bottom: 80px;
+  margin: 0;
+  will-change: transform, opacity;
+}
+.pz-reels-phone[data-kind="template"] {
+  left: 140px;
+  width: 330px;
+  height: 587px;
+}
+.pz-reels-phone[data-kind="hero"] {
+  left: 560px;
+  width: 430px;
+  height: 764px;
+}
+.pz-reels-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 26px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.55);
+}
+.pz-reels-phone[data-kind="template"] .pz-reels-screen {
+  border-radius: 22px;
+}
+.pz-reels-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pz-reels-phone[data-kind="template"] video {
+  filter: saturate(0.5) brightness(0.88);
+}
+.pz-reels-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--pz-violet);
+  opacity: var(--ring, 0);
+  pointer-events: none;
+}
+
+/* labels above the phones */
+.pz-reels-label {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 22px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+  max-width: 520px;
+}
+.pz-reels-tag {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pz-dim);
+}
+.pz-reels-label-main {
+  font-size: 26px;
+  font-weight: 550;
+  color: var(--pz-dim);
+  letter-spacing: -0.01em;
+}
+.pz-reels-label-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pz-violet);
+}
+.pz-reels-label-title {
+  font-size: 34px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--pz-ink);
+}
+
+.pz-reels-arrow {
+  position: absolute;
+  left: 493px;
+  bottom: 351px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pz-panel);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  color: var(--pz-dim);
+}
+
+/* ---- the right half ---- */
+.pz-reels-side {
+  position: absolute;
+  left: 1080px;
+  top: 104px;
+  bottom: 80px;
+  width: 720px;
+  display: flex;
+  flex-direction: column;
+}
+.pz-reels-title {
+  margin-top: 18px;
+  font-size: 54px;
+  line-height: 1.05;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.pz-reels-title span {
+  display: block;
+}
+.pz-reels-title-dim {
+  color: #74747d;
+}
+
+.pz-reels-hook {
+  margin: 36px 0 0;
+}
+.pz-reels-hook figcaption {
+  font-size: 20px;
+  color: var(--pz-dim);
+}
+.pz-reels-hook blockquote {
+  margin: 10px 0 0;
+  font-size: 40px;
+  line-height: 1.16;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  color: var(--pz-ink);
+}
+.pz-reels-q {
+  color: var(--pz-violet);
+}
+.pz-reels-untyped {
+  color: transparent;
+}
+.pz-reels-caret {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  margin: 0 2px -0.1em;
+  background: var(--pz-violet);
+  vertical-align: baseline;
+}
+.pz-reels-caret[data-on] {
+  animation: pz-reels-blink 900ms steps(1) infinite;
+}
+@keyframes pz-reels-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* comparisons */
+.pz-reels-rows {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.pz-reels-rows li {
+  will-change: transform, opacity;
+}
+.pz-reels-row-label {
+  font-size: 21px;
+  color: var(--pz-dim);
+}
+.pz-reels-row-values {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 4px;
+}
+.pz-reels-a {
+  font-size: 30px;
+  color: #77777f;
+}
+.pz-reels-row-arrow {
+  color: #55555c;
+  align-self: center;
+}
+.pz-reels-b {
+  font-size: 46px;
+  font-weight: 500;
+  color: var(--pz-green);
+}
+.pz-reels-x {
+  margin-left: auto;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid rgb(95 208 138 / 0.4);
+  font-size: 22px;
+  color: var(--pz-green);
+  align-self: center;
+}
+.pz-reels-bars {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+}
+.pz-reels-bars span {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+}
+.pz-reels-bar-a {
+  background: #4a4a51;
+}
+.pz-reels-bar-b {
+  background: var(--pz-green);
+}
+
+.pz-reels-foot {
+  margin-top: 26px;
+  display: grid;
+  gap: 10px;
+}
+.pz-reels-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--pz-ink);
+}
+.pz-reels-verdict svg {
+  color: var(--pz-green);
+}
