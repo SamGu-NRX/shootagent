@@ -298,3 +298,35 @@ def test_disclosure_lists_each_edit_against_the_original_and_the_films_ai_clips(
     ]
     assert d["film"]["ai_clips"] == [{"shot": 1, "label": "Kitchen", "view": "v01", "end_view": None}]
     assert d["film"]["rejected_clips"][0]["changes"][0]["object"] == "pendant lights"
+
+
+def test_listing_shows_only_approved_photos_once_any_are_approved(env):
+    """QC split the 7-photo house into 14 camera positions and left the 7 blended originals unapproved; the
+    buyer page, its photos, the disclosure and the Q&A must not show the blended originals."""
+    http, store, sid, qa_client, *_ = env
+    def split(s):
+        v = s.view("v02")
+        v.approved, v.derived_from = True, "v01"
+        v.brackets = [Bracket(blob=v.finished, index=i) for i in range(5)]
+
+    store.mutate(sid, split)
+    slug = publish(http, sid)
+    guest = anon(http)
+    assert [r["view"] for r in guest.get(f"/api/public/listings/{slug}").json()["rooms"]] == ["v02"]
+    hidden = store.load(sid).view("v01").head_version.blob
+    assert guest.get(f"/api/public/listings/{slug}/photos/{hidden}").status_code == 404
+    photos = guest.get(f"/api/public/listings/{slug}/disclosure").json()["photos"]
+    assert [p["view"] for p in photos] == ["v02"]
+    assert all(c["kind"] != "hdr" for c in photos[0]["changes"])  # a split part is not the editor's HDR photo
+    guest.post(f"/api/public/listings/{slug}/ask", json={"question": "Is there a tub?"})
+    images = [b for b in qa_client.requests[0]["messages"][0]["content"] if b["type"] == "image"]
+    assert len(images) == 1
+
+
+def test_split_parts_of_one_room_get_distinct_names():
+    from shootagent.listing.views import display_names
+    from shootagent.store import View
+
+    views = [View(id="v04-a", label="Dining Room 2", room="dining room"), View(id="v05-b", label="Dining Room 6", room="dining room"),
+             View(id="v06-b", label="Desk Nook 3", room="desk nook")]
+    assert display_names(views) == {"v04-a": "Dining room, view 1", "v05-b": "Dining room, view 2", "v06-b": "Desk nook"}

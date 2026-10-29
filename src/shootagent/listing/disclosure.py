@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from ..store import Shoot, View
 from .film import read_film
+from .views import display_names, listed_views
 
 def original_of(view: View) -> tuple[str | None, str]:
     """The least-processed image of the view, and which kind it is: "fusion" (ShootAgent's fusion of the raw
@@ -26,7 +27,9 @@ def changes_of(view: View) -> list[dict]:
     the reader's language: {kind: "hdr", exposures}, {kind: "edit", op, note} for each ShootAgent version on the
     head's chain, and {kind: "fix", finding, explanation} for each fixed QC finding."""
     out: list[dict] = []
-    if view.finished and view.brackets:
+    # A view QC split off a blended photo is ShootAgent's own fusion of its camera position's exposures (its
+    # "regroup" version below); the editor's HDR photo is the blended parent, so it is not this photo's history.
+    if view.finished and view.brackets and not view.derived_from:
         out.append({"kind": "hdr", "exposures": len(view.brackets)})
     chain: list = []
     vid = view.head
@@ -45,21 +48,23 @@ def changes_of(view: View) -> list[dict]:
 
 def build(shoot: Shoot, store) -> dict:
     film = read_film(store, shoot.id)
+    listed = listed_views(shoot)
+    ids = {v.id for v in listed}
+    # the film's photos first, in play order, then the rest of the listing's photos
     order = []
     if film:
         for s in film["shots"]:
-            order += [v for v in (s["view"], s["end_view"]) if v and v not in order]
-    order += [v.id for v in shoot.views if v.id not in order]
+            order += [v for v in (s["view"], s["end_view"]) if v in ids and v not in order]
+    order += [v.id for v in listed if v.id not in order]
+    names = display_names([shoot.view(v) for v in order])  # "view 1, 2, ..." counts down the page
     photos = []
     for vid in order:
         view = shoot.view(vid)
-        if not view.head:
-            continue
         original, original_kind = original_of(view)
         changes = changes_of(view)
         photos.append({
             "view": view.id,
-            "room": view.label or (view.room or "").replace("_", " ") or view.id,
+            "room": names[vid],
             "published": view.head_version.blob,
             "original": original,
             "original_kind": original_kind,
