@@ -160,8 +160,9 @@ def cmd_launch(a) -> int:
             return 1
     shoot = store.load(a.shoot)
     state = review_state(store, shoot)
-    clean = [v for v, s in state.items() if s == "qc_ok"]
+    clean = [v for v, s in state.items() if s == "qc_ok"]  # never "not_deliverable": QC advised against those
     held = [v for v, s in state.items() if s in ("open_findings", "needs_qc")]
+    advised = [v for v, s in state.items() if s == "not_deliverable"]
 
     def approve(s):
         for v in clean:
@@ -170,9 +171,53 @@ def cmd_launch(a) -> int:
     store.mutate(a.shoot, approve)
     print(f"approved {', '.join(clean) or 'none'}; already approved "
           f"{', '.join(v for v, s in state.items() if s == 'approved') or 'none'}; left out "
-          f"{', '.join(held) or 'none'} (open or failed findings); split into parts: "
+          f"{', '.join(held) or 'none'} (open or failed findings) and {', '.join(advised) or 'none'} (QC advised "
+          f"against delivering); split into parts: "
           f"{', '.join(v for v, s in state.items() if s == 'split') or 'none'}")
     return _run(a.shoot, "film", languages=a.languages)
+
+
+def cmd_film_export(a) -> int:
+    from .film.handoff import export_requests
+    from .film.spec import FilmSpec, Shot
+    from .tools.film import PlanFilmIn
+
+    settings = get_settings()
+    store = _store()
+    shoot = store.load(a.shoot)
+    if a.plan:
+        plan = PlanFilmIn.model_validate_json(Path(a.plan).read_text(encoding="utf-8"))
+        shots = [Shot(**{**s.model_dump(), "end_label": s.end_label or ""}) for s in plan.shots]
+    else:
+        spec = FilmSpec.load(store.shoot_dir(a.shoot) / "film" / "spec.json")
+        if spec is None:
+            print("No film plan: pass --plan plan.json or plan a film first.", file=sys.stderr)
+            return 1
+        shots = spec.shots
+    missing = [v for s in shots for v in (s.view, s.end_view) if v and (v not in {x.id for x in shoot.views}
+                                                                        or shoot.view(v).head is None)]
+    if missing:
+        print(f"Unknown or empty views in the plan: {', '.join(missing)}", file=sys.stderr)
+        return 1
+    out = Path(a.out) if a.out else settings.data_dir / "handoff" / a.shoot
+    entries = export_requests(store, a.shoot, shots, out, attempts=a.attempts)
+    if a.plan:
+        (out / "plan.json").write_text(Path(a.plan).read_text(encoding="utf-8"), encoding="utf-8")
+    for e in entries:
+        print(f"{e['id']}  {e['fingerprint']}  {e['mode']:<5} {e['view']}{' -> ' + e['end_view'] if e['end_view'] else ''}")
+    print(f"{len(entries)} request(s) in {out}")
+    return 0
+
+
+def cmd_film_import(a) -> int:
+    from .film.handoff import import_media
+
+    r = import_media(get_settings(), Path(a.folder))
+    for x in r["imported"]:
+        print(f"imported {x['id']} {x['fingerprint']} ({x['seconds']} s)")
+    for rid, why in r["skipped"]:
+        print(f"skipped  {rid}: {why}")
+    return 0 if r["imported"] or not r["skipped"] else 1
 
 
 def cmd_film_seed(a) -> int:
@@ -253,6 +298,17 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("shoot")
     s.add_argument("--languages", nargs="+", default=["en"], help="narration languages, script language first")
     s.set_defaults(fn=cmd_launch)
+
+    s = sub.add_parser("film-export-requests", help="write a shoot's planned grok requests and a runner for another machine")
+    s.add_argument("shoot")
+    s.add_argument("--plan", help="JSON {shots: [...]} in plan_film's shape; default the shoot's current film plan")
+    s.add_argument("--out", help="folder to write; default <data>/handoff/<shoot>")
+    s.add_argument("--attempts", type=int, default=2, choices=(1, 2))
+    s.set_defaults(fn=cmd_film_export)
+
+    s = sub.add_parser("film-import-media", help="verify the clips a handoff folder came back with and add them to replay")
+    s.add_argument("folder")
+    s.set_defaults(fn=cmd_film_import)
 
     s = sub.add_parser("film-seed-replay", help="copy the recorded Grok clips and Gemini narrations into the replay folder")
     s.add_argument("--branch", default="origin/explore/media-tests")

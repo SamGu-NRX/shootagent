@@ -369,7 +369,7 @@ def film_opening(ctx: ToolContext, scope: list[str], languages: list[str]) -> li
                 end = sha_to_view.get(k["images"][1]) if len(k["images"]) > 1 else None
                 if len(k["images"]) > 1 and end is None:
                     continue  # its end photo is not in this film
-                items.append(f"camera={_camera_of(k)!r}, aspect={k['aspect']!r}" + (f", end_view={end!r}" if end else ""))
+                items.append(f"camera={k['camera']!r}, aspect={k['aspect']!r}" + (f", end_view={end!r}" if end else ""))
             if items:
                 desc += ": recorded generated clips: " + "; ".join(items)
         lines.append(desc)
@@ -379,12 +379,3 @@ def film_opening(ctx: ToolContext, scope: list[str], languages: list[str]) -> li
         lines.append(f"Recorded narration ({s['language']}), usable only verbatim: {s['text']}")
     return lines
 
-
-def _camera_of(req: dict) -> str:
-    """The camera direction inside a recorded clip prompt (the inverse of media.clip_prompt)."""
-    from ..film.media import REF_GUARD, REF_PREFIX, VIDEO_GUARD
-
-    p = req["prompt"]
-    if req["mode"] == "video":
-        return p.removesuffix(VIDEO_GUARD)
-    return p.removeprefix(REF_PREFIX).removesuffix(REF_GUARD)

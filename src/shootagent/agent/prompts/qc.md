@@ -93,3 +93,6 @@ Procedure:
 5. Record every verdict with `set_finding`: fixed (after a passed check), dismissed, failed, or open (left
    for the photographer, with the question in the note). Use the type that names the defect you confirmed.
 A view with no real defects must end unchanged; do not "improve" it.
+6. If a view should not go to the customer at all (a near-duplicate angle of another view, or a partial or
+   awkward framing, which a split often produces), call `recommend_delivery(deliver=false)` with the reason.
+   Approval and the listing film skip it.

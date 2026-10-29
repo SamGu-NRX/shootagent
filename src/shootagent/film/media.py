@@ -46,7 +46,7 @@ from .spec import Aspect, DepthMove
 # ---- requests -----------------------------------------------------------------------------------------------
 
 # Bump a renderer's version when its output for the same request changes, so old cache entries stop matching.
-DEPTH_RENDERER = "parallax-v1"
+DEPTH_RENDERER = "parallax-v2"
 STILL_RENDERER = "push-v1"
 CLIP_SECONDS = 6  # Grok Imagine's shortest clip; depth and still moves match it
 
@@ -54,6 +54,9 @@ CLIP_SECONDS = 6  # Grok Imagine's shortest clip; depth and still moves match it
 class ClipRequest(BaseModel):
     kind: Literal["clip"] = "clip"
     mode: Literal["video", "ref"]  # grok image_to_video (one photo, its own aspect) or reference_to_video
+    camera: str  # the agent's camera direction; `prompt` wraps it in the guard wording
+    guard: str = "v2"  # which fixed wording (GUARDS)
+    retry: bool = False  # the second attempt's stricter wording
     prompt: str
     aspect: Aspect
     duration: int = CLIP_SECONDS
@@ -66,6 +69,7 @@ class DepthRequest(BaseModel):
     image: str
     move: DepthMove
     parallax_px: float
+    fill: Literal["telea", "lama"] = "telea"  # what fills the background a move uncovers (film/depth.py)
     seconds: float = CLIP_SECONDS
     renderer: str = DEPTH_RENDERER
 
@@ -86,8 +90,15 @@ class SpeechRequest(BaseModel):
     text: str
 
 
-Request = ClipRequest | DepthRequest | StillRequest | SpeechRequest
-EXT = {"clip": "mp4", "depth": "mp4", "still": "mp4", "speech": "wav"}
+class CardRequest(BaseModel):
+    kind: Literal["card"] = "card"
+    template: Literal["price-tag", "stat-count-up"]
+    params: dict[str, Any]
+    renderer: str = "reelstudio-animations-v1"
+
+
+Request = ClipRequest | DepthRequest | StillRequest | SpeechRequest | CardRequest
+EXT = {"clip": "mp4", "depth": "mp4", "still": "mp4", "speech": "wav", "card": "mov"}
 
 
 def fingerprint(req: Request) -> str:
@@ -130,16 +141,29 @@ class Photo:
 
 # ---- prompts ------------------------------------------------------------------------------------------------
 
-# The fixed wording around the agent's camera direction, taken from the four lab calls on explore/media-tests
-# (lab/shots/log.jsonl), so those recorded clips are found again by fingerprint. The guard text asks Imagine
-# not to change the room; the clip checker is what enforces it.
-VIDEO_GUARD = ", keep the room exactly as photographed, no people, no text."
-REF_PREFIX = "Smooth steady gimbal shot for a real-estate walkthrough. "
-REF_GUARD = (" Keep every wall, window, door, fixture and piece of furniture exactly as in the photos. Do not add or "
-             "remove doors, windows or objects. No people, no text or lettering, no camera shake.")
-
-
-RETRY_MARK = " A previous attempt was rejected because:"
+# Fixed wording around the agent's camera direction: (prefix, suffix) per mode. The guard asks Imagine not to
+# change the room; the clip checker is what enforces it.
+# - "lab-v1": the wording of the four lab calls on explore/media-tests (lab/shots/log.jsonl), kept so those
+#   recorded clips are found again by fingerprint.
+# - "v2": names what the lab clips and judge v2 caught being invented (lights, wall plates, a door leaf, an
+#   exterior stair seen through a window) and forbids each by name.
+_V2 = ("Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as {where}. "
+       "Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text "
+       "or people, and nothing new outside the windows. No camera shake.")
+GUARDS = {
+    "lab-v1": {"video": ("", ", keep the room exactly as photographed, no people, no text."),
+               "ref": ("Smooth steady gimbal shot for a real-estate walkthrough. ",
+                       " Keep every wall, window, door, fixture and piece of furniture exactly as in the photos. Do not "
+                       "add or remove doors, windows or objects. No people, no text or lettering, no camera shake.")},
+    "v2": {"video": ("Slow, steady real-estate camera move. ", ". " + _V2.format(where="photographed")),
+           "ref": ("Slow, steady real-estate camera move. ", ". " + _V2.format(where="in the photos"))},
+}
+# The second attempt. It does not depend on why the first was rejected, so a machine that cannot run the
+# checker (the Mac, in the generation handoff) can make both attempts ahead of time; a live run on a machine
+# with the checker appends the failure itself.
+RETRY_TEXT = (" Second attempt: an earlier clip was rejected for showing things this room does not have. Move the "
+              "camera less, and keep every object, light and window view identical to the photo.")
+RETRY_MARK = " It added:"
 
 
 def clip_mode(aspect: Aspect, has_end: bool) -> Literal["video", "ref"]:
@@ -147,18 +171,24 @@ def clip_mode(aspect: Aspect, has_end: bool) -> Literal["video", "ref"]:
     return "video" if aspect == "source" and not has_end else "ref"
 
 
-def clip_prompt(mode: str, camera: str, rejected: str | None = None) -> str:
+def clip_prompt(mode: str, camera: str, guard: str = "v2", retry: bool = False, rejected: str | None = None) -> str:
     camera = camera.strip()
-    text = f"{camera}{VIDEO_GUARD}" if mode == "video" else f"{REF_PREFIX}{camera}{REF_GUARD}"
-    if rejected:
-        text += f"{RETRY_MARK} {rejected[:400]}. Do not repeat that."
+    if guard == "v2":
+        camera = camera.rstrip(".")
+    prefix, suffix = GUARDS[guard][mode]
+    text = f"{prefix}{camera}{suffix}"
+    if retry:
+        text += RETRY_TEXT
+        if rejected:
+            text += f"{RETRY_MARK} {rejected[:400]}."
     return text
 
 
-def clip_request(camera: str, aspect: Aspect, first: Photo, last: Photo | None = None,
-                 rejected: str | None = None) -> ClipRequest:
+def clip_request(camera: str, aspect: Aspect, first: Photo, last: Photo | None = None, guard: str = "v2",
+                 retry: bool = False, rejected: str | None = None) -> ClipRequest:
     mode = clip_mode(aspect, last is not None)
-    return ClipRequest(mode=mode, prompt=clip_prompt(mode, camera, rejected), aspect=aspect,
+    return ClipRequest(mode=mode, camera=camera.strip(), guard=guard, retry=retry,
+                       prompt=clip_prompt(mode, camera, guard, retry, rejected), aspect=aspect,
                        images=[first.sha] + ([last.sha] if last else []))
 
 
@@ -434,7 +464,7 @@ class DepthBackend:
 
         assert isinstance(req, DepthRequest)
         out = workdir / f"depth-{uuid.uuid4().hex[:8]}.mp4"
-        stats = render_depth_clip(photos[req.image].rgb(), req.move, req.parallax_px, out, req.seconds)
+        stats = render_depth_clip(photos[req.image].rgb(), req.move, req.parallax_px, out, req.seconds, fill=req.fill)
         return Produced(out, stats)
 
 
@@ -460,6 +490,41 @@ class StillBackend:
         return Produced(out, {"frames": n})
 
 
+class CardBackend:
+    """A Reel Studio animation template rendered headless (render.mjs, Playwright's Chromium) to a transparent
+    1080x1920 qtrle .mov. About 10 s per card on the PC."""
+
+    name = "reelstudio-card"
+
+    def __init__(self, settings: Settings):
+        self.templates = settings.reelstudio_templates
+        self.node = settings.node_bin
+
+    def produce(self, req: Request, photos: dict[str, Photo], workdir: Path) -> Produced:
+        assert isinstance(req, CardRequest)
+        if not self.templates or not (Path(self.templates) / "render.mjs").is_file():
+            raise MediaError("REELSTUDIO_TEMPLATES does not point at reel-studio-app/templates/animations", "unavailable")
+        workdir.mkdir(parents=True, exist_ok=True)
+        out = (workdir / f"card-{uuid.uuid4().hex[:8]}.mov").resolve()
+        env = dict(os.environ)
+        if shutil.which("ffmpeg"):
+            env.setdefault("REELENGINE_FFMPEG", shutil.which("ffmpeg"))
+        try:
+            proc = subprocess.run([self.node, "render.mjs", req.template, "--params", json.dumps(req.params),
+                                   "--out", str(out)], cwd=self.templates, capture_output=True, text=True,
+                                  encoding="utf-8", errors="replace", timeout=180, env=env, stdin=subprocess.DEVNULL)
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise MediaError(f"the card renderer could not run: {e}", "unavailable") from None
+        last = (proc.stdout.strip().splitlines() or ["{}"])[-1]
+        try:
+            res = json.loads(last)
+        except json.JSONDecodeError:
+            res = {"error": {"message": proc.stderr.strip()[-300:]}}
+        if proc.returncode != 0 or "error" in res or not Path(res.get("path", "")).is_file():
+            raise MediaError(f"the card renderer failed: {(res.get('error') or {}).get('message') or proc.stderr[-300:]}")
+        return Produced(Path(res["path"]), {"duration": res.get("duration"), "ms": res.get("ms")})
+
+
 # ---- the facade ---------------------------------------------------------------------------------------------
 
 class Media:
@@ -474,7 +539,7 @@ class Media:
         self.cache = MediaCache(settings.media_cache_dir)
         self.replay = ReplayBackend(settings.replay_dir)
         self.workdir = settings.data_dir / "media-work"
-        self._backends: dict[str, Any] = {"depth": DepthBackend(), "still": StillBackend()}
+        self._backends: dict[str, Any] = {"depth": DepthBackend(), "still": StillBackend(), "card": CardBackend(settings)}
         if self.mode == "live":
             self._backends.update(clip=GrokBackend(settings), speech=GeminiTts(settings))
         else:
@@ -518,8 +583,9 @@ class Media:
         for source, metas in (("cache", self.cache.metas()), ("replay", self.replay.entries())):
             for m in metas:
                 req = m.get("request") or {}
+                # Second attempts are reached through the first; lab-v1 clips are not plannable any more.
                 if (req.get("kind") == "clip" and req.get("images", [None])[0] == sha and m["fingerprint"] not in seen
-                        and RETRY_MARK not in req.get("prompt", "")):
+                        and not req.get("retry") and req.get("guard") == "v2"):
                     seen.add(m["fingerprint"])
                     out.append({"source": source, "fingerprint": m["fingerprint"], **req})
         return out

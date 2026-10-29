@@ -45,7 +45,7 @@ A chat message while a run is active on the same shoot is queued, not run in par
 
 | Method | Path | Body | Returns |
 |---|---|---|---|
-| POST | `/api/shoots/{id}/film` | `{languages?: ["en", "es"], views?: [id]}`; default `["en"]`, script language first | `{run_id}` film run: the agent plans shots, makes or falls back each clip, writes and translates the script, narrates, and assembles one film per language. Trace over the usual `/runs/{run}/events` SSE stream. Films use approved views only (a view QC split into camera positions is replaced by its parts); with none approved, or `views` naming an unapproved one, 409 `needs_review` says which views need QC or approval. `shootagent launch <shoot>` runs QC on unchecked views, approves the ones QC left with no open or failed finding, and makes the film. |
+| POST | `/api/shoots/{id}/film` | `{languages?: ["en", "es"], views?: [id]}`; default `["en"]`, script language first | `{run_id}` film run: the agent plans shots, makes or falls back each clip, writes and translates the script, narrates, and assembles one film per language. Trace over the usual `/runs/{run}/events` SSE stream. Films use approved views only (a view QC split into camera positions is replaced by its parts); with none approved, or `views` naming an unapproved one, 409 `needs_review` says which views need QC or approval. `shootagent launch <shoot>` runs QC on unchecked views, approves the ones QC left with no open or failed finding and did not advise against delivering (QC's `recommend_delivery` tool sets `view.meta.delivery = {deliver: false, reason, run}`), and makes the film. |
 | GET | `/api/shoots/{id}/film` | | `{spec, manifest, variants: {<lang>: {url, cover, duration_s, captions, finisher, verify}}}`; `spec` and `manifest` are null before the first film |
 | GET | `/api/shoots/{id}/film/manifest.json` | | the manifest (below); 404 `no_film` before the first assembly |
 | GET | `/api/shoots/{id}/film/{lang}.mp4` | | the film in that language, 1080x1920, 30 fps |
@@ -66,8 +66,11 @@ under an earlier plan of the same run stay in the `attempts` of the shot that no
 `earlier_plan: true` and `planned: {view, end_view, label}`; ones whose photos the final plan dropped are in the
 top-level `rejected_elsewhere`. Per language:
 `{film, cover, duration_s, narration: {text, audio, backend, audio_s, timing: "transcript"|"word count"},
-finisher: "reelengine"|"ffmpeg", captions, caption_cues, verify: {ok, fails, warns, lufs}, shot_times, notes,
-timings_s}`. `notes` says why a language has no captions when it has none.
+finisher: "reelengine"|"ffmpeg", captions, caption_cues, verify: {ok, fails, warns, lufs}, shot_times, cuts:
+{narration_s, on_beat_s, beats_found, head_s}, cards: {<shot index>: file}, notes, timings_s}`. Cuts sit at each
+narration segment's start moved to the nearest beat of the music within 0.36 s (`on_beat_s`, source time). The
+first shot carries a price card and the shot nearest the middle a square-footage card, rendered from Reel
+Studio's `price-tag` and `stat-count-up` templates with the listing fields (left out when a field is missing). `notes` says why a language has no captions when it has none.
 
 Film trace events, in addition to the common ones (`view` is the shot's photo):
 
@@ -85,6 +88,11 @@ Film trace events, in addition to the common ones (`view` is the shot's photo):
 - `retry` `{shot, attempt, max_attempts: 2, reason, next: "regenerate with the failure named in the prompt" |
   "depth fallback"}`: after a failed check, or when the backend cannot serve the request.
 - `shot` `{shot, end_view, planned, source, fell_back, clips, note}`: what the shot will play.
+- Depth shots first try a 40 px move (`settings.depth_strong_px`) and check it like a generated clip: its
+  `check` event has `source: "depth"`; a failure emits `retry` with `source: "depth"` and `next: "24 px depth
+  move"`. Those checks are in the shot's `result.depth_checks` and the manifest's `depth_checks`, never in
+  `attempts`, so the disclosure page does not list them as AI clips. Generated-clip `check` events have
+  `source: "generated"`.
 - `usage` with `purpose: "judge_clip"` for each clip check call and `"judge_clip_inventory"` for each photo
   inventory (made once per photo, then cached in `<data>/media/inventory/`).
 

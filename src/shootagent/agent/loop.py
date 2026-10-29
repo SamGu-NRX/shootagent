@@ -58,6 +58,7 @@ MODE_TOOLS: dict[str, list[str]] = {
         "revert",
         "set_finding",
         "label_views",
+        "recommend_delivery",
     ],
     "chat": [
         "submit_plan",

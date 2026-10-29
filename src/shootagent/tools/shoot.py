@@ -150,6 +150,32 @@ def report_view_result(ctx: ToolContext, args: ReportViewIn) -> ToolResult:
     )
 
 
+class DeliveryIn(ToolInput):
+    view: str
+    deliver: bool = Field(description="false when this photo should not go to the customer or into a film.")
+    reason: str = Field(min_length=3, max_length=300, description="Plain reason the photographer reads.")
+
+
+@tool(
+    "recommend_delivery",
+    "Say that a view should not be delivered (deliver=false): a near-duplicate angle, or a partial or awkward "
+    "framing, typically one of the views a split produced. Approval and the film skip it. deliver=true withdraws "
+    "an earlier recommendation.",
+    kind="shoot",
+)
+def recommend_delivery(ctx: ToolContext, args: DeliveryIn) -> ToolResult:
+    def apply(shoot):
+        try:
+            v = shoot.view(args.view)
+        except KeyError:
+            raise ToolError(f"No view {args.view!r}; views are {', '.join(x.id for x in shoot.views)}.") from None
+        v.meta["delivery"] = {"deliver": args.deliver, "reason": args.reason.strip(), "run": ctx.trace.id}
+
+    ctx.store.mutate(ctx.shoot_id, apply)
+    verb = "Recommended delivering" if args.deliver else "Recommended not delivering"
+    return ToolResult(summary=f"{verb} {args.view}: {args.reason.strip()}", data={"view": args.view, "deliver": args.deliver})
+
+
 class ListingIn(ToolInput):
     address: str | None = None
     price: str | None = None

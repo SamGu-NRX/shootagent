@@ -60,7 +60,11 @@ own pixels. Generated clips that do play carry an "AI-generated motion" label (C
 each film ships with a manifest of every shot's source photo, motion source and check result. Gemini TTS
 speaks the script, and Reel Studio's engine adds captions, the music mix, the cover and a verify report.
 `shootagent film <shoot> --languages en es`; set `FILM_MEDIA=replay` to use recorded media only
-(`shootagent film-seed-replay` copies the recordings from branch `explore/media-tests`).
+(`shootagent film-seed-replay` copies the recordings from branch `explore/media-tests`). When grok runs on
+another machine, `shootagent film-export-requests <shoot> --plan plan.json` writes the exact grok requests, the
+photos and a stdlib-only runner (`run_grok.py`) to a folder; run it there, bring the folder back, and
+`shootagent film-import-media <folder>` verifies each clip against its fingerprint and recorded arguments and
+adds it to the replay cache.
 
 **Listing launch.** From a shoot's film, *Launch listing* shows the storyboard (each shot's photo, its
 motion source, and every generated clip the checker rejected, with the reason and what replaced it), the 9:16

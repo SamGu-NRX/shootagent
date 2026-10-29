@@ -95,3 +95,14 @@ def test_a_film_uses_only_approved_photos_and_says_how_to_get_there(tmp_path):
     store.mutate(sid, review)
     run = AgentRun(store, sid, "film", trace, settings(tmp_path), ScriptedClient([]))
     assert run.scope == ["v01"]
+
+
+def test_a_view_qc_advised_against_delivering_is_never_counted_as_clean(tmp_path):
+    """Fails if launch could approve a view QC itself recommended not delivering (a partial framing)."""
+    from shootagent.film.readiness import review_state
+    from shootagent.tools import ToolContext, run_tool
+
+    store, sid = make_shoot(tmp_path / "shoots")
+    ctx = ToolContext(store, sid, TraceRun(store.shoot_dir(sid), "qc"), settings(tmp_path))
+    assert run_tool(ctx, "recommend_delivery", {"view": "v02", "deliver": False, "reason": "partial framing"}).ok
+    assert review_state(store, store.load(sid))["v02"] == "not_deliverable"  # launch approves only "qc_ok"

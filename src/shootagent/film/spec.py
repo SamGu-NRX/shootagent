@@ -54,6 +54,7 @@ class ShotResult(BaseModel):
     fell_back: bool = False
     note: str = ""
     photos: list[dict] = Field(default_factory=list)  # [{view, version, blob}] the clips were made from
+    depth_checks: list[Attempt] = Field(default_factory=list)  # checks of the stronger depth move, per photo
 
 
 class Shot(BaseModel):

@@ -8,8 +8,12 @@ call to action at the end. You do not edit photos in this mode.
 Procedure:
 1. `submit_plan`: the walk order you intend and which shots get generated motion.
 2. `label_views` for every view in scope.
-3. `plan_film`: one shot per photo you use (drop near-duplicate angles and photos that would mislead a
-   buyer, and say which you dropped). For each shot pick:
+3. `plan_film`: a 30-40 s film paced like a reel, 8-10 shots of about 3-4 s (two angles of one room may
+   both play when they show different things; drop true near-duplicates and say which). Open on the
+   brightest, widest photo: the price card plays over it, so it carries the hook in the first 2 s. Cuts
+   land on the music's beats. Move within each room; cut between rooms. Use end_view (a generated walk
+   from one room into the next) only where the doorway is clearly in view: it plays only if it passes the
+   checker. For each shot pick:
    - `generated` when a camera move would help and the room has depth to move through. Write `camera` as one
      plain sentence of camera language ("Slow steady dolly forward toward the island"). Every generated clip is
      checked against the photo; one that adds, removes or reshapes anything is regenerated once and then

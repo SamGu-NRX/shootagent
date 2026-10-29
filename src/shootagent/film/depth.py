@@ -104,8 +104,31 @@ def plan(pw: int, ph: int, move: str, parallax_out: float) -> dict:
     return {"win_w": win_w, "win_h": win_h, "scale": scale, "par": par, "cy": cy, "x0": x0, "x1": x1}
 
 
+def background_layer(photo: np.ndarray, disp: np.ndarray, par_work: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """What lies behind the foreground near each depth edge, for a larger move than holes can be filled for.
+
+    Pixels within the move's reach of a depth edge, on its near side, are removed and LaMa (big-lama, already
+    used for removals) paints what is behind them, once per clip. That layer is splatted under the photo at
+    the far side's depth, so where the move uncovers background the frame shows LaMa's fill, the same in
+    every frame. Without it a 40 px move leaves holes that per-frame TELEA fill smears and flickers.
+    Returns (rgb, disparity, mask) at work resolution."""
+    from ..models.inpaint import lama_inpaint
+
+    k = 2 * int(math.ceil(1.6 * par_work)) + 1
+    far = cv2.erode(disp, np.ones((k, k), np.uint8))
+    mask = (disp - far) > 0.08
+    if not mask.any():
+        return photo, disp, mask
+    # LaMa must not see the foreground it is painting behind: a hole that covers only the rim of a chair
+    # gets filled from the chair's own interior, which showed as a dark outline wherever the move uncovered
+    # the rim. So the hole is every pixel nearer than the background over a four times wider reach.
+    kk = 4 * k + 1
+    hole = (disp - cv2.erode(disp, np.ones((kk, kk), np.uint8))) > 0.08
+    return lama_inpaint(photo, hole | mask, dilate_px=4, feather_px=2), far, mask
+
+
 def render(photo: np.ndarray, disp: np.ndarray, move: str, parallax_out: float, path: Path, device: str,
-           seconds: float = 6.0) -> dict:
+           seconds: float = 6.0, bg: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None) -> dict:
     """Render one clip; returns stats. `photo` and `disp` are already at work resolution."""
     ph, pw = disp.shape
     p = plan(pw, ph, move, parallax_out)
@@ -121,6 +144,11 @@ def render(photo: np.ndarray, disp: np.ndarray, move: str, parallax_out: float, 
         tz, sx = 0.0, p["par"] / (w_hi - w_lo)  # sx = focal * baseline, in work px
     t_dev = lambda a: torch.from_numpy(np.ascontiguousarray(a)).to(device)
     rgb_t, w_t, d_t = t_dev(photo.astype(np.float32)), t_dev(w), t_dev(disp)
+    bg_t = None
+    if bg is not None and bg[2].any():
+        b_rgb, b_disp, b_mask = bg
+        b_w = (1.0 / NEAR_FAR + b_disp * (1 - 1.0 / NEAR_FAR)).astype(np.float32)
+        bg_t = (t_dev(b_rgb.astype(np.float32)), t_dev(b_w), t_dev(b_disp.astype(np.float32)), t_dev(b_mask))
     n = round(seconds * FPS)
     holes, t0 = [], time.perf_counter()
     # Hole filling (OpenCV, releases the GIL) runs on worker threads while the next frame is splatted;
@@ -134,8 +162,10 @@ def render(photo: np.ndarray, disp: np.ndarray, move: str, parallax_out: float, 
             m = 1.6 * p["par"] + 8
             xs0, xs1 = max(0, int(wx - m)), min(pw, int(wx + p["win_w"] + m) + 1)
             ys0, ys1 = max(0, int(wy - m)), min(ph, int(wy + p["win_h"] + m) + 1)
-            frame, hole, zbuf = splat_frame(rgb_t[ys0:ys1, xs0:xs1], w_t[ys0:ys1, xs0:xs1], d_t[ys0:ys1, xs0:xs1],
-                                            xs0, ys0, cx0, cy0, tz * e, sx * e, wx, wy, p["scale"])
+            block = (slice(ys0, ys1), slice(xs0, xs1))
+            frame, hole, zbuf = splat_frame(rgb_t[block], w_t[block], d_t[block],
+                                            xs0, ys0, cx0, cy0, tz * e, sx * e, wx, wy, p["scale"],
+                                            bg=tuple(x[block] for x in bg_t) if bg_t is not None else None)
             holes.append(float(hole.mean()))
             pending.append(pool.submit(fill_holes, frame, hole, zbuf))
             while len(pending) > 4 or (i == n - 1 and pending):
@@ -147,20 +177,29 @@ def render(photo: np.ndarray, disp: np.ndarray, move: str, parallax_out: float, 
             "frames": n, "render_s": round(render_s, 2)}
 
 
-def splat_frame(rgb, w, d, xs0, ys0, cx0, cy0, tz, sx, wx, wy, scale):
-    """Forward-project the source block and splat it bilinearly with softmax depth weights."""
+def splat_frame(rgb, w, d, xs0, ys0, cx0, cy0, tz, sx, wx, wy, scale, bg=None):
+    """Forward-project the source block and splat it bilinearly with softmax depth weights. `bg` is an
+    optional background layer (rgb, inverse depth, disparity, mask) for the same block; its masked pixels
+    are splatted too, at their farther depth, so the photo wins wherever both land."""
     dev = rgb.device
     h, wd = w.shape
     v, u = torch.meshgrid(torch.arange(h, device=dev, dtype=torch.float32) + ys0,
                           torch.arange(wd, device=dev, dtype=torch.float32) + xs0, indexing="ij")
-    den = 1 - tz * w
-    up = cx0 + ((u - cx0) - sx * w) / den
-    vp = cy0 + (v - cy0) / den
-    ox = ((up - wx) * scale).reshape(-1)
-    oy = ((vp - wy) * scale).reshape(-1)
-    zw = torch.exp(SOFTMAX_BETA * (d.reshape(-1) - 1.0))
-    # per source pixel: colour, 1 and inverse depth, all to be weighted, then the plain bilinear weight
-    payload = torch.cat([rgb.reshape(-1, 3), torch.ones_like(zw)[:, None], w.reshape(-1, 1)], 1) * zw[:, None]
+    layers = [(u, v, rgb, w, d)]
+    if bg is not None:
+        b_rgb, b_w, b_d, b_m = bg
+        layers.append((u[b_m], v[b_m], b_rgb[b_m], b_w[b_m], b_d[b_m]))
+    oxs, oys, payloads = [], [], []
+    for lu, lv, lrgb, lw, ld in layers:
+        den = 1 - tz * lw
+        up = cx0 + ((lu - cx0) - sx * lw) / den
+        vp = cy0 + (lv - cy0) / den
+        oxs.append(((up - wx) * scale).reshape(-1))
+        oys.append(((vp - wy) * scale).reshape(-1))
+        lzw = torch.exp(SOFTMAX_BETA * (ld.reshape(-1) - 1.0))
+        # per source pixel: colour, 1 and inverse depth, all to be weighted, then the plain bilinear weight
+        payloads.append(torch.cat([lrgb.reshape(-1, 3), torch.ones_like(lzw)[:, None], lw.reshape(-1, 1)], 1) * lzw[:, None])
+    ox, oy, payload = torch.cat(oxs), torch.cat(oys), torch.cat(payloads)
     x0, y0 = torch.floor(ox), torch.floor(oy)
     fx, fy = ox - x0, oy - y0
     x0, y0 = x0.long(), y0.long()
@@ -210,8 +249,10 @@ def _depth_model(device: str) -> Depth:
     return Depth(device)
 
 
-def render_depth_clip(photo: np.ndarray, move: str, parallax_px: float, path: Path, seconds: float = 6.0) -> dict:
-    """Render one depth-parallax clip of `photo` (RGB uint8, full size) to `path`; returns its stats."""
+def render_depth_clip(photo: np.ndarray, move: str, parallax_px: float, path: Path, seconds: float = 6.0,
+                      fill: str = "telea") -> dict:
+    """Render one depth-parallax clip of `photo` (RGB uint8, full size) to `path`; returns its stats.
+    fill="lama" adds the LaMa background layer (background_layer) under the photo."""
     device = str(get_device())
     work = work_image(photo)
     with gpu_lock():
@@ -219,6 +260,13 @@ def render_depth_clip(photo: np.ndarray, move: str, parallax_px: float, path: Pa
         disp = _depth_model(device)(photo, (work.shape[1], work.shape[0]))
         depth_s = time.perf_counter() - t
         disp = sharpen_depth(disp, 2 * math.ceil(work.shape[0] / 518) + 1)
-        stats = render(work, disp, move, parallax_px, Path(path), device, seconds)
+        bg, bg_s = None, 0.0
+        if fill == "lama":
+            t = time.perf_counter()
+            bg = background_layer(work, disp, parallax_px * SRC_DENSITY)
+            bg_s = time.perf_counter() - t
+        stats = render(work, disp, move, parallax_px, Path(path), device, seconds, bg=bg)
+    stats.update({"fill": fill, "background_s": round(bg_s, 2),
+                  "background_frac": round(float(bg[2].mean()), 4) if bg is not None else 0.0})
     stats.update({"depth_s": round(depth_s, 2), "device": device, "work_size": [work.shape[1], work.shape[0]]})
     return stats

@@ -76,10 +76,31 @@ def _rejection(reasons: list[str], judge: dict | None) -> str:
     return reasons[0] if reasons else "the clip did not match the photo"
 
 
-def _depth(ctx: FilmContext, index: int, shot: Shot) -> list[str]:
+def _depth(ctx: FilmContext, index: int, shot: Shot, checks: list[Attempt] | None = None) -> list[str]:
+    """One depth clip per photo: the stronger move if it passes the clip checker, else the safe one.
+
+    The stronger move uncovers more background that the photo never saw, so it is checked like a generated
+    clip (its holes are filled from the background side; the checker sees what that invented). The safe
+    move is not checked: at 24 px it passed 6 of 6 in the experiment."""
     fps = []
+    strong = ctx.settings.depth_strong_px
     for view in [shot.view] + ([shot.end_view] if shot.end_view else []):
         photo = ctx.photo(view)
+        if strong and strong > ctx.settings.depth_parallax_px:
+            res = ctx.media.make(DepthRequest(image=photo.sha, move=shot.move, parallax_px=strong), {photo.sha: photo})
+            _emit_media(ctx, view, index, res)
+            try:
+                att = _check(ctx, index, 1, shot, res.fingerprint, res.path, views=(view, None), source="depth")
+            except Exception as e:  # noqa: BLE001 - an unreadable clip falls back like a failed one
+                att = Attempt(fingerprint=res.fingerprint, reasons=[f"the clip could not be checked ({type(e).__name__}: {e})"])
+            att.backend = "depth"
+            if checks is not None:
+                checks.append(att)
+            if att.passed:
+                fps.append(res.fingerprint)
+                continue
+            ctx.trace.emit("retry", view=view, call_id=ctx.call_id, shot=index, attempt=1, max_attempts=1, source="depth",
+                           reason="; ".join(att.reasons), next=f"{ctx.settings.depth_parallax_px:g} px depth move")
         res = ctx.media.make(DepthRequest(image=photo.sha, move=shot.move, parallax_px=ctx.settings.depth_parallax_px),
                              {photo.sha: photo})
         _emit_media(ctx, view, index, res)
@@ -87,9 +108,11 @@ def _depth(ctx: FilmContext, index: int, shot: Shot) -> list[str]:
     return fps
 
 
-def _check(ctx: FilmContext, index: int, attempt_no: int, shot: Shot, fp: str, path: Path) -> Attempt:
-    first = ctx.photo(shot.view)
-    last = ctx.photo(shot.end_view) if shot.end_view else None
+def _check(ctx: FilmContext, index: int, attempt_no: int, shot: Shot, fp: str, path: Path,
+           views: tuple[str, str | None] | None = None, source: str = "generated") -> Attempt:
+    start_view, end_view = views or (shot.view, shot.end_view)
+    first = ctx.photo(start_view)
+    last = ctx.photo(end_view) if end_view else None
     started = time.perf_counter()
     result = check_clip(path, first.rgb(), last.rgb() if last else None, judge=ctx.judge)
     judge = result.judge
@@ -98,12 +121,12 @@ def _check(ctx: FilmContext, index: int, attempt_no: int, shot: Shot, fp: str, p
         usage: dict[str, Any] = usage_event(u["model"], u)
         usage["usd"] = u["usd"]
         usage.pop("unpriced", None)
-        ctx.trace.emit("usage", view=shot.view, purpose=u["purpose"], **usage)
+        ctx.trace.emit("usage", view=start_view, purpose=u["purpose"], **usage)
     from ..tools._common import put_preview
 
     sheet = put_preview(ctx.tool_ctx(), result.sheet, long_edge=1568)
     compact = {k: v for k, v in result.signals.items() if k != "judge"}
-    ctx.trace.emit("check", view=shot.view, call_id=ctx.call_id, shot=index, attempt=attempt_no, clip=fp,
+    ctx.trace.emit("check", view=start_view, call_id=ctx.call_id, shot=index, attempt=attempt_no, clip=fp, source=source,
                    passed=result.passed, failures=result.reasons, judge=judge, signals=compact, images=[sheet],
                    ms=int((time.perf_counter() - started) * 1000))
     return Attempt(fingerprint=fp, passed=result.passed, reasons=result.reasons, judge=judge, sheet=sheet)
@@ -117,7 +140,8 @@ def prepare_shot(ctx: FilmContext, index: int, shot: Shot) -> ShotResult:
         _emit_media(ctx, view, index, res)
         out = ShotResult(source="still", clips=[res.fingerprint])
     elif shot.motion == "depth":
-        out = ShotResult(source="depth", clips=_depth(ctx, index, shot))
+        checks: list[Attempt] = []
+        out = ShotResult(source="depth", clips=_depth(ctx, index, shot, checks), depth_checks=checks)
     else:
         out = _generated(ctx, index, shot)
     out.photos = [{"view": v, "version": ctx.versions[v][0], "blob": ctx.versions[v][1]}
@@ -137,7 +161,10 @@ def _generated(ctx: FilmContext, index: int, shot: Shot) -> ShotResult:
     rejected: str | None = None
     note = ""
     for n in range(1, MAX_GENERATIONS + 1):
-        req = clip_request(shot.camera, shot.aspect, first, last, rejected=rejected)
+        # Attempt 2 uses the fixed stricter wording; only a live run, which checked attempt 1 itself, adds the
+        # failure, so a handoff can generate both attempts before any check (media.RETRY_TEXT).
+        req = clip_request(shot.camera, shot.aspect, first, last, retry=n > 1,
+                           rejected=rejected if ctx.media.mode == "live" else None)
         try:
             res = ctx.media.make(req, photos)
         except MediaError as e:
@@ -164,8 +191,9 @@ def _generated(ctx: FilmContext, index: int, shot: Shot) -> ShotResult:
         ctx.trace.emit("retry", view=shot.view, call_id=ctx.call_id, shot=index, attempt=n,
                        max_attempts=MAX_GENERATIONS, reason="; ".join(att.reasons),
                        next="depth fallback" if last_try else "regenerate with the failure named in the prompt")
-    return ShotResult(source="depth", clips=_depth(ctx, index, shot), attempts=attempts, fell_back=True,
-                      note=note + "; fell back to a depth move")
+    checks: list[Attempt] = []
+    return ShotResult(source="depth", clips=_depth(ctx, index, shot, checks), attempts=attempts, fell_back=True,
+                      note=note + "; fell back to a depth move", depth_checks=checks)
 
 
 def prepare_shots(ctx: FilmContext, shots: list[tuple[int, Shot]]) -> dict[int, ShotResult | Exception]:

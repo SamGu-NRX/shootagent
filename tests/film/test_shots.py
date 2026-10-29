@@ -21,8 +21,8 @@ from fakes import make_shoot, settings  # noqa: E402
 class FakeMedia:
     """Makes a placeholder file per request; `refuse_retry` makes regenerations unavailable (replay misses)."""
 
-    def __init__(self, root: Path, refuse: str | None = None):
-        self.root, self.refuse, self.requests = root, refuse, []
+    def __init__(self, root: Path, refuse: str | None = None, mode: str = "live"):
+        self.root, self.refuse, self.requests, self.mode = root, refuse, [], mode
 
     def backend_name(self, kind):
         return "fake"
@@ -55,10 +55,10 @@ def film(tmp_path, monkeypatch):
     store, sid = make_shoot(tmp_path / "shoots")
     trace = NullTrace()
 
-    def build(passed: bool, refuse: str | None = None):
+    def build(passed: bool, refuse: str | None = None, mode: str = "live", strong: float = 0):
         monkeypatch.setattr(shots, "check_clip", _verdict(passed))
-        media = FakeMedia(tmp_path, refuse)
-        ctx = shots.FilmContext(store, sid, trace, settings(tmp_path), media, judge=None)
+        media = FakeMedia(tmp_path, refuse, mode)
+        ctx = shots.FilmContext(store, sid, trace, settings(tmp_path, depth_strong_px=strong), media, judge=None)
         return ctx, media, trace
 
     return build
@@ -80,7 +80,7 @@ def test_a_clip_rejected_twice_is_regenerated_once_naming_the_failure_then_falls
 
     clips = [r for r in media.requests if isinstance(r, ClipRequest)]
     assert len(clips) == 2
-    assert "cluster of cone pendant lights" in clips[1].prompt and "pendant" not in clips[0].prompt
+    assert "cluster of cone pendant lights" in clips[1].prompt and "cluster" not in clips[0].prompt
     assert isinstance(media.requests[-1], DepthRequest)
     assert out.source == "depth" and out.fell_back and out.clips == [fingerprint(media.requests[-1])]
     assert [a.passed for a in out.attempts] == [False, False]
@@ -118,3 +118,25 @@ def test_a_clip_the_checker_cannot_read_never_plays(film, monkeypatch):
     out = shots.prepare_shot(ctx, 0, GENERATED)
     assert out.source == "depth" and out.fell_back
     assert "could not be checked" in out.attempts[0].reasons[0]
+
+
+def test_replay_second_attempt_is_the_request_a_handoff_exported(film):
+    """Fails if the regeneration in replay mode depends on the first clip's failure, so the clip the Mac made
+    ahead of time for attempt 2 is never found."""
+    from shootagent.film.media import clip_request
+
+    ctx, media, _ = film(passed=False, mode="replay")
+    shots.prepare_shot(ctx, 0, GENERATED)
+    second = [r for r in media.requests if isinstance(r, ClipRequest)][1]
+    photo = ctx.photo("v01")
+    assert second == clip_request(GENERATED.camera, GENERATED.aspect, photo, retry=True)
+
+
+@pytest.mark.parametrize("passed, plays", [(True, 40.0), (False, 24.0)])
+def test_the_stronger_depth_move_plays_only_if_it_passes_the_checker(film, passed, plays):
+    """Fails if a 40 px move the checker rejected plays, or one it passed is replaced by the 24 px move."""
+    ctx, media, _ = film(passed=passed, strong=40.0)
+    out = shots.prepare_shot(ctx, 0, Shot(view="v01", motion="depth", label="Kitchen"))
+    played = next(r for r in media.requests if isinstance(r, DepthRequest) and fingerprint(r) == out.clips[0])
+    assert played.parallax_px == plays
+    assert [a.passed for a in out.depth_checks] == [passed]

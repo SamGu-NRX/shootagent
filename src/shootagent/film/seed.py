@@ -69,7 +69,8 @@ def seed_replay(settings: Settings, branch: str = BRANCH) -> list[dict]:
 
     entries = []
     for c in CLIPS:
-        req = clip_request(c["camera"], c["aspect"], photo(c["first"]), photo(c["last"]) if c["last"] else None)
+        req = clip_request(c["camera"], c["aspect"], photo(c["first"]), photo(c["last"]) if c["last"] else None,
+                           guard="lab-v1")
         log = logged[c["id"]]
         if req.prompt != log["args"]["prompt"] or req.mode != log["kind"]:
             raise RuntimeError(f"{c['id']}: the rebuilt request does not match the logged call "

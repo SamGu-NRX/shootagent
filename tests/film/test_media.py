@@ -54,7 +54,7 @@ def test_replay_serves_the_recorded_clip_once_and_refuses_any_other_request(tmp_
     assert first.path.read_bytes() == b"recorded clip" and not first.cached
     assert media.make(recorded, {photo.sha: photo}).cached
 
-    retry = m.clip_request("Slow dolly", "source", photo, rejected="pendant lights appeared")
+    retry = m.clip_request("Slow dolly", "source", photo, retry=True)
     with pytest.raises(m.MediaError) as err:
         media.make(retry, {photo.sha: photo})
     assert err.value.category == "not_cached"

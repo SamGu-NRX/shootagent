@@ -30,7 +30,8 @@ def qc_checked(store: ShootStore, shoot: Shoot) -> set[str]:
 
 
 def review_state(store: ShootStore, shoot: Shoot) -> dict[str, str]:
-    """Per view: "approved", "split" (replaced by its parts), "qc_ok", "open_findings" or "needs_qc"."""
+    """Per view: "approved", "split" (replaced by its parts), "not_deliverable" (QC recommended against
+    delivering it), "qc_ok", "open_findings" or "needs_qc"."""
     checked = qc_checked(store, shoot)
     state = {}
     for v in shoot.views:
@@ -40,6 +41,8 @@ def review_state(store: ShootStore, shoot: Shoot) -> dict[str, str]:
             state[v.id] = "split"
         elif v.approved:
             state[v.id] = "approved"
+        elif (v.meta.get("delivery") or {}).get("deliver") is False:
+            state[v.id] = "not_deliverable"
         elif v.id in checked or (v.derived_from and v.derived_from in checked):
             state[v.id] = "open_findings" if any(f.status in ("open", "failed") for f in v.findings) else "qc_ok"
         else:

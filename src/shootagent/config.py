@@ -68,10 +68,17 @@ class Settings(BaseSettings):
     gemini_api_key: str | None = None
     tts_model: str = "gemini-3.8-flash-tts"
     tts_voice: str = "Sulafat"  # the lab's pick: natural in English and Spanish (lab/REPORT.md on explore/media-tests)
-    # Depth parallax size in output px. 24 px passed the clip checker on 6 of 6 clips; 40 px passed 5 of 10.
+    # Depth parallax in output px. Each depth shot first tries the stronger move, checked like a generated clip,
+    # and falls back to the safe one unchecked. In the experiment 24 px passed the checker on 6 of 6 clips and
+    # 40 px on 5 of 10, the failures on photos with the dataset's ghosting, which QC now fixes first.
     depth_parallax_px: float = 24.0
+    depth_strong_px: float = 40.0  # 0 turns the stronger move off
     # Reel Studio's engine (Python 3.11, its own venv) finishes the film: captions, music mix, cover, verify.
     reelengine_python: Path | None = None
+    # Reel Studio's animation templates (reel-studio-app/templates/animations, with `npm ci` run there) render
+    # the film's title and stat cards headless through Playwright's Chromium. Unset: cards are drawn with PIL.
+    reelstudio_templates: Path | None = None
+    node_bin: str = "node"
     # faster-whisper models (small.en; `small` for Spanish). Default <data_dir>/models/speech: git-ignored and
     # outside the OS temp folder, which Windows clears.
     reelengine_models: Path | None = None

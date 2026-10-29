@@ -26,9 +26,11 @@ from typing import Any
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-from ..reel.music import synth_track, write_wav
+from ..reel.music import SR, synth_track, write_wav
 from ..reel.render import _tracked, font
+from .beats import beat_times, snap_cuts
 from .engine import EngineError, ReelEngine
+from .media import CardRequest, MediaError
 from .narration import proportional_starts, segment_starts
 from .shots import FilmContext
 from .spec import END_CARD, FilmSpec
@@ -36,6 +38,7 @@ from .video import duration, run_ffmpeg
 
 RATE_MIN, RATE_MAX = 0.67, 1.6  # playback speed range for fitting a clip to its segment; outside it motion looks wrong
 END_CARD_S = 3.0
+BEAT_WINDOW_S = 0.36  # half a beat of the 84 BPM bed: every cut can reach a beat, none moves further
 CAPTION_POSITION = 0.60  # fraction of height; at 0.66-0.75 the engine's own verify said captions sit under app buttons
 
 
@@ -93,6 +96,75 @@ def _scrim(w: int, h: int, top: bool, band_y: float | None) -> Image.Image:
     return Image.fromarray(rgba, "RGBA")
 
 
+CARD_ACCENT = "#D8B98A"  # warm sand, from the photos' wood and linen; Reel Studio's default blue fought the rooms
+CARD_TEXT = {
+    "en": {"bd": "bd", "ba": "ba", "sqft": "square feet of living space"},
+    "es": {"bd": "rec", "ba": "baños", "sqft": "pies cuadrados de espacio habitable"},
+}
+
+
+def card_params(spec: FilmSpec, language: str) -> dict[str, dict]:
+    """Params for the opening price card and the mid-film stat card, from the listing fields only; a card
+    whose field is missing is left out."""
+    li = spec.listing
+    words = CARD_TEXT.get(language.split("-")[0], CARD_TEXT["en"])
+    area = (li.address or "").partition(",")[2].strip()
+    out: dict[str, dict] = {}
+    if li.price:
+        facts = [f"{li.beds:g} {words['bd']}" if li.beds is not None else "",
+                 f"{li.baths:g} {words['ba']}" if li.baths is not None else "", area]
+        out["title"] = {"template": "price-tag", "params": {
+            "value": li.price[:12], "name": (li.headline or area)[:30],
+            "text": " · ".join(f for f in facts if f)[:40], "theme": "dark", "accentColor": CARD_ACCENT}}
+    if li.sqft:
+        out["stat"] = {"template": "stat-count-up", "params": {
+            "value": f"{li.sqft:,}", "text": words["sqft"], "theme": "dark", "accentColor": CARD_ACCENT}}
+    return out
+
+
+def film_cards(fctx: FilmContext, spec: FilmSpec, language: str, starts: list[float], total: float,
+               work: Path) -> tuple[dict[int, tuple[Path, float]], list[str]]:
+    """The price card over the first shot (it is the hook) and the stat card over the shot nearest the middle.
+    Reel Studio's templates render through fctx.media (cached); without them PIL draws a still card."""
+    edges = starts + [total]
+    spans = [b - a for a, b in zip(edges, edges[1:])]
+    want = card_params(spec, language)
+    place = {"title": (0, 0.15)}
+    if len(spec.shots) > 2:
+        mid = min(range(1, len(spec.shots) - 1), key=lambda i: abs((edges[i] + edges[i + 1]) / 2 - total / 2))
+        place["stat"] = (mid, 0.3)
+    cards, notes = {}, []
+    for name, card in want.items():
+        if name not in place:
+            continue
+        i, t_in = place[name]
+        dur = round(max(1.2, min(3.0, spans[i] - t_in - 0.2)), 2)
+        req = CardRequest(template=card["template"], params={**card["params"], "duration": dur})
+        try:
+            cards[i] = (fctx.media.make(req).path, t_in)
+        except MediaError as e:
+            png = work / f"card-{name}.png"
+            _pil_card(spec.width, spec.height, card).save(png)
+            cards[i] = (png, t_in)
+            notes.append(f"the {name} card was drawn with PIL because Reel Studio's renderer was unavailable ({e})")
+    return cards, notes
+
+
+def _pil_card(w: int, h: int, card: dict) -> Image.Image:
+    p = card["params"]
+    lines = [(p.get("name", ""), font("Inter", 34, 500)), (p["value"], font("Fraunces", 110, 500)),
+             (p.get("text", ""), font("Inter", 38, 500))]
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([90, 230, w - 90, 640], radius=28, fill=(28, 26, 24, 230))
+    y = 280
+    for text, f in lines:
+        if text:
+            d.text((w // 2, y), text, font=f, fill=(255, 255, 255, 255) if f.size != 110 else CARD_ACCENT, anchor="ma")
+            y += int(f.size * 1.35)
+    return img
+
+
 def end_card_lines(spec: FilmSpec, language: str) -> list[str]:
     lines = [END_CARD.get(language.split("-")[0], END_CARD["en"])]
     if spec.listing.price:
@@ -111,15 +183,21 @@ def frame_counts(starts: list[float], total: float, fps: int) -> list[int]:
 
 
 def fit_segment(clip: Path, frames: int, fps: int, w: int, h: int, overlays: list[tuple[Path, float]], out: Path) -> None:
-    """Fit `clip` to `frames` and lay each (png, fade-in second) overlay on top."""
+    """Fit `clip` to `frames` and lay each (layer, start second) on top: a PNG fades in; a .mov is a
+    transparent full-frame layer (Reel Studio card) that plays from its start and then lets the shot through."""
     clip_s = duration(clip)
     span = frames / fps
     rate = min(RATE_MAX, max(RATE_MIN, clip_s / span))
     graph = [f"[0:v:0]setpts=(PTS-STARTPTS)/{rate:.4f},scale={w}:{h}:force_original_aspect_ratio=increase,"
              f"crop={w}:{h},fps={fps},tpad=stop_mode=clone:stop_duration={span + 1:.2f},setsar=1[v0]"]
     inputs = ["-i", str(clip)]
-    for k, (png, t_in) in enumerate(overlays, start=1):
-        inputs += ["-loop", "1", "-framerate", str(fps), "-i", str(png)]
+    for k, (layer, t_in) in enumerate(overlays, start=1):
+        if layer.suffix == ".mov":
+            inputs += ["-i", str(layer)]
+            graph.append(f"[{k}:v]setpts=PTS-STARTPTS+{t_in:.3f}/TB[o{k}]")
+            graph.append(f"[v{k - 1}][o{k}]overlay=0:0:format=auto:eof_action=pass[v{k}]")
+            continue
+        inputs += ["-loop", "1", "-framerate", str(fps), "-i", str(layer)]
         graph.append(f"[{k}:v]format=rgba,fade=t=in:st={t_in:.2f}:d=0.4:alpha=1[o{k}]")
         graph.append(f"[v{k - 1}][o{k}]overlay=0:0:format=auto[v{k}]")
     graph.append(f"[v{len(overlays)}]format=yuv420p[out]")
@@ -129,9 +207,12 @@ def fit_segment(clip: Path, frames: int, fps: int, w: int, h: int, overlays: lis
 
 
 def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list[float], total: float,
-                  audio: Path, work: Path) -> Path:
+                  audio: Path, work: Path, cards: dict[int, tuple[Path, float]] | None = None) -> Path:
+    """`cards` maps a shot index to a (layer, start second) card shown on that shot; its room label is left
+    out, because both sit in the top band of the frame."""
     narration = spec.narrations[language]
     counts = frame_counts(starts, total, spec.fps)
+    cards = cards or {}
     parts: list[Path] = []
     for i, (shot, n) in enumerate(zip(spec.shots, counts)):
         if shot.result is None:
@@ -149,9 +230,10 @@ def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list
         for k, (clip, frames) in enumerate(zip(clips, split)):
             part = work / f"shot-{i:02d}-{k}.mp4"
             png = work / f"overlay-{i:02d}-{k}.png"
-            overlay_image(spec.width, spec.height, labels[min(k, len(labels) - 1)],
+            card = cards.get(i) if k == 0 else None
+            overlay_image(spec.width, spec.height, "" if card else labels[min(k, len(labels) - 1)],
                           spec.disclosure_text(language) if generated else None, None).save(png)
-            overlays = [(png, 0.2)]
+            overlays = [(png, 0.2)] + ([card] if card else [])
             if last and k == len(clips) - 1:
                 # The end card comes in for the last END_CARD_S of the film, under the spoken call to action.
                 end_png = work / "end-card.png"
@@ -170,7 +252,7 @@ def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list
 
 # ---- finish -------------------------------------------------------------------------------------------------
 
-def _engine_finish(engine: ReelEngine, source: Path, language: str, title: str, cover_at: float, seconds: float,
+def _engine_finish(engine: ReelEngine, source: Path, language: str, title: str, cover_at: float, bed: Path,
                    work: Path, timing_project: Path) -> dict[str, Any]:
     project = work / "final"
     engine.init(project, title, source)
@@ -183,7 +265,7 @@ def _engine_finish(engine: ReelEngine, source: Path, language: str, title: str, 
     timing_transcript = json.loads((timing_project / "project.json").read_text(encoding="utf-8"))["transcript"]
     assets = project / "work" / "assets"
     assets.mkdir(parents=True, exist_ok=True)
-    write_wav(assets / "bed.wav", synth_track(seconds + 2))
+    shutil.copyfile(bed, assets / "bed.wav")
     pj = project / "project.json"
     proj = json.loads(pj.read_text(encoding="utf-8"))
     # Keep every word, and every pause between them: the picture is cut to the narration's own timing, so
@@ -205,8 +287,7 @@ def _engine_finish(engine: ReelEngine, source: Path, language: str, title: str, 
             "captions": int(result.get("captions") or 0), "timings": result.get("timings")}
 
 
-def _ffmpeg_finish(source: Path, seconds: float, cover_at: float, work: Path) -> dict[str, Any]:
-    bed = write_wav(work / "bed.wav", synth_track(seconds + 2))
+def _ffmpeg_finish(source: Path, bed: Path, cover_at: float, work: Path) -> dict[str, Any]:
     out = work / "film-ffmpeg.mp4"
     graph = ("[0:a]asplit=2[v1][v2];[1:a]volume=0.3[m];"
              "[m][v1]sidechaincompress=threshold=0.03:ratio=6:attack=20:release=400[duck];"
@@ -263,8 +344,19 @@ def assemble_language(fctx: FilmContext, spec: FilmSpec, language: str) -> dict[
         timing_method = "word count"
     timing_s = time.perf_counter() - timing_s
 
+    # The engine keeps speech from 0.10 s before the first word (its cut.py), and the music starts there, so a
+    # beat at music time b falls at source time b + head.
+    head = round(max(0.0, words[0]["s"] - 0.10) * spec.fps) / spec.fps if captions_ok and words else 0.0
+    track = synth_track(total + 2)
+    bed = write_wav(work / "bed.wav", track)
+    beats = beat_times(track, SR)
+    narration_starts = starts
+    starts = snap_cuts(starts, [b + head for b in beats], window=BEAT_WINDOW_S)
+
     pic_s = time.perf_counter()
-    source = build_picture(fctx, spec, language, starts, total, voice, work)
+    cards, card_notes = film_cards(fctx, spec, language, starts, total, work)
+    notes += card_notes
+    source = build_picture(fctx, spec, language, starts, total, voice, work, cards=cards)
     pic_s = time.perf_counter() - pic_s
 
     cover_at = (starts[0] + (starts[1] if len(starts) > 1 else total)) / 2
@@ -273,14 +365,14 @@ def assemble_language(fctx: FilmContext, spec: FilmSpec, language: str) -> dict[
     if captions_ok:
         try:
             fin = _engine_finish(engine, source, language, f"film {fctx.shoot_id} {language}", max(cover_at, 0.5),
-                                 total, work, work / "timing")
+                                 bed, work, work / "timing")
         except EngineError as e:
             notes.append(f"Reel Studio's engine failed ({e}), so ffmpeg finished the film without captions")
             finisher = "ffmpeg"
-            fin = _ffmpeg_finish(source, total, cover_at, work)
+            fin = _ffmpeg_finish(source, bed, cover_at, work)
     else:
         finisher = "ffmpeg"
-        fin = _ffmpeg_finish(source, total, cover_at, work)
+        fin = _ffmpeg_finish(source, bed, cover_at, work)
     fin_s = time.perf_counter() - fin_s
 
     out_dir = root / language
@@ -308,6 +400,9 @@ def assemble_language(fctx: FilmContext, spec: FilmSpec, language: str) -> dict[
         "verify": {"ok": verify.get("ok"), "fails": verify.get("fails"), "warns": verify.get("warns"),
                    "lufs": verify.get("lufs")} if verify else None,
         "shot_times": shot_times,
+        "cuts": {"narration_s": [round(s, 3) for s in narration_starts], "on_beat_s": [round(s, 3) for s in starts],
+                 "beats_found": len(beats), "head_s": head},
+        "cards": {str(k): v[0].name for k, v in cards.items()},
         "notes": notes,
         "timings_s": {"timing": round(timing_s, 1), "picture": round(pic_s, 1), "finish": round(fin_s, 1),
                       "total": round(time.perf_counter() - started, 1)},
@@ -354,6 +449,7 @@ def write_manifest(fctx: FilmContext, spec: FilmSpec, variants: dict[str, dict])
             "clips": res.clips if res else [],
             "check": {"passed": last.passed, "reasons": last.reasons, "judge": last.judge} if last else None,
             "attempts": attempts,
+            "depth_checks": [a.model_dump(exclude_none=True) for a in (res.depth_checks if res else [])],
             "note": res.note if res else "",
             "times": {lang: v["shot_times"][i] for lang, v in variants.items() if i < len(v["shot_times"])},
         })
