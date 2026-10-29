@@ -43,6 +43,16 @@ describe("buildStoryboard", () => {
     expect(v03!.rejected).toEqual([]);
   });
 
+  it("never shows a failed 40 px depth-move check as a rejected AI clip", () => {
+    const trace = reduceAll([
+      ev(1, "run_start", null, { mode: "film", views: ["v01"] }),
+      ev(2, "check", "v01", { shot: 0, clip: "d40", source: "depth", passed: false, failures: ["a straight edge bends by 1.65 px"] }),
+    ]);
+    const [v01] = buildStoryboard(film([shot(0, "v01")]), trace);
+    expect(v01!.rejected).toEqual([]);
+    expect(v01!.fellBack).toBe(false);
+  });
+
   it("prefers the manifest's own attempts over the trace", () => {
     const attempts = [{ passed: false, reasons: ["judge (high confidence): pendant lights appeared"] }];
     const trace = reduceAll([

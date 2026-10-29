@@ -95,6 +95,8 @@ MODE_TOOLS: dict[str, list[str]] = {
         "narrate",
         "assemble_film",
     ],
+    # The script for an existing shot plan, when narration and clips are made on another machine (the handoff).
+    "film_script": ["submit_plan", "list_views", "view_photo", "write_script", "translate_script"],
 }
 
 
@@ -167,7 +169,7 @@ class AgentRun:
         if self.mask and self.mask not in shoot.masks:
             raise ValueError(f"Shoot {self.shoot_id} has no mask {self.mask!r}.")
         all_ids = [v.id for v in shoot.views]
-        if self.mode == "film":
+        if self.mode in ("film", "film_script"):
             from ..film.readiness import film_scope
 
             # Approved photos only, so QC has looked at everything a buyer sees (raises NeedsReview).
@@ -187,7 +189,7 @@ class AgentRun:
         else:
             scope = all_ids
         self.scope: list[str] = scope
-        if self.mode == "film":
+        if self.mode in ("film", "film_script"):
             self.languages = [lang.strip().lower() for lang in (self.languages or ["en"])]
             bad = [lang for lang in self.languages if not LANG_RE.match(lang)]
             if bad or not self.languages or len(set(self.languages)) != len(self.languages):
@@ -218,7 +220,7 @@ class AgentRun:
             views=self.scope,
             mask=self.mask,
             model=self.settings.agent_model,
-            **({"languages": self.languages, "media": self.settings.film_media} if self.mode == "film" else {}),
+            **({"languages": self.languages, "media": self.settings.film_media} if self.mode in ("film", "film_script") else {}),
         )
         try:
             self._loop()
@@ -248,7 +250,7 @@ class AgentRun:
             _ops.prewarm_analysis(
                 self.store, self.shoot_id, [v for v in self.scope if bracket_problem(shoot.view(v)) is None]
             )
-        if self.mode == "film":
+        if self.mode in ("film", "film_script"):
             from ..tools.film import start_film
 
             start_film(ToolContext(self.store, self.shoot_id, self.trace, self.settings), self.scope, self.languages)
@@ -495,6 +497,11 @@ class AgentRun:
             from ..tools.film import film_opening
 
             lines[0:0] = film_opening(ctx, self.scope, self.languages)
+        elif self.mode == "film_script":
+            from ..tools.film import script_opening
+
+            text, sheet = script_opening(ctx, self.languages)
+            lines[0:0] = text
         else:
             lines.insert(0, "Run the autonomous QC pass on the views in scope.")
         if self.mask:
@@ -573,6 +580,12 @@ class AgentRun:
                     made |= set((e["data"].get("data") or {}).get("languages", {}))
             missing = [lang for lang in self.languages if lang not in made]
             return f"assemble the film for {', '.join(missing)} (narrate first if needed)." if missing else ""
+        if self.mode == "film_script":
+            from ..tools.film import load_spec
+
+            spec = load_spec(ToolContext(self.store, self.shoot_id, self.trace, self.settings))
+            missing = [lang for lang in self.languages if lang not in spec.narrations]
+            return f"write the script for {', '.join(missing)} (write_script, then translate_script)." if missing else ""
         if self.mode == "chat":
             missing = [
                 v

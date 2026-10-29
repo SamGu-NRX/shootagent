@@ -156,6 +156,8 @@ export interface TraceDataByKind {
     version?: string;
     clip?: string;
     shot?: number;
+    /** film checks: "generated" for an AI clip, "depth" for the 40 px depth move tried before 24 px */
+    source?: "generated" | "depth";
     attempt?: number;
     images?: string[];
     parent?: string | null;

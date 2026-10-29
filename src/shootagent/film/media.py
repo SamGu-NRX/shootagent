@@ -413,6 +413,17 @@ class GeminiTts:
     name = "gemini-tts"
     URL = "https://generativelanguage.googleapis.com/v1beta/interactions"
 
+    @staticmethod
+    def body(req: SpeechRequest) -> dict:
+        """The request body (lab/tools/tts.py's shape). The handoff runner posts exactly this."""
+        return {
+            "model": req.model,
+            "input": [{"type": "user_input", "content": [
+                {"type": "text", "text": req.text, "annotations": [{"type": "speech_metadata", "style": req.style}]}]}],
+            "response_format": {"type": "audio"},
+            "generation_config": {"speech_config": [{"voice": req.voice}]},
+        }
+
     def __init__(self, settings: Settings):
         self.key = settings.gemini_api_key
 
@@ -422,13 +433,7 @@ class GeminiTts:
         if not self.key:
             raise MediaError("GEMINI_API_KEY is not set. Set it (the Mac fills it from the Keychain) or use FILM_MEDIA=replay.",
                              "unavailable")
-        body = {
-            "model": req.model,
-            "input": [{"type": "user_input", "content": [
-                {"type": "text", "text": req.text, "annotations": [{"type": "speech_metadata", "style": req.style}]}]}],
-            "response_format": {"type": "audio"},
-            "generation_config": {"speech_config": [{"voice": req.voice}]},
-        }
+        body = self.body(req)
         http = urllib.request.Request(self.URL, data=json.dumps(body).encode(), method="POST",
                                       headers={"Content-Type": "application/json", "x-goog-api-key": self.key})
         started = time.time()

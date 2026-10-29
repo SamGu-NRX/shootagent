@@ -8,6 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "agent"))
@@ -74,3 +75,53 @@ def test_runner_refuses_a_clip_from_arguments_grok_rewrote(tmp_path, monkeypatch
     monkeypatch.setattr(handoff_runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, out, ""))
     with pytest.raises(RuntimeError, match="^altered"):
         handoff_runner.call_grok("grok", "video", args)
+
+
+def test_narration_comes_back_into_replay_and_the_key_never_leaves_the_process(tmp_path, monkeypatch, capsys):
+    """Fails if the runner prints or writes the Gemini key (including inside an API error), or if the narration
+    it made is not served for the PC's own speech request."""
+    import base64
+    import io
+    import urllib.error
+    import wave
+
+    from shootagent.film.media import SpeechRequest
+
+    store, sid = make_shoot(tmp_path / "shoots")
+    folder = tmp_path / "handoff"
+    speech = SpeechRequest(model="gemini-3.8-flash-tts", voice="Sulafat", style="warm", language="en", text="Welcome home.")
+    handoff.export_requests(store, sid, SHOTS, folder, speech=[speech])
+
+    key = "SECRET-KEY-123"
+    pcm = (np.sin(np.arange(24000) / 10) * 8000).astype("<i2").tobytes()
+    reply = json.dumps({"steps": [{"type": "model_output", "content": [{"type": "audio", "data": base64.b64encode(pcm).decode()}]}]})
+
+    class Resp(io.BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    monkeypatch.setattr(handoff_runner, "HERE", folder)
+    monkeypatch.setattr(handoff_runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, key + "\n", ""))
+    monkeypatch.setattr(handoff_runner.urllib.request, "urlopen", lambda req, timeout: Resp(reply.encode()))
+    monkeypatch.setattr(sys, "argv", ["run_grok.py", "--tts-only"])
+    assert handoff_runner.main() == 0
+
+    def leaky(req, timeout):
+        raise urllib.error.HTTPError(handoff_runner.TTS_URL, 400, "bad", {}, io.BytesIO(f"bad key {key}".encode()))
+
+    monkeypatch.setattr(handoff_runner.urllib.request, "urlopen", leaky)
+    with pytest.raises(RuntimeError) as err:
+        handoff_runner.speak({"x": 1}, key, folder / "audio" / "x.wav")
+    out = capsys.readouterr()
+    assert key not in out.out + out.err + str(err.value) + (folder / "results.jsonl").read_text(encoding="utf-8")
+
+    monkeypatch.undo()  # import probes the audio with ffprobe through the real subprocess.run
+    with wave.open(str(next((folder / "audio").glob("*.wav"))), "rb") as w:
+        assert w.getframerate() == 24000 and w.getnframes() == 24000
+    s = settings(tmp_path, film_media="replay")
+    result = handoff.import_media(s, folder)
+    assert [x["id"] for x in result["imported"]] == ["TTS-en"]
+    assert Media(s).make(speech).backend == "replay"

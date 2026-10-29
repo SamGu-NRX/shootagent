@@ -307,6 +307,26 @@ def assemble_film(ctx: ToolContext, args: AssembleIn) -> ToolResult:
                       images=images)
 
 
+def script_opening(ctx: ToolContext, languages: list[str]) -> tuple[list[str], str]:
+    """Opening for a film_script run: the shot plan, one line each, and a sheet of the shots' photos in order."""
+    spec = load_spec(ctx)
+    shoot = ctx.store.load(ctx.shoot_id)
+    lines = [
+        f"Write the narration for this film's shot plan in {languages[0]}"
+        + (f", then translate it into {', '.join(languages[1:])}." if len(languages) > 1 else "."),
+        "Listing fields (the only source for beds, baths, size and price): "
+        + (shoot.listing.model_dump_json(exclude_none=True) if shoot.listing.model_dump(exclude_none=True) else "none given"),
+        "Shots, in order (S<n> on the sheet below):",
+    ]
+    tiles = []
+    for i, s in enumerate(spec.shots):
+        what = f"generated move: {s.camera}" if s.motion == "generated" else f"{s.motion} move ({s.move})"
+        end = f", ending in {s.end_view} ({s.end_label})" if s.end_view else ""
+        lines.append(f"S{i}: {s.view} '{s.label}'{end}, about {s.seconds:g} s, {what}")
+        tiles.append((f"S{i} {s.label}", ctx.store.get_image(ctx.shoot_id, shoot.view(s.view).head_version.blob)))
+    return lines, put_preview(ctx, contact_sheet(tiles, cols=4, tile_w=360), long_edge=1568)
+
+
 def _strip(path, label: str) -> np.ndarray:
     cap = cv2.VideoCapture(str(path))
     n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -339,9 +359,7 @@ def start_film(ctx: ToolContext, scope: list[str], languages: list[str]) -> None
 
 
 def film_opening(ctx: ToolContext, scope: list[str], languages: list[str]) -> list[str]:
-    """Opening lines for a film run: languages, media mode, and the clips and narrations already on hand."""
-    from ..film.narration import STYLE
-
+    """Opening lines for a film run: languages, media mode, and the clips already on hand."""
     media = Media(ctx.settings)
     fctx = film_context(ctx)
     shoot = ctx.store.load(ctx.shoot_id)
@@ -353,9 +371,10 @@ def film_opening(ctx: ToolContext, scope: list[str], languages: list[str]) -> li
         + (shoot.listing.model_dump_json(exclude_none=True) if shoot.listing.model_dump(exclude_none=True) else "none given"),
     ]
     if ctx.settings.film_media == "replay":
-        lines.append("Media mode: replay. This machine cannot generate: only the recorded clips and narrations listed "
-                     "below exist. A generated shot with any other camera direction fails and falls back to depth, and a "
-                     "narration whose text differs from a recording by one character has no audio.")
+        lines.append("Media mode: replay. This machine cannot generate: only the recorded clips listed below exist, and "
+                     "a generated shot with any other camera direction falls back to depth. Narration audio exists only "
+                     "for scripts already recorded; a new script is spoken on the machine with Gemini (the handoff), so "
+                     "narrate may report it missing.")
     else:
         lines.append("Media mode: live. Generated clips come from Grok Imagine (about a minute each, one at a time); "
                      "narration from Gemini TTS. Clips listed below are already made and cost nothing to reuse.")
@@ -373,9 +392,5 @@ def film_opening(ctx: ToolContext, scope: list[str], languages: list[str]) -> li
             if items:
                 desc += ": recorded generated clips: " + "; ".join(items)
         lines.append(desc)
-    speech = [s for s in media.known_speech() if s["voice"] == ctx.settings.tts_voice and s["model"] == ctx.settings.tts_model
-              and s["style"] == STYLE and s["language"] in languages]
-    for s in speech:
-        lines.append(f"Recorded narration ({s['language']}), usable only verbatim: {s['text']}")
     return lines
 

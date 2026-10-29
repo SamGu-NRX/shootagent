@@ -38,11 +38,11 @@ def test_cards_use_only_listing_fields_and_fit_the_templates_limits():
     """Fails if a card states a fact the listing does not give, or sends a value longer than Reel Studio's
     templates accept (price-tag: value 12, name 30, text 40), which the renderer rejects."""
     assert card_params(FilmSpec(), "en") == {}
-    li = Listing(price="$875,000", beds=4, baths=3, sqft=3240, headline="A very long farmhouse headline indeed",
-                 address="1840 Meadowlark Lane, Elizabeth, CO")
+    li = Listing(price="$549,000", beds=3, baths=2, sqft=2140, headline="A headline far longer than thirty characters",
+                 address="Sample Home, High Plains")
     cards = card_params(FilmSpec(listing=li), "es")
     t = cards["title"]["params"]
     assert len(t["value"]) <= 12 and len(t["name"]) <= 30 and len(t["text"]) <= 40
-    assert "rec" in t["text"] and "Elizabeth, CO" in t["text"]
-    assert cards["stat"]["params"]["value"] == "3,240"
+    assert t["name"] == "Sample Home" and "rec" in t["text"] and "High Plains" in t["text"]
+    assert cards["stat"]["params"]["value"] == "2,140"
     assert "stat" not in card_params(FilmSpec(listing=Listing(price="$1")), "en")

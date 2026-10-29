@@ -185,28 +185,87 @@ def cmd_film_export(a) -> int:
     settings = get_settings()
     store = _store()
     shoot = store.load(a.shoot)
+    spec = FilmSpec.load(store.shoot_dir(a.shoot) / "film" / "spec.json")
     if a.plan:
         plan = PlanFilmIn.model_validate_json(Path(a.plan).read_text(encoding="utf-8"))
         shots = [Shot(**{**s.model_dump(), "end_label": s.end_label or ""}) for s in plan.shots]
-    else:
-        spec = FilmSpec.load(store.shoot_dir(a.shoot) / "film" / "spec.json")
-        if spec is None:
-            print("No film plan: pass --plan plan.json or plan a film first.", file=sys.stderr)
-            return 1
+    elif spec is not None:
         shots = spec.shots
+    else:
+        print("No film plan: pass --plan plan.json or plan a film first.", file=sys.stderr)
+        return 1
+    # Narrations come from the film spec's scripts (`shootagent film-script`), one TTS request per language.
+    from .film.narration import speech_request
+
+    speech = [] if a.no_tts or spec is None else [
+        speech_request(settings, lang, spec.narrations[lang].text) for lang in spec.languages if lang in spec.narrations]
     missing = [v for s in shots for v in (s.view, s.end_view) if v and (v not in {x.id for x in shoot.views}
                                                                         or shoot.view(v).head is None)]
     if missing:
         print(f"Unknown or empty views in the plan: {', '.join(missing)}", file=sys.stderr)
         return 1
     out = Path(a.out) if a.out else settings.data_dir / "handoff" / a.shoot
-    entries = export_requests(store, a.shoot, shots, out, attempts=a.attempts)
+    entries = export_requests(store, a.shoot, shots, out, attempts=a.attempts, speech=speech)
     if a.plan:
         (out / "plan.json").write_text(Path(a.plan).read_text(encoding="utf-8"), encoding="utf-8")
     for e in entries:
-        print(f"{e['id']}  {e['fingerprint']}  {e['mode']:<5} {e['view']}{' -> ' + e['end_view'] if e['end_view'] else ''}")
+        if e["kind"] == "speech":
+            print(f"{e['id']:<7} {e['fingerprint']}  tts   {e['request']['text'][:80]}")
+        else:
+            print(f"{e['id']}  {e['fingerprint']}  {e['mode']:<5} {e['view']}{' -> ' + e['end_view'] if e['end_view'] else ''}")
     print(f"{len(entries)} request(s) in {out}")
     return 0
+
+
+def cmd_film_script(a) -> int:
+    """Handoff step 1: the plan from a file, then a film_script agent run for the words. Export comes next."""
+    from .film.readiness import film_scope
+    from .tools import ToolContext, run_tool
+    from .tools.film import PlanFilmIn, start_film
+    from .trace import NullTrace
+
+    store = _store()
+    plan = PlanFilmIn.model_validate_json(Path(a.plan).read_text(encoding="utf-8"))
+    views = list(dict.fromkeys(v for s in plan.shots for v in (s.view, s.end_view) if v))
+    film_scope(store, store.load(a.shoot), views)  # approved photos only; raises with what to do
+    ctx = ToolContext(store, a.shoot, NullTrace(), get_settings())
+    start_film(ctx, views, a.languages)
+    res = run_tool(ctx, "plan_film", plan.model_dump(exclude_none=True))
+    if not res.ok:
+        print(f"The plan was refused: {res.summary}", file=sys.stderr)
+        return 1
+    print(res.summary)
+    return _run(a.shoot, "film_script", views=views, languages=a.languages)
+
+
+def cmd_film_finish(a) -> int:
+    """Handoff step 3, after film-import-media: prepare every shot, narrate and assemble from film/spec.json.
+    Deterministic code only; the trace is a film run the UI shows like any other."""
+    import time
+
+    from .tools import ToolContext, run_tool
+    from .tools.film import load_spec
+    from .trace import TraceRun
+
+    store, settings = _store(), get_settings()
+    trace = TraceRun(store.shoot_dir(a.shoot), "film")
+    store.mutate(a.shoot, lambda s: s.runs.append(trace.id))
+    ctx = ToolContext(store, a.shoot, trace, settings)
+    spec = load_spec(ctx)
+    trace.emit("run_start", mode="film", request="film-finish: prepare, narrate and assemble the planned film",
+               views=list(dict.fromkeys(s.view for s in spec.shots)), languages=spec.languages, media=settings.film_media)
+    ok, summary, started = True, "", time.perf_counter()
+    for name, inp in (("prepare_shots", {"shots": list(range(len(spec.shots)))}), ("narrate", {}), ("assemble_film", {})):
+        res = run_tool(ctx, name, inp)
+        print(f"{'ok' if res.ok else 'FAILED'} {name}: {res.summary}", flush=True)
+        summary = res.summary
+        if not res.ok:
+            ok = False
+            break
+    trace.emit("run_end", ok=ok, summary=summary[:600], ms=int((time.perf_counter() - started) * 1000),
+               usd=round(trace.usd, 4), counts={})
+    print(f"run {trace.id}: {'ok' if ok else 'failed'}, ${trace.usd:.4f}")
+    return 0 if ok else 1
 
 
 def cmd_film_import(a) -> int:
@@ -218,6 +277,19 @@ def cmd_film_import(a) -> int:
     for rid, why in r["skipped"]:
         print(f"skipped  {rid}: {why}")
     return 0 if r["imported"] or not r["skipped"] else 1
+
+
+SAMPLE_LISTING = Path(__file__).resolve().parents[2] / "web" / "src" / "listing" / "sample-listing.json"
+
+
+def cmd_listing_sample(a) -> int:
+    """Write the demo's sample listing (web/src/listing/sample-listing.json, the one copy the UI also reads)."""
+    from .store import Listing
+
+    sample = Listing.model_validate_json(SAMPLE_LISTING.read_text(encoding="utf-8"))
+    shoot = _store().mutate(a.shoot, lambda s: setattr(s, "listing", sample))
+    print(f"{shoot.id}: {shoot.listing.model_dump_json(exclude_none=True)}")
+    return 0
 
 
 def cmd_film_seed(a) -> int:
@@ -304,11 +376,26 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--plan", help="JSON {shots: [...]} in plan_film's shape; default the shoot's current film plan")
     s.add_argument("--out", help="folder to write; default <data>/handoff/<shoot>")
     s.add_argument("--attempts", type=int, default=2, choices=(1, 2))
+    s.add_argument("--no-tts", action="store_true", help="leave out the narration requests")
     s.set_defaults(fn=cmd_film_export)
+
+    s = sub.add_parser("film-script", help="set a film's shot plan and have the agent write and translate its script")
+    s.add_argument("shoot")
+    s.add_argument("--plan", required=True, help="JSON {shots: [...]} in plan_film's shape")
+    s.add_argument("--languages", nargs="+", default=["en"])
+    s.set_defaults(fn=cmd_film_script)
+
+    s = sub.add_parser("film-finish", help="make the clips, narrate and assemble a film from its spec, with no agent")
+    s.add_argument("shoot")
+    s.set_defaults(fn=cmd_film_finish)
 
     s = sub.add_parser("film-import-media", help="verify the clips a handoff folder came back with and add them to replay")
     s.add_argument("folder")
     s.set_defaults(fn=cmd_film_import)
+
+    s = sub.add_parser("listing-sample", help="write the demo's sample listing (no street address) to a shoot")
+    s.add_argument("shoot")
+    s.set_defaults(fn=cmd_listing_sample)
 
     s = sub.add_parser("film-seed-replay", help="copy the recorded Grok clips and Gemini narrations into the replay folder")
     s.add_argument("--branch", default="origin/explore/media-tests")

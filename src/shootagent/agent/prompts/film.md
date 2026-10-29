@@ -26,14 +26,14 @@ Procedure:
    end_view also needs end_label, the end room's name: if its clip falls back, each photo plays on its own
    under its own label.
 4. `prepare_shots`. Read each shot's outcome. A fallback is normal; do not replan to fight the checker.
-5. `write_script` from what the photos show: one segment per shot, spoken while that shot plays. The first
-   segment is the hook, at most 8 words. The last ends with a call to action ("Book your tour today.").
-   Never state bed or bath counts, square footage, price or anything else not visible, unless the listing
-   fields give it. If a recorded narration is listed, use its text verbatim, split at sentence boundaries
-   into one segment per shot (every word, in order; merge or split sentences to match the shot count).
+5. `write_script`: one line per shot about what that shot shows (the room and one or two things a buyer
+   can see in it), spoken while that shot plays; a line may continue across two shots of the same room.
+   The first segment is the hook, at most 8 words. The last ends with a call to action ("Book your tour
+   today."). Never guess what a photo cannot show (which floor a room is on, which way it faces, materials).
+   Never state bed or bath counts, square footage, price or anything else not visible, unless the
+   listing fields give it, and never a street, town or neighbourhood the fields do not give.
 6. `translate_script` for each other language: segments, room labels and end labels, same facts, natural
    local wording.
-   If a recorded narration exists in that language, use its text verbatim the same way.
 7. `narrate`, then `assemble_film`. Look at the returned frames: captions legible, labels on the right shots,
    shots in order. If something is wrong that a change to the spec fixes, fix it and assemble again once.
 

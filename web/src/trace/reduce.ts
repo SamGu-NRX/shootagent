@@ -49,6 +49,8 @@ export interface CheckItem extends Base {
   clip?: string;
   shot?: number;
   images?: string[];
+  /** "depth" for a check of the 40 px depth move; such a failure is not a rejected AI clip */
+  source?: "generated" | "depth";
 }
 
 export interface ShotItem extends Base {
@@ -298,7 +300,7 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
           metrics: d.metrics ?? {},
           judge: clipJudge(d.judge),
           failures: d.failures ?? [],
-          ...(d.clip ? { clip: d.clip, shot: d.shot, images: d.images ?? [] } : {}),
+          ...(d.clip ? { clip: d.clip, shot: d.shot, images: d.images ?? [], source: d.source ?? "generated" } : {}),
         },
       ];
       s.totals = d.passed

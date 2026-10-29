@@ -108,13 +108,15 @@ def card_params(spec: FilmSpec, language: str) -> dict[str, dict]:
     whose field is missing is left out."""
     li = spec.listing
     words = CARD_TEXT.get(language.split("-")[0], CARD_TEXT["en"])
-    area = (li.address or "").partition(",")[2].strip()
+    street, _, area = (li.address or "").partition(",")
+    area = area.strip()
     out: dict[str, dict] = {}
     if li.price:
         facts = [f"{li.beds:g} {words['bd']}" if li.beds is not None else "",
                  f"{li.baths:g} {words['ba']}" if li.baths is not None else "", area]
         out["title"] = {"template": "price-tag", "params": {
-            "value": li.price[:12], "name": (li.headline or area)[:30],
+            # The street part names the home ("Sample Home" on the demo's sample listing); the headline is a sentence.
+            "value": li.price[:12], "name": (street.strip() if area else li.headline or "")[:30],
             "text": " · ".join(f for f in facts if f)[:40], "theme": "dark", "accentColor": CARD_ACCENT}}
     if li.sqft:
         out["stat"] = {"template": "stat-count-up", "params": {

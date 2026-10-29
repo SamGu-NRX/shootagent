@@ -60,11 +60,14 @@ own pixels. Generated clips that do play carry an "AI-generated motion" label (C
 each film ships with a manifest of every shot's source photo, motion source and check result. Gemini TTS
 speaks the script, and Reel Studio's engine adds captions, the music mix, the cover and a verify report.
 `shootagent film <shoot> --languages en es`; set `FILM_MEDIA=replay` to use recorded media only
-(`shootagent film-seed-replay` copies the recordings from branch `explore/media-tests`). When grok runs on
-another machine, `shootagent film-export-requests <shoot> --plan plan.json` writes the exact grok requests, the
-photos and a stdlib-only runner (`run_grok.py`) to a folder; run it there, bring the folder back, and
-`shootagent film-import-media <folder>` verifies each clip against its fingerprint and recorded arguments and
-adds it to the replay cache.
+(`shootagent film-seed-replay` copies the recordings from branch `explore/media-tests`). When grok and Gemini
+run on another machine: `shootagent film-script <shoot> --plan plan.json --languages en es` sets the shot plan
+and has the agent write one narration line per shot; `shootagent film-export-requests <shoot>` writes the exact
+grok requests, one TTS request per language, the photos and a stdlib-only runner (`run_grok.py`, which reads the
+Gemini key from the macOS Keychain) to a folder; after it runs there, `shootagent film-import-media <folder>`
+verifies each clip and narration against its fingerprint and recorded request, and `shootagent film-finish
+<shoot>` checks the clips, narrates and assembles. `shootagent listing-sample <shoot>` writes the demo's sample
+listing (`web/src/listing/sample-listing.json`, no street address) to a shoot.
 
 **Listing launch.** From a shoot's film, *Launch listing* shows the storyboard (each shot's photo, its
 motion source, and every generated clip the checker rejected, with the reason and what replaced it), the 9:16

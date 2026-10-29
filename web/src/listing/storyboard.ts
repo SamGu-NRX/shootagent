@@ -30,7 +30,10 @@ export interface StoryShot {
 
 export function buildStoryboard(film: FilmState, trace: TraceState | null): StoryShot[] {
   const shots = film.manifest?.shots ?? [];
-  const traceChecks = (trace?.items ?? []).filter((i): i is CheckItem => i.type === "check" && !!i.clip);
+  // Depth-move checks (a 40 px move that failed falls back to 24 px) are not AI clips and are never rejections.
+  const traceChecks = (trace?.items ?? []).filter(
+    (i): i is CheckItem => i.type === "check" && !!i.clip && i.source !== "depth",
+  );
   return shots.map((s) => {
     const view = s.source_photos[0]?.view ?? "";
     let rejected: Rejection[] = s.attempts

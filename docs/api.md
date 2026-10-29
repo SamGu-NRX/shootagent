@@ -93,6 +93,9 @@ Film trace events, in addition to the common ones (`view` is the shot's photo):
   move"`. Those checks are in the shot's `result.depth_checks` and the manifest's `depth_checks`, never in
   `attempts`, so the disclosure page does not list them as AI clips. Generated-clip `check` events have
   `source: "generated"`.
+- A film run started by `shootagent film-finish` (no agent: prepare_shots, narrate, assemble_film from the
+  spec) has `run_start.request` "film-finish: ..." and no plan or model events. A `film_script` run (agent
+  writes the script for a fixed plan; mode `film_script`) has only plan, tool and message events.
 - `usage` with `purpose: "judge_clip"` for each clip check call and `"judge_clip_inventory"` for each photo
   inventory (made once per photo, then cached in `<data>/media/inventory/`).
 
