@@ -1,0 +1,261 @@
+/* Presenter scene 4, before / after (src/creator/present/SceneReels.tsx). Phones sit bottom-aligned on the
+   left half of the 1920x1080 stage; the headline, the hook and the comparisons fill the right.
+   Palette: the shared .pz tokens only. The reels bring their own colour; everything around them is ink and
+   greys, with the AI reel's side carried by ink, weight and size, and one small green check for the verdict. */
+.pz-reels {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- phones ---- */
+.pz-reels-phone {
+  position: absolute;
+  bottom: 80px;
+  margin: 0;
+  will-change: transform, opacity;
+}
+.pz-reels-phone[data-kind="template"] {
+  left: 140px;
+  width: 330px;
+  height: 587px;
+}
+.pz-reels-phone[data-kind="hero"] {
+  left: 560px;
+  width: 430px;
+  height: 764px;
+}
+.pz-reels-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--pz-panel-2);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+}
+.pz-reels-phone[data-kind="template"] .pz-reels-screen {
+  border-radius: 22px;
+}
+.pz-reels-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pz-reels-phone[data-kind="template"] video {
+  filter: saturate(0.6);
+}
+/* the verdict's outline on the AI reel: 2px of ink over the frame's hairline */
+.pz-reels-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  border: 2px solid var(--pz-ink);
+  opacity: var(--ring, 0);
+  pointer-events: none;
+}
+
+/* labels above the phones */
+.pz-reels-label {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 22px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+  max-width: 520px;
+}
+.pz-reels-tag {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--pz-panel-2);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--pz-ink);
+}
+.pz-reels-label-main {
+  font-size: 26px;
+  font-weight: 550;
+  color: var(--pz-dim);
+  letter-spacing: -0.01em;
+}
+.pz-reels-label-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--pz-ink);
+}
+.pz-reels-label-title {
+  font-size: 34px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--pz-ink);
+}
+
+.pz-reels-arrow {
+  position: absolute;
+  left: 493px;
+  bottom: 351px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  color: var(--pz-dim);
+}
+
+/* ---- the right half ---- */
+.pz-reels-side {
+  position: absolute;
+  left: 1080px;
+  top: 104px;
+  bottom: 80px;
+  width: 720px;
+  display: flex;
+  flex-direction: column;
+}
+.pz-reels-title {
+  margin-top: 0;
+  font-size: 54px;
+  line-height: 1.05;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  color: var(--pz-ink);
+}
+.pz-reels-title span {
+  display: block;
+}
+.pz-reels-title-dim {
+  color: var(--pz-faint);
+}
+
+.pz-reels-hook {
+  margin: 36px 0 0;
+}
+.pz-reels-hook figcaption {
+  font-size: 20px;
+  color: var(--pz-dim);
+}
+.pz-reels-hook blockquote {
+  margin: 10px 0 0;
+  font-size: 40px;
+  line-height: 1.16;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  color: var(--pz-ink);
+}
+.pz-reels-q {
+  color: var(--pz-ink);
+}
+.pz-reels-untyped {
+  color: transparent;
+}
+.pz-reels-caret {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  margin: 0 2px -0.1em;
+  background: var(--pz-ink);
+  vertical-align: baseline;
+}
+.pz-reels-caret[data-on] {
+  animation: pz-reels-blink 900ms steps(1) infinite;
+}
+@keyframes pz-reels-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* comparisons: the template's numbers recede in faint grey, the AI reel's are bold ink */
+.pz-reels-rows {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.pz-reels-rows li {
+  will-change: transform, opacity;
+}
+.pz-reels-row-label {
+  font-size: 21px;
+  color: var(--pz-dim);
+}
+.pz-reels-row-values {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 4px;
+}
+.pz-reels-a {
+  font-size: 30px;
+  color: var(--pz-faint);
+}
+.pz-reels-row-arrow {
+  color: var(--pz-faint);
+  align-self: center;
+}
+.pz-reels-b {
+  font-size: 46px;
+  font-weight: 700;
+  color: var(--pz-ink);
+}
+.pz-reels-x {
+  margin-left: auto;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--pz-panel-2);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--pz-ink);
+  align-self: center;
+}
+.pz-reels-bars {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+}
+.pz-reels-track {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--pz-panel-2);
+  overflow: hidden;
+}
+.pz-reels-bar-a,
+.pz-reels-bar-b {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+}
+.pz-reels-bar-a {
+  background: var(--pz-faint);
+}
+.pz-reels-bar-b {
+  background: var(--pz-ink);
+}
+
+.pz-reels-foot {
+  margin-top: 26px;
+  display: grid;
+  gap: 10px;
+}
+.pz-reels-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--pz-ink);
+}
+.pz-reels-verdict svg {
+  color: var(--pz-green);
+}

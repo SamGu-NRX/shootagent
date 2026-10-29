@@ -1,0 +1,478 @@
+/* Presenter scene 3, "Critique & remix" (src/creator/present/SceneCritique.tsx). Positions and motion come
+   from the component; this file holds the look. Light stage, tokens from .pz only: emphasis is ink, weight and
+   size; red only for what is rejected (kills, clichés, false claims), green only for the greenlight. */
+
+.pz-critique {
+  position: absolute;
+  inset: 0;
+}
+
+/* headline: line 1 ink, line 2 faint */
+.pz-critique-head {
+  position: absolute;
+  left: 120px;
+  top: 64px;
+  width: 1480px;
+}
+.pz-critique-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 64px;
+  line-height: 1.04;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  color: var(--pz-ink);
+}
+.pz-critique-crown {
+  color: var(--pz-ink);
+  flex: none;
+}
+.pz-critique-sub {
+  margin-top: 12px;
+  font-size: 30px;
+  line-height: 1.3;
+  color: var(--pz-faint);
+  letter-spacing: -0.01em;
+}
+
+/* critics */
+.pz-critique-critics {
+  position: absolute;
+  left: 120px;
+  top: 300px;
+  width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.pz-critique-critic {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.pz-critique-critic > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pz-critique-critic-icon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--pz-ink);
+  background: var(--pz-panel-2);
+  border: 1.5px solid var(--pz-panel-2);
+  transition: border-color 220ms ease;
+}
+.pz-critique-critic[data-on] .pz-critique-critic-icon {
+  border-color: var(--pz-ink);
+}
+.pz-critique-live {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pz-ink);
+  border: 2px solid var(--pz-bg);
+  animation: pz-critique-blink 900ms ease-in-out infinite;
+}
+.pz-critique-critic-name {
+  font-size: 25px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--pz-ink);
+}
+.pz-critique-critic-job {
+  margin-top: 4px;
+  font-size: 16.5px;
+  line-height: 1.35;
+  color: var(--pz-dim);
+}
+.pz-critique-critic-count {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--pz-dim);
+}
+.pz-critique-critic-count .pz-num {
+  color: var(--pz-ink);
+}
+
+/* the wall: white cards; a killed pitch fades its text to faint (--kill runs 0..1 from the component) */
+.pz-critique-card {
+  --dead: calc(var(--kill, 0) * 100%);
+  position: absolute;
+  padding: 18px 18px 14px;
+  border-radius: 14px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  overflow: visible;
+}
+.pz-critique-card-who {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--pz-faint) var(--dead), var(--pz-dim));
+}
+.pz-critique-card-who svg {
+  flex: none;
+  color: color-mix(in srgb, var(--pz-faint) var(--dead), var(--pz-ink));
+}
+.pz-critique-card-title {
+  margin-top: 12px;
+  font-size: 21px;
+  line-height: 1.15;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: color-mix(in srgb, var(--pz-faint) var(--dead), var(--pz-ink));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pz-critique-card-hook {
+  margin-top: 8px;
+  font-size: 15.5px;
+  line-height: 1.38;
+  color: color-mix(in srgb, var(--pz-faint) var(--dead), var(--pz-dim));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* the stamp sits on the card's top-right corner so it never covers the creator's name */
+.pz-critique-stamp {
+  position: absolute;
+  top: -11px;
+  right: -9px;
+  padding: 4px 8px 3px;
+  border-radius: 7px;
+  border: 2px solid currentColor;
+  background: var(--pz-panel);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  rotate: -7deg;
+}
+.pz-critique-stamp[data-v="kill"] {
+  color: var(--pz-red);
+  background: var(--pz-red-wash);
+}
+.pz-critique-stamp[data-v="revise"] {
+  color: var(--pz-dim);
+  border-color: var(--pz-line);
+}
+.pz-critique-stamp[data-v="greenlight"] {
+  color: var(--pz-green);
+  background: var(--pz-green-wash);
+}
+
+/* the scan: a thin ink reading line */
+.pz-critique-scan {
+  position: absolute;
+  top: 276px;
+  width: 160px;
+  height: 604px;
+  pointer-events: none;
+  border-right: 2px solid var(--pz-ink);
+  z-index: 4;
+}
+
+/* the critics' notes */
+.pz-critique-callout {
+  position: absolute;
+  z-index: 6;
+  padding: 18px 20px 20px;
+  border-radius: 16px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  transform-origin: left center;
+}
+.pz-critique-callout-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 650;
+  color: var(--pz-ink);
+}
+.pz-critique-callout-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: var(--pz-ink);
+  background: var(--pz-panel-2);
+}
+.pz-critique-tag {
+  margin-left: auto;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pz-red);
+  background: var(--pz-red-wash);
+}
+.pz-critique-quote {
+  margin-top: 14px;
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.pz-critique-claim {
+  color: var(--pz-dim);
+  /* a red strike drawn left to right on every line the claim wraps onto */
+  background-image: linear-gradient(var(--pz-red), var(--pz-red));
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: calc(var(--strike, 0) * 100%) 2.5px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.pz-critique-fix {
+  margin-top: 10px;
+  font-size: 18.5px;
+  line-height: 1.38;
+  color: var(--pz-ink);
+}
+.pz-critique-link {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.pz-critique-link path {
+  fill: none;
+  stroke: var(--pz-dim);
+  stroke-width: 1.5;
+}
+.pz-critique-link circle {
+  fill: var(--pz-dim);
+}
+.pz-critique-proof {
+  display: grid;
+  grid-template-columns: 1fr 92px;
+  gap: 16px;
+  align-items: start;
+}
+.pz-critique-proof figure {
+  margin: 14px 0 0;
+}
+.pz-critique-proof img {
+  display: block;
+  width: 92px;
+  height: 116px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--pz-line);
+}
+.pz-critique-proof figcaption {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--pz-dim);
+  text-align: center;
+}
+
+/* remixes */
+.pz-critique-col-head {
+  position: absolute;
+  left: 1500px;
+  top: 254px;
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--pz-dim);
+}
+.pz-critique-arcs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.pz-critique-arc {
+  fill: none;
+  stroke: var(--pz-faint);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.pz-critique-arc-dot {
+  fill: var(--pz-dim);
+}
+.pz-critique-remix {
+  position: absolute;
+  left: 1500px;
+  width: 320px;
+  padding: 15px 16px 14px;
+  border-radius: 14px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  overflow: hidden;
+  z-index: 2;
+}
+.pz-critique-remix-steal {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--pz-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pz-critique-remix-steal svg {
+  flex: none;
+  color: var(--pz-ink);
+}
+.pz-critique-remix-title {
+  margin-top: 8px;
+  font-size: 19px;
+  line-height: 1.15;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--pz-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pz-critique-remix-hook {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--pz-dim);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* counters */
+.pz-critique-counters {
+  position: absolute;
+  left: 480px;
+  top: 902px;
+  display: flex;
+  gap: 64px;
+}
+.pz-critique-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.pz-critique-counter b {
+  font-size: 46px;
+  font-weight: 500;
+  color: var(--pz-ink);
+}
+.pz-critique-counter span {
+  font-size: 19px;
+  color: var(--pz-dim);
+}
+
+/* the greenlit pair: white cards, a green "Picked" badge */
+.pz-critique-fin {
+  position: absolute;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: 268px 1fr;
+  border-radius: 22px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  overflow: hidden;
+  transform-origin: top left;
+}
+.pz-critique-fin-photo {
+  background: var(--pz-panel-2);
+}
+.pz-critique-fin-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pz-critique-fin-body {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 32px 28px;
+  min-width: 0;
+}
+.pz-critique-fin-badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: var(--pz-green-wash);
+  color: var(--pz-green);
+  font-size: 15px;
+  font-weight: 650;
+  transform-origin: left center;
+}
+.pz-critique-fin-reel {
+  margin-top: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--pz-dim);
+}
+.pz-critique-fin-hook {
+  margin-top: 10px;
+  font-size: 38px;
+  line-height: 1.12;
+  font-weight: 650;
+  letter-spacing: -0.028em;
+  color: var(--pz-ink);
+  text-wrap: balance;
+}
+.pz-critique-fin-meta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16.5px;
+  color: var(--pz-dim);
+}
+.pz-critique-fin-by {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+  min-width: 0;
+}
+.pz-critique-fin-by span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pz-critique-fin-by svg {
+  flex: none;
+  color: var(--pz-ink);
+}
+.pz-critique-fin-score {
+  color: var(--pz-dim);
+}
+.pz-critique-fin-score .pz-num {
+  color: var(--pz-ink);
+  margin-right: 2px;
+}
+
+@keyframes pz-critique-blink {
+  50% {
+    opacity: 0.35;
+  }
+}

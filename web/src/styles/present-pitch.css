@@ -1,0 +1,298 @@
+/* Presenter scene 2, "The creative team" (src/creator/present/ScenePitch.tsx). Positions are stage pixels. */
+.pz-pitch {
+  position: absolute;
+  inset: 0;
+}
+
+.pz-pitch-head {
+  position: absolute;
+  left: 120px;
+  top: 84px;
+  font-size: 66px;
+  line-height: 1.06;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  color: var(--pz-ink);
+}
+.pz-pitch-head span {
+  display: block;
+}
+.pz-pitch-dim {
+  color: var(--pz-faint);
+}
+
+/* the brief */
+.pz-pitch-show {
+  position: absolute;
+  left: 120px;
+  top: 286px;
+  width: 680px;
+}
+.pz-pitch-node {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pz-pitch-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  /* the showrunner stays ink; a creator's chip takes its colour (see .pz-pitch-lane below) */
+  color: var(--pz-ink);
+  background: var(--pz-panel-2);
+}
+.pz-pitch-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--pz-ink);
+  pointer-events: none;
+}
+.pz-pitch-name {
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.pz-pitch-job {
+  margin-top: 2px;
+  font-size: 17px;
+  color: var(--pz-dim);
+}
+.pz-pitch-film {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+.pz-pitch-film img {
+  width: 54px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--pz-line);
+}
+.pz-pitch-heroes {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 19px;
+  color: var(--pz-ink);
+}
+.pz-pitch-heroes li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-height: 27px;
+}
+.pz-pitch-heroes li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pz-faint);
+  translate: 0 -3px;
+}
+.pz-pitch-heroes li.pz-pitch-hero-empty::before {
+  content: none;
+}
+.pz-pitch-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: currentColor;
+}
+
+/* six creators, side by side */
+.pz-pitch-lanes-head {
+  position: absolute;
+  left: 120px;
+  top: 578px;
+  width: 690px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pz-pitch-lanes-title {
+  font-size: 22px;
+  font-weight: 650;
+}
+.pz-pitch-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--pz-panel-2);
+  color: var(--pz-ink);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.pz-pitch-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pz-ink);
+}
+.pz-pitch-ticker {
+  margin-left: auto;
+  font-size: 22px;
+  color: var(--pz-ink);
+}
+.pz-pitch-ticker small {
+  font-size: 15px;
+  color: var(--pz-faint);
+}
+.pz-pitch-lane {
+  position: absolute;
+  left: 120px;
+  width: 700px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+/* each creator's own colour (--c, set per lane in ScenePitch.tsx): chip, bar, head dot and count */
+.pz-pitch-lane .pz-pitch-icon {
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+}
+.pz-pitch-lane .pz-pitch-ring {
+  border-color: var(--c);
+}
+.pz-pitch-lane-text {
+  width: 226px;
+  min-width: 0;
+}
+.pz-pitch-lane-name {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.pz-pitch-lane-job {
+  font-size: 13.5px;
+  color: var(--pz-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pz-pitch-track {
+  position: absolute;
+  left: 290px;
+  top: 23px;
+  width: 360px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--pz-panel-2);
+}
+.pz-pitch-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 3px;
+  background: var(--c, var(--pz-ink));
+}
+.pz-pitch-head-dot {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: var(--c, var(--pz-ink));
+  box-shadow: 0 0 0 4px var(--pz-bg);
+}
+.pz-pitch-done {
+  position: absolute;
+  left: 664px;
+  top: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--c, var(--pz-ink));
+}
+
+/* the concept wall */
+.pz-pitch-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 216px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  /* the creator's colour, so every card traces back to its lane */
+  border-top: 3px solid var(--c, var(--pz-line));
+  box-shadow: var(--pz-shadow);
+  transform-origin: center;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+.pz-pitch-card-by {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pz-dim);
+}
+.pz-pitch-card-by svg {
+  color: var(--pz-ink);
+}
+.pz-pitch-card-title {
+  color: var(--pz-ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.pz-pitch-card-hook {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.38;
+  color: var(--pz-dim);
+}
+
+.pz-pitch-stats {
+  position: absolute;
+  left: 880px;
+  top: 902px;
+  width: 920px;
+  display: flex;
+  align-items: flex-end;
+  gap: 72px;
+}
+.pz-pitch-stat b {
+  display: block;
+  font-size: 54px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--pz-ink);
+}
+.pz-pitch-stat span {
+  display: block;
+  margin-top: 8px;
+  font-size: 17px;
+  color: var(--pz-dim);
+}

@@ -1,0 +1,248 @@
+import { useMemo, useState } from "react";
+import { useCreator } from "./store";
+import type { MapPoint } from "./types";
+import { useAgents, useWidth } from "./ui";
+
+const H = 380;
+const PAD = 24;
+
+/** 2-sigma covariance ellipse of a point cloud, in the same coordinates. */
+export function cloudEllipse(pts: { x: number; y: number }[], k = 2) {
+  const n = pts.length || 1;
+  const cx = pts.reduce((a, p) => a + p.x, 0) / n;
+  const cy = pts.reduce((a, p) => a + p.y, 0) / n;
+  const sxx = pts.reduce((a, p) => a + (p.x - cx) ** 2, 0) / n;
+  const syy = pts.reduce((a, p) => a + (p.y - cy) ** 2, 0) / n;
+  const sxy = pts.reduce((a, p) => a + (p.x - cx) * (p.y - cy), 0) / n;
+  const tr = sxx + syy;
+  const disc = Math.sqrt(Math.max(0, (tr * tr) / 4 - (sxx * syy - sxy * sxy)));
+  const l1 = tr / 2 + disc;
+  const l2 = Math.max(0, tr / 2 - disc);
+  const angle = sxy !== 0 ? (Math.atan2(l1 - sxx, sxy) * 180) / Math.PI : sxx >= syy ? 0 : 90;
+  return { cx, cy, rx: k * Math.sqrt(l1), ry: k * Math.sqrt(l2), angle };
+}
+
+const KIND_TEXT: Record<MapPoint["kind"], string> = {
+  cliche: "Stock listing phrase",
+  concept: "Room concept",
+  single_agent: "Single-agent concept",
+  finalist: "Finalist",
+  baseline: "Template",
+};
+
+export function CreativityMap() {
+  const map = useCreator((s) => s.lab?.evaluation?.map);
+  const novelty = useCreator((s) => s.lab?.evaluation?.novelty);
+  const summaries = useCreator((s) => s.lab?.evaluation?.summaries);
+  const reels = useCreator((s) => s.lab?.reels);
+  const concepts = useCreator((s) => s.lab?.concepts);
+  const open = useCreator((s) => s.openConcept);
+  const agents = useAgents();
+  const [hover, setHover] = useState<MapPoint | null>(null);
+  const [box, W] = useWidth<HTMLDivElement>(560);
+  // all points by default (the honest context); zoomed, the frame fits the concepts and clips the cloud
+  const [zoom, setZoom] = useState(false);
+
+  const geo = useMemo(() => {
+    const pts = map?.points ?? [];
+    if (!pts.length) return null;
+    // the room's and the single agent's ideas; the template sits among the cliches, so zooming leaves it out
+    const ideas = pts.filter((p) => p.kind === "concept" || p.kind === "finalist" || p.kind === "single_agent");
+    const basis = zoom && ideas.length > 1 ? ideas : pts;
+    const xs = basis.map((p) => p.x);
+    const ys = basis.map((p) => p.y);
+    const padX = zoom ? (Math.max(...xs) - Math.min(...xs)) * 0.08 : 0;
+    const padY = zoom ? (Math.max(...ys) - Math.min(...ys)) * 0.1 : 0;
+    const [x0, x1] = [Math.min(...xs) - padX, Math.max(...xs) + padX];
+    const [y0, y1] = [Math.min(...ys) - padY, Math.max(...ys) + padY];
+    const sx = (x: number) => PAD + ((x - x0) / (x1 - x0 || 1)) * (W - 2 * PAD);
+    const sy = (y: number) => H - PAD - ((y - y0) / (y1 - y0 || 1)) * (H - 2 * PAD);
+    const at = new Map(pts.map((p) => [p.id, { x: sx(p.x), y: sy(p.y) }]));
+    const cliches = pts.filter((p) => p.kind === "cliche").map((p) => at.get(p.id)!);
+    return { at, zone: cliches.length > 2 ? cloudEllipse(cliches) : null };
+  }, [map, W, zoom]);
+
+  const head = (
+    <div className="cl-map-head">
+      <h3 className="cl-h3">Creativity map</h3>
+      {map && (
+        <span className="cl-map-tools">
+          <span className="cl-map-method">{map.method}</span>
+          <button className="cl-link-btn" onClick={() => setZoom((z) => !z)} aria-pressed={zoom}>
+            {zoom ? "Show every phrase" : "Zoom to the concepts"}
+          </button>
+        </span>
+      )}
+    </div>
+  );
+
+  if (!map || !geo) {
+    return (
+      <div className="cl-map">
+        {head}
+        <div className="cl-map-plot" ref={box}>
+          <p className="cl-empty-line">The map appears once every concept has been scored for novelty.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const reelOf = new Map((reels ?? []).map((r) => [r.concept, r]));
+  // the reel the judges rated most creative takes the accent
+  const best = summaries?.length ? [...summaries].sort((a, b) => b.creativity - a.creativity)[0]!.reel : null;
+  const nov = new Map((novelty ?? []).filter((n) => n.kind === "concept").map((n) => [n.id, n]));
+  const pts = map.points;
+  const cliches = pts.filter((p) => p.kind === "cliche");
+  const order: Record<MapPoint["kind"], number> = { cliche: 0, concept: 1, single_agent: 2, baseline: 3, finalist: 4 };
+  const marks = pts.filter((p) => p.kind !== "cliche").sort((a, b) => order[a.kind] - order[b.kind] || +reelOf.has(a.id) - +reelOf.has(b.id));
+  // labels for the rendered reels' concepts: right of the dot (left near the edge), nudged apart vertically
+  const labels = new Map<string, { x: number; y: number; anchor: "start" | "end" }>();
+  const placed: { x0: number; x1: number; y: number }[] = [];
+  for (const p of marks.filter((m) => reelOf.has(m.id)).sort((a, b) => geo.at.get(a.id)!.y - geo.at.get(b.id)!.y)) {
+    const a = geo.at.get(p.id)!;
+    const width = 6.6 * (p.label.length + 4);
+    const left = a.x + 16 + width > W - 4;
+    const x0 = left ? a.x - 16 - width : a.x + 16;
+    let y = a.y + 4;
+    for (let tries = 0; tries < 8; tries++) {
+      const hit = placed.find((q) => Math.abs(q.y - y) < 16 && q.x0 < x0 + width && x0 < q.x1);
+      if (!hit) break;
+      y = hit.y + 16;
+    }
+    placed.push({ x0, x1: x0 + width, y });
+    labels.set(p.id, { x: left ? a.x - 16 : a.x + 16, y, anchor: left ? "end" : "start" });
+  }
+  const lineage = (concepts ?? []).flatMap((c) => c.parents.filter((p) => geo.at.has(p) && geo.at.has(c.id)).map((p) => [geo.at.get(p)!, geo.at.get(c.id)!] as const));
+  const hp = hover ? geo.at.get(hover.id) : null;
+  const hn = hover ? nov.get(hover.id) : undefined;
+  const who = hover?.agent ? agents(hover.agent) : null;
+
+  return (
+    <div className="cl-map">
+      {head}
+      <div className="cl-map-plot" ref={box}>
+        <svg width={W} height={H} role="img" aria-label={`Creativity map: ${marks.length} concepts and ${cliches.length} stock listing phrases placed by meaning.`}>
+          <defs>
+            <clipPath id="cl-map-clip">
+              <rect x={0} y={0} width={W} height={H} />
+            </clipPath>
+          </defs>
+          <g clipPath="url(#cl-map-clip)">
+            {geo.zone && (
+              <g className="cl-map-zone">
+                <ellipse cx={geo.zone.cx} cy={geo.zone.cy} rx={geo.zone.rx} ry={geo.zone.ry} transform={`rotate(${geo.zone.angle} ${geo.zone.cx} ${geo.zone.cy})`} />
+                <text x={geo.zone.cx} y={Math.min(H - 8, geo.zone.cy + Math.min(geo.zone.rx, geo.zone.ry) * 0.72)} textAnchor="middle">
+                  cliché zone
+                </text>
+              </g>
+            )}
+            {cliches.map((p) => {
+              const a = geo.at.get(p.id)!;
+              return (
+                <g key={p.id} className="cl-map-cliche" onPointerEnter={() => setHover(p)} onPointerLeave={() => setHover(null)}>
+                  <circle cx={a.x} cy={a.y} r={2.4} />
+                  <circle cx={a.x} cy={a.y} r={7} className="cl-map-hit" />
+                </g>
+              );
+            })}
+            {lineage.map(([a, b], i) => (
+              <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} className="cl-map-lineage" />
+            ))}
+            {marks.map((p) => {
+              const a = geo.at.get(p.id)!;
+              const reel = reelOf.get(p.id);
+              const lab = labels.get(p.id);
+              const label = `${p.label}. ${KIND_TEXT[p.kind]}${p.agent ? ` by ${agents(p.agent).name}` : ""}.`;
+              return (
+                <g
+                  key={p.id}
+                  className="cl-map-pt"
+                  data-kind={p.kind}
+                  data-reel={reel ? "" : undefined}
+                  data-best={reel && reel.id === best ? "" : undefined}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={label}
+                  onPointerEnter={() => setHover(p)}
+                  onPointerLeave={() => setHover(null)}
+                  onFocus={() => setHover(p)}
+                  onBlur={() => setHover(null)}
+                  onClick={() => open(p.id)}
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open(p.id))}
+                >
+                  <circle cx={a.x} cy={a.y} r={13} className="cl-map-hit" />
+                  {p.kind === "baseline" ? (
+                    <rect x={a.x - 5} y={a.y - 5} width={10} height={10} rx={1.5} className="cl-map-square" />
+                  ) : p.kind === "single_agent" ? (
+                    <circle cx={a.x} cy={a.y} r={reel ? 5 : 4.5} className="cl-map-hollow" />
+                  ) : (
+                    <circle cx={a.x} cy={a.y} r={reel ? 5.5 : 4.5} className="cl-map-dot" />
+                  )}
+                  {reel && p.kind !== "baseline" && <circle cx={a.x} cy={a.y} r={9.5} className="cl-map-ring" />}
+                  {reel && lab && Math.abs(lab.y - 4 - a.y) > 3 && (
+                    <line className="cl-map-leader" x1={a.x} y1={a.y} x2={lab.x + (lab.anchor === "end" ? 3 : -3)} y2={lab.y - 4} />
+                  )}
+                  {reel && (
+                    <text x={lab?.x ?? a.x + 16} y={lab?.y ?? a.y + 4} textAnchor={lab?.anchor ?? "start"} className="cl-map-label">
+                      {reel.id} · {p.label}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+        {hover && hp && (
+          <div className="cl-tip cl-map-tip" style={{ left: hp.x, top: hp.y }} data-flip={hp.x > W * 0.6 || undefined} role="status">
+            <p className="cl-map-tip-kind">
+              {KIND_TEXT[hover.kind]}
+              {who && hover.kind !== "baseline" ? ` · ${who.name}` : ""}
+              {hover.round ? ` · round ${hover.round}` : ""}
+            </p>
+            <p className="cl-map-tip-title">{hover.kind === "cliche" ? `“${hover.label}”` : hover.label}</p>
+            {hn && (
+              <p className="cl-map-tip-near">
+                Closest cliché <q>{hn.nearest_cliche}</q> <span className="num">({hn.cliche_similarity.toFixed(2)})</span>
+                <span className="num"> · novelty {hn.novelty.toFixed(2)}</span>
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+      <ul className="cl-map-legend">
+        <li>
+          <svg width="10" height="10" aria-hidden>
+            <circle cx="5" cy="5" r="2.4" className="cl-map-legend-cliche" />
+          </svg>
+          Stock phrase
+        </li>
+        <li>
+          <svg width="10" height="10" aria-hidden>
+            <circle cx="5" cy="5" r="4" className="cl-map-legend-concept" />
+          </svg>
+          Room concept
+        </li>
+        <li>
+          <svg width="20" height="20" aria-hidden>
+            <circle cx="10" cy="10" r="4.5" className="cl-map-legend-reel" />
+            <circle cx="10" cy="10" r="8.5" className="cl-map-legend-ring" />
+          </svg>
+          Rendered reel
+        </li>
+        <li>
+          <svg width="12" height="12" aria-hidden>
+            <circle cx="6" cy="6" r="4" className="cl-map-legend-hollow" />
+          </svg>
+          Single agent
+        </li>
+        <li>
+          <svg width="10" height="10" aria-hidden>
+            <rect x="0.5" y="0.5" width="9" height="9" rx="1.5" className="cl-map-legend-square" />
+          </svg>
+          Template
+        </li>
+      </ul>
+      <p className="cl-foot">Placed by meaning: closer dots say more similar things. Lines join a remix to the concepts it came from. Hover a dot for its closest cliché.</p>
+    </div>
+  );
+}

@@ -1,0 +1,327 @@
+/* Presenter scene 6, the payoff (src/creator/present/ScenePayoff.tsx). Stage is 1920 x 1080. */
+.pz-payoff {
+  position: absolute;
+  inset: 0;
+}
+
+/* headline */
+.pz-payoff-head {
+  position: absolute;
+  left: 120px;
+  top: 84px;
+}
+.pz-payoff-title {
+  display: flex;
+  flex-direction: column;
+  font-size: 86px;
+  line-height: 1.02;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+.pz-payoff-l1,
+.pz-payoff-l2 {
+  display: block;
+}
+.pz-payoff-l1 {
+  color: var(--pz-ink);
+}
+.pz-payoff-l2 {
+  color: var(--pz-faint);
+}
+/* the multiple: ink like the rest of line 1, only heavier */
+.pz-payoff-x {
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--pz-ink);
+  letter-spacing: -0.04em;
+}
+
+/* race chart */
+.pz-payoff-chart {
+  position: absolute;
+  left: 120px;
+  top: 372px;
+  width: 1000px;
+  margin: 0;
+}
+.pz-payoff-chart svg {
+  display: block;
+  overflow: visible;
+}
+.pz-payoff-grid line {
+  stroke: var(--pz-line);
+  stroke-width: 1;
+}
+.pz-payoff-grid text,
+.pz-payoff-axis {
+  fill: var(--pz-faint);
+  font-family: var(--mono);
+  font-size: 17px;
+}
+.pz-payoff-line {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.pz-payoff-line[data-tone="hero"] {
+  stroke: var(--pz-ink);
+  stroke-width: 3;
+}
+.pz-payoff-line[data-tone="template"] {
+  stroke: var(--pz-faint);
+  stroke-width: 2;
+}
+.pz-payoff-line[data-tone="other"] {
+  stroke: var(--pz-line);
+  stroke-width: 2;
+}
+.pz-payoff-now {
+  stroke: var(--pz-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+.pz-payoff-dot[data-tone="hero"] {
+  fill: var(--pz-ink);
+  stroke: var(--pz-bg);
+  stroke-width: 4;
+}
+.pz-payoff-dot[data-tone="template"] {
+  fill: var(--pz-faint);
+  stroke: var(--pz-bg);
+  stroke-width: 3;
+}
+.pz-payoff-end-v {
+  font-family: var(--sans);
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.pz-payoff-end-k {
+  font-family: var(--sans);
+  font-size: 17px;
+}
+.pz-payoff-end[data-tone="hero"] .pz-payoff-end-v {
+  fill: var(--pz-ink);
+}
+.pz-payoff-end[data-tone="hero"] .pz-payoff-end-k {
+  fill: var(--pz-dim);
+}
+.pz-payoff-end[data-tone="template"] .pz-payoff-end-v {
+  fill: var(--pz-dim);
+}
+.pz-payoff-end[data-tone="template"] .pz-payoff-end-k {
+  fill: var(--pz-faint);
+}
+.pz-payoff-hour {
+  position: absolute;
+  right: 210px;
+  top: -34px;
+  font-size: 20px;
+  color: var(--pz-faint);
+}
+.pz-payoff-hour b {
+  font-weight: 600;
+  color: var(--pz-ink);
+}
+.pz-payoff-legend {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  margin-top: 4px;
+  padding-left: 78px;
+  font-size: 17px;
+  color: var(--pz-dim);
+  white-space: nowrap;
+}
+.pz-payoff-legend [data-tone]::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 3px;
+  margin-right: 9px;
+  border-radius: 2px;
+  vertical-align: 4px;
+}
+.pz-payoff-legend [data-tone="hero"]::before {
+  height: 4px;
+  vertical-align: 3px;
+  background: var(--pz-ink);
+}
+.pz-payoff-legend [data-tone="template"]::before {
+  background: var(--pz-faint);
+}
+.pz-payoff-legend [data-tone="other"]::before {
+  background: var(--pz-line);
+}
+.pz-payoff-sim {
+  margin-top: 8px;
+  padding-left: 78px;
+  font-size: 15px;
+  color: var(--pz-faint);
+}
+
+/* KPI tiles */
+.pz-payoff-tiles {
+  position: absolute;
+  left: 1210px;
+  top: 362px;
+  width: 590px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pz-payoff-tile {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 14px 24px;
+  border-radius: 20px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+}
+.pz-payoff-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: var(--pz-panel-2);
+  color: var(--pz-ink);
+}
+.pz-payoff-tile-text {
+  min-width: 0;
+}
+.pz-payoff-tile-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 21px;
+  color: var(--pz-dim);
+}
+.pz-payoff-badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: var(--pz-panel-2);
+  color: var(--pz-ink);
+  font-size: 17px;
+  font-weight: 650;
+}
+.pz-payoff-tile-value {
+  margin-top: 2px;
+  color: var(--pz-ink);
+  font-size: 50px;
+  line-height: 1.04;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.pz-payoff-tile-vs {
+  margin-top: 4px;
+  font-size: 18px;
+  color: var(--pz-dim);
+}
+.pz-payoff-tile-vs b {
+  font-weight: 600;
+  color: var(--pz-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the economics strip */
+.pz-payoff-econ {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  bottom: 40px;
+  padding: 26px 34px 18px;
+  border-radius: 22px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+}
+.pz-payoff-econ-main {
+  display: flex;
+  gap: 44px;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: var(--pz-dim);
+}
+.pz-payoff-econ-main span {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.pz-payoff-econ-main svg {
+  color: var(--pz-ink);
+}
+.pz-payoff-econ-main b {
+  font-weight: 650;
+  color: var(--pz-ink);
+}
+.pz-payoff-econ-sub {
+  display: flex;
+  gap: 18px;
+  margin-top: 12px;
+  font-size: 22px;
+  color: var(--pz-dim);
+}
+.pz-payoff-econ-sub span + span::before {
+  content: "·";
+  margin-right: 18px;
+  color: var(--pz-faint);
+}
+.pz-payoff-econ-sub b {
+  font-weight: 600;
+  color: var(--pz-ink);
+}
+.pz-payoff sup {
+  font-size: 0.6em;
+  margin-left: 2px;
+  color: var(--pz-faint);
+}
+.pz-payoff-foot {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--pz-faint);
+}
+
+/* end card */
+.pz-payoff-endcard {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--pz-bg);
+  z-index: 5;
+}
+.pz-payoff-endcard-inner {
+  text-align: center;
+}
+.pz-payoff-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 136px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: var(--pz-ink);
+}
+.pz-payoff-mark svg {
+  color: var(--pz-ink);
+}
+.pz-payoff-tagline {
+  margin-top: 18px;
+  font-size: 48px;
+  letter-spacing: -0.02em;
+  color: var(--pz-dim);
+}
+.pz-payoff-credits {
+  margin-top: 40px;
+  font-size: 22px;
+  color: var(--pz-dim);
+  letter-spacing: 0.01em;
+}

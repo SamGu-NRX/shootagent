@@ -182,8 +182,8 @@ export function ShootList() {
           {load.state === "ready" && load.shoots.length > 0 && (
             <ul className="shoot-rows">
               {load.shoots.map((s) => (
-                <li key={s.id}>
-                  <a className="shoot-row" href={`#/s/${encodeURIComponent(s.id)}`}>
+                <li key={s.id} style={{ display: "flex" }}>
+                  <a className="shoot-row" href={`#/s/${encodeURIComponent(s.id)}`} style={{ flex: 1, minWidth: 0 }}>
                     <span className="shoot-thumb">
                       {s.thumb && <img src={api.blobUrl(s.id, s.thumb, 320)} alt="" loading="lazy" decoding="async" />}
                     </span>
@@ -192,6 +192,11 @@ export function ShootList() {
                     <span className="shoot-meta">{relTime(s.created_at)}</span>
                     <ArrowRight size={14} className="shoot-go" aria-hidden />
                   </a>
+                  <span style={{ display: "flex", alignItems: "center", paddingLeft: 10, borderBottom: "1px solid var(--line)" }}>
+                    <a className="btn btn-sm" href={`#/creator/${encodeURIComponent(s.id)}`} aria-label={`Creative lab for ${s.title}`}>
+                      <Sparkles size={12} aria-hidden /> Creative lab
+                    </a>
+                  </span>
                 </li>
               ))}
             </ul>

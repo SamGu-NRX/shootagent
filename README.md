@@ -51,6 +51,21 @@ wall outlet the customer wanted kept; the third attempt kept it.
 a home, picks a camera move and focus point per photo, renders, and checks a strip of frames before it
 finishes. The music is generated, so the reel carries no licence.
 
+**Creative lab.** A writers' room of agents invents reels a realtor would actually post, and an independent
+panel checks whether they are creative. A showrunner, six creators with different lenses and three critics
+pitch, critique, remix and greenlight concepts. A renderer built on Reel Studio's animation cards turns them
+into 9:16 reels with kinetic text, music and voice. Then 11 viewer agents and 5 judges watch them blind,
+novelty is measured against 195 sourced real-estate reel cliches the creators never see, and a simulated launch
+plays out on the realtor's creator dashboard. Every run includes the usual template reel and a single-agent
+control. In two full labs every creative reel beat the template (judged creativity 5.8 to 7.0 against 2.4 to
+2.6, and 1.3 to 3.6 times the simulated views), and the room's best reel travelled furthest both times; the
+single agent matched the room on judged creativity once. Details in [docs/creative.md](docs/creative.md).
+
+![The creator dashboard's simulated launch for a real lab](web/screenshots/creator-sim-done.jpg)
+
+*The creator dashboard after a real lab: the earbud find-it reel the room greenlit reached 3.1 times the template's
+views in the simulated launch. The audience is simulated from the viewer panel, not platform data.*
+
 ![Removals from saved customer requests](docs/media/removals-before-after.jpg)
 
 *Removals from saved customer requests: a trash bin, a car, wires and an extension cord, a lockbox.*

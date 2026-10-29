@@ -1,0 +1,814 @@
+/*
+ * Creator dashboard (src/creator), the foundation. Monochrome and flat: whitespace and 1px hairlines instead of
+ * panels, grey type in three steps, and one accent (--agent) kept for data highlights, live state and focus.
+ * No glows, gradients, blurs or coloured borders; only popovers, tooltips and the drawer cast a neutral shadow.
+ * Each section adds its own file (creator-room, -reels, -score, -launch) on top of the shared classes here.
+ */
+
+/* ---------- page ---------------------------------------------------------------------------------- */
+.cl {
+  --cl-w: 1200px;
+  --cl-pad: 32px;
+  --cl-bar: 44px;
+  --cl-faint: #5e5e5e;
+  --cl-shadow: 0 12px 32px rgb(0 0 0 / 0.4);
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+.cl-wrap,
+.cl-main {
+  width: min(var(--cl-w), 100%);
+  margin: 0 auto;
+  padding: 0 var(--cl-pad);
+}
+.cl-main {
+  padding-bottom: 160px;
+}
+
+/* secondary buttons are outlines; .btn-primary keeps the app's white */
+.cl .btn:not(.btn-primary):not(.btn-quiet) {
+  background: transparent;
+  border-color: var(--line-2);
+  color: var(--text);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cl .btn:not(.btn-primary):hover:not(:disabled) {
+    background: var(--hover);
+  }
+  .cl .btn-quiet:hover:not(:disabled) {
+    color: var(--text);
+  }
+}
+/* the app's live dot carries a halo; here it is a plain dot */
+.cl .live-dot {
+  width: 6px;
+  height: 6px;
+  box-shadow: none;
+}
+
+/* ---------- header: one line ---------------------------------------------------------------------- */
+.cl-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  min-width: 0;
+}
+.cl-top-row > .icon-btn {
+  margin-left: -8px;
+}
+.cl-top-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.cl-top-meta {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.cl-top-meta span + span::before {
+  content: "·";
+  margin: 0 7px;
+  color: var(--cl-faint);
+}
+.cl-top-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex: none;
+}
+.cl-top-note {
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+  cursor: help;
+}
+
+/* status: plain text, "Done · 11:17 · $11.31" */
+.cl-pill {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.cl-pill .live-dot {
+  margin-right: 8px;
+}
+.cl-pill-state {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.cl-pill .num {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-pill .num::before {
+  content: "·";
+  margin: 0 7px;
+  font-family: var(--sans);
+  color: var(--cl-faint);
+}
+.cl-pill[data-status="running"] .cl-pill-state {
+  color: var(--text);
+}
+.cl-pill[data-status="failed"] .cl-pill-state,
+.cl-pill[data-status="cancelled"] .cl-pill-state {
+  color: var(--fail);
+}
+
+.cl-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.cl-picker select {
+  appearance: none;
+  height: 30px;
+  max-width: 200px;
+  padding: 0 20px 0 0;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  color: var(--text-2);
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.cl-picker select:hover {
+  color: var(--text);
+}
+.cl-picker option {
+  background: var(--panel);
+  color: var(--text);
+}
+.cl-picker svg {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+/* run, split button and the options popover */
+.cl-run {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cl-split {
+  display: inline-flex;
+}
+.cl-split > .btn:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.cl-split > .cl-split-more {
+  width: 30px;
+  padding: 0;
+  justify-content: center;
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.cl-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  display: grid;
+  gap: 14px;
+  width: 300px;
+  padding: 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: var(--panel);
+  box-shadow: var(--cl-shadow);
+  animation: cl-fade 140ms ease;
+}
+.cl-pop-title {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.cl-field {
+  display: grid;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-field .seg {
+  justify-self: start;
+}
+.cl-toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  cursor: pointer;
+}
+.cl-toggle[data-disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+.cl-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.cl-switch {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  margin-top: 2px;
+  border-radius: 999px;
+  background: var(--line-2);
+  transition: background-color 140ms ease;
+}
+.cl-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-3);
+  transition:
+    translate 160ms var(--ease-out),
+    background-color 140ms ease;
+}
+.cl-toggle input:checked + .cl-switch {
+  background: var(--text);
+}
+.cl-toggle input:checked + .cl-switch::after {
+  translate: 12px 0;
+  background: var(--bg);
+}
+.cl-toggle input:focus-visible + .cl-switch {
+  box-shadow: var(--focus);
+}
+.cl-toggle-text {
+  display: grid;
+  gap: 1px;
+  font-size: 13px;
+  color: var(--text);
+}
+.cl-toggle-text small {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-pop-go {
+  justify-content: center;
+  width: 100%;
+}
+
+/* ---------- stage bar: four stages, sticky ---------------------------------------------------------- */
+.cl-stages {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  height: var(--cl-bar);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.cl-stages-row {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  height: 100%;
+}
+.cl-stage-list {
+  display: flex;
+  gap: 28px;
+  height: 100%;
+  min-width: 0;
+}
+.cl-stage-list > li {
+  display: flex;
+}
+.cl-stage {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.cl-stage-name {
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 140ms ease;
+}
+.cl-stage-meta {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cl-faint);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cl-stage:hover .cl-stage-name {
+    color: var(--text-2);
+  }
+}
+.cl-stage[data-status="pending"] .cl-stage-name {
+  color: var(--cl-faint);
+}
+.cl-stage[data-status="running"] .cl-stage-name,
+.cl-stage[aria-current="true"] .cl-stage-name {
+  color: var(--text);
+}
+.cl-stage[data-status="running"] .cl-stage-meta {
+  color: var(--text-3);
+}
+.cl-stage[data-status="failed"],
+.cl-stage[data-status="failed"] .cl-stage-name {
+  color: var(--fail);
+}
+.cl-stage[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--text);
+}
+/* a running stage shows its progress track instead */
+.cl-stage[data-status="running"]::after {
+  display: none;
+}
+.cl-stage-pulse {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--agent);
+  animation: cl-pulse 1.4s ease-in-out infinite;
+}
+.cl-stage-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  overflow: hidden;
+  background: var(--line-2);
+}
+.cl-stage-track > span {
+  display: block;
+  height: 100%;
+  background: var(--agent);
+  transition: width 400ms var(--ease-out);
+}
+
+/* all twelve phases, in a popover */
+.cl-phases {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+.cl-phases-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  font-size: 12.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.cl-phases-btn:hover,
+.cl-phases-btn[aria-expanded="true"] {
+  color: var(--text);
+}
+.cl-phases-pop {
+  width: 340px;
+  max-height: 70vh;
+  overflow: auto;
+  gap: 16px;
+}
+.cl-phases-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+.cl-phases-group ul {
+  display: grid;
+  gap: 2px;
+  margin-top: 6px;
+}
+.cl-phases-group li {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 8px;
+  padding: 3px 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.cl-phases-group li > :first-child {
+  justify-self: center;
+}
+.cl-phases-time {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-phases-detail {
+  grid-column: 2 / -1;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+.cl-phases-group li[data-status="done"] > svg,
+.cl-phases-group li[data-status="skipped"] > svg {
+  color: var(--text-3);
+}
+.cl-phases-group li[data-status="pending"],
+.cl-phases-group li[data-status="skipped"] {
+  color: var(--text-3);
+}
+.cl-phases-group li[data-status="running"] {
+  color: var(--text);
+}
+.cl-phases-group li[data-status="failed"],
+.cl-phases-group li[data-status="failed"] > svg {
+  color: var(--fail);
+}
+.cl-phase-wait {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--cl-faint);
+}
+
+.cl-stale {
+  width: min(var(--cl-w), 100%);
+  margin: 0 auto;
+  padding: 8px var(--cl-pad);
+  font-size: 12.5px;
+  color: var(--text-3);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- sections ---------------------------------------------------------------------------------- */
+.cl-section {
+  padding-top: 72px;
+  scroll-margin-top: var(--cl-bar);
+}
+.cl-section + .cl-section {
+  margin-top: 72px;
+  border-top: 1px solid var(--line);
+}
+.cl-sec-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.cl-sec-titles {
+  flex: 1;
+  min-width: 0;
+}
+.cl-sec-titles h2 {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.cl-sec-titles p {
+  max-width: 76ch;
+  margin-top: 8px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.cl-sec-aside {
+  flex: none;
+}
+.cl-counts {
+  font-size: 13px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* ---------- shared type and controls ---------------------------------------------------------------- */
+.cl-h3 {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-3);
+}
+.cl-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-3);
+}
+.cl-foot {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+.cl-quiet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-empty-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.cl-link-btn,
+.cl-more-btn {
+  font-size: 12.5px;
+  color: var(--text-3);
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-underline-offset: 3px;
+  transition: color 140ms ease;
+}
+.cl-link-btn:hover,
+.cl-more-btn:hover {
+  color: var(--text);
+}
+.cl-mini-label {
+  margin: 12px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+.cl-mini-label:first-child {
+  margin-top: 0;
+}
+.cl-plain {
+  display: grid;
+  gap: 4px;
+}
+.cl-plain li {
+  position: relative;
+  padding-left: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.cl-plain li::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 0.62em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--cl-faint);
+}
+
+/* disclosure: a quiet "show more" */
+.cl-disc {
+  margin-top: 8px;
+}
+.cl-disc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 26px;
+  font-size: 12.5px;
+  color: var(--text-3);
+  text-align: left;
+  transition: color 140ms ease;
+}
+.cl-disc-btn:hover {
+  color: var(--text);
+}
+.cl-disc-chev {
+  flex: none;
+  transition: rotate 160ms var(--ease-out);
+}
+.cl-disc[data-open] > .cl-disc-btn .cl-disc-chev {
+  rotate: 90deg;
+}
+.cl-disc-body {
+  margin-top: 12px;
+  animation: cl-fade 180ms ease;
+}
+
+/* a reel's letter */
+.cl-badge {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border: 1px solid var(--line-2);
+  border-radius: 5px;
+  font-family: var(--sans);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-2);
+}
+
+/* tooltip box; each section positions its own */
+.cl-tip {
+  position: absolute;
+  z-index: 20;
+  max-width: 280px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: #1d1d1d;
+  box-shadow: var(--cl-shadow);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-2);
+  pointer-events: none;
+}
+
+/* minimal table */
+.cl-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.cl-table th {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-3);
+}
+.cl-table td {
+  padding: 9px 10px 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text-2);
+}
+.cl-table td[data-best] {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* a section waiting on earlier phases */
+.cl-waiting {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 0;
+  font-size: 13.5px;
+  color: var(--text-3);
+}
+.cl-waiting ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 12.5px;
+}
+.cl-waiting li[data-status="done"] {
+  color: var(--text-2);
+}
+.cl-waiting li[data-status="running"] {
+  color: var(--text);
+}
+
+/* ---------- empty, loading, error ------------------------------------------------------------------- */
+.cl-empty {
+  max-width: 760px;
+  padding-top: 96px;
+}
+.cl-kicker {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-empty h2 {
+  margin-top: 8px;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+}
+.cl-empty-lede {
+  max-width: 64ch;
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.cl-empty-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin: 40px 0;
+}
+.cl-empty-steps li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.cl-empty-n {
+  font-size: 12px;
+  color: var(--cl-faint);
+}
+.cl-empty-steps h3 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.cl-empty-steps p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-empty-go {
+  height: 34px;
+  padding: 0 14px;
+}
+.cl-empty-note {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 120px 0;
+  color: var(--text-3);
+}
+.cl-error {
+  margin-top: 96px;
+}
+
+/* ---------- motion -------------------------------------------------------------------------------------- */
+@keyframes cl-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cl-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- widths: designed for 1440-1920, right at 1280 ------------------------------------------- */
+@media (max-width: 1280px) {
+  .cl {
+    --cl-pad: 24px;
+  }
+}
+@media (max-width: 1100px) {
+  .cl-top-meta,
+  .cl-stage-meta {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .cl-stage-list {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cl-top-note,
+  .cl-phases {
+    display: none;
+  }
+  .cl-sec-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cl-empty-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- reduced motion ------------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cl *,
+  .cl *::before,
+  .cl *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

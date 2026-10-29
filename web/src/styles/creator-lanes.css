@@ -1,0 +1,317 @@
+/* The room at work (AgentLanes.tsx): one lane per agent; bars while it works, marks when it posts. Colour only in
+   the icon chips and the marks; the rest is hairlines on the dark page. */
+.cl-lanes {
+  margin-top: 40px;
+}
+.cl-lanes-top {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 14px;
+}
+.cl-lanes-top .cl-h3 {
+  margin: 0;
+  color: var(--text-2);
+}
+.cl-lanes-sum {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-lanes-sum .num {
+  color: var(--text-2);
+}
+.cl-lanes-key {
+  display: flex;
+  gap: 14px;
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+.cl-lanes-key li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cl-lanes-key i {
+  display: inline-block;
+  background: var(--text-3);
+}
+.cl-lanes-key i[data-k="bar"] {
+  width: 16px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--line-2);
+}
+.cl-lanes-key i[data-k="pill"] {
+  width: 11px;
+  height: 7px;
+  border-radius: 4px;
+}
+.cl-lanes-key i[data-k="tick"] {
+  width: 2px;
+  height: 11px;
+  border-radius: 1px;
+}
+.cl-lanes-key i[data-k="dot"] {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.cl-lanes-key i[data-k="star"] {
+  width: 7px;
+  height: 7px;
+  rotate: 45deg;
+  border-radius: 1px;
+}
+
+/* grid: names | timeline; row 1 phase labels, then one row per agent, then the time axis */
+.cl-lanes-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  grid-template-rows: 36px repeat(var(--rows), 30px) 24px;
+  column-gap: 16px;
+}
+.cl-lanes-bands {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1 / -1;
+  pointer-events: none;
+}
+.cl-lanes-band {
+  position: absolute;
+  top: 0;
+  bottom: 24px;
+  border-left: 1px dashed var(--line);
+}
+.cl-lanes-band[data-odd] {
+  background: rgb(255 255 255 / 0.018);
+}
+.cl-lanes-band[data-running] {
+  background: rgb(165 147 255 / 0.05);
+}
+.cl-lanes-now {
+  position: absolute;
+  top: 0;
+  bottom: 24px;
+  width: 1px;
+  background: var(--agent);
+  transition: left 300ms linear;
+}
+.cl-lanes-now::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2.5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--agent);
+}
+
+.cl-lanes-head {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+}
+.cl-lanes-label {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding: 0 8px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.cl-lanes-label b {
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--text-2);
+}
+.cl-lanes-label span {
+  font-size: 11px;
+  color: var(--text-3);
+}
+.cl-lanes-label[data-running] b {
+  color: var(--text);
+}
+
+.cl-lanes-who {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+}
+.cl-lanes-chip {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--ag) 16%, transparent);
+  color: var(--ag);
+}
+.cl-lanes-name {
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cl-lanes-track {
+  position: relative;
+  grid-column: 2;
+  border-bottom: 1px solid var(--line);
+}
+.cl-lanes-who[data-group-start],
+.cl-lanes-track[data-group-start] {
+  border-top: 1px solid var(--line-2);
+}
+
+/* a stretch of work */
+.cl-lanes-bar {
+  position: absolute;
+  top: 50%;
+  height: 6px;
+  translate: 0 -50%;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ag) 30%, transparent);
+}
+.cl-lanes-bar[data-live] {
+  background: color-mix(in srgb, var(--ag) 45%, transparent);
+  animation: cl-lanes-work 1.4s ease-in-out infinite;
+}
+.cl-lanes[data-live] .cl-lanes-bar,
+.cl-lanes[data-live] .cl-lanes-mark {
+  transition:
+    left 300ms linear,
+    width 300ms linear;
+}
+
+/* a post (several at one moment stack) */
+.cl-lanes-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  translate: -50% 0;
+  z-index: 1;
+  padding: 0;
+  border-radius: 4px;
+}
+.cl-lanes-mark i {
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  background: var(--ag);
+  box-shadow: 0 0 0 1.5px var(--bg);
+}
+.cl-lanes-mark[data-shape="pill"] i {
+  width: 12px;
+  height: 8px;
+  border-radius: 4px;
+}
+.cl-lanes-mark[data-shape="tick"] i {
+  width: 2px;
+  height: 16px;
+  border-radius: 1px;
+  box-shadow: none;
+}
+.cl-lanes-mark[data-shape="dot"] i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.cl-lanes-mark[data-shape="star"] i {
+  width: 9px;
+  height: 9px;
+  border-radius: 1.5px;
+  rotate: 45deg;
+}
+.cl-lanes-mark:hover i,
+.cl-lanes-mark:focus-visible i {
+  filter: brightness(1.3);
+}
+.cl-lanes-mark:focus-visible {
+  outline: 1px solid var(--text-3);
+  outline-offset: 1px;
+}
+.cl-lanes[data-live] .cl-lanes-mark i {
+  animation: cl-lanes-in 200ms var(--ease-out) both;
+}
+
+.cl-lanes-tip {
+  bottom: calc(100% + 4px);
+  width: 280px;
+  translate: -50% 0;
+}
+.cl-lanes-tip p + p {
+  margin-top: 3px;
+}
+.cl-lanes-tip-head {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-lanes-tip-head b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.cl-lanes-axis {
+  position: relative;
+  grid-column: 2;
+}
+.cl-lanes-axis span {
+  position: absolute;
+  top: 6px;
+  translate: -50% 0;
+  font-size: 11px;
+  color: var(--cl-faint);
+}
+.cl-lanes-axis span[data-edge="start"] {
+  translate: 0 0;
+}
+.cl-lanes-axis span[data-edge="end"] {
+  translate: -100% 0;
+}
+
+@keyframes cl-lanes-in {
+  from {
+    opacity: 0;
+    scale: 0.3;
+  }
+}
+@keyframes cl-lanes-work {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (max-width: 760px) {
+  .cl-lanes-grid {
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+  .cl-lanes-name,
+  .cl-lanes-key {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-lanes-bar[data-live],
+  .cl-lanes[data-live] .cl-lanes-mark i {
+    animation: none;
+  }
+  .cl-lanes-now,
+  .cl-lanes[data-live] .cl-lanes-bar,
+  .cl-lanes[data-live] .cl-lanes-mark {
+    transition: none;
+  }
+}

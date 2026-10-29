@@ -1,0 +1,186 @@
+/* Presenter scene 1, "The problem" (SceneHook.tsx). Motion comes from inline styles driven by the scene clock. */
+.pz-hook {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* the wall of stock lines */
+.pz-hook-wall {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  transform-origin: 50% 50%;
+}
+.pz-hook-row {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin: 0 -70px;
+  white-space: nowrap;
+}
+.pz-hook-tile {
+  flex: none;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.003em;
+  will-change: opacity, transform;
+}
+.pz-hook-tile[data-hit] {
+  font-weight: 600;
+}
+
+/* fades the wall out behind the headline once it lands */
+.pz-hook-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--pz-bg) 0%,
+    color-mix(in srgb, var(--pz-bg) 97%, transparent) 50%,
+    color-mix(in srgb, var(--pz-bg) 55%, transparent) 64%,
+    transparent 74%
+  );
+  pointer-events: none;
+}
+
+/* what the wall is */
+.pz-hook-corpus {
+  position: absolute;
+  left: 120px;
+  bottom: 64px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  font-size: 19px;
+  color: var(--pz-ink);
+}
+.pz-hook-corpus svg {
+  color: var(--pz-dim);
+  flex: none;
+}
+
+/* the template reel */
+.pz-hook-phone {
+  position: absolute;
+  width: 380px;
+  margin: 0;
+  transform-origin: 50% 60%;
+}
+.pz-hook-screen {
+  width: 380px;
+  height: 676px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--pz-panel-2);
+  border: 1px solid var(--pz-line);
+  /* a ring of clear paper keeps the wall off the reel */
+  box-shadow:
+    0 0 0 12px var(--pz-bg),
+    var(--pz-shadow);
+}
+.pz-hook-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pz-hook-phone figcaption {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 20px);
+  translate: -50% 0;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+  font-size: 22px;
+  font-weight: 550;
+  color: var(--pz-ink);
+  white-space: nowrap;
+}
+.pz-hook-phone figcaption svg {
+  color: var(--pz-dim);
+}
+.pz-hook-hits {
+  margin-left: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--pz-red-wash);
+  color: var(--pz-red);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* the headline */
+.pz-hook-copy {
+  position: absolute;
+  left: 120px;
+  top: 248px;
+  width: 1080px;
+}
+.pz-hook-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18em;
+  font-size: 92px;
+  line-height: 1.02;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  color: var(--pz-ink);
+}
+.pz-hook-title > span {
+  display: block;
+}
+.pz-hook-title-dim {
+  color: var(--pz-faint);
+}
+.pz-hook-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 46px;
+  padding: 18px 26px 18px 22px;
+  border-radius: 16px;
+  background: var(--pz-panel);
+  border: 1px solid var(--pz-line);
+  box-shadow: var(--pz-shadow);
+}
+.pz-hook-chip svg {
+  color: var(--pz-dim);
+  flex: none;
+}
+.pz-hook-chip p {
+  font-size: 25px;
+  color: var(--pz-ink);
+  letter-spacing: -0.01em;
+}
+.pz-hook-chip b {
+  color: var(--pz-ink);
+  font-size: 30px;
+  font-weight: 600;
+}
+.pz-hook-chip .pz-hook-chip-note {
+  margin-top: 4px;
+  font-size: 16px;
+  color: var(--pz-dim);
+}
