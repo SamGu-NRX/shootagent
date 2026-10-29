@@ -2,6 +2,7 @@ import { ArrowLeft, FileText, Inbox, QrCode, Upload } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError } from "../../api/client";
 import type { FilmState, ListingState } from "../../api/listing";
+import { isSampleListing } from "../../listing/sample";
 import { buildStoryboard, latestFilmTrace } from "../../listing/storyboard";
 import { useListingApi } from "../../state/listingApi";
 import { useStore } from "../../state/store";
@@ -89,7 +90,12 @@ export function LaunchView({ shootId }: { shootId: string }) {
   }, [liveFilm, loadFilm]);
 
   const shots = useMemo(() => (film.state === "ready" ? buildStoryboard(film.film, filmTrace) : []), [film, filmTrace]);
-  const viewLabel = (id: string) => shoot?.views.find((v) => v.id === id)?.label || id;
+  // room names without the numbering split views carry ("Dining Room 2" is a second dining room photo)
+  const viewLabel = (id: string) => {
+    const v = shoot?.views.find((x) => x.id === id);
+    const room = v?.room || v?.label.replace(/\s+\d+$/, "");
+    return room ? room.charAt(0).toUpperCase() + room.slice(1) : id;
+  };
   const photoUrl = (blob: string, w: number) => storeApi.blobUrl(shootId, blob, w);
 
   const makeFilm = async () => {
@@ -215,6 +221,7 @@ export function LaunchView({ shootId }: { shootId: string }) {
             {state.leads.new > 0 && <span className="num"> · {state.leads.new} new lead{state.leads.new > 1 ? "s" : ""}</span>}
           </span>
         )}
+        {isSampleListing(shoot?.listing) && <span className="sample-tag">Sample listing</span>}
         <nav className="launch-actions" aria-label="Listing">
           <a className="btn btn-quiet" href={`#/s/${encodeURIComponent(shootId)}/disclosure`}>
             <FileText size={14} aria-hidden /> Disclosure

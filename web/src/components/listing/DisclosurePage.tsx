@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import type { Disclosure, DisclosureChange } from "../../api/listing";
 import { attemptReasons } from "../../listing/reasons";
+import { isSampleListing } from "../../listing/sample";
 import { useListingApi } from "../../state/listingApi";
 import { useStore } from "../../state/store";
 import { COPY, initialLang, saveLang, type Copy, type Lang } from "./i18n";
@@ -12,7 +13,8 @@ function changeText(c: DisclosureChange, t: Copy): string {
   if (c.kind === "hdr") return t.dHdr(c.exposures);
   if (c.kind === "edit") {
     const label = t.dOps[c.op] ?? c.op.replace(/_/g, " ");
-    return c.note ? `${label}: ${c.note}` : `${label}.`;
+    // a regroup's note lists bracket indices and grading steps; the label already says what changed
+    return c.note && !c.op.startsWith("regroup") ? `${label}: ${c.note}` : `${label}.`;
   }
   return `${t.dFix}: ${c.explanation.replace(/\.$/, "")}.`;
 }
@@ -79,7 +81,12 @@ export function DisclosurePage({ source }: { source: Source }) {
         <h1 className="doc-title" tabIndex={-1}>
           {t.dTitle}
         </h1>
-        {data?.address && <p className="doc-address">{data.address}</p>}
+        {data?.address && (
+          <p className="doc-address">
+            {data.address}
+            {isSampleListing({ address: data.address }) && <span className="sample-pill">{t.sample}</span>}
+          </p>
+        )}
         <p className="doc-intro">{t.dIntro}</p>
 
         {!data && <div className="doc-skel" aria-busy="true" />}

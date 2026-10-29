@@ -170,12 +170,30 @@ function TraceView({ trace }: { trace: TraceState }) {
     else if (added > 0) setUnseen((n) => n + added);
   }, [trace.items.length, trace.items]);
 
+  // A finished run shows its final report from the first line. Pinned to the very bottom, a long report showed
+  // only its last lines, and its opening sat under the edge of the pane.
+  const ended = trace.status === "done" || trace.status === "failed";
+  const showReport = () => {
+    const el = scroller.current;
+    const reports = el?.querySelectorAll<HTMLElement>(".tr-message");
+    const last = reports?.[reports.length - 1];
+    if (el && last) el.scrollTop = Math.min(el.scrollHeight, last.offsetTop - el.offsetTop - 8);
+  };
+
   useEffect(() => {
     pinned.current = true;
     setUnseen(0);
     const el = scroller.current;
     if (el) el.scrollTop = el.scrollHeight;
+    if (ended) showReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trace.runId]);
+
+  // a live run that ends while the view follows it
+  useLayoutEffect(() => {
+    if (ended && pinned.current) showReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ended]);
 
   return (
     <>

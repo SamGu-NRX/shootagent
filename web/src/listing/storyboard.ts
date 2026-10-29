@@ -2,7 +2,7 @@
 // the way. The manifest lists rejected attempts for shots it kept as generated plans; when the agent re-planned
 // a shot (generated -> depth) the manifest no longer carries them, so they come from the film run's trace.
 
-import type { FilmState, MotionSource } from "../api/listing";
+import type { FilmState, MotionSource, PublicShot } from "../api/listing";
 import type { CheckItem, TraceState } from "../trace/reduce";
 import { attemptReasons, type Reason } from "./reasons";
 
@@ -73,4 +73,19 @@ export function latestFilmTrace(traces: Record<string, TraceState>, runIds: stri
     if (t?.mode === "film") return t;
   }
   return null;
+}
+
+/**
+ * One chip per room, in film order. A room the film shows twice (QC can split one photo into two camera
+ * positions, and both may play) gets one chip that lights up for either shot and jumps to the first.
+ */
+export function roomChips(shots: PublicShot[], lang: string, fallback: string) {
+  const out: { name: string; shots: number[] }[] = [];
+  shots.forEach((s, i) => {
+    const name = s.labels[lang] ?? s.labels[fallback] ?? "";
+    const hit = out.find((c) => c.name === name);
+    if (hit) hit.shots.push(i);
+    else out.push({ name, shots: [i] });
+  });
+  return out;
 }

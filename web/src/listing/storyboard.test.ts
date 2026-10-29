@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { FilmState, ManifestShot } from "../api/listing";
 import type { TraceEvent } from "../api/types";
 import { reduceAll } from "../trace/reduce";
-import { buildStoryboard } from "./storyboard";
+import { buildStoryboard, roomChips } from "./storyboard";
 
 const shot = (index: number, view: string, extra: Partial<ManifestShot> = {}): ManifestShot => ({
   index,
@@ -51,5 +51,15 @@ describe("buildStoryboard", () => {
     ]);
     const [v07] = buildStoryboard(film([shot(0, "v07", { planned_motion: "generated", fell_back: true, attempts })]), trace);
     expect(v07!.rejected.map((r) => r.reasons[0]!.plain)).toEqual(["Pendant lights appeared"]);
+  });
+});
+
+describe("roomChips", () => {
+  it("gives a room the film shows twice one chip that covers both shots", () => {
+    const s = (index: number, en: string) => ({ index, view: `v${index}`, end_view: null, labels: { en }, source: "depth" as const, ai_label: false, times: {} });
+    expect(roomChips([s(0, "Dining room"), s(1, "Desk nook"), s(2, "Dining room")], "en", "en")).toEqual([
+      { name: "Dining room", shots: [0, 2] },
+      { name: "Desk nook", shots: [1] },
+    ]);
   });
 });
