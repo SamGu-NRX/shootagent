@@ -49,7 +49,7 @@ until curl -fsS -o /dev/null http://127.0.0.1:8000/; do
 done
 
 # The tunnel needs no credentials of ours; strip any it would otherwise inherit from this shell.
-tunnel_env=(env -u DEMO_PASSCODE -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY -u NTFY_TOPIC)
+tunnel_env=(env -u DEMO_PASSCODE -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY -u NTFY_TOPIC -u GEMINI_API_KEY)
 if [ -n "${TUNNEL:-}" ]; then
   "${tunnel_env[@]}" cloudflared tunnel run --url http://127.0.0.1:8000 "$TUNNEL" &
 else

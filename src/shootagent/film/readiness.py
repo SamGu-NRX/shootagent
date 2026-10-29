@@ -51,6 +51,11 @@ def film_scope(store: ShootStore, shoot: Shoot, views: list[str] | None) -> list
     """The approved views to film (in shoot order), or NeedsReview saying what is missing."""
     state = review_state(store, shoot)
     if views:
+        split = [v for v in views if state.get(v) == "split"]
+        if split:
+            parts = {v.id: v.meta["split_into"] for v in shoot.views if v.id in split}
+            raise NeedsReview("QC split " + "; ".join(f"{v} into {', '.join(p)}" for v, p in parts.items())
+                              + " (one view per camera position). Film those views instead.")
         unapproved = [v for v in views if state.get(v) != "approved"]
         if unapproved:
             raise NeedsReview(f"Approve {', '.join(unapproved)} before filming {'it' if len(unapproved) == 1 else 'them'}: "
