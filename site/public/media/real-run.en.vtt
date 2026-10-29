@@ -1,0 +1,106 @@
+WEBVTT
+
+NOTE
+Narration for real-run.mp4, a 1:51 cut of docs/media/demo-walkthrough.mp4 (one real run of the showcase shoot,
+28 October 2026), from that file's notes. The video plays at real speed; [bracketed] times are the real time each
+cut skips, read off the run clock in the trace.
+
+1
+00:00:00.000 --> 00:00:05.000
+One real run on the demo shoot. I press Run QC and leave the agent to it.
+
+2
+00:00:05.000 --> 00:00:09.200
+[10 s later] It writes a plan first, as the loop requires.
+
+3
+00:00:09.200 --> 00:00:13.000
+Then it checks every photo against the camera’s own brackets.
+
+4
+00:00:13.000 --> 00:00:18.000
+[56 s later] The checks propose candidates, each with a confidence.
+
+5
+00:00:18.000 --> 00:00:22.000
+It decides: split the laundry photo in two, put back an erased stop sign.
+
+6
+00:00:22.000 --> 00:00:25.000
+[18 s later] Every edit gets a self-check.
+
+7
+00:00:25.000 --> 00:00:29.500
+[9 s later] This one fails: the judge finds the restored sign cut off and soft.
+
+8
+00:00:29.500 --> 00:00:33.000
+The loop reverts it, and the agent retries with a wider mask.
+
+9
+00:00:33.000 --> 00:00:39.500
+[24 s later] The second try passes: zero pixels changed outside the mask.
+
+10
+00:00:39.500 --> 00:00:42.400
+[2 min 31 s later] QC is done: 4 min 51 s, 42 cents.
+
+11
+00:00:42.400 --> 00:00:45.300
+Three fixed and ten dismissed, each with its reason.
+
+12
+00:00:45.300 --> 00:00:49.300
+[6 s later] The editor’s finished photo had erased this stop sign.
+
+13
+00:00:49.300 --> 00:00:54.700
+Before on the left, after on the right: the sign is back, nothing else changed.
+
+14
+00:00:54.700 --> 00:00:59.500
+[5 s later] A request for the whole shoot: remove the cars and trash bins.
+
+15
+00:00:59.500 --> 00:01:03.500
+[3 min 14 s later] Three photos edited, each edit checked and passed.
+
+16
+00:01:03.500 --> 00:01:07.000
+The other seven photos say why nothing was done.
+
+17
+00:01:07.000 --> 00:01:11.500
+[17 s later] For one specific object, I shift-click it.
+
+18
+00:01:11.500 --> 00:01:15.600
+The clicks become a mask, which goes with my next message.
+
+19
+00:01:15.600 --> 00:01:19.500
+“Put the reference image on this screen.”
+
+20
+00:01:19.500 --> 00:01:23.200
+[50 s later] The first try broke the TV mount; the judge caught it.
+
+21
+00:01:23.200 --> 00:01:26.700
+A tighter, screen-only mask passed on the second try.
+
+22
+00:01:26.700 --> 00:01:34.500
+The customer’s photo is on the screen; the mount and the wall are unchanged.
+
+23
+00:01:34.500 --> 00:01:40.000
+[2 min 8 s later] I approve the photos and build the reel.
+
+24
+00:01:40.000 --> 00:01:45.500
+The agent labels the rooms, orders them and renders a 9:16 listing reel.
+
+25
+00:01:45.500 --> 00:01:51.300
+Twenty-four seconds, eight photos, ready to post.
