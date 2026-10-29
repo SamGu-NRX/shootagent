@@ -1,0 +1,1929 @@
+{
+ "source": "classify_request in src/shootagent/compliance/policy.py (branch dev, with the staging fix), Python 3.12",
+ "reasons": {
+  "surroundings": "Power lines, poles, towers, roads and neighbouring buildings are part of the property's surroundings; removing them misrepresents the property. Listing photos must show the property as it is (NAR Code of Ethics, Article 12; MLS photo rules).",
+  "condition": "Hiding damage or wear (cracks, stains, leaks, mould, rot) misrepresents the property's condition. Listing photos must show the property as it is (NAR Code of Ethics, Article 12; MLS photo rules).",
+  "view": "Changing or inventing the view misrepresents the property's location. Listing photos must show the property as it is (NAR Code of Ethics, Article 12; MLS photo rules).",
+  "feature": "Adding a feature the property does not have (a pool, a room, a fireplace) misrepresents it. Listing photos must show the property as it is (NAR Code of Ethics, Article 12; MLS photo rules).",
+  "structure": "Removing walls, windows, doors or built-ins changes the property's structure in the photo. Listing photos must show the property as it is (NAR Code of Ethics, Article 12; MLS photo rules).",
+  "proportions": "Stretching or enlarging a space misrepresents its size. Listing photos must show the property as it is (NAR Code of Ethics, Article 12; MLS photo rules).",
+  "gear": "The photographer's equipment is not part of the property; removing it is not an alteration.",
+  "overlay": "Text and graphics laid over the photo (watermarks, lot lines) are not alterations of the property; lot lines should be marked approximate.",
+  "sky": "A replaced or enhanced sky changes the scene; the photo is marked digitally altered (AB 723).",
+  "twilight": "A day-to-twilight conversion changes the scene; the photo is marked digitally altered (AB 723).",
+  "lawn": "Greening or filling a lawn changes how the property looks; the photo is marked digitally altered (AB 723).",
+  "fire": "A fire added to a real fireplace is a common enhancement; the photo is marked digitally altered (AB 723).",
+  "screen": "Replacing what a TV or monitor shows is a minor change; the photo is still marked digitally altered (AB 723).",
+  "staging": "Virtual staging must be disclosed: the photo is marked virtually staged (AB 723).",
+  "colour": "Changing paint, flooring or cabinet colour changes physical features; the photo is marked digitally altered (AB 723).",
+  "removal": "Removing objects from the scene is a digital alteration under AB 723; the photo is marked as altered and paired with the unaltered original.",
+  "addition": "Adding objects to the scene is a digital alteration under AB 723; the photo is marked as altered and paired with the unaltered original.",
+  "change": "Changing what the scene shows is a digital alteration under AB 723; the photo is marked as altered.",
+  "adjustment": "Exposure, colour correction, straightening, cropping and sharpening are not alterations under AB 723; no disclosure is needed.",
+  "keep": "Asks to keep part of the scene as it is; nothing to disclose.",
+  "unclear": "Not recognised as a specific edit; the agent decides from the photo and discloses any alteration."
+ },
+ "groups": {
+  "page": [
+   {
+    "text": "Remove the trash bins",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the trash bins",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Fix the crack in the driveway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Fix the crack in the driveway",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Virtually stage the living room",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Virtually stage the living room",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Make it half a stop brighter",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Make it half a stop brighter",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Add a pool to the backyard",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a pool to the backyard",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lines and the trash bins",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lines",
+      "decline",
+      "surroundings"
+     ],
+     [
+      "Remove the trash bins",
+      "disclose",
+      "removal"
+     ]
+    ]
+   }
+  ],
+  "reviewer": [
+   {
+    "text": "Remove the power lines and the trash bins",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lines",
+      "decline",
+      "surroundings"
+     ],
+     [
+      "Remove the trash bins",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the trash bins",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the trash bins",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Fix the crack in the driveway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Fix the crack in the driveway",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Virtually stage the living room",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Virtually stage the living room",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Make it half a stop brighter",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Make it half a stop brighter",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Add a pool to the backyard",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a pool to the backyard",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Get rid of the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Get rid of the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Take out the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Take out the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Edit out the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Edit out the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Clone out the telephone wires",
+    "verdict": "decline",
+    "items": [
+     [
+      "Clone out the telephone wires",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Photoshop out the utility pole",
+    "verdict": "decline",
+    "items": [
+     [
+      "Photoshop out the utility pole",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Crop out the neighbor's house",
+    "verdict": "decline",
+    "items": [
+     [
+      "Crop out the neighbor's house",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the house next door",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the house next door",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the neighbors' shed",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the neighbors' shed",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the phone lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the phone lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Hide the highway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Hide the highway",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the cell tower",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the cell tower",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the billboard",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the billboard",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the wind turbines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the wind turbines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Get rid of the mold in the bathroom",
+    "verdict": "decline",
+    "items": [
+     [
+      "Get rid of the mold in the bathroom",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Take out the water stains",
+    "verdict": "decline",
+    "items": [
+     [
+      "Take out the water stains",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Touch up the peeling paint",
+    "verdict": "decline",
+    "items": [
+     [
+      "Touch up the peeling paint",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Paint over the water stain on the ceiling",
+    "verdict": "decline",
+    "items": [
+     [
+      "Paint over the water stain on the ceiling",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Smooth out the cracks in the driveway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Smooth out the cracks in the driveway",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Patch the hole in the wall",
+    "verdict": "decline",
+    "items": [
+     [
+      "Patch the hole in the wall",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Fix the broken window",
+    "verdict": "decline",
+    "items": [
+     [
+      "Fix the broken window",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the dent in the garage door",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the dent in the garage door",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Fill in the potholes in the driveway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Fill in the potholes in the driveway",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Clean up the rust stains",
+    "verdict": "decline",
+    "items": [
+     [
+      "Clean up the rust stains",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Fix the missing shingles on the roof",
+    "verdict": "decline",
+    "items": [
+     [
+      "Fix the missing shingles on the roof",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the termite damage",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the termite damage",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Hide the water damage on the ceiling",
+    "verdict": "decline",
+    "items": [
+     [
+      "Hide the water damage on the ceiling",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Cover the stain on the ceiling",
+    "verdict": "decline",
+    "items": [
+     [
+      "Cover the stain on the ceiling",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Repair the chipped paint on the trim",
+    "verdict": "decline",
+    "items": [
+     [
+      "Repair the chipped paint on the trim",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the oil stain on the driveway",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the oil stain on the driveway",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Replace the window view",
+    "verdict": "decline",
+    "items": [
+     [
+      "Replace the window view",
+      "decline",
+      "view"
+     ]
+    ]
+   },
+   {
+    "text": "Replace the view with an ocean view",
+    "verdict": "decline",
+    "items": [
+     [
+      "Replace the view with an ocean view",
+      "decline",
+      "view"
+     ]
+    ]
+   },
+   {
+    "text": "Add a mountain view",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a mountain view",
+      "decline",
+      "view"
+     ]
+    ]
+   },
+   {
+    "text": "Add a patio",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a patio",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Add a fence",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a fence",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Add solar panels",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add solar panels",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Add a skylight",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a skylight",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Build a deck",
+    "verdict": "decline",
+    "items": [
+     [
+      "Build a deck",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Add a hot tub",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a hot tub",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Add a fireplace",
+    "verdict": "decline",
+    "items": [
+     [
+      "Add a fireplace",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Add pool floats",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Add pool floats",
+      "disclose",
+      "addition"
+     ]
+    ]
+   },
+   {
+    "text": "Add a deck chair",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Add a deck chair",
+      "disclose",
+      "addition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the kitchen island",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the kitchen island",
+      "decline",
+      "structure"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the cabinets",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the cabinets",
+      "decline",
+      "structure"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the wall between the kitchen and the dining room",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the wall between the kitchen and the dining room",
+      "decline",
+      "structure"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the window blinds",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the window blinds",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the window AC unit",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the window AC unit",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the window glare",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the window glare",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the window reflections",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the window reflections",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the wall outlets",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the wall outlets",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the door mat",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the door mat",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the wall art",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the wall art",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the fireplace",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the fireplace",
+      "decline",
+      "structure"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the deck",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the deck",
+      "decline",
+      "structure"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the railing",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the railing",
+      "decline",
+      "structure"
+     ]
+    ]
+   },
+   {
+    "text": "Make the bedroom bigger",
+    "verdict": "decline",
+    "items": [
+     [
+      "Make the bedroom bigger",
+      "decline",
+      "proportions"
+     ]
+    ]
+   },
+   {
+    "text": "Widen the hallway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Widen the hallway",
+      "decline",
+      "proportions"
+     ]
+    ]
+   },
+   {
+    "text": "Make the room look bigger",
+    "verdict": "decline",
+    "items": [
+     [
+      "Make the room look bigger",
+      "decline",
+      "proportions"
+     ]
+    ]
+   },
+   {
+    "text": "Make the yard look more spacious",
+    "verdict": "decline",
+    "items": [
+     [
+      "Make the yard look more spacious",
+      "decline",
+      "proportions"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the tripod",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Remove the tripod",
+      "exempt",
+      "gear"
+     ]
+    ]
+   },
+   {
+    "text": "Remove my reflection from the mirror",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Remove my reflection from the mirror",
+      "exempt",
+      "gear"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the camera bag",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Remove the camera bag",
+      "exempt",
+      "gear"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the photographer's shadow",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Remove the photographer's shadow",
+      "exempt",
+      "gear"
+     ]
+    ]
+   },
+   {
+    "text": "Add a watermark",
+    "verdict": "overlay",
+    "items": [
+     [
+      "Add a watermark",
+      "overlay",
+      "overlay"
+     ]
+    ]
+   },
+   {
+    "text": "Add our logo in the corner",
+    "verdict": "overlay",
+    "items": [
+     [
+      "Add our logo in the corner",
+      "overlay",
+      "overlay"
+     ]
+    ]
+   },
+   {
+    "text": "Draw the property lines",
+    "verdict": "overlay",
+    "items": [
+     [
+      "Draw the property lines",
+      "overlay",
+      "overlay"
+     ]
+    ]
+   },
+   {
+    "text": "Add arrows pointing to the pool",
+    "verdict": "overlay",
+    "items": [
+     [
+      "Add arrows pointing to the pool",
+      "overlay",
+      "overlay"
+     ]
+    ]
+   },
+   {
+    "text": "Stage the bedroom with modern furniture",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Stage the bedroom with modern furniture",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Add furniture to the living room",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Add furniture to the living room",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Remove all the furniture",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove all the furniture",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Replace the sky",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Replace the sky",
+      "disclose",
+      "sky"
+     ]
+    ]
+   },
+   {
+    "text": "Make the sky blue",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Make the sky blue",
+      "disclose",
+      "sky"
+     ]
+    ]
+   },
+   {
+    "text": "Brighten the sky",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Brighten the sky",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Turn it into a twilight shot",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Turn it into a twilight shot",
+      "disclose",
+      "twilight"
+     ]
+    ]
+   },
+   {
+    "text": "Day to dusk conversion",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Day to dusk conversion",
+      "disclose",
+      "twilight"
+     ]
+    ]
+   },
+   {
+    "text": "Make the lawn greener",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Make the lawn greener",
+      "disclose",
+      "lawn"
+     ]
+    ]
+   },
+   {
+    "text": "Mow the lawn",
+    "verdict": "unclear",
+    "items": [
+     [
+      "Mow the lawn",
+      "unclear",
+      "unclear"
+     ]
+    ]
+   },
+   {
+    "text": "Add a fire to the fireplace",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Add a fire to the fireplace",
+      "disclose",
+      "fire"
+     ]
+    ]
+   },
+   {
+    "text": "Light the fireplace",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Light the fireplace",
+      "disclose",
+      "fire"
+     ]
+    ]
+   },
+   {
+    "text": "Put a picture on the TV",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Put a picture on the TV",
+      "disclose",
+      "screen"
+     ]
+    ]
+   },
+   {
+    "text": "Paint the walls white",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Paint the walls white",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Change the cabinets to navy",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Change the cabinets to navy",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Change the grey walls to the colour in the reference",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Change the grey walls to the colour in the reference",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Use #f5f0e6 for the walls",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Use #f5f0e6 for the walls",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Brighten the bedroom",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Brighten the bedroom",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Fix the white balance",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Fix the white balance",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Straighten the verticals",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Straighten the verticals",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Increase the contrast",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Increase the contrast",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Reduce the noise",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Reduce the noise",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Correct the perspective",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Correct the perspective",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Color correct the photo",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Color correct the photo",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the bins but leave the hose",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "leave the hose",
+      "exempt",
+      "keep"
+     ]
+    ]
+   },
+   {
+    "text": "Do not remove the power lines",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Do not remove the power lines",
+      "exempt",
+      "keep"
+     ]
+    ]
+   },
+   {
+    "text": "Don't remove the trees",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Don't remove the trees",
+      "exempt",
+      "keep"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the cars and keep the driveway as is",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the cars",
+      "disclose",
+      "removal"
+     ],
+     [
+      "keep the driveway as is",
+      "exempt",
+      "keep"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the people",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the people",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the hose, the bins and the car",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the hose",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the car",
+      "disclose",
+      "removal"
+     ]
+    ]
+   }
+  ],
+  "tricky": [
+   {
+    "text": "Don't touch the power lines, just brighten the photo",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Don't touch the power lines",
+      "exempt",
+      "keep"
+     ],
+     [
+      "just brighten the photo",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the bins but don't remove the hose",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "don't remove the hose",
+      "exempt",
+      "keep"
+     ]
+    ]
+   },
+   {
+    "text": "Do not change the walls, only replace the sky",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Do not change the walls",
+      "exempt",
+      "keep"
+     ],
+     [
+      "only replace the sky",
+      "disclose",
+      "sky"
+     ]
+    ]
+   },
+   {
+    "text": "Keep the windows, doors and trim exactly as they are",
+    "verdict": "exempt",
+    "items": [
+     [
+      "Keep the windows",
+      "exempt",
+      "keep"
+     ],
+     [
+      "keep doors",
+      "exempt",
+      "keep"
+     ],
+     [
+      "keep trim exactly as they are",
+      "exempt",
+      "keep"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the bins, the hose, the ladder and the kids' toys",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the hose",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the ladder",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the kids' toys",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the hose, bins, ladder, and the car, then brighten everything",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the hose",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove ladder",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the car",
+      "disclose",
+      "removal"
+     ],
+     [
+      "brighten everything",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Brighten the kitchen, straighten the verticals and add a fire",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Brighten the kitchen",
+      "exempt",
+      "adjustment"
+     ],
+     [
+      "straighten the verticals",
+      "exempt",
+      "adjustment"
+     ],
+     [
+      "add a fire",
+      "disclose",
+      "fire"
+     ]
+    ]
+   },
+   {
+    "text": "Paint the wall between the kitchen and the living room sage green",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Paint the wall between the kitchen and the living room sage green",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the boxes between the sofa and the window",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the boxes between the sofa and the window",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Take out the wall between the kitchen and dining room and add an island",
+    "verdict": "decline",
+    "items": [
+     [
+      "Take out the wall between the kitchen and dining room",
+      "decline",
+      "structure"
+     ],
+     [
+      "add an island",
+      "disclose",
+      "addition"
+     ]
+    ]
+   },
+   {
+    "text": "Turn it into a twilight shot with the lights on",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Turn it into a twilight shot with the lights on",
+      "disclose",
+      "twilight"
+     ]
+    ]
+   },
+   {
+    "text": "Day to dusk, and make the windows glow warm",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Day to dusk",
+      "disclose",
+      "twilight"
+     ],
+     [
+      "make the windows glow warm",
+      "exempt",
+      "adjustment"
+     ]
+    ]
+   },
+   {
+    "text": "Stage the bedroom",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Stage the bedroom",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Virtually stage the living room and the dining room",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Virtually stage the living room",
+      "disclose",
+      "staging"
+     ],
+     [
+      "stage the dining room",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Furnish the empty patio with lounge chairs",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Furnish the empty patio with lounge chairs",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the old furniture and stage the room with modern pieces",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the old furniture",
+      "disclose",
+      "removal"
+     ],
+     [
+      "stage the room with modern pieces",
+      "disclose",
+      "staging"
+     ]
+    ]
+   },
+   {
+    "text": "Swap the grey sky for a blue one",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Swap the grey sky for a blue one",
+      "disclose",
+      "sky"
+     ]
+    ]
+   },
+   {
+    "text": "Make the sky less cloudy",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Make the sky less cloudy",
+      "disclose",
+      "sky"
+     ]
+    ]
+   },
+   {
+    "text": "Green up the patchy lawn",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Green up the patchy lawn",
+      "disclose",
+      "lawn"
+     ]
+    ]
+   },
+   {
+    "text": "Fill in the brown spots on the grass",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Fill in the brown spots on the grass",
+      "disclose",
+      "change"
+     ]
+    ]
+   },
+   {
+    "text": "Put a fire in the fireplace",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Put a fire in the fireplace",
+      "disclose",
+      "fire"
+     ]
+    ]
+   },
+   {
+    "text": "Add flames to the fire pit",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Add flames to the fire pit",
+      "disclose",
+      "fire"
+     ]
+    ]
+   },
+   {
+    "text": "Put the listing photo on the TV screen",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Put the listing photo on the TV screen",
+      "disclose",
+      "screen"
+     ]
+    ]
+   },
+   {
+    "text": "Turn off the TV",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Turn off the TV",
+      "disclose",
+      "screen"
+     ]
+    ]
+   },
+   {
+    "text": "Use #C8C2B7 for the floors and #FFF for the trim",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Use #C8C2B7 for the floors",
+      "disclose",
+      "colour"
+     ],
+     [
+      "Use #FFF for the trim",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Recolour the front door to #1f3a5f",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Recolour the front door to #1f3a5f",
+      "disclose",
+      "colour"
+     ]
+    ]
+   },
+   {
+    "text": "Make it bigger",
+    "verdict": "decline",
+    "items": [
+     [
+      "Make it bigger",
+      "decline",
+      "proportions"
+     ]
+    ]
+   },
+   {
+    "text": "Make the backyard look much larger",
+    "verdict": "decline",
+    "items": [
+     [
+      "Make the backyard look much larger",
+      "decline",
+      "proportions"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the car in front of the neighbour's house",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the car in front of the neighbour's house",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Crop out the neighbors house on the left",
+    "verdict": "decline",
+    "items": [
+     [
+      "Crop out the neighbors house on the left",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Clone out the overhead wires and the satellite dish",
+    "verdict": "decline",
+    "items": [
+     [
+      "Clone out the overhead wires",
+      "decline",
+      "surroundings"
+     ],
+     [
+      "Clone out the satellite dish",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lines from the sky",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lines from the sky",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Smooth the cracked driveway",
+    "verdict": "decline",
+    "items": [
+     [
+      "Smooth the cracked driveway",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the hairline crack above the door",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the hairline crack above the door",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Clean the mould off the bathroom ceiling",
+    "verdict": "decline",
+    "items": [
+     [
+      "Clean the mould off the bathroom ceiling",
+      "decline",
+      "condition"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the black mold stains",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the black mold stains",
+      "decline",
+      "condition"
+     ]
+    ]
+   }
+  ],
+  "engine": [
+   {
+    "text": "",
+    "verdict": "unclear",
+    "items": []
+   },
+   {
+    "text": "Remove the bins. 🙂",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the trash bins\r\nAdd a pool",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the trash bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Add a pool",
+      "decline",
+      "feature"
+     ]
+    ]
+   },
+   {
+    "text": "Make the lawn\rgreener",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Make the lawn\rgreener",
+      "disclose",
+      "lawn"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lines电线",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the power lines电线",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lınes",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lınes",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "REMOVE THE POWER LİNES",
+    "verdict": "decline",
+    "items": [
+     [
+      "REMOVE THE POWER LİNES",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the bins\u001cand the hose",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the hose",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the hose and the bins",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the hose",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the bins",
+      "disclose",
+      "removal"
+     ]
+    ]
+   },
+   {
+    "text": "﻿Remove the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "﻿Remove the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the café umbrellas and the power lines",
+    "verdict": "decline",
+    "items": [
+     [
+      "Remove the café umbrellas",
+      "disclose",
+      "removal"
+     ],
+     [
+      "Remove the power lines",
+      "decline",
+      "surroundings"
+     ]
+    ]
+   },
+   {
+    "text": "Remove the bins ∧ the hose",
+    "verdict": "disclose",
+    "items": [
+     [
+      "Remove the bins and the hose",
+      "disclose",
+      "removal"
+     ]
+    ]
+   }
+  ]
+ }
+}
