@@ -5,7 +5,8 @@ server proxies `/api` to it. JSON everywhere except blob and reel downloads. Err
 `{"error": {"code": "...", "message": "plain sentence saying what to do"}}` with a 4xx/5xx status.
 If `DEMO_PASSCODE` is set, every `/api` request needs the passcode: header `x-demo-passcode`, or query
 `?passcode=` / cookie `demo_passcode` for requests that cannot set headers (EventSource, `<img>`).
-Wrong or missing: 401 `passcode_required`. The static UI at `/` is not guarded.
+Wrong or missing: 401 `passcode_required`. The static UI at `/` is not guarded, and neither is `/api/public/`
+(the buyer page of a published listing, below).
 
 ## Shoots
 
@@ -39,6 +40,64 @@ Wrong or missing: 401 `passcode_required`. The static UI at `/` is not guarded.
 | GET | `/api/shoots/{id}/reel/latest.mp4` | | video |
 
 A chat message while a run is active on the same shoot is queued, not run in parallel.
+
+## Listing
+
+`src/shootagent/listing/`. A published listing has a public slug `<shoot id>-<token>`; the buyer page is
+`/#/l/<slug>`, its disclosure `/#/l/<slug>/disclosure`. Unpublishing makes the slug answer 404 and keeps the
+token, so a printed QR code works again after republishing. Records live in `<shoot>/listing/` (state, leads,
+buyer sessions, answer cache). The film is read from the files the film pass writes (`<shoot>/film/`).
+
+Behind the passcode:
+
+| Method | Path | Body | Returns |
+|---|---|---|---|
+| GET | `/api/shoots/{id}/listing/state` | | `ListingState`: `{published, token, published_at, public_origin, film_approved, note, reviewed_at, slug, public_base_url, notifications, leads: {total, new}}`; `notifications` is whether `NTFY_TOPIC` is set |
+| POST | `/api/shoots/{id}/listing/publish` | `{published: bool, origin?: "https://host"}` | `ListingState`. Publishing needs `listing.address` (400 `needs_address`) and at least one photo. `origin` is where the realtor is browsing; it builds notification links when `PUBLIC_BASE_URL` is unset |
+| POST | `/api/shoots/{id}/listing/review` | `{film_approved?: bool, note?: str}` (note up to 1000 chars) | `ListingState` |
+| GET | `/api/shoots/{id}/listing/disclosure` | | `Disclosure` (below), to preview before publishing |
+| GET | `/api/leads` | | `{listings: [{shoot_id, title, address, slug, published, film_approved, note, film_languages, thumb, leads_new}], leads: [Lead + {shoot_id, address}], notifications}`, newest lead first, across shoots that were ever published or have leads |
+| POST | `/api/shoots/{id}/leads/{lead}/seen` | | `Lead` with `status: "seen"` |
+
+Public, no passcode. Every route is rate-limited per IP (429 `rate_limited` with `Retry-After`): 240 reads a
+minute; `ask` 6 a minute and 40 an hour; `book` 3 per 10 minutes and 8 a day. Behind the Cloudflare tunnel
+the IP is `CF-Connecting-IP`, trusted only when the request arrives from loopback. POST bodies over 4 KB get
+413. Unknown or unpublished slugs get 404 `listing_not_found`.
+
+| Method | Path | Body / query | Returns |
+|---|---|---|---|
+| GET | `/api/public/listings/{slug}` | | `{slug, listing, rooms: [{view, name, photo}], film: {languages, variants: {<lang>: {duration_s, captions, cover}}, shots: [{index, view, end_view, labels: {<lang>}, source, ai_label, times: {<lang>: [start_s, end_s]}}], disclosure_label} \| null, disclosure: {altered_photos, ai_clips}}`; `film` is null until a film is rendered |
+| GET | `/api/public/listings/{slug}/photos/{blob}` | `?w=` long edge, 64-2048 | image; only the listing's published photos and their originals |
+| GET | `/api/public/listings/{slug}/film/{lang}.mp4` | | the film |
+| GET | `/api/public/listings/{slug}/film/{lang}/cover.png` | | its cover |
+| GET | `/api/public/listings/{slug}/disclosure` | | `Disclosure` plus `address` |
+| POST | `/api/public/listings/{slug}/ask` | `{question, language: "en"\|"es", session?}`; question 3-300 chars after cleaning | `{answer, status: "answered"\|"follow_up", rooms, cached, limited, session}`. Keep `session` and send it with later questions and the booking |
+| POST | `/api/public/listings/{slug}/book` | `{name (80), contact: email or phone (120), preferred_time (120), language, session?}` | 201 `{lead, notifying}`; the lead carries the questions asked in `session` |
+
+Q&A: one Claude call (`LISTING_QA_MODEL`, default `claude-sonnet-5-5`) per new question, with no tools and a
+JSON schema for the answer. The model sees the listing fields, the room names and each photo's current
+version; the question goes after the cached photo prefix inside `<question>` tags, as data. When the photos
+and fields do not settle a question the model says what they show, status is `follow_up`, and the server adds
+the "I've noted your question for the listing agent" line (the lead keeps the model's words only). Answers are
+cached per question (case and punctuation ignored), language, and listing content. `LISTING_QA_DAILY_USD`
+(default $1) caps spend per UTC day; past it, every question gets the follow-up answer with `limited: true`.
+A model or credential failure also gets the follow-up answer and is not cached.
+
+Booking notifies the realtor when `NTFY_TOPIC` is set: one POST to `https://ntfy.sh/<NTFY_TOPIC>` with the
+buyer's name in the title, the address and requested time in the body (not the buyer's contact), and a click
+URL `<PUBLIC_BASE_URL or publish origin>/#/r/<shoot>/<lead>`. The result is stored on the lead as
+`notified: {sent, error, at}`; errors never contain the topic.
+
+`Lead`: `{id, created_at, name, contact, preferred_time, language, questions: [{question, answer, status,
+language, at}], status: "new"|"seen", notified}`.
+
+`Disclosure` (California AB 723): `{law, photos: [{view, room, published, original, original_kind, altered,
+changes}], film: {ai_clips: [{shot, label, view, end_view}], rejected_clips: [{shot, label, reasons, changes}],
+label: {<lang>: str}, complete} | null}`. `published` and `original` are blob names; `original_kind` is
+`fusion` (ShootAgent's fusion of the raw exposures), `exposure` (the camera's middle exposure) or `delivered`.
+`changes` are records the page words per language: `{kind: "hdr", exposures}`, `{kind: "edit", op, note}` for
+each version on the head's chain, `{kind: "fix", finding, explanation}` for each fixed QC finding. Photos come
+in film order. `ai_clips` are shots whose generated clip passed its check and carries the on-screen label.
 
 ## Trace event shape
 
