@@ -23,11 +23,14 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from ..agent import loop
 from ..config import Settings, get_settings
+from ..film.readiness import NeedsReview
+from ..listing.routes import ListingError, build_router, error_response
 from ..store import Listing, ShootStore
 from ..trace import read_events
 
 ID_RE = re.compile(r"^[A-Za-z0-9_.-]{1,80}$")
 BLOB_RE = re.compile(r"^[0-9a-f]{8,64}\.[a-z0-9]{2,5}$")
+LANG_RE = loop.LANG_RE
 IMMUTABLE = {"Cache-Control": "public, max-age=31536000, immutable"}
 WEB_DIST = Path(__file__).resolve().parents[3] / "web" / "dist"
 DEV_ORIGINS = [f"http://{h}:{p}" for h in ("localhost", "127.0.0.1") for p in (5173, 4173)]
@@ -74,12 +77,19 @@ class ChatBody(BaseModel):
     mask: str | None = None
 
 
+class FilmBody(BaseModel):
+    languages: list[str] = Field(default_factory=lambda: ["en"], description="Narration languages, script language first.")
+    views: list[str] | None = None
+
+
 def create_app(
     settings: Settings | None = None,
     store: ShootStore | None = None,
     client: Any = None,
     manager: loop.RunManager | None = None,
+    listing: dict[str, Any] | None = None,
 ) -> FastAPI:
+    """`listing` passes keyword arguments to listing.routes.build_router (tests inject a Q&A client and a notifier)."""
     settings = settings or get_settings()
     store = store or ShootStore(settings.shoots_dir)
     manager = manager or loop.MANAGER
@@ -97,7 +107,9 @@ def create_app(
     @app.middleware("http")
     async def passcode(request: Request, call_next):
         code = settings.demo_passcode
-        if code and request.url.path.startswith("/api") and request.method != "OPTIONS":
+        # /api/public/ is the buyer page of a published listing; listing/routes.py rate-limits it instead.
+        path = request.url.path
+        if code and path.startswith("/api") and not path.startswith("/api/public/") and request.method != "OPTIONS":
             # EventSource and <img> cannot send headers, so a query parameter or cookie also works.
             given = (
                 request.headers.get("x-demo-passcode")
@@ -111,6 +123,10 @@ def create_app(
     @app.exception_handler(ApiError)
     async def _api_error(_: Request, e: ApiError):
         return _err(e.status, e.code, e.message)
+
+    @app.exception_handler(ListingError)
+    async def _listing_error(_: Request, e: ListingError):
+        return error_response(e)
 
     @app.exception_handler(StarletteHTTPException)
     async def _http_error(_: Request, e: StarletteHTTPException):
@@ -146,6 +162,8 @@ def create_app(
             trace = loop.start_run(
                 store, shoot_id, mode, settings=settings, client=client, manager=manager, **kw
             )
+        except NeedsReview as e:
+            raise ApiError(409, "needs_review", str(e)) from None
         except ValueError as e:
             raise ApiError(400, "bad_run_request", str(e)) from None
         except RuntimeError as e:
@@ -307,6 +325,63 @@ def create_app(
             raise ApiError(404, "no_reel", "No reel has been rendered for this shoot yet.")
         return FileResponse(path, media_type="video/mp4")
 
+    @app.post("/api/shoots/{shoot_id}/film")
+    def film(shoot_id: str, body: FilmBody | None = None):
+        load(shoot_id)
+        body = body or FilmBody()
+        bad = [lang for lang in body.languages if not LANG_RE.match(lang.strip().lower())]
+        if bad:
+            raise ApiError(400, "bad_language", f"Languages are codes like 'en' or 'es', not {', '.join(map(repr, bad))}.")
+        return start(shoot_id, "film", views=body.views, languages=body.languages)
+
+    def film_file(shoot_id: str, *parts: str) -> Path:
+        load(shoot_id)
+        return store.shoot_dir(shoot_id).joinpath("film", *parts)
+
+    def read_json(path: Path):
+        return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+    @app.get("/api/shoots/{shoot_id}/film")
+    def film_state(shoot_id: str):
+        spec = read_json(film_file(shoot_id, "spec.json"))
+        manifest = read_json(film_file(shoot_id, "manifest.json"))
+        variants = {}
+        for lang, v in ((manifest or {}).get("languages") or {}).items():
+            variants[lang] = {
+                "url": f"/api/shoots/{shoot_id}/film/{lang}.mp4",
+                "cover": f"/api/shoots/{shoot_id}/film/{lang}/cover.png" if v.get("cover") else None,
+                "duration_s": v.get("duration_s"),
+                "captions": v.get("captions"),
+                "finisher": v.get("finisher"),
+                "verify": v.get("verify"),
+            }
+        return {"spec": spec, "manifest": manifest, "variants": variants}
+
+    @app.get("/api/shoots/{shoot_id}/film/manifest.json")
+    def film_manifest(shoot_id: str):
+        path = film_file(shoot_id, "manifest.json")
+        if not path.is_file():
+            raise ApiError(404, "no_film", "No film has been assembled for this shoot yet. Start one with POST /film.")
+        return FileResponse(path, media_type="application/json")
+
+    @app.get("/api/shoots/{shoot_id}/film/{lang}.mp4")
+    def film_video(shoot_id: str, lang: str):
+        if not LANG_RE.match(lang):
+            raise ApiError(400, "bad_language", "Languages are codes like 'en' or 'es'.")
+        path = film_file(shoot_id, lang, "film.mp4")
+        if not path.is_file():
+            raise ApiError(404, "no_film", f"No {lang} film for this shoot yet.")
+        return FileResponse(path, media_type="video/mp4")
+
+    @app.get("/api/shoots/{shoot_id}/film/{lang}/cover.png")
+    def film_cover(shoot_id: str, lang: str):
+        if not LANG_RE.match(lang):
+            raise ApiError(400, "bad_language", "Languages are codes like 'en' or 'es'.")
+        path = film_file(shoot_id, lang, "cover.png")
+        if not path.is_file():
+            raise ApiError(404, "no_cover", f"No {lang} cover for this shoot yet.")
+        return FileResponse(path, media_type="image/png")
+
     @app.get("/api/shoots/{shoot_id}/runs")
     def list_runs(shoot_id: str):
         shoot = load(shoot_id)
@@ -405,6 +480,8 @@ def create_app(
     def cancel(shoot_id: str, run_id: str):
         load(shoot_id)
         return {"ok": manager.cancel(run_id)}
+
+    app.include_router(build_router(store, settings, **(listing or {})))
 
     # ---- web UI -----------------------------------------------------------------------------------------
     if WEB_DIST.is_dir():

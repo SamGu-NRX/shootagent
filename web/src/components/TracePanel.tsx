@@ -2,6 +2,11 @@ import {
   ArrowDown,
   ArchiveRestore,
   Brush,
+  Clapperboard,
+  Languages,
+  Mic,
+  PenLine,
+  Tag,
   Circle,
   CircleAlert,
   Crosshair,
@@ -50,6 +55,13 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   revert: Undo2,
   set_finding: Flag,
   approve_view: Flag,
+  label_views: Tag,
+  plan_film: Clapperboard,
+  prepare_shots: Film,
+  write_script: PenLine,
+  translate_script: Languages,
+  narrate: Mic,
+  assemble_film: Film,
 };
 
 /** Tools that usually return an image: their rows reserve the thumbnail slot so the row doesn't grow. */
@@ -68,7 +80,14 @@ const IMAGE_TOOLS = new Set([
   "revert",
 ]);
 
-const MODE_LABEL: Record<string, string> = { qc: "QC pass", chat: "Chat request", reel: "Reel" };
+const MODE_LABEL: Record<string, string> = {
+  qc: "QC pass",
+  chat: "Chat request",
+  reel: "Reel",
+  film: "Listing film",
+  film_script: "Film script",
+};
+const MOTION: Record<string, string> = { generated: "generated clip", depth: "depth move", still: "slow push-in" };
 
 export function TracePanel() {
   const runs = useStore((s) => s.runs);
@@ -102,7 +121,8 @@ export function TracePanel() {
           <select value={runId ?? ""} onChange={(e) => setRun(e.target.value)}>
             {[...runs].reverse().map((r) => {
               const t = traces[r.id];
-              const req = t?.request ?? r.request;
+              const raw = t?.request ?? r.request;
+              const req = raw && !raw.startsWith("film-finish") ? raw : null; // the server's own label, not a request
               const what = req ? `“${req.slice(0, 40)}${req.length > 40 ? "…" : ""}”` : (MODE_LABEL[r.mode ?? ""] ?? r.mode ?? "Run");
               return (
                 <option key={r.id} value={r.id}>
@@ -157,18 +177,36 @@ function TraceView({ trace }: { trace: TraceState }) {
     else if (added > 0) setUnseen((n) => n + added);
   }, [trace.items.length, trace.items]);
 
+  // A finished run shows its final report from the first line. Pinned to the very bottom, a long report showed
+  // only its last lines, and its opening sat under the edge of the pane.
+  const ended = trace.status === "done" || trace.status === "failed";
+  const showReport = () => {
+    const el = scroller.current;
+    const reports = el?.querySelectorAll<HTMLElement>(".tr-message");
+    const last = reports?.[reports.length - 1];
+    if (el && last) el.scrollTop = Math.min(el.scrollHeight, last.offsetTop - el.offsetTop - 8);
+  };
+
   useEffect(() => {
     pinned.current = true;
     setUnseen(0);
     const el = scroller.current;
     if (el) el.scrollTop = el.scrollHeight;
+    if (ended) showReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trace.runId]);
+
+  // a live run that ends while the view follows it
+  useLayoutEffect(() => {
+    if (ended && pinned.current) showReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ended]);
 
   return (
     <>
       <Tape trace={trace} />
       <div className="trace-scroll" ref={scroller}>
-        {trace.request && (
+        {trace.request && !trace.request.startsWith("film-finish") && (
           <p className="trace-request">
             <span className="eyebrow">Request</span>“{trace.request}”
           </p>
@@ -302,8 +340,18 @@ function TapePlan({ trace }: { trace: TraceState }) {
   const cur = currentStep(trace);
   const done = steps.filter((s) => s.done).length;
   const viewLabel = useViewLabel();
+  // Film-finish runs prepare, narrate and assemble a film the agent already planned; they have no plan of
+  // their own by design. Other runs with no plan show no plan line once they are over.
+  const finishing = trace.request?.startsWith("film-finish") ?? false;
+  if (!steps.length && (finishing || trace.status !== "running")) {
+    return finishing ? (
+      <div className="tape-plan">
+        <span className="tape-plan-now">Checks, narration and assembly; no agent plan</span>
+      </div>
+    ) : null;
+  }
   let now: string;
-  if (!steps.length) now = trace.status === "running" ? "Planning…" : "No plan recorded";
+  if (!steps.length) now = "Planning…";
   else if (cur >= 0) now = `Now: ${steps[cur]!.view ? `${viewLabel(steps[cur]!.view!)} · ` : ""}${steps[cur]!.intent}`;
   else now = `Plan: ${done} of ${steps.length} steps done`;
   return (
@@ -411,6 +459,26 @@ const Row = memo(function Row({
       return <ToolRow item={item} candidates={candidates} time={time} viewChip={viewChip} onFocus={focus} common={common} />;
     case "check":
       return <CheckRow item={item} time={time} onFocus={focus} common={common} />;
+    case "shot":
+      return (
+        <li className="tr tr-shot" data-fell-back={item.fellBack || undefined} {...common}>
+          {time}
+          <div className="tr-body">
+            <div className="tr-head">
+              <Clapperboard size={13} className="tr-icon" aria-hidden />
+              <span className="tr-title">
+                Shot {item.shot + 1} plays a {MOTION[item.source] ?? item.source}
+              </span>
+              {viewChip}
+            </div>
+            {item.fellBack && (
+              <p className="tr-text">
+                Planned as a {MOTION[item.planned] ?? item.planned}; it fell back after its check.
+              </p>
+            )}
+          </div>
+        </li>
+      );
     case "retry":
       return (
         <li className="tr tr-retry" {...common}>
@@ -550,7 +618,9 @@ function ToolRow({
           <Icon size={13} className="tr-icon" aria-hidden />
           <span className="tr-tool-name">{toolLabel(item.tool)}</span>
           {item.attempt > 1 && <span className="tr-attempt">attempt {item.attempt}</span>}
-          <span className="tr-dur num">{r ? duration(r.ms) : <span className="spinner spinner-sm" aria-label="Running" />}</span>
+          <span className="tr-dur num">
+            {r ? duration(r.ms) : item.status === "ended" ? "" : <span className="spinner spinner-sm" aria-label="Running" />}
+          </span>
         </div>
         {(input || viewChip) && (
           <p className="tr-input num" title={input || undefined}>
@@ -559,8 +629,17 @@ function ToolRow({
           </p>
         )}
         <p className="tr-result" data-ok={r ? r.ok : undefined}>
-          {r ? (r.ok ? r.summary : `Failed: ${r.error ?? r.summary}`) : <span className="muted">Running…</span>}
+          {r ? (
+            r.ok ? r.summary : `Failed: ${r.error ?? r.summary}`
+          ) : (
+            <span className="muted">{item.status === "ended" ? "Ended with the run; no result was recorded." : "Running…"}</span>
+          )}
         </p>
+        {item.media && (
+          <p className="tr-refs num">
+            {item.media.made} clip{item.media.made === 1 ? "" : "s"} or narrations · {item.media.cached} from cache
+          </p>
+        )}
         {candidates && candidates.length > 0 && <CandidateChips findings={candidates} />}
         {(r?.version || r?.mask) && (
           <p className="tr-refs num">
@@ -599,11 +678,18 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
           <span className="stamp" data-passed={item.passed}>
             {item.passed ? "Pass" : "Fail"}
           </span>
-          <span className="tr-title">Self-check</span>
-          <button className="ref-link num" onClick={() => onFocus(item.version)} title="Show this version">
-            {item.version}
-          </button>
+          <span className="tr-title">
+            {item.clip ? `${item.source === "depth" ? "Depth-move check" : "Clip check"} · shot ${(item.shot ?? 0) + 1}` : "Self-check"}
+          </span>
+          {item.clip ? (
+            <span className="tr-attempt num">clip {item.clip.slice(0, 8)}</span>
+          ) : (
+            <button className="ref-link num" onClick={() => onFocus(item.version)} title="Show this version">
+              {item.version}
+            </button>
+          )}
         </div>
+        {item.clip && item.images && item.images.length > 0 && <ClipSheet blob={item.images[0]!} />}
         {rows.length > 0 && (
           <dl className="metrics">
             {rows.map((m) => (
@@ -633,6 +719,18 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
         )}
       </div>
     </li>
+  );
+}
+
+/** The contact sheet the clip checker looked at: frames of the generated clip beside its photo. */
+function ClipSheet({ blob }: { blob: string }) {
+  const shoot = useStore((s) => s.shoot);
+  const api = useStore((s) => s.api);
+  if (!shoot) return null;
+  return (
+    <a className="clip-sheet" href={api.blobUrl(shoot.id, blob)} target="_blank" rel="noreferrer" title="Open the contact sheet">
+      <img src={api.blobUrl(shoot.id, blob, 640)} alt="Contact sheet of the generated clip's frames" loading="lazy" decoding="async" />
+    </a>
   );
 }
 

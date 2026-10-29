@@ -1420,6 +1420,10 @@ kbd {
   overflow-anchor: none;
   padding: 10px 12px 28px;
   scrollbar-width: thin;
+  /* rows scrolled past the top fade out instead of being cut flush against the tape, where they looked
+     like they were tucked behind it */
+  margin-top: 6px;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14px);
 }
 .trace-request {
   display: grid;

@@ -1,13 +1,20 @@
 # ShootAgent
 
-ShootAgent checks a real-estate photo shoot against the camera's own exposure brackets, fixes what the
-editing pipeline got wrong, applies a customer's chat requests across every photo they concern, and cuts
-a 9:16 listing reel from the approved photos. Every decision it makes shows up in a live trace: the
-plan, each tool call, each self-check, and each retry.
+ShootAgent takes a real-estate photo shoot from the camera's exposure brackets to a launched listing. It
+checks every finished photo against its brackets and fixes what the editing pipeline got wrong, applies a
+customer's chat requests across every photo they concern, and then launches the listing: a narrated 9:16
+film in English and Spanish whose generated motion is checked against the real photos, a buyer page that
+answers questions and books tours, and a California disclosure page that pairs each edited photo with its
+original. Every decision shows up in a live trace: the plan, each tool call, each self-check, and each retry.
 
 Built for the AITX & MLOps World Community Hackathon (Austin Tech Week, October 2026), entering the
 AutoHDR "Image Models & Pipelines" track (conversational editing, with AI quality control as the
 agent's first pass) and the Antler "Agents" track.
+
+![Frames from a listing film](docs/media/listing-film-strip.jpg)
+
+*Frames from the demo house's listing film. Every shot moves through the photo's own pixels; the price and
+square-footage cards, captions, Gemini narration and Lyria music bed are added by the film pass.*
 
 ![Three saved customer requests applied from chat](docs/media/editor-requests-before-after.jpg)
 
@@ -17,9 +24,9 @@ walls to the colour in the reference image". Pixels outside each edit are byte-i
 delivered photo.*
 
 **Live demo:** https://shootagent.sillion.app (the passcode is in the submission form; it gates spending on
-model APIs). A silent 7-minute walkthrough of one real run (QC, two chat requests, the reel) is in
-[docs/media/demo-walkthrough.mp4](docs/media/demo-walkthrough.mp4), with timestamps in
-[docs/media/demo-walkthrough.md](docs/media/demo-walkthrough.md).
+model APIs). A silent 7-minute walkthrough of one real run of the QC and chat passes, recorded before the
+listing launch existed, is in [docs/media/demo-walkthrough.mp4](docs/media/demo-walkthrough.mp4), with
+timestamps in [docs/media/demo-walkthrough.md](docs/media/demo-walkthrough.md).
 
 ## What it does
 
@@ -50,6 +57,40 @@ wall outlet the customer wanted kept; the third attempt kept it.
 **Listing reel.** The agent labels rooms, orders photos the way a listing agent walks a buyer through
 a home, picks a camera move and focus point per photo, renders, and checks a strip of frames before it
 finishes. The music is generated, so the reel carries no licence.
+
+**Listing film.** A narrated, captioned 9:16 film in one or more languages, made only from photos QC has
+approved. The agent orders the rooms, writes one narration line per shot from what that shot shows (no
+floor levels, materials or counts the photos don't support), translates it, and picks a motion per shot:
+a generated clip from Grok Imagine or a depth-parallax move. Generated clips are where image models invent
+things, so every one is checked against its photo before it may play:
+
+- tracking signals: the clip's first and last frames must match their photos, tracked points must move
+  like a real camera, straight edges must stay straight, and no structure may appear that the first frame
+  doesn't predict;
+- a vision judge that first lists the checkable items in the photo (doors, windows, lights, wall plates,
+  large furniture, the view through each window) and then accounts for each of them in every sampled frame.
+
+A rejected clip is regenerated once with the failure named, then replaced by a depth move, which moves
+only the photo's own pixels and is itself checked. A walk from one room into another can't be checked
+against any photo, so it never passes on its own. Generated clips that do play carry an "AI-generated
+motion" label, and each film ships with a manifest of every shot's photo, motion source and check results,
+rejected attempts included. Gemini TTS speaks the script; Reel Studio's render engine adds captions, the
+music bed under the voice, the cover and a loudness and sync check; its price and stat card templates
+supply the title cards; cuts land on the music's beats.
+
+**Listing launch.** *Launch listing* shows the film's storyboard (each shot's photo, its motion source,
+and every generated clip the checker rejected, with the reason and what replaced it), the film in English
+and Spanish, and the live trace. *Publish listing* gives a QR code for a public buyer page: the film, room
+chips that jump to each room, questions answered from the listing's photos and details (or passed to the
+agent when the photos can't answer), and tour booking that pushes the request to the agent's phone
+through [ntfy](https://ntfy.sh). Each listing also gets a disclosure page with every edited photo beside
+its original, as California's AB 723 requires for altered listing images since January 2026. Endpoints
+are in [docs/api.md](docs/api.md#listing); screenshots in [web/screenshots/listing](web/screenshots/listing).
+
+![The launch view](web/screenshots/listing/live/1-launch-desk.jpg)
+
+*The launch view: the storyboard keeps every rejected generated clip, crossed out, with the checker's
+reason and the depth move that replaced it.*
 
 ![Removals from saved customer requests](docs/media/removals-before-after.jpg)
 
@@ -115,6 +156,25 @@ every photo in 83 s ($0.25), and half a stop brighter in 154 s ($0.37, measured 
 each, judged by the vision judge): gpt-image-2 with a grown, shadow-aware mask passes 10 to 11 of 12;
 LaMa alone passes 2 of 12.
 
+**Listing film, demo house** (AutoHDR property group `property_c3ec3b9cd3bbe0b378`, 7 finished photos with
+brackets). QC found that every one of the 7 finished photos merged two camera positions, split each into
+its own photos, and left 11 deliverable: the primary bath, for example, turned out to have a freestanding
+tub that the merged photo hid. QC took 218 s and $0.45. The film pass made an English film (36.9 s) and a
+Spanish one (39.5 s); both pass Reel Studio's verify at -14.2 LUFS with no sound and picture drift.
+
+**Generated motion.** Grok Imagine invented something in 10 of the 14 clips we made of this house: a door
+leaf, a deck stair outside a window, four pendant lights, a switch plate, an ornament, an outlet, a ceiling
+vent and a vanity, a door casing, a whole door, and a person standing in the shower window. Scored without tuning on
+the 10 clips from the film run ([docs/eval/film_checker.md](docs/eval/film_checker.md)):
+
+| | Clips | Checker result |
+|---|---|---|
+| clip invented something | 6 | 5 rejected by the checks; the 6th, a room-to-room walk with the person, passed the judge and is now blocked by the walk rule |
+| clip was faithful | 4 | 0 passed: the tracking signals, set on synthetic clips, reject every real generated clip |
+
+So the current films use depth moves for every shot. A check costs $0.072 on average. Each 6 s clip took
+35 to 65 s to generate and about 2% of a SuperGrok subscription's weekly allowance.
+
 ## Quick start
 
 Requirements: Python 3.11 or 3.12, Node 20, ffmpeg on PATH, and [uv](https://docs.astral.sh/uv/).
@@ -161,6 +221,22 @@ uv run shootagent chat <shoot-id> "add a 'Listed by Acme Realty' watermark botto
 
 Or open the UI, pick a demo shoot on the start screen, and press Run QC.
 
+Listing launch:
+
+```bash
+uv run shootagent listing-sample <shoot-id>                 # the demo's sample listing details (no street address)
+uv run shootagent launch <shoot-id>                         # QC where needed, approve clean views, then the film
+uv run shootagent film <shoot-id> --languages en es         # the film pass alone; FILM_MEDIA=replay uses recorded media
+uv run shootagent export-shoot <shoot-id> demo.zip          # move a finished shoot to another machine
+uv run shootagent import-shoot demo.zip                     # checks every file against the bundle's SHA-256 list
+```
+
+Grok Imagine and Gemini TTS ran on the demo Mac, where they are signed in, while checking and rendering ran on
+the PC. `film-export-requests <shoot>` writes the exact Grok and TTS requests, the photos and a standard-library
+runner (`run_grok.py`, which reads the Gemini key from the macOS Keychain) to a folder; after it runs on the
+other machine, `film-import-media <folder>` verifies each clip and narration against its fingerprint and
+recorded request, and `film-finish <shoot>` checks the clips, narrates and assembles.
+
 ### Public demo link
 
 `scripts/serve-public.sh` serves the app through a Cloudflare tunnel behind `DEMO_PASSCODE`, and exits when
@@ -190,6 +266,15 @@ flowchart LR
   Tools --> Store[("Shoot store<br/>versions, masks, blobs")]
   Loop --> Trace[("Trace<br/>jsonl per run")]
   Trace -- live events --> API
+  Loop -- film mode --> Film["Film tools<br/>shot plan, script"]
+  Film --> Motion["Motion<br/>Grok Imagine clips,<br/>depth-parallax moves"]
+  Motion --> ClipCheck["Clip check<br/>tracking signals,<br/>inventory judge"]
+  ClipCheck -- fail: depth move --> Motion
+  Film --> Voice["Gemini TTS"]
+  ClipCheck --> Engine["Reel Studio engine<br/>captions, music, verify"]
+  Voice --> Engine
+  Engine --> Listing["Listing<br/>buyer page, Q&A,<br/>tours, disclosure"]
+  Listing -- tour booked --> Phone["Agent's phone<br/>ntfy"]
 ```
 
 The agent edits a shoot only through typed tools, and deterministic code or pinned models produce the
@@ -207,6 +292,11 @@ and the HTTP contract in [docs/api.md](docs/api.md).
 | Removal | gpt-image-2 inside a grown mask that takes in the object's cast shadow, colour- and grain-matched, composited back; LaMa offline |
 | Bracket work | OpenCV feature matching and homographies, Mertens exposure fusion, Lab-space colour fitting |
 | Reel | frames drawn in Python (sub-pixel camera moves), encoded by ffmpeg; Fraunces and Inter (OFL) |
+| Film motion | Grok Imagine image-to-video (through the Grok CLI); Depth Anything V2 Small (Apache-2.0) for depth-parallax moves |
+| Clip check | OpenCV feature matching and Lucas-Kanade tracking, line-segment checks, and a Claude Sonnet 5.5 judge that inventories the photo first |
+| Voice and music | Gemini 3.8 Flash TTS (voice Sulafat); music beds made with Lyria in Google's Gemini app |
+| Film finishing | Reel Studio's render engine (MIT), run as a separate program: faster-whisper captions, music ducking, loudness and sync verify; its HTML price and stat templates rendered with Playwright |
+| Buyer Q&A | Claude Sonnet 5.5 with the listing's photos and details, no tools, rate-limited with a daily spend cap |
 | API and UI | FastAPI with SSE; Vite, React and TypeScript |
 
 ## Datasets
@@ -237,9 +327,17 @@ variables at the unzipped folders.
 - Split views from regrouping are fused from the brackets and tone-matched to AutoHDR's photo, but not
   lens-corrected or cropped the way AutoHDR's own pipeline would.
 - The QC detector's confidence thresholds were chosen on the same 63 cases it is scored on.
+- The clip checker's tracking signals reject faithful generated clips (0 of 4 passed), so no generated
+  motion plays in the current films. Its judge missed the person in a room-to-room walk; such walks are now
+  never passed automatically. Ten real clips are too few to set thresholds on.
+- Grok returned single-photo clips in the photo's landscape shape although 9:16 was requested; cropped to a
+  vertical frame they are visibly softer than depth moves made from the full-resolution photo.
+- The demo's listing details (price, rooms, size) are invented sample data, marked as a sample in the UI.
+- The Spanish narration is accurate but less natural than the English, with even, rigid pauses.
 - Single-user: one agent run per shoot at a time, files on local disk, no accounts.
 
-Next steps: a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight
+Next steps: recalibrate the clip checker's tracking signals on real generated clips so faithful ones can
+play; a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight
 architectural lines; batch generative removals per shoot.
 
 ## Team
@@ -248,5 +346,10 @@ Sam Gu, Bryan Wang.
 
 ## License
 
-MIT. ffmpeg is called as an external program and is not redistributed. The bundled fonts are under the
-SIL Open Font License (see `src/shootagent/reel/fonts/`).
+MIT. ffmpeg and Reel Studio's render engine are called as external programs and are not redistributed.
+The bundled fonts are under the SIL Open Font License (see `src/shootagent/reel/fonts/`).
+
+Credits: the film's music beds in `src/shootagent/film/music/` ("The Morning Foyer", the default, and "First
+Light on Oak") are AI-generated, made with Google's Gemini app (Lyria) on 28 October 2026; how they were made
+and measured is in `lab/music/NOTES.md` on branch `explore/media-tests`. A third take, "Open Plan Afternoon",
+was left out because it has wordless vocal chops.

@@ -3,7 +3,7 @@
 The trace is the product surface that shows the agent's reasoning, so every event carries enough
 data for the UI to render it without another request. Event kinds:
 
-    run_start    {mode: "qc"|"chat"|"reel", request?, views}
+    run_start    {mode: "qc"|"chat"|"reel"|"film", request?, views, languages?, media?}
     plan         {steps: [{view?, intent, tool?}], text}
     thought      {text}                         model text between tool calls
     tool_call    {call_id, tool, input}
@@ -11,6 +11,8 @@ data for the UI to render it without another request. Event kinds:
     check        {call_id?, version, passed, metrics: {...}, judge?: {verdict, reason, model}}
     retry        {attempt, reason, next}        the agent is trying a different approach
     finding      {finding}                      a located defect (store.Finding as dict)
+    media        {shot?, language?, fingerprint, backend, cached, seconds}   film: a clip or narration made or reused
+    shot         {shot, source, fell_back, clips, note}                     film: what a shot will play
     view_result  {results: [{request, status, reason}]}  chat outcome for one view
     message      {text}                         the agent's reply to the user
     usage        {model, input_tokens, output_tokens, usd}

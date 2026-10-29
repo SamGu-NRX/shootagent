@@ -3,6 +3,7 @@
 // must leave the state unchanged.
 
 import type { Finding, PlanStep, TraceDataByKind, TraceEvent } from "../api/types";
+import { judgeReasons } from "../listing/reasons";
 
 export type ViewOutcome = "pending" | "applied" | "not_needed" | "failed";
 
@@ -26,10 +27,13 @@ export interface ToolItem extends Base {
   tool: string;
   input: Record<string, unknown>;
   attempt: number;
-  status: "running" | "ok" | "failed";
+  /** "ended": the run finished without this call's result (the film-finish path sends calls with no id) */
+  status: "running" | "ok" | "failed" | "ended";
   result?: TraceDataByKind["tool_result"];
   /** findings first reported while this call ran (run_qc_checks candidates), shown inside its row */
   candidates?: string[];
+  /** film: clips and narrations this call produced, and how many came from the media cache */
+  media?: { made: number; cached: number };
 }
 
 export interface CheckItem extends Base {
@@ -37,16 +41,34 @@ export interface CheckItem extends Base {
   callId: string | null;
   tool: string | null;
   attempt: number;
+  /** edit version, or "" for a film clip check */
   version: string;
   passed: boolean;
   metrics: Record<string, number | string | null>;
   judge: TraceDataByKind["check"]["judge"];
   failures: string[];
+  /** film clip checks: the clip fingerprint, the shot index and the contact sheet blobs */
+  clip?: string;
+  shot?: number;
+  images?: string[];
+  /** "depth" for a check of the 40 px depth move; such a failure is not a rejected AI clip */
+  source?: "generated" | "depth";
+}
+
+export interface ShotItem extends Base {
+  type: "shot";
+  shot: number;
+  endView: string | null;
+  planned: string;
+  source: string;
+  fellBack: boolean;
+  note: string;
 }
 
 export type TimelineItem =
   | ToolItem
   | CheckItem
+  | ShotItem
   | (Base & { type: "thought"; text: string })
   | (Base & { type: "retry"; attempt: number; reason: string; next: string; max_attempts?: number })
   | (Base & { type: "finding"; findingId: string; status: Finding["status"]; first: boolean })
@@ -226,7 +248,11 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
     }
     case "tool_result": {
       const d = event.data;
-      const idx = s.items.findIndex((it) => it.type === "tool" && it.callId === d.call_id);
+      // Film-finish runs (no agent, so no tool_use ids) send call_id null on every call and result: pair a
+      // result with the latest open call of the same tool instead of the first call with the same (null) id.
+      const idx = d.call_id
+        ? s.items.findIndex((it) => it.type === "tool" && it.callId === d.call_id)
+        : findLastIndex(s.items, (it) => it.type === "tool" && it.status === "running" && it.tool === d.tool);
       if (idx >= 0) {
         const item = s.items[idx] as ToolItem;
         const items = s.items.slice();
@@ -274,17 +300,20 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
           type: "check",
           callId,
           tool,
-          attempt: s.attempts[vk] ?? 1,
-          version: d.version,
+          attempt: d.attempt ?? s.attempts[vk] ?? 1,
+          version: d.version ?? "",
           passed: d.passed,
           metrics: d.metrics ?? {},
-          judge: d.judge ?? null,
+          judge: clipJudge(d.judge),
           failures: d.failures ?? [],
+          ...(d.clip ? { clip: d.clip, shot: d.shot, images: d.images ?? [], source: d.source ?? "generated" } : {}),
         },
       ];
       s.totals = d.passed
         ? { ...s.totals, checksPassed: s.totals.checksPassed + 1 }
         : { ...s.totals, checksFailed: s.totals.checksFailed + 1 };
+      // A film clip check is about a clip, not an edit to the photo: it settles no per-view outcome.
+      if (d.clip) return s;
       const edit = callId ? s.editByCall[callId] : undefined;
       const view = event.view ?? edit?.view ?? null;
       if (d.passed) {
@@ -300,6 +329,25 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       } else if (view) {
         s.lastFailByView = { ...s.lastFailByView, [view]: checkFailReason(d) };
       }
+      return s;
+    }
+    case "media": {
+      // A film run makes dozens of clips and narrations; count them on the call that made them instead of a row each.
+      const host = findLastIndex(s.items, (it) => it.type === "tool" && it.status === "running");
+      if (host < 0) return s;
+      const items = s.items.slice();
+      const tool = items[host] as ToolItem;
+      const m = tool.media ?? { made: 0, cached: 0 };
+      items[host] = { ...tool, media: { made: m.made + 1, cached: m.cached + (event.data.cached ? 1 : 0) } };
+      s.items = items;
+      return s;
+    }
+    case "shot": {
+      const d = event.data;
+      s.items = [
+        ...s.items,
+        { ...base, type: "shot", shot: d.shot, endView: d.end_view ?? null, planned: d.planned, source: d.source, fellBack: d.fell_back, note: d.note },
+      ];
       return s;
     }
     case "view_result": {
@@ -380,6 +428,8 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       // api/app.py ends a run whose process died with ms 0 and usd 0; keep what the events measured
       s.totals = { ...s.totals, usd: d.usd || s.totals.usd, ms: d.ms || at };
       s.viewResults = settleViews(s);
+      // a call still open when the run ends is over too; it just never reported
+      s.items = s.items.map((it) => (it.type === "tool" && it.status === "running" ? { ...it, status: "ended" } : it));
       s.items = [...s.items, { ...base, type: "end", ok: d.ok, summary: d.summary }];
       return s;
     }
@@ -393,6 +443,18 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       return s;
     }
   }
+}
+
+function findLastIndex<T>(xs: T[], pred: (x: T) => boolean): number {
+  for (let i = xs.length - 1; i >= 0; i--) if (pred(xs[i]!)) return i;
+  return -1;
+}
+
+/** A film clip judge reports `pass` and a list of changes; give it the edit judge's verdict and reason. */
+function clipJudge(j: TraceDataByKind["check"]["judge"]): TraceDataByKind["check"]["judge"] {
+  if (!j || j.verdict || j.pass === undefined) return j ?? null;
+  const found = judgeReasons(j).map((r) => r.plain);
+  return { ...j, verdict: j.pass ? "pass" : "fail", reason: found.length ? found.join(" ") : j.pass ? "No change to the room seen." : "" };
 }
 
 function checkFailReason(d: TraceDataByKind["check"]): string {
