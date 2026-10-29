@@ -19,6 +19,59 @@ const noise = (i: number, salt: number) => {
   return s - Math.floor(s);
 };
 
+interface Dot {
+  x: number;
+  y: number;
+  r: number;
+  fixed?: boolean;
+}
+
+/** Nudges dots apart until none overlap. Moves are a few pixels, so the map keeps its meaning. */
+function relax(dots: Dot[], gap: number, rounds = 90) {
+  for (let k = 0; k < rounds; k++) {
+    let moved = false;
+    for (let i = 0; i < dots.length; i++) {
+      for (let j = i + 1; j < dots.length; j++) {
+        const a = dots[i]!;
+        const b = dots[j]!;
+        if (a.fixed && b.fixed) continue;
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let d = Math.hypot(dx, dy);
+        if (d < 0.01) {
+          // identical points: separate them along a fixed, index-based direction
+          dx = Math.cos(i + j);
+          dy = Math.sin(i + j);
+          d = 1;
+        }
+        const min = a.r + b.r + gap;
+        if (d >= min) continue;
+        const ux = dx / d;
+        const uy = dy / d;
+        const over = min - d;
+        if (a.fixed) {
+          b.x += ux * over;
+          b.y += uy * over;
+        } else if (b.fixed) {
+          a.x -= ux * over;
+          a.y -= uy * over;
+        } else {
+          a.x -= (ux * over) / 2;
+          a.y -= (uy * over) / 2;
+          b.x += (ux * over) / 2;
+          b.y += (uy * over) / 2;
+        }
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+}
+
+/** Fixed obstacles along a line of text, so dots stay off it. */
+const textBlock = (x0: number, x1: number, y: number, r = 13): Dot[] =>
+  Array.from({ length: Math.max(1, Math.ceil((x1 - x0) / r)) + 1 }, (_, i) => ({ x: x0 + i * r, y: y - 7, r, fixed: true }));
+
 const fmtX = (v: number) => `${v >= 9.95 ? Math.round(v) : v.toFixed(1)}×`;
 
 const VIEWER_ROLE: Record<string, string> = {
@@ -64,15 +117,29 @@ export function SceneProof({ lab, story, t }: SceneProps) {
     const sx = (x: number) => PAD.l + ((x - x0) / (x1 - x0 || 1)) * (MW - PAD.l - PAD.r);
     const sy = (y: number) => MH - PAD.b - ((y - y0) / (y1 - y0 || 1)) * (MH - PAD.t - PAD.b);
     const at = (p: MapPoint) => ({ x: sx(p.x), y: sy(p.y) });
-    const cliches = pts.filter((p) => p.kind === "cliche").map(at);
-    const zone = cliches.length > 2 ? cloudEllipse(cliches) : null;
     const tp = pts.find((p) => p.kind === "baseline");
-    const ideas = pts
+    const template = tp ? at(tp) : null;
+    const clicheDots: Dot[] = pts.filter((p) => p.kind === "cliche").map((p) => ({ ...at(p), r: 3.2 }));
+    const zone = clicheDots.length > 2 ? cloudEllipse(clicheDots) : null;
+    // keep the cliché dots off the template's square, its label and the zone's label
+    const obstacles: Dot[] = [];
+    if (template) obstacles.push({ x: template.x, y: template.y, r: 16, fixed: true }, ...textBlock(template.x + 20, template.x + 140, template.y + 7, 12));
+    if (zone) {
+      const ly = zone.cy + Math.min(zone.ry, zone.rx) * 0.62;
+      obstacles.push(...textBlock(zone.cx - 140, zone.cx + 140, ly, 13));
+    }
+    relax([...obstacles, ...clicheDots], 2.4);
+    const cliches = clicheDots.map(({ x, y }) => ({ x, y }));
+    const reels = new Set(lab.reels.filter((r) => r.kind !== "baseline").map((r) => r.concept));
+    const ideaPts = pts
       .filter((p) => p.kind === "concept" || p.kind === "finalist" || p.kind === "single_agent")
-      .sort((a, b) => (a.kind === "single_agent" ? 1 : 0) - (b.kind === "single_agent" ? 1 : 0) || a.id.localeCompare(b.id))
-      .map((p) => ({ p, ...at(p) }));
-    return { cliches, zone, template: tp ? at(tp) : null, ideas };
-  }, [ev.map]);
+      .sort((a, b) => (a.kind === "single_agent" ? 1 : 0) - (b.kind === "single_agent" ? 1 : 0) || a.id.localeCompare(b.id));
+    // a labelled reel owns its ring (r 19); other ideas are 7 px dots or 7.5 px hollow circles
+    const ideaDots: Dot[] = ideaPts.map((p) => ({ ...at(p), r: reels.has(p.id) ? 19 : p.kind === "single_agent" ? 7.5 : 7 }));
+    relax(ideaDots, 5);
+    const ideas = ideaPts.map((p, i) => ({ p, x: ideaDots[i]!.x, y: ideaDots[i]!.y }));
+    return { cliches, zone, template, ideas };
+  }, [ev.map, lab.reels]);
 
   const reelOf = useMemo(() => new Map(lab.reels.filter((r) => r.kind !== "baseline").map((r) => [r.concept, r])), [lab.reels]);
 
@@ -120,7 +187,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
         <h2 className="pz-proof-title">
           <span style={fade(phase(t, 100, 700), 28)}>Creativity you can measure.</span>
           <span className="pz-proof-title-dim" style={fade(phase(t, 350, 700), 28)}>
-            Scored by judges who never saw who made what.
+            Judged blind.
           </span>
         </h2>
       </header>
