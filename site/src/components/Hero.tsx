@@ -36,17 +36,19 @@ const STEPS: { id: SceneId; label: string; ms: number; alt: string }[] = [
 
 const S = ASSETS.street;
 const pct = (v: number) => `${(v * 100).toFixed(2)}%`;
+// The corners frame what QC found (the candidate's box); the restore works through a grown mask around it.
+const FOUND = S.candidate;
 const SIGN_PAD = 0.012;
 const signBox: CSSProperties = {
-  left: pct(S.sign[0]! - SIGN_PAD),
-  top: pct(S.sign[1]! - SIGN_PAD * 1.5),
-  width: pct(S.sign[2]! - S.sign[0]! + 2 * SIGN_PAD),
-  height: pct(S.sign[3]! - S.sign[1]! + 3 * SIGN_PAD),
+  left: pct(FOUND[0]! - SIGN_PAD),
+  top: pct(FOUND[1]! - SIGN_PAD * 1.5),
+  width: pct(FOUND[2]! - FOUND[0]! + 2 * SIGN_PAD),
+  height: pct(FOUND[3]! - FOUND[1]! + 3 * SIGN_PAD),
 };
-const tagBeside: CSSProperties = { left: pct(S.sign[2]! + SIGN_PAD + 0.008), top: pct(S.sign[1]! - SIGN_PAD) };
+const tagBeside: CSSProperties = { left: pct(FOUND[2]! + SIGN_PAD + 0.008), top: pct(FOUND[1]! - SIGN_PAD) };
 
 // The loupe's 3:4 cells show 12% of the photo's width around the sign.
-const LOUPE = zoomTo(S.sign, S.size, 0.12, 4 / 3);
+const LOUPE = zoomTo(FOUND, S.size, 0.12, 4 / 3);
 
 const beat = (at: number, extra: Record<string, string> = {}): CSSProperties => ({ "--at": `${at}ms`, ...extra }) as CSSProperties;
 

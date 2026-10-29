@@ -7,13 +7,16 @@ Run from the repository root, with the `local` extra installed and AUTOHDR_DEFEC
 Two real cases from the defect set, processed by the same tools the agent calls, with no model API:
 
 * defect_train_0016 (the hero). The editor's camera-removal step erased a stop sign. `run_qc_checks` finds it
-  missing from the finished photo; `restore_from_brackets` brings it back through the candidate's mask.
+  missing from the finished photo; `grow_mask` widens the candidate's mask to the whole sign, and
+  `restore_from_brackets` brings it back through that mask.
 * defect_train_0044 (the film). The editor fused ten brackets taken from two camera positions into one photo.
   `run_qc_checks` groups them by feature matching; `regroup_brackets` fuses each group into its own view.
 
 Plus two customer edits from the README's before/after composites: the bedroom walls recoloured to a
-reference, and the grey car removed. Output: WebP photos and PNG masks in site/public/img, and
-site/src/assets.json with the positions and measurements the page's overlays and captions use.
+reference, and the grey car removed. Output: WebP photos and PNG masks (white, the mask in the alpha
+channel, for CSS mask-image) in site/public/img, and site/src/assets.json with the positions and
+measurements the page's overlays and captions use. Only the files in OUTPUTS are replaced; the folder also
+holds files this script does not own (qr-demo.svg, edits/).
 """
 
 from __future__ import annotations
@@ -37,9 +40,23 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "site" / "public" / "img"
 ASSETS = ROOT / "site" / "src" / "assets.json"
 SCRATCH = Path("/tmp/shootagent-landing-store")
+# Every file this script writes to OUT, and so the only ones it deletes before a run.
+OUTPUTS = (
+    "street-delivered.webp", "street-captured.webp", "street-fixed.webp", "street-sign-mask.png",
+    "laundry-delivered.webp", "laundry-a-band.webp", "laundry-a.webp", "laundry-b.webp",
+    "walls-before.webp", "walls-after.webp", "walls-mask.png", "car-before.webp", "car-after.webp",
+)
+# The QC candidate's mask follows the blue siding and stops where the editor's fill painted the white porch
+# roof over the sign's lower-right third, so a restore through it alone reads "STO" with the roof line across
+# the corner. As the agent does when a mask misses part of its object, grow it first (grow_mask counts pixels
+# on a 1024-px copy). 18 (75 px on this 4240-px photo) is the smallest growth that puts the whole sign, red
+# face, white rim and dark edge, inside the mask; 16 covers the face but leaves the edge's lower-right corner
+# in the feather.
+SIGN_GROW = 18
 
 
 def save_webp(img: np.ndarray | Image.Image, name: str, width: int | None = None, quality: int = 80) -> dict:
+    assert name in OUTPUTS, f"add {name} to OUTPUTS"
     pil = Image.fromarray(img) if isinstance(img, np.ndarray) else img
     pil = pil.convert("RGB")
     if width and pil.width > width:
@@ -50,10 +67,16 @@ def save_webp(img: np.ndarray | Image.Image, name: str, width: int | None = None
     return {"w": pil.width, "h": pil.height}
 
 
-def save_mask(mask: np.ndarray, name: str, width: int, blur: float = 1.5) -> None:
+def save_mask(mask: np.ndarray, name: str, width: int | None = None, blur: float = 1.5) -> None:
+    """White PNG with the (softened) mask in its alpha channel: CSS mask-image reads alpha by default."""
+    assert name in OUTPUTS, f"add {name} to OUTPUTS"
     h, w = mask.shape
-    im = Image.fromarray((mask * 255).astype(np.uint8)).resize((width, round(width * h / w)), Image.Resampling.LANCZOS)
-    im.filter(ImageFilter.GaussianBlur(blur)).save(OUT / name, optimize=True)
+    alpha = Image.fromarray((mask * 255).astype(np.uint8))
+    if width:
+        alpha = alpha.resize((width, round(width * h / w)), Image.Resampling.LANCZOS)
+    im = Image.new("RGBA", alpha.size, (255, 255, 255, 0))
+    im.putalpha(alpha.filter(ImageFilter.GaussianBlur(blur)))
+    im.save(OUT / name, optimize=True)
 
 
 def norm_box(mask: np.ndarray) -> list[float]:
@@ -77,8 +100,11 @@ def erased_sign() -> dict:
     checked = run_tool(ctx, "run_qc_checks", {"view": vid})
     view = store.load(sid).view(vid)
     cand = next(f for f in view.findings if f.type == "camera_person_removal")
+    grown = run_tool(ctx, "grow_mask", {"view": vid, "mask": cand.evidence["mask"], "pixels": SIGN_GROW})
+    if not grown.ok:
+        raise SystemExit(f"grow_mask failed: {grown.summary}")
     restored = run_tool(ctx, "restore_from_brackets", {
-        "view": vid, "mask": cand.evidence["mask"],
+        "view": vid, "mask": grown.data["mask"],
         "intent": "the red STOP sign is back on its pole, as every bracket shows",
     })
     if not restored.ok:
@@ -88,9 +114,12 @@ def erased_sign() -> dict:
     fixed = store.get_image(sid, view.version(restored.version).blob)
     captured, valid = reference_for_fix(store, sid, vid, long_edge=3072, target_blob=view.versions[0].blob)
     captured = np.where(valid[..., None], captured, delivered)
+    # The restore's own mask: the grown mask plus its feather, i.e. every pixel it may change. The mask PNG,
+    # the sign box, maskShare and the outside-the-mask delta all use it.
     region = store.get_mask(sid, view.version(restored.version).mask)
     outside = int(np.abs(fixed.astype(int) - delivered.astype(int)).max(axis=2)[~region].max())
     print(f"  {checked.summary[:90]}")
+    print(f"  {grown.summary}")
     print(f"  {restored.summary} Outside the mask: {outside}/255; mask {region.mean():.2%} of the frame.")
     size = save_webp(delivered, "street-delivered.webp", 1440)
     save_webp(captured, "street-captured.webp", 1440)
@@ -156,8 +185,7 @@ def customer_edits() -> dict:
     sizes = ndimage.sum(region, labels, range(1, n + 1))
     keep = np.isin(labels, [i + 1 for i, size in enumerate(sizes) if size > 0.01 * region.size])
     keep = ndimage.binary_fill_holes(ndimage.binary_closing(keep, iterations=3))
-    Image.fromarray((keep * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2)).save(
-        OUT / "walls-mask.png", optimize=True)
+    save_mask(keep, "walls-mask.png", blur=1.2)
     cars = Image.open(ROOT / "docs/media/removals-before-after.jpg").convert("RGB")
     save_webp(cars.crop((0, 468, 460, 928)), "car-before.webp", quality=84)
     save_webp(cars.crop((468, 468, 928, 928)), "car-after.webp", quality=84)
@@ -167,9 +195,9 @@ def customer_edits() -> dict:
 
 def main() -> None:
     shutil.rmtree(SCRATCH, ignore_errors=True)
-    for old in OUT.glob("*"):
-        old.unlink()
     OUT.mkdir(parents=True, exist_ok=True)
+    for name in OUTPUTS:
+        (OUT / name).unlink(missing_ok=True)
     print("erased stop sign (defect_train_0016):")
     data = erased_sign()
     print("two camera positions in one photo (defect_train_0044):")
