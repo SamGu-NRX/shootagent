@@ -1,0 +1,431 @@
+{
+ "shoot": "c46bbca496",
+ "requests": [
+  {
+   "id": "TTS-en",
+   "kind": "speech",
+   "language": "en",
+   "fingerprint": "f4e18f1303cc118e",
+   "request": {
+    "kind": "speech",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Sulafat",
+    "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences.",
+    "language": "en",
+    "text": "Open prairie views from your dining table. A primary suite with three big windows behind the bed. Step through the open doorway into the primary bath. A freestanding soaking tub sits right beside the double vanity. The kitchen island opens to a bright dining area by the windows. Dining by the window, under a beaded chandelier. A second bedroom with French doors and soft, natural light. A game room with a round table and a bar with three pendants. Three bedrooms, two baths, $549,000. Book your tour today."
+   },
+   "body": {
+    "model": "gemini-3.8-flash-tts",
+    "input": [
+     {
+      "type": "user_input",
+      "content": [
+       {
+        "type": "text",
+        "text": "Open prairie views from your dining table. A primary suite with three big windows behind the bed. Step through the open doorway into the primary bath. A freestanding soaking tub sits right beside the double vanity. The kitchen island opens to a bright dining area by the windows. Dining by the window, under a beaded chandelier. A second bedroom with French doors and soft, natural light. A game room with a round table and a bar with three pendants. Three bedrooms, two baths, $549,000. Book your tour today.",
+        "annotations": [
+         {
+          "type": "speech_metadata",
+          "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "response_format": {
+     "type": "audio"
+    },
+    "generation_config": {
+     "speech_config": [
+      {
+       "voice": "Sulafat"
+      }
+     ]
+    }
+   },
+   "body_sha256": "1793de2fca16faed94f04117f9e450f24ec2300d169accc06e0154de073edaf9",
+   "audio": "audio/f4e18f1303cc118e.wav"
+  },
+  {
+   "id": "TTS-es",
+   "kind": "speech",
+   "language": "es",
+   "fingerprint": "b7fc9364eb241416",
+   "request": {
+    "kind": "speech",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Sulafat",
+    "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences.",
+    "language": "es",
+    "text": "Vistas abiertas a la pradera desde tu comedor. Una suite principal con tres grandes ventanas detrás de la cama. Pasa por la puerta abierta al baño principal. Una bañera independiente junto al tocador doble. La isla de la cocina se abre a un luminoso comedor junto a las ventanas. Un comedor junto a la ventana, bajo una lámpara de cuentas. Un segundo dormitorio con puertas francesas y suave luz natural. Una sala de juegos con mesa redonda y una barra con tres lámparas colgantes. Tres dormitorios, dos baños, $549,000. Reserva tu visita hoy."
+   },
+   "body": {
+    "model": "gemini-3.8-flash-tts",
+    "input": [
+     {
+      "type": "user_input",
+      "content": [
+       {
+        "type": "text",
+        "text": "Vistas abiertas a la pradera desde tu comedor. Una suite principal con tres grandes ventanas detrás de la cama. Pasa por la puerta abierta al baño principal. Una bañera independiente junto al tocador doble. La isla de la cocina se abre a un luminoso comedor junto a las ventanas. Un comedor junto a la ventana, bajo una lámpara de cuentas. Un segundo dormitorio con puertas francesas y suave luz natural. Una sala de juegos con mesa redonda y una barra con tres lámparas colgantes. Tres dormitorios, dos baños, $549,000. Reserva tu visita hoy.",
+        "annotations": [
+         {
+          "type": "speech_metadata",
+          "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "response_format": {
+     "type": "audio"
+    },
+    "generation_config": {
+     "speech_config": [
+      {
+       "voice": "Sulafat"
+      }
+     ]
+    }
+   },
+   "body_sha256": "6948c09ab364206d34959e647ee62f8cbec8ad5ac196f05cb8456ffebfe6dc83",
+   "audio": "audio/b7fc9364eb241416.wav"
+  },
+  {
+   "id": "S01-A1",
+   "kind": "clip",
+   "shot": 1,
+   "attempt": 1,
+   "view": "v01-a",
+   "end_view": null,
+   "label": "Primary suite",
+   "mode": "ref",
+   "fingerprint": "940c24291708e56b",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle dolly forward toward the bed and the three windows behind it",
+    "guard": "v2",
+    "retry": false,
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the bed and the three windows behind it. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "84fb92bc79c23d05"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the bed and the three windows behind it. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/84fb92bc79c23d05.jpg"
+   },
+   "clip": "clips/940c24291708e56b.mp4"
+  },
+  {
+   "id": "S01-A2",
+   "kind": "clip",
+   "shot": 1,
+   "attempt": 2,
+   "view": "v01-a",
+   "end_view": null,
+   "label": "Primary suite",
+   "mode": "ref",
+   "fingerprint": "0e55b54d679d7a7c",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle dolly forward toward the bed and the three windows behind it",
+    "guard": "v2",
+    "retry": true,
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the bed and the three windows behind it. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "84fb92bc79c23d05"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the bed and the three windows behind it. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/84fb92bc79c23d05.jpg"
+   },
+   "clip": "clips/0e55b54d679d7a7c.mp4"
+  },
+  {
+   "id": "S02-A1",
+   "kind": "clip",
+   "shot": 2,
+   "attempt": 1,
+   "view": "v01-b",
+   "end_view": "v02-b",
+   "label": "Primary suite",
+   "mode": "ref",
+   "fingerprint": "078f3fa50053c6aa",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle walk from the foot of the bed through the open doorway on the right into the bathroom",
+    "guard": "v2",
+    "retry": false,
+    "prompt": "Slow, steady real-estate camera move. Gentle walk from the foot of the bed through the open doorway on the right into the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "0ec2944b2bc17d16",
+     "247f14cdd5443bd0"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle walk from the foot of the bed through the open doorway on the right into the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/0ec2944b2bc17d16.jpg",
+    "last_frame": "inputs/247f14cdd5443bd0.jpg"
+   },
+   "clip": "clips/078f3fa50053c6aa.mp4"
+  },
+  {
+   "id": "S02-A2",
+   "kind": "clip",
+   "shot": 2,
+   "attempt": 2,
+   "view": "v01-b",
+   "end_view": "v02-b",
+   "label": "Primary suite",
+   "mode": "ref",
+   "fingerprint": "c119d5a4eeba39be",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle walk from the foot of the bed through the open doorway on the right into the bathroom",
+    "guard": "v2",
+    "retry": true,
+    "prompt": "Slow, steady real-estate camera move. Gentle walk from the foot of the bed through the open doorway on the right into the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "0ec2944b2bc17d16",
+     "247f14cdd5443bd0"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle walk from the foot of the bed through the open doorway on the right into the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/0ec2944b2bc17d16.jpg",
+    "last_frame": "inputs/247f14cdd5443bd0.jpg"
+   },
+   "clip": "clips/c119d5a4eeba39be.mp4"
+  },
+  {
+   "id": "S03-A1",
+   "kind": "clip",
+   "shot": 3,
+   "attempt": 1,
+   "view": "v02-a",
+   "end_view": null,
+   "label": "Primary bath",
+   "mode": "ref",
+   "fingerprint": "cf81653e6384fa94",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom",
+    "guard": "v2",
+    "retry": false,
+    "prompt": "Slow, steady real-estate camera move. Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "e10e582ea184abf1"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/e10e582ea184abf1.jpg"
+   },
+   "clip": "clips/cf81653e6384fa94.mp4"
+  },
+  {
+   "id": "S03-A2",
+   "kind": "clip",
+   "shot": 3,
+   "attempt": 2,
+   "view": "v02-a",
+   "end_view": null,
+   "label": "Primary bath",
+   "mode": "ref",
+   "fingerprint": "e44da3ca0ccb5bed",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom",
+    "guard": "v2",
+    "retry": true,
+    "prompt": "Slow, steady real-estate camera move. Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "e10e582ea184abf1"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/e10e582ea184abf1.jpg"
+   },
+   "clip": "clips/e44da3ca0ccb5bed.mp4"
+  },
+  {
+   "id": "S04-A1",
+   "kind": "clip",
+   "shot": 4,
+   "attempt": 1,
+   "view": "v04-a",
+   "end_view": null,
+   "label": "Kitchen and dining",
+   "mode": "ref",
+   "fingerprint": "51f77f01ada51163",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle dolly forward past the kitchen island toward the dining table and the windows",
+    "guard": "v2",
+    "retry": false,
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward past the kitchen island toward the dining table and the windows. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "c81611f3838c25d8"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward past the kitchen island toward the dining table and the windows. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/c81611f3838c25d8.jpg"
+   },
+   "clip": "clips/51f77f01ada51163.mp4"
+  },
+  {
+   "id": "S04-A2",
+   "kind": "clip",
+   "shot": 4,
+   "attempt": 2,
+   "view": "v04-a",
+   "end_view": null,
+   "label": "Kitchen and dining",
+   "mode": "ref",
+   "fingerprint": "d342234b26da40f2",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle dolly forward past the kitchen island toward the dining table and the windows",
+    "guard": "v2",
+    "retry": true,
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward past the kitchen island toward the dining table and the windows. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "c81611f3838c25d8"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward past the kitchen island toward the dining table and the windows. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/c81611f3838c25d8.jpg"
+   },
+   "clip": "clips/d342234b26da40f2.mp4"
+  },
+  {
+   "id": "S07-A1",
+   "kind": "clip",
+   "shot": 7,
+   "attempt": 1,
+   "view": "v07-b",
+   "end_view": null,
+   "label": "Game room",
+   "mode": "ref",
+   "fingerprint": "5581c73a16c8e88a",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle dolly forward toward the round table, keeping the bar and its three pendants in view",
+    "guard": "v2",
+    "retry": false,
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the round table, keeping the bar and its three pendants in view. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "dcd8fa54fae70ab1"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the round table, keeping the bar and its three pendants in view. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/dcd8fa54fae70ab1.jpg"
+   },
+   "clip": "clips/5581c73a16c8e88a.mp4"
+  },
+  {
+   "id": "S07-A2",
+   "kind": "clip",
+   "shot": 7,
+   "attempt": 2,
+   "view": "v07-b",
+   "end_view": null,
+   "label": "Game room",
+   "mode": "ref",
+   "fingerprint": "1149d973c8ab5ce1",
+   "request": {
+    "kind": "clip",
+    "mode": "ref",
+    "camera": "Gentle dolly forward toward the round table, keeping the bar and its three pendants in view",
+    "guard": "v2",
+    "retry": true,
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the round table, keeping the bar and its three pendants in view. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect": "9:16",
+    "duration": 6,
+    "resolution": "720p",
+    "images": [
+     "dcd8fa54fae70ab1"
+    ]
+   },
+   "args": {
+    "prompt": "Slow, steady real-estate camera move. Gentle dolly forward toward the round table, keeping the bar and its three pendants in view. Camera move only. Keep every wall, door, doorway, window, fixture and piece of furniture exactly as in the photos. Do not add, remove or reshape anything: no new lights, lamps, pendants, outlets, switches, vents, signs, text or people, and nothing new outside the windows. No camera shake. Second attempt: an earlier clip was rejected for showing things this room does not have. Move the camera less, and keep every object, light and window view identical to the photo.",
+    "aspect_ratio": "9:16",
+    "duration": 6,
+    "resolution_name": "720p",
+    "first_frame": "inputs/dcd8fa54fae70ab1.jpg"
+   },
+   "clip": "clips/1149d973c8ab5ce1.mp4"
+  }
+ ]
+}

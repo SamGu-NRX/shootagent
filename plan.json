@@ -1,0 +1,10 @@
+{"shots": [
+ {"view": "v04-b", "motion": "depth", "move": "dolly", "label": "Open fields", "seconds": 2.5},
+ {"view": "v01-a", "motion": "generated", "aspect": "9:16", "camera": "Gentle dolly forward toward the bed and the three windows behind it", "label": "Primary suite", "seconds": 4},
+ {"view": "v01-b", "end_view": "v02-b", "motion": "generated", "aspect": "9:16", "camera": "Gentle walk from the foot of the bed through the open doorway on the right into the bathroom", "label": "Primary suite", "end_label": "Primary bath", "seconds": 4},
+ {"view": "v02-a", "motion": "generated", "aspect": "9:16", "camera": "Gentle sideways glide from left to right past the freestanding tub, staying inside the bathroom", "label": "Primary bath", "seconds": 3.5},
+ {"view": "v04-a", "motion": "generated", "aspect": "9:16", "camera": "Gentle dolly forward past the kitchen island toward the dining table and the windows", "label": "Kitchen and dining", "seconds": 4},
+ {"view": "v05-b", "motion": "depth", "move": "truck", "label": "Dining room", "seconds": 3},
+ {"view": "v03-b", "motion": "depth", "move": "dolly", "label": "Second bedroom", "seconds": 3.5},
+ {"view": "v07-b", "motion": "generated", "aspect": "9:16", "camera": "Gentle dolly forward toward the round table, keeping the bar and its three pendants in view", "label": "Game room", "seconds": 4}
+]}
