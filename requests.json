@@ -2,7 +2,100 @@
  "shoot": "c46bbca496",
  "requests": [
   {
+   "id": "TTS-en",
+   "kind": "speech",
+   "language": "en",
+   "fingerprint": "f4e18f1303cc118e",
+   "request": {
+    "kind": "speech",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Sulafat",
+    "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences.",
+    "language": "en",
+    "text": "Open prairie views from your dining table. A primary suite with three big windows behind the bed. Step through the open doorway into the primary bath. A freestanding soaking tub sits right beside the double vanity. The kitchen island opens to a bright dining area by the windows. Dining by the window, under a beaded chandelier. A second bedroom with French doors and soft, natural light. A game room with a round table and a bar with three pendants. Three bedrooms, two baths, $549,000. Book your tour today."
+   },
+   "body": {
+    "model": "gemini-3.8-flash-tts",
+    "input": [
+     {
+      "type": "user_input",
+      "content": [
+       {
+        "type": "text",
+        "text": "Open prairie views from your dining table. A primary suite with three big windows behind the bed. Step through the open doorway into the primary bath. A freestanding soaking tub sits right beside the double vanity. The kitchen island opens to a bright dining area by the windows. Dining by the window, under a beaded chandelier. A second bedroom with French doors and soft, natural light. A game room with a round table and a bar with three pendants. Three bedrooms, two baths, $549,000. Book your tour today.",
+        "annotations": [
+         {
+          "type": "speech_metadata",
+          "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "response_format": {
+     "type": "audio"
+    },
+    "generation_config": {
+     "speech_config": [
+      {
+       "voice": "Sulafat"
+      }
+     ]
+    }
+   },
+   "body_sha256": "1793de2fca16faed94f04117f9e450f24ec2300d169accc06e0154de073edaf9",
+   "audio": "audio/f4e18f1303cc118e.wav"
+  },
+  {
+   "id": "TTS-es",
+   "kind": "speech",
+   "language": "es",
+   "fingerprint": "b7fc9364eb241416",
+   "request": {
+    "kind": "speech",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Sulafat",
+    "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences.",
+    "language": "es",
+    "text": "Vistas abiertas a la pradera desde tu comedor. Una suite principal con tres grandes ventanas detrás de la cama. Pasa por la puerta abierta al baño principal. Una bañera independiente junto al tocador doble. La isla de la cocina se abre a un luminoso comedor junto a las ventanas. Un comedor junto a la ventana, bajo una lámpara de cuentas. Un segundo dormitorio con puertas francesas y suave luz natural. Una sala de juegos con mesa redonda y una barra con tres lámparas colgantes. Tres dormitorios, dos baños, $549,000. Reserva tu visita hoy."
+   },
+   "body": {
+    "model": "gemini-3.8-flash-tts",
+    "input": [
+     {
+      "type": "user_input",
+      "content": [
+       {
+        "type": "text",
+        "text": "Vistas abiertas a la pradera desde tu comedor. Una suite principal con tres grandes ventanas detrás de la cama. Pasa por la puerta abierta al baño principal. Una bañera independiente junto al tocador doble. La isla de la cocina se abre a un luminoso comedor junto a las ventanas. Un comedor junto a la ventana, bajo una lámpara de cuentas. Un segundo dormitorio con puertas francesas y suave luz natural. Una sala de juegos con mesa redonda y una barra con tres lámparas colgantes. Tres dormitorios, dos baños, $549,000. Reserva tu visita hoy.",
+        "annotations": [
+         {
+          "type": "speech_metadata",
+          "style": "Warm, unhurried real-estate narration, like a friendly listing agent giving a private tour. Natural pauses between sentences."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "response_format": {
+     "type": "audio"
+    },
+    "generation_config": {
+     "speech_config": [
+      {
+       "voice": "Sulafat"
+      }
+     ]
+    }
+   },
+   "body_sha256": "6948c09ab364206d34959e647ee62f8cbec8ad5ac196f05cb8456ffebfe6dc83",
+   "audio": "audio/b7fc9364eb241416.wav"
+  },
+  {
    "id": "S01-A1",
+   "kind": "clip",
    "shot": 1,
    "attempt": 1,
    "view": "v01-a",
@@ -35,6 +128,7 @@
   },
   {
    "id": "S01-A2",
+   "kind": "clip",
    "shot": 1,
    "attempt": 2,
    "view": "v01-a",
@@ -67,6 +161,7 @@
   },
   {
    "id": "S02-A1",
+   "kind": "clip",
    "shot": 2,
    "attempt": 1,
    "view": "v01-b",
@@ -101,6 +196,7 @@
   },
   {
    "id": "S02-A2",
+   "kind": "clip",
    "shot": 2,
    "attempt": 2,
    "view": "v01-b",
@@ -135,6 +231,7 @@
   },
   {
    "id": "S03-A1",
+   "kind": "clip",
    "shot": 3,
    "attempt": 1,
    "view": "v02-a",
@@ -167,6 +264,7 @@
   },
   {
    "id": "S03-A2",
+   "kind": "clip",
    "shot": 3,
    "attempt": 2,
    "view": "v02-a",
@@ -199,6 +297,7 @@
   },
   {
    "id": "S04-A1",
+   "kind": "clip",
    "shot": 4,
    "attempt": 1,
    "view": "v04-a",
@@ -231,6 +330,7 @@
   },
   {
    "id": "S04-A2",
+   "kind": "clip",
    "shot": 4,
    "attempt": 2,
    "view": "v04-a",
@@ -263,6 +363,7 @@
   },
   {
    "id": "S07-A1",
+   "kind": "clip",
    "shot": 7,
    "attempt": 1,
    "view": "v07-b",
@@ -295,6 +396,7 @@
   },
   {
    "id": "S07-A2",
+   "kind": "clip",
    "shot": 7,
    "attempt": 2,
    "view": "v07-b",
