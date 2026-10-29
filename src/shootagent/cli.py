@@ -155,6 +155,127 @@ def cmd_runs(a) -> int:
     return 0
 
 
+def _table(rows: list[tuple]) -> str:
+    widths = [max(len(str(r[i])) for r in rows) for i in range(len(rows[0]))]
+    return "\n".join("  ".join(str(c).ljust(w) for c, w in zip(r, widths)).rstrip() for r in rows)
+
+
+def _follow_lab(store, shoot_id: str, lab_id: str, cursor: dict | None = None):
+    """Print the lab's feed and phase changes as they happen; return the final state. `cursor` carries what was
+    already printed across calls."""
+    from .creative.lab import load_lab, wait_lab
+
+    cur = cursor if cursor is not None else {}
+    cur.setdefault("printed", 0)
+    seen = cur.setdefault("seen", {})
+    while True:
+        finished = wait_lab(lab_id, 0.5)
+        state = load_lab(store, shoot_id, lab_id)
+        names = {a.id: a.name for a in state.agents}
+        for p in state.phases:
+            now = (p.status, p.detail)
+            if seen.get(p.key, ("pending", "")) != now:
+                timed = p.status == "done" and p.started is not None and p.ended is not None
+                took = f" in {p.ended - p.started:.1f}s" if timed else ""
+                print(f"== {p.label}: {p.status}{took}" + (f"  ({_short(p.detail, 120)})" if p.detail else ""), flush=True)
+            seen[p.key] = now
+        for m in state.feed[cur["printed"]:]:
+            tag = f" [{m.concept}]" if m.concept else ""
+            print(f"[{m.t:7.1f}s] {names.get(m.agent, m.agent):>18} {m.kind:<10}{tag} {_short(m.text, 220)}", flush=True)
+        cur["printed"] = len(state.feed)
+        if finished:
+            return state
+
+
+def _lab_summary(store, state) -> str:
+    from .creative.lab import lab_dir
+
+    ev = state.evaluation
+    summaries = {s.reel: s for s in (ev.summaries if ev else [])}
+    sims = {s.reel: s for s in state.simulations}
+    hours = state.simulations[0].hours if state.simulations else state.options.hours
+    rows: list[tuple] = [("reel", "label", "title", "creativity", "novelty", "pairwise", f"views@{hours}h", "shares",
+                          "saves", "inquiries")]
+    for r in state.reels:
+        s, sim = summaries.get(r.id), sims.get(r.id)
+        t = sim.totals if sim else None
+        rows.append((r.id, r.label, _short(r.title, 34), f"{s.creativity:.1f} ±{s.creativity_sd:.1f}" if s else "-",
+                     f"{s.novelty:.2f}" if s else "-", f"{s.pairwise_win_rate:.0%}" if s else "-",
+                     f"{t.views:,}" if t else "-", f"{t.shares:,}" if t else "-", f"{t.saves:,}" if t else "-",
+                     f"{t.inquiries:,}" if t else "-"))
+    u = state.usage
+    roles = ", ".join(f"{k} ${v:.2f}" for k, v in sorted(u.by_role.items(), key=lambda kv: -kv[1]))
+    lines = ["", _table(rows) if state.reels else "(no reels rendered)", "",
+             f"{state.status.upper()}  lab {state.id}: ${u.usd:.2f} for {u.calls} model calls ({roles or 'none'}), "
+             f"{u.input_tokens:,} in / {u.output_tokens:,} out tokens, wall time {state.elapsed:.0f}s."]
+    if summaries:
+        best = max(summaries.values(), key=lambda s: s.creativity)
+        lines.append(f"Most creative (judges): {best.reel}, {best.creativity:.1f}/10.")
+    if sims:
+        far = max(sims.values(), key=lambda s: s.totals.views)
+        lines.append(f"Travels furthest (launch sim, {far.followers:,} followers): {far.reel}, "
+                     f"{far.totals.views:,} views in {far.hours} h.")
+    if ev and ev.verdict:
+        lines += ["", "Verdict: " + ev.verdict]
+    if state.error:
+        lines.append(f"Error: {state.error}")
+    if state.status in ("failed", "cancelled"):
+        lines.append(f"Resume with: shootagent creative {state.shoot_id} --resume {state.id}")
+    lines.append(f"Files: {lab_dir(store, state.shoot_id, state.id)}")
+    return "\n".join(lines)
+
+
+def cmd_creative(a) -> int:
+    from .creative.lab import cancel_lab, lab_dir, start_lab, wait_lab
+    from .creative.schema import LabOptions
+
+    store = _store()
+    store.load(a.shoot)
+    picked = {"finalists": a.finalists, "rounds": a.rounds}
+    opts = LabOptions(**{k: v for k, v in picked.items() if v is not None}, voice=not a.no_voice,
+                      single_agent=not a.no_single_agent, render_single_agent=a.render_single_agent)
+    lab_id = start_lab(store, a.shoot, opts, resume=a.resume)
+    print(f"lab {lab_id}{' (resumed with its stored options)' if a.resume else ''}  "
+          f"({lab_dir(store, a.shoot, lab_id) / 'state.json'})", flush=True)
+    cursor: dict = {}
+    try:
+        state = _follow_lab(store, a.shoot, lab_id, cursor)
+    except KeyboardInterrupt:
+        print("\ncancelling (Ctrl-C again to quit at once) ...", flush=True)
+        cancel_lab(store, a.shoot, lab_id)
+        wait_lab(lab_id, 120)
+        state = _follow_lab(store, a.shoot, lab_id, cursor)
+    print(_lab_summary(store, state))
+    return 0 if state.status == "done" else 1
+
+
+def cmd_creative_sim(a) -> int:
+    from .creative.lab import load_lab, resimulate
+
+    store = _store()
+    o = load_lab(store, a.shoot, a.lab).options
+    sims = resimulate(store, a.shoot, a.lab, followers=o.followers if a.followers is None else a.followers,
+                      hours=o.hours if a.hours is None else a.hours, seed=o.seed if a.seed is None else a.seed)
+    state = load_lab(store, a.shoot, a.lab)
+    labels = {r.id: r.label for r in state.reels}
+    rows: list[tuple] = [("reel", "label", "views", "likes", "comments", "shares", "saves", "follows", "inquiries")]
+    for s in sims:
+        t = s.totals
+        rows.append((s.reel, labels.get(s.reel, ""), f"{t.views:,}", f"{t.likes:,}", f"{t.comments:,}",
+                     f"{t.shares:,}", f"{t.saves:,}", f"{t.follows:,}", f"{t.inquiries:,}"))
+    first = sims[0] if sims else None
+    print(f"launch sim: {first.followers:,} followers, {first.hours} h, seed {first.seed} (saved to lab {a.lab})"
+          if first else "nothing to simulate")
+    print(_table(rows))
+    for s in sims:
+        waves = next((n for n in s.notes if n.startswith("Waves")), "")
+        top = max(s.comments, key=lambda c: c.likes, default=None)
+        print(f"\n{s.reel}: {waves}" + (f"\n   top comment ({top.name}, {top.likes} likes): {top.text!r}" if top else ""))
+    if first:
+        print("\nAssumptions:\n" + "\n".join(f"  - {n}" for n in first.notes if not n.startswith(("Waves", "No "))))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -192,6 +313,25 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("shoot")
     s.add_argument("-v", "--verbose", action="store_true", help="print each run's trace")
     s.set_defaults(fn=cmd_runs)
+
+    s = sub.add_parser("creative", help="run the creative lab on a shoot: the room, the renders, the audience and "
+                                        "judges, and a simulated launch, with the room's feed printed live")
+    s.add_argument("shoot")
+    s.add_argument("--finalists", type=int, metavar="N", help="creative reels to render besides the template (default 2)")
+    s.add_argument("--rounds", type=int, metavar="N", help="1 = pitch only, 2 = pitch, critique, remix (default 2)")
+    s.add_argument("--no-voice", action="store_true", help="render silent, music-only reels")
+    s.add_argument("--no-single-agent", action="store_true", help="skip the single-agent control")
+    s.add_argument("--render-single-agent", action="store_true", help="also render the single agent's pick as S")
+    s.add_argument("--resume", metavar="LAB", help="continue a failed or cancelled lab, with its stored options")
+    s.set_defaults(fn=cmd_creative)
+
+    s = sub.add_parser("creative-sim", help="re-run a lab's simulated launch with other parameters and save it")
+    s.add_argument("shoot")
+    s.add_argument("lab")
+    s.add_argument("--followers", type=int, metavar="N", help="default: the lab's current value (8000)")
+    s.add_argument("--hours", type=int, metavar="N", help="default: the lab's current value (48)")
+    s.add_argument("--seed", type=int, metavar="N", help="default: the lab's current value (7)")
+    s.set_defaults(fn=cmd_creative_sim)
 
     a = p.parse_args(argv)
     return a.fn(a)

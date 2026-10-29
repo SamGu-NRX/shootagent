@@ -1,0 +1,10 @@
+This folder vendors the animation templates of Reel Studio (reel-studio-app), commit 31382f9
+("fix(home): reopen running changes on the Reel screen (#24)"):
+
+  animations/   templates/animations: render.mjs, _lib/, the six templates, their README, tests and tools
+  fonts/        templates/fonts: Inter, Fraunces, Montserrat, JetBrains Mono (SIL OFL 1.1, see fonts/OFL.txt)
+
+Reel Studio is MIT licensed; its licence is in LICENSE next to this file. The files are unmodified.
+ShootAgent's studio (creative/studio/cards.py) renders them with `node animations/render.mjs` and composites
+the transparent .mov output onto reel shots. `npm i --no-audit --no-fund` in animations/ installs Playwright
+(node_modules is git-ignored); without it, cards are drawn with PIL instead.

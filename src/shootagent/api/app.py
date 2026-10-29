@@ -406,6 +406,11 @@ def create_app(
         load(shoot_id)
         return {"ok": manager.cancel(run_id)}
 
+    # Imported here because api/creative.py reuses this module's ApiError and ID_RE; registered before the web
+    # UI's catch-all route, which would otherwise answer these paths.
+    from .creative import creative_router
+
+    app.include_router(creative_router(store, settings, client))
     # ---- web UI -----------------------------------------------------------------------------------------
     if WEB_DIST.is_dir():
 
