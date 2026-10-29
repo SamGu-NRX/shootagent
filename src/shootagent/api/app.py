@@ -23,6 +23,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from ..agent import loop
 from ..config import Settings, get_settings
+from ..listing.routes import ListingError, build_router, error_response
 from ..store import Listing, ShootStore
 from ..trace import read_events
 
@@ -85,7 +86,9 @@ def create_app(
     store: ShootStore | None = None,
     client: Any = None,
     manager: loop.RunManager | None = None,
+    listing: dict[str, Any] | None = None,
 ) -> FastAPI:
+    """`listing` passes keyword arguments to listing.routes.build_router (tests inject a Q&A client and a notifier)."""
     settings = settings or get_settings()
     store = store or ShootStore(settings.shoots_dir)
     manager = manager or loop.MANAGER
@@ -103,7 +106,9 @@ def create_app(
     @app.middleware("http")
     async def passcode(request: Request, call_next):
         code = settings.demo_passcode
-        if code and request.url.path.startswith("/api") and request.method != "OPTIONS":
+        # /api/public/ is the buyer page of a published listing; listing/routes.py rate-limits it instead.
+        path = request.url.path
+        if code and path.startswith("/api") and not path.startswith("/api/public/") and request.method != "OPTIONS":
             # EventSource and <img> cannot send headers, so a query parameter or cookie also works.
             given = (
                 request.headers.get("x-demo-passcode")
@@ -117,6 +122,10 @@ def create_app(
     @app.exception_handler(ApiError)
     async def _api_error(_: Request, e: ApiError):
         return _err(e.status, e.code, e.message)
+
+    @app.exception_handler(ListingError)
+    async def _listing_error(_: Request, e: ListingError):
+        return error_response(e)
 
     @app.exception_handler(StarletteHTTPException)
     async def _http_error(_: Request, e: StarletteHTTPException):
@@ -468,6 +477,8 @@ def create_app(
     def cancel(shoot_id: str, run_id: str):
         load(shoot_id)
         return {"ok": manager.cancel(run_id)}
+
+    app.include_router(build_router(store, settings, **(listing or {})))
 
     # ---- web UI -----------------------------------------------------------------------------------------
     if WEB_DIST.is_dir():

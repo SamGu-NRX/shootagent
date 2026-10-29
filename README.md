@@ -62,6 +62,15 @@ speaks the script, and Reel Studio's engine adds captions, the music mix, the co
 `shootagent film <shoot> --languages en es`; set `FILM_MEDIA=replay` to use recorded media only
 (`shootagent film-seed-replay` copies the recordings from branch `explore/media-tests`).
 
+**Listing launch.** From a shoot's film, *Launch listing* shows the storyboard (each shot's photo, its
+motion source, and every generated clip the checker rejected, with the reason and what replaced it), the 9:16
+film in English and Spanish, and the live trace. *Publish listing* gives a QR code for a public buyer page:
+the film, room chips that jump to each room, questions answered from the listing's photos and details (or
+passed to the agent when the photos can't answer), and tour booking that pushes the request to the realtor's
+phone through ntfy. Each listing also gets a California AB 723 disclosure page with every photo beside its
+original. Endpoints are in [docs/api.md](docs/api.md#listing); screenshots in
+[web/screenshots/listing](web/screenshots/listing).
+
 ![Removals from saved customer requests](docs/media/removals-before-after.jpg)
 
 *Removals from saved customer requests: a trash bin, a car, wires and an extension cord, a lockbox.*

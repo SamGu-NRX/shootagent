@@ -186,3 +186,37 @@ describe("QC candidates and plan progress (shapes from run 20261027-235730-b73cb
     expect(s.totals).toMatchObject({ usd: 0.05, ms: 12000 });
   });
 });
+
+describe("film runs", () => {
+  // Shape of run 20261028-185544-ddefff: prepare_shots makes clips (media), checks one, falls back, reports the shot.
+  function filmRun() {
+    const e = stream();
+    return [
+      e("run_start", { mode: "film", views: ["v01", "v02"], languages: ["en", "es"] }),
+      e("tool_call", { call_id: "p1", tool: "prepare_shots", input: {} }),
+      e("media", { shot: 0, fingerprint: "e20e", backend: "replay", cached: true }, "v01"),
+      e("check", {
+        call_id: "p1", shot: 0, attempt: 1, clip: "e20e", passed: false, images: ["47cb.jpg"],
+        failures: ["motion no rigid camera explains: 3.66 px"],
+        judge: { pass: false, changed: true, changes: [{ object: "white door", change: "duplicated", first_frame: "t=3.5s" }], confidence: "low" },
+      }, "v01"),
+      e("retry", { attempt: 1, max_attempts: 2, reason: "white door duplicated", next: "depth fallback" }, "v01"),
+      e("media", { shot: 0, fingerprint: "1399", backend: "depth", cached: false, seconds: 40 }, "v01"),
+      e("shot", { shot: 0, end_view: "v02", planned: "generated", source: "depth", fell_back: true, clips: ["1399"], note: "rejected" }, "v01"),
+      e("tool_result", { call_id: "p1", tool: "prepare_shots", ok: true, summary: "6 shots ready", ms: 90000 }),
+      e("run_end", { ok: true, summary: "films assembled", ms: 280000, usd: 0.17 }),
+    ];
+  }
+
+  it("folds media into the call that made it and keeps shot and clip-check rows", () => {
+    const s = reduceAll(filmRun());
+    const kinds = s.items.map((i) => i.type);
+    expect(kinds).toEqual(["tool", "check", "retry", "shot", "end"]);
+    expect((s.items[0] as ToolItem).media).toEqual({ made: 2, cached: 1 });
+    const check = s.items[1] as Extract<(typeof s.items)[number], { type: "check" }>;
+    expect(check.clip).toBe("e20e");
+    expect(check.images).toEqual(["47cb.jpg"]);
+    expect(check.judge?.verdict).toBe("fail");
+    expect(check.judge?.reason).toContain("white door duplicated");
+  });
+});

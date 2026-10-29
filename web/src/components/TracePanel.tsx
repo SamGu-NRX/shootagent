@@ -2,6 +2,11 @@ import {
   ArrowDown,
   ArchiveRestore,
   Brush,
+  Clapperboard,
+  Languages,
+  Mic,
+  PenLine,
+  Tag,
   Circle,
   CircleAlert,
   Crosshair,
@@ -50,6 +55,13 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   revert: Undo2,
   set_finding: Flag,
   approve_view: Flag,
+  label_views: Tag,
+  plan_film: Clapperboard,
+  prepare_shots: Film,
+  write_script: PenLine,
+  translate_script: Languages,
+  narrate: Mic,
+  assemble_film: Film,
 };
 
 /** Tools that usually return an image: their rows reserve the thumbnail slot so the row doesn't grow. */
@@ -68,7 +80,8 @@ const IMAGE_TOOLS = new Set([
   "revert",
 ]);
 
-const MODE_LABEL: Record<string, string> = { qc: "QC pass", chat: "Chat request", reel: "Reel" };
+const MODE_LABEL: Record<string, string> = { qc: "QC pass", chat: "Chat request", reel: "Reel", film: "Listing film" };
+const MOTION: Record<string, string> = { generated: "generated clip", depth: "depth move", still: "slow push-in" };
 
 export function TracePanel() {
   const runs = useStore((s) => s.runs);
@@ -411,6 +424,26 @@ const Row = memo(function Row({
       return <ToolRow item={item} candidates={candidates} time={time} viewChip={viewChip} onFocus={focus} common={common} />;
     case "check":
       return <CheckRow item={item} time={time} onFocus={focus} common={common} />;
+    case "shot":
+      return (
+        <li className="tr tr-shot" data-fell-back={item.fellBack || undefined} {...common}>
+          {time}
+          <div className="tr-body">
+            <div className="tr-head">
+              <Clapperboard size={13} className="tr-icon" aria-hidden />
+              <span className="tr-title">
+                Shot {item.shot + 1} plays a {MOTION[item.source] ?? item.source}
+              </span>
+              {viewChip}
+            </div>
+            {item.fellBack && (
+              <p className="tr-text">
+                Planned as a {MOTION[item.planned] ?? item.planned}; it fell back after its check.
+              </p>
+            )}
+          </div>
+        </li>
+      );
     case "retry":
       return (
         <li className="tr tr-retry" {...common}>
@@ -561,6 +594,11 @@ function ToolRow({
         <p className="tr-result" data-ok={r ? r.ok : undefined}>
           {r ? (r.ok ? r.summary : `Failed: ${r.error ?? r.summary}`) : <span className="muted">Running…</span>}
         </p>
+        {item.media && (
+          <p className="tr-refs num">
+            {item.media.made} clip{item.media.made === 1 ? "" : "s"} or narrations · {item.media.cached} from cache
+          </p>
+        )}
         {candidates && candidates.length > 0 && <CandidateChips findings={candidates} />}
         {(r?.version || r?.mask) && (
           <p className="tr-refs num">
@@ -599,11 +637,16 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
           <span className="stamp" data-passed={item.passed}>
             {item.passed ? "Pass" : "Fail"}
           </span>
-          <span className="tr-title">Self-check</span>
-          <button className="ref-link num" onClick={() => onFocus(item.version)} title="Show this version">
-            {item.version}
-          </button>
+          <span className="tr-title">{item.clip ? `Clip check · shot ${(item.shot ?? 0) + 1}` : "Self-check"}</span>
+          {item.clip ? (
+            <span className="tr-attempt num">clip {item.clip.slice(0, 8)}</span>
+          ) : (
+            <button className="ref-link num" onClick={() => onFocus(item.version)} title="Show this version">
+              {item.version}
+            </button>
+          )}
         </div>
+        {item.clip && item.images && item.images.length > 0 && <ClipSheet blob={item.images[0]!} />}
         {rows.length > 0 && (
           <dl className="metrics">
             {rows.map((m) => (
@@ -633,6 +676,18 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
         )}
       </div>
     </li>
+  );
+}
+
+/** The contact sheet the clip checker looked at: frames of the generated clip beside its photo. */
+function ClipSheet({ blob }: { blob: string }) {
+  const shoot = useStore((s) => s.shoot);
+  const api = useStore((s) => s.api);
+  if (!shoot) return null;
+  return (
+    <a className="clip-sheet" href={api.blobUrl(shoot.id, blob)} target="_blank" rel="noreferrer" title="Open the contact sheet">
+      <img src={api.blobUrl(shoot.id, blob, 640)} alt="Contact sheet of the generated clip's frames" loading="lazy" decoding="async" />
+    </a>
   );
 }
 

@@ -1,3 +1,5 @@
+import type { ClipJudge } from "./listing";
+
 // JSON shapes from src/shootagent/store.py and src/shootagent/trace.py, as served by docs/api.md.
 
 export interface Bracket {
@@ -107,7 +109,7 @@ export interface ShootSummary {
   thumb: string | null;
 }
 
-export type RunMode = "qc" | "chat" | "reel";
+export type RunMode = "qc" | "chat" | "reel" | "film";
 
 export interface RunSummary {
   id: string;
@@ -131,7 +133,7 @@ export interface PlanStep {
 }
 
 export interface TraceDataByKind {
-  run_start: { mode: RunMode | string; request?: string | null; views?: string[] };
+  run_start: { mode: RunMode | string; request?: string | null; views?: string[]; languages?: string[] };
   plan: { steps: PlanStep[]; text?: string };
   thought: { text: string };
   tool_call: { call_id: string; tool: string; input: Record<string, unknown> };
@@ -148,16 +150,26 @@ export interface TraceDataByKind {
     /** tool-specific payload, e.g. render_reel's {url, seconds} */
     data?: Record<string, unknown> | null;
   };
+  /** An edit check has `version`; a film clip check has `clip`, `shot` and a ClipJudge-shaped judge. */
   check: {
     call_id?: string | null;
-    version: string;
+    version?: string;
+    clip?: string;
+    shot?: number;
+    attempt?: number;
+    images?: string[];
     parent?: string | null;
     passed: boolean;
-    metrics: Record<string, number | string | null>;
-    judge?: Judge | null;
+    /** absent on film clip checks, which report `signals` instead */
+    metrics?: Record<string, number | string | null>;
+    judge?: (Partial<Judge> & ClipJudge) | null;
     failures?: string[];
     intent?: string;
   };
+  /** film: a clip or narration produced or served from the media cache */
+  media: { shot?: number; language?: string; fingerprint: string; backend: string; cached: boolean; seconds?: number | null };
+  /** film: what a shot will play */
+  shot: { shot: number; end_view?: string | null; planned: string; source: string; fell_back: boolean; clips: string[]; note: string };
   /** attempt = how many fix attempts on this view have failed so far (agent/loop.py); the next try is attempt + 1 */
   retry: { attempt: number; reason: string; next: string; max_attempts?: number };
   /** images: crops showing the evidence, by blob name */
@@ -193,6 +205,8 @@ export const TRACE_KINDS: readonly TraceKind[] = [
   "tool_call",
   "tool_result",
   "check",
+  "media",
+  "shot",
   "retry",
   "finding",
   "view_result",
