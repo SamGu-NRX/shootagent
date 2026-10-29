@@ -3,9 +3,6 @@
   position: absolute;
   inset: 0;
 }
-.pz-proof-dim {
-  color: var(--pz-dim);
-}
 
 .pz-proof-head {
   position: absolute;
@@ -13,7 +10,6 @@
   top: 84px;
 }
 .pz-proof-title {
-  margin-top: 14px;
   display: flex;
   flex-direction: column;
   font-size: 76px;
@@ -124,7 +120,6 @@
   width: 640px;
 }
 .pz-proof-jury-title {
-  margin-top: 10px;
   font-size: 32px;
   line-height: 1.2;
   font-weight: 650;
@@ -190,6 +185,11 @@
 .pz-proof-score {
   margin-top: 44px;
 }
+.pz-proof-score-label {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--pz-dim);
+}
 .pz-proof-row {
   margin-top: 16px;
   display: grid;
@@ -236,9 +236,6 @@
   margin-top: 26px;
   font-size: 22px;
   color: var(--pz-ink);
-}
-.pz-proof-agree .num {
-  font-weight: 600;
 }
 
 .pz-proof-foot {

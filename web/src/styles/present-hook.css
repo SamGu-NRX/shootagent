@@ -73,9 +73,6 @@
   color: var(--pz-dim);
   flex: none;
 }
-.pz-hook-corpus-dim {
-  color: var(--pz-dim);
-}
 
 /* the template reel */
 .pz-hook-phone {
@@ -140,9 +137,6 @@
   left: 120px;
   top: 248px;
   width: 1080px;
-}
-.pz-hook-kicker {
-  margin-bottom: 26px;
 }
 .pz-hook-title {
   display: flex;

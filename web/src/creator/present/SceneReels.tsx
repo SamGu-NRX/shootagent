@@ -42,9 +42,9 @@ interface Row {
 function rowsFor(tpl: ReelStats, hero: ReelStats): Row[] {
   const pct = (v: number) => `${Math.round(v)}%`;
   return [
-    { key: "stop", label: "Stopped scrolling in 1.5 s", a: tpl.stopRate * 100, b: hero.stopRate * 100, max: 100, fmt: pct },
+    { key: "stop", label: "Stopped scrolling", a: tpl.stopRate * 100, b: hero.stopRate * 100, max: 100, fmt: pct },
     { key: "end", label: "Watched to the end", a: tpl.completion * 100, b: hero.completion * 100, max: 100, fmt: pct },
-    { key: "creative", label: "Judged creativity", a: tpl.creativity, b: hero.creativity, max: 10, fmt: (v) => `${v.toFixed(1)}/10` },
+    { key: "creative", label: "Creativity score", a: tpl.creativity, b: hero.creativity, max: 10, fmt: (v) => `${v.toFixed(1)}/10` },
   ];
 }
 
@@ -78,7 +78,7 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
     <div className="pz-reels">
       <figure className="pz-reels-phone" data-kind="template" style={{ opacity: left, transform: `translateX(${(1 - left) * -40}px)` }}>
         <figcaption className="pz-reels-label">
-          <span className="pz-reels-tag">Template</span>
+          <span className="pz-reels-tag">Typical reel</span>
           <span className="pz-reels-label-main">Typical listing reel</span>
         </figcaption>
         <div className="pz-reels-screen">
@@ -97,7 +97,7 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
       >
         <figcaption className="pz-reels-label">
           <span className="pz-reels-label-kicker">
-            <Sparkles size={18} aria-hidden /> Your AI creative team's reel
+            <Sparkles size={18} aria-hidden /> The AI team's reel
           </span>
           <span className="pz-reels-label-title">{hero.title}</span>
         </figcaption>
@@ -109,7 +109,6 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
 
       <div className="pz-reels-side">
         <header style={{ opacity: head, transform: `translateY(${(1 - head) * 18}px)` }}>
-          <p className="pz-kicker">Before / after</p>
           <h2 className="pz-reels-title">
             <span>Same listing. Same photos.</span>
             <span className="pz-reels-title-dim">A completely different reel.</span>
@@ -117,7 +116,7 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
         </header>
 
         <figure className="pz-reels-hook" style={{ opacity: hookIn }}>
-          <figcaption>The hook the agents wrote</figcaption>
+          <figcaption>Its opening line</figcaption>
           <blockquote>
             <span className="pz-reels-q">“</span>
             {hook.slice(0, typedTo)}
@@ -163,11 +162,11 @@ export function SceneReels({ lab, story, fileUrl, t, playing }: SceneProps) {
         <footer className="pz-reels-foot">
           {sweep && (
             <p className="pz-reels-verdict" style={{ opacity: verdict, transform: `translateY(${(1 - verdict) * 10}px)` }}>
-              <Check size={22} aria-hidden /> Wins on all three, judged blind.
+              <Check size={22} aria-hidden /> Better on all three, in a blind test.
             </p>
           )}
           <p className="pz-note" style={{ opacity: note }}>
-            Panel of {story.viewers} AI viewer agents and {story.judges} AI judges, shown both reels blind and unlabelled.
+            Tested on {story.viewers} AI viewers and {story.judges} AI judges who didn't know which reel was which.
           </p>
         </footer>
       </div>

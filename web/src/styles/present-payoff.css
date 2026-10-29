@@ -11,10 +11,9 @@
   top: 84px;
 }
 .pz-payoff-title {
-  margin-top: 18px;
   display: flex;
   flex-direction: column;
-  font-size: 92px;
+  font-size: 86px;
   line-height: 1.02;
   font-weight: 650;
   letter-spacing: -0.04em;
@@ -230,11 +229,6 @@
   font-weight: 600;
   color: var(--pz-dim);
   font-variant-numeric: tabular-nums;
-}
-.pz-payoff-tile-note {
-  margin-top: 2px;
-  font-size: 15px;
-  color: var(--pz-faint);
 }
 
 /* the economics strip */

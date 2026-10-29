@@ -43,7 +43,7 @@ const FINALE = 8000;
 const CLICHE_TOP = 296;
 const TRUTH_TOP = 512;
 
-const VERDICT_WORD: Record<CritiqueVerdict, string> = { kill: "Kill", revise: "Revise", greenlight: "Greenlight" };
+const VERDICT_WORD: Record<CritiqueVerdict, string> = { kill: "Cut", revise: "Rewrite", greenlight: "Keep" };
 
 interface WallCard {
   c: ReelConcept;
@@ -202,17 +202,15 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
     <div className="pz-critique">
       {/* headline: the critics, then the greenlight */}
       <header className="pz-critique-head" style={{ opacity: headIn * (1 - headOut), transform: `translateY(${(1 - headIn) * 20}px)` }}>
-        <p className="pz-kicker">The critics</p>
-        <h2 className="pz-critique-title">Then the critics tear it apart.</h2>
-        <p className="pz-critique-sub">Clichés die. False claims get caught. Good ideas get stolen.</p>
+        <h2 className="pz-critique-title">Three critics review every idea.</h2>
+        <p className="pz-critique-sub">{"They cut overused ideas and catch claims the photos don't support."}</p>
       </header>
       <header className="pz-critique-head" style={{ opacity: finHead, transform: `translateY(${(1 - finHead) * 20}px)` }} aria-hidden={finHead < 0.5}>
-        <p className="pz-kicker">The greenlight</p>
         <h2 className="pz-critique-title">
-          <Crown size={52} strokeWidth={1.8} className="pz-critique-crown" aria-hidden /> The showrunner greenlights two.
+          <Crown size={52} strokeWidth={1.8} className="pz-critique-crown" aria-hidden /> Two ideas make the cut.
         </h2>
         <p className="pz-critique-sub">
-          Out of {story.ideas} ideas, these survived {story.critiques} critiques.
+          Picked from {story.ideas} ideas after {story.critiques} reviews.
         </p>
       </header>
 
@@ -233,7 +231,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
                 <span className="pz-critique-critic-name">{a.name}</span>
                 <span className="pz-critique-critic-job">{AGENT_JOB[a.id] ?? a.lens}</span>
                 <span className="pz-critique-critic-count">
-                  <span className="pz-num">{Math.round(countUp(t, SCAN_FROM, SCAN_SPAN, count))}</span> critiques
+                  <span className="pz-num">{Math.round(countUp(t, SCAN_FROM, SCAN_SPAN, count))}</span> reviews
                 </span>
               </span>
             </div>
@@ -282,13 +280,13 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
       {scanOn > 0 && <span className="pz-critique-scan" style={{ left: scanEdge - 160, opacity: scanOn }} aria-hidden />}
 
       {/* two real notes from the critics */}
-      {p.cliche && clicheIn > 0 && <Callout card={p.wall[p.cliche.card]!} critic={p.cliche.critic} tag="Cliché" amount={clicheIn} top={CLICHE_TOP}>
+      {p.cliche && clicheIn > 0 && <Callout card={p.wall[p.cliche.card]!} critic={p.cliche.critic} tag="Overused" amount={clicheIn} top={CLICHE_TOP}>
         <p className="pz-critique-quote">
           <Strike t={t} at={clicheAt + 450}>“{p.cliche.flag}”</Strike>
         </p>
         {p.cliche.note && <p className="pz-critique-fix">{p.cliche.note}</p>}
       </Callout>}
-      {p.truth && truthIn > 0 && <Callout card={p.wall[p.truth.card]!} critic={p.truth.critic} tag="Caught" amount={truthIn} top={p.cliche ? TRUTH_TOP : CLICHE_TOP}>
+      {p.truth && truthIn > 0 && <Callout card={p.wall[p.truth.card]!} critic={p.truth.critic} tag="Not true" amount={truthIn} top={p.cliche ? TRUTH_TOP : CLICHE_TOP}>
         <div className="pz-critique-proof">
           <div>
             <p className="pz-critique-quote">
@@ -342,7 +340,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
           >
             <p className="pz-critique-remix-steal">
               <Icon size={14} strokeWidth={2.2} aria-hidden />
-              {r.steal ? `${r.who?.name ?? r.c.agent} stole from ${r.fromWho?.name ?? "another creator"}` : `${r.who?.name ?? r.c.agent} sharpened its pitch`}
+              {r.steal ? `${r.who?.name ?? r.c.agent} borrowed from ${r.fromWho?.name ?? "another creator"}` : `${r.who?.name ?? r.c.agent} rewrote its idea`}
             </p>
             <p className="pz-critique-remix-title">{r.c.title}</p>
             <p className="pz-critique-remix-hook">“{r.c.hook.text}”</p>
@@ -353,10 +351,10 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
       {/* the room's work, counted */}
       <div className="pz-critique-counters" style={{ opacity: phase(t, REMIX_FROM - 200, 400) * (1 - 0.6 * phase(t, FINALE, 700)) }}>
         {[
-          [story.critiques, "critiques"],
-          [story.truthFlags, "claims flagged"],
-          [story.remixes, "remixes"],
-          [story.steals, "ideas stolen"],
+          [story.critiques, "reviews"],
+          [story.truthFlags, "problems caught"],
+          [story.remixes, "rewrites"],
+          [story.steals, "ideas borrowed"],
         ].map(([n, label]) => (
           <p key={label as string} className="pz-critique-counter">
             <b className="pz-num">{Math.round(countUp(t, REMIX_FROM - 100, 2600, n as number))}</b>
@@ -394,7 +392,7 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
             <div className="pz-critique-fin-photo">{photo && <img src={photo} alt="" style={focusStyle(beat?.focus)} />}</div>
             <div className="pz-critique-fin-body">
               <span className="pz-critique-fin-badge" style={{ opacity: badge, transform: `scale(${0.7 + 0.3 * badge})` }}>
-                <Crown size={15} strokeWidth={2.2} aria-hidden /> Greenlit
+                <Crown size={15} strokeWidth={2.2} aria-hidden /> Picked
               </span>
               {f.reel && (
                 <p className="pz-critique-fin-reel">
@@ -413,7 +411,8 @@ export function SceneCritique({ lab, shoot, story, t }: SceneProps) {
                 </p>
                 {f.score > 0 && (
                   <p className="pz-critique-fin-score">
-                    <span className="pz-num">{f.score.toFixed(1)}</span>/10 from the critics
+                    {"Critics' score "}
+                    <span className="pz-num">{f.score.toFixed(1)}</span>/10
                   </p>
                 )}
               </div>

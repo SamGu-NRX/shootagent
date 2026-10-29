@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 import { useMemo, type CSSProperties } from "react";
 import { CONTROL_AGENT } from "../phases";
 import type { AgentCard, LabState, ReelConcept } from "../types";
-import { AGENT_JOB, agentIcon, hdPhoto, roomCast } from "./cast";
+import { AGENT_JOB, agentIcon, hdPhoto, paperColor, roomCast } from "./cast";
 import { countUp, easeOut, linear, phase, type SceneProps } from "./types";
 
 // ---- layout on the 1920x1080 stage ---------------------------------------------------------------------
@@ -35,6 +35,8 @@ const STATS_FROM = 6300;
 
 interface Lane {
   agent: AgentCard;
+  /** the creator's own colour, darkened to read on the off-white stage */
+  color: string;
   /** 0-1 of the pitch round, when this creator's pitches landed */
   done: number;
   concepts: ReelConcept[];
@@ -76,6 +78,7 @@ function buildPitch(lab: LabState): Pitch {
     const at = landed.length ? Math.max(...landed) : start + span;
     return {
       agent,
+      color: paperColor(agent.color),
       done: Math.min(1, Math.max(0.08, (at - start) / span)),
       concepts: ideas.filter((c) => c.agent === agent.id).sort((a, b) => a.id.localeCompare(b.id)),
     };
@@ -110,9 +113,9 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
   return (
     <div className="pz-pitch">
       <h1 className="pz-pitch-head">
-        <span style={rise(t, 0)}>A creative team for every listing.</span>
+        <span style={rise(t, 0)}>Meet the listing's AI creative team.</span>
         <span className="pz-pitch-dim" style={rise(t, 250)}>
-          {story.roomAgents} AI agents. {story.creators} creators pitch at once.
+          {story.roomAgents} AI agents. {story.creators} of them write reel ideas at the same time.
         </span>
       </h1>
 
@@ -151,13 +154,13 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
 
       {/* six creators on the real clock of the pitch round */}
       <div className="pz-pitch-lanes-head" style={rise(t, 2400)}>
-        <span className="pz-pitch-lanes-title">{data.lanes.length} creators</span>
+        <span className="pz-pitch-lanes-title">{data.lanes.length} writers</span>
         <span className="pz-pitch-live">
-          <i style={{ opacity: tick > 0 && tick < 1 ? 0.45 + 0.55 * Math.abs(Math.cos(t / 260)) : 1 }} /> In parallel
+          <i style={{ opacity: tick > 0 && tick < 1 ? 0.45 + 0.55 * Math.abs(Math.cos(t / 260)) : 1 }} /> At the same time
         </span>
         <span className="pz-pitch-ticker">
           <span className="num">{clock(tick * data.round)}</span>
-          <small> / {clock(data.round)} real time</small>
+          <small> elapsed</small>
         </span>
       </div>
       {data.lanes.map((lane, i) => {
@@ -170,7 +173,7 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
           <div
             key={lane.agent.id}
             className="pz-pitch-lane"
-            style={{ top: LANE_TOP + i * (LANE_H + LANE_GAP), opacity: shown, transform: `translateX(${(1 - shown) * -24}px)` }}
+            style={{ top: LANE_TOP + i * (LANE_H + LANE_GAP), opacity: shown, transform: `translateX(${(1 - shown) * -24}px)`, "--c": lane.color } as CSSProperties}
           >
             <AgentDot agent={lane.agent} size={40} pulse={thinking ? ((t + i * 190) % 1100) / 1100 : null} />
             <div className="pz-pitch-lane-text">
@@ -209,7 +212,8 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
             style={{
               opacity: phase(t, launch, 260, linear),
               transform: `translate(${cx - CARD_W / 2}px, ${cy - CARD_H / 2}px) scale(${s})`,
-            }}
+              "--c": lane.color,
+            } as CSSProperties}
           >
             <p className="pz-pitch-card-by">
               <Icon size={14} strokeWidth={2.2} aria-hidden />
@@ -222,9 +226,9 @@ export function ScenePitch({ lab, shoot, story, t }: SceneProps) {
       })}
 
       <div className="pz-pitch-stats">
-        <Stat t={t} k={0} value={String(Math.round(countUp(t, STATS_FROM, 900, data.ideas)))} label="ideas pitched" />
-        <Stat t={t} k={1} value={String(Math.round(countUp(t, STATS_FROM + 180, 700, data.lanes.length)))} label="creators at once" />
-        <Stat t={t} k={2} value={clock(data.round)} label={`real time · ${clock(data.turns)} if they took turns`} />
+        <Stat t={t} k={0} value={String(Math.round(countUp(t, STATS_FROM, 900, data.ideas)))} label="reel ideas" />
+        <Stat t={t} k={1} value={String(Math.round(countUp(t, STATS_FROM + 180, 700, data.lanes.length)))} label="writers at once" />
+        <Stat t={t} k={2} value={clock(data.round)} label={`to write them all (${clock(data.turns)} one at a time)`} />
       </div>
     </div>
   );

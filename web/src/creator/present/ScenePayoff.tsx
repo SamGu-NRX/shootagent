@@ -24,7 +24,7 @@ const R = 210;
 const T = 18;
 const B = 42;
 
-const kindName = (r: ReelStats) => (r.kind === "baseline" ? "Typical listing reel" : r.kind === "single_agent" ? "Single AI agent" : "AI creative team");
+const kindName = (r: ReelStats) => (r.kind === "baseline" ? "Typical reel" : r.kind === "single_agent" ? "Single AI agent" : "AI team's reel");
 const ratio = (v: number) => `${v >= 9.95 ? Math.round(v) : v.toFixed(1)}×`;
 const usd = (v: number) => `$${v.toFixed(2)}`;
 
@@ -58,7 +58,6 @@ export function ScenePayoff({ lab, story, t }: SceneProps) {
   const tplNow = at(tplSim);
   // buyers reached grows with views, in the proportion the finished launch shows
   const buyersNow = (r: ReelStats, viewsNow: number) => (r.views > 0 ? (r.buyerViews * viewsNow) / r.views : 0);
-  const only = hero.inquiries > 0 && story.reels.every((r) => r.id === hero.id || r.inquiries === 0);
   const x = story.viewsX ?? (tpl.views > 0 ? hero.views / tpl.views : 1);
   const shownX = 1 + (x - 1) * race;
   const done = race >= 1;
@@ -73,30 +72,22 @@ export function ScenePayoff({ lab, story, t }: SceneProps) {
   const heroY = sy(heroNow.views);
   const tplY = Math.max(sy(tplNow.views), heroY + 58);
 
-  const tiles: { icon: LucideIcon; label: string; value: number; vs: number; note?: string; badge?: string }[] = [
+  const tiles: { icon: LucideIcon; label: string; value: number; vs: number; badge?: string }[] = [
     { icon: Eye, label: "Views", value: heroNow.views, vs: tplNow.views, badge: done ? ratio(x) : undefined },
-    { icon: MessageCircle, label: "Buyer inquiries", value: Math.round(heroNow.inquiries), vs: Math.round(tplNow.inquiries), badge: done && only ? "Only reel" : undefined },
-    {
-      icon: House,
-      label: "Buyers reached",
-      value: buyersNow(hero, heroNow.views),
-      vs: buyersNow(tpl, tplNow.views),
-      note: "First-time, local, relocating and downsizing buyers",
-    },
+    { icon: MessageCircle, label: "Buyer messages", value: Math.round(heroNow.inquiries), vs: Math.round(tplNow.inquiries) },
+    { icon: House, label: "Home buyers reached", value: buyersNow(hero, heroNow.views), vs: buyersNow(tpl, tplNow.views) },
   ];
+  const messages = `${hero.inquiries} buyer message${hero.inquiries === 1 ? "" : "s"}`;
 
   return (
     <div className="pz-payoff">
       <header className="pz-payoff-head">
-        <p className="pz-kicker" style={rise(t, 0, 500, 16)}>
-          The payoff · predicted first {hours} hours
-        </p>
         <h2 className="pz-payoff-title">
           <span className="pz-payoff-l1" style={rise(t, 120)}>
-            <span className="pz-payoff-x">{ratio(shownX)}</span> the views.
+            <span className="pz-payoff-x">{ratio(shownX)}</span> more views in the first {hours} hours.
           </span>
           <span className="pz-payoff-l2" style={rise(t, 420)}>
-            {only ? "And the only buyer inquiries." : `And ${hero.inquiries} buyer inquiries to ${tpl.inquiries}.`}
+            {tpl.inquiries === 0 ? `${messages}. The typical reel got none.` : `${messages}, against ${tpl.inquiries} for the typical reel.`}
           </span>
         </h2>
       </header>
@@ -151,10 +142,10 @@ export function ScenePayoff({ lab, story, t }: SceneProps) {
         <figcaption className="pz-payoff-legend">
           <span data-tone="hero">{kindName(hero)}</span>
           <span data-tone="template">{kindName(tpl)}</span>
-          {others.length > 0 && <span data-tone="other">The lab's other reels</span>}
+          {others.length > 0 && <span data-tone="other">Other AI reels</span>}
         </figcaption>
         <p className="pz-payoff-sim">
-          Predicted · simulated {fmtInt(story.followers)}-follower account, first {hours} h
+          Predicted with a simulated {fmtInt(story.followers)}-follower account. Not real platform data.
         </p>
       </figure>
 
@@ -175,9 +166,8 @@ export function ScenePayoff({ lab, story, t }: SceneProps) {
               </p>
               <p className="pz-payoff-tile-value">{fmtInt(k.value)}</p>
               <p className="pz-payoff-tile-vs">
-                vs <b>{fmtInt(k.vs)}</b> for a typical listing reel
+                Typical reel: <b>{fmtInt(k.vs)}</b>
               </p>
-              {k.note && <p className="pz-payoff-tile-note">{k.note}</p>}
             </div>
           </article>
         ))}
@@ -210,7 +200,7 @@ function Economics({ t, story, minutes }: { t: number; story: SceneProps["story"
         </span>
         {story.commission != null && story.price != null && (
           <span>
-            <b>${fmtInt(story.commission)}</b> commission on this listing<sup>*</sup>
+            on a listing worth <b>${fmtInt(story.commission)}</b> in commission<sup>*</sup>
           </span>
         )}
       </p>
@@ -240,7 +230,7 @@ function EndCard({ t, story, always = false }: { t: number; story: SceneProps["s
           A creative team for every listing.
         </p>
         <p className="pz-payoff-credits" style={rise(t, from + 650, 700, 18)}>
-          {story.roomAgents} agents create · {story.judges + story.viewers} judge blind · built on Claude
+          {story.roomAgents} AI agents write it. {story.judges + story.viewers} AI judges test it. Built on Claude.
         </p>
       </div>
     </div>

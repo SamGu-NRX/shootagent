@@ -72,10 +72,8 @@
   padding: 4px 10px;
   border-radius: 999px;
   background: var(--pz-panel-2);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--pz-ink);
 }
 .pz-reels-label-main {
@@ -88,10 +86,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 19px;
+  font-size: 21px;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--pz-ink);
 }
 .pz-reels-label-title {
@@ -127,7 +123,7 @@
   flex-direction: column;
 }
 .pz-reels-title {
-  margin-top: 18px;
+  margin-top: 0;
   font-size: 54px;
   line-height: 1.05;
   font-weight: 650;

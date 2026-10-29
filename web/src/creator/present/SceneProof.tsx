@@ -5,7 +5,6 @@ import "../../styles/present-proof.css";
 import { Check, Eye, Gavel } from "lucide-react";
 import { useMemo, type CSSProperties } from "react";
 import { cloudEllipse } from "../CreativityMap";
-import { agreementLabel } from "../stats";
 import type { MapPoint } from "../types";
 import { easeBack, easeInOut, easeOut, phase, type SceneProps } from "./types";
 
@@ -101,13 +100,10 @@ export function SceneProof({ lab, story, t }: SceneProps) {
   return (
     <div className="pz-proof">
       <header className="pz-proof-head">
-        <p className="pz-kicker" style={fade(phase(t, 0, 600))}>
-          Blind evaluation
-        </p>
         <h2 className="pz-proof-title">
-          <span style={fade(phase(t, 100, 700), 28)}>Creativity, measured.</span>
+          <span style={fade(phase(t, 100, 700), 28)}>Creativity you can measure.</span>
           <span className="pz-proof-title-dim" style={fade(phase(t, 350, 700), 28)}>
-            Not by the agents that made it.
+            Scored by judges who never saw who made what.
           </span>
         </h2>
       </header>
@@ -139,7 +135,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
 
           {geo.zone && (
             <text className="pz-proof-zone-label" x={geo.zone.cx} y={geo.zone.cy + Math.min(geo.zone.ry, geo.zone.rx) * 0.62} textAnchor="middle" style={{ opacity: phase(t, 1900, 600) }}>
-              <tspan className="pz-proof-zone-n">{story.cliches}</tspan> real-estate clichés
+              <tspan className="pz-proof-zone-n">{story.cliches}</tspan> overused listing lines
             </text>
           )}
 
@@ -176,7 +172,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
                         {fmtX(story.noveltyX)} more original
                       </text>
                       <text className="pz-proof-callout-sub" x={x + 26} y={y + 80}>
-                        than the template
+                        than the typical reel
                       </text>
                     </g>
                   )}
@@ -195,11 +191,9 @@ export function SceneProof({ lab, story, t }: SceneProps) {
                 rx={3}
                 style={{ opacity: Math.min(1, dropP * 2) }}
               />
-              {template && (
-                <text className="pz-proof-tlabel" x={geo.template.x + 22} y={geo.template.y + 7} style={{ opacity: tplLabel }}>
-                  Template · novelty {template.novelty.toFixed(2)}
-                </text>
-              )}
+              <text className="pz-proof-tlabel" x={geo.template.x + 22} y={geo.template.y + 7} style={{ opacity: tplLabel }}>
+                Typical reel
+              </text>
             </g>
           )}
         </svg>
@@ -207,10 +201,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
 
       <section className="pz-proof-jury">
         <div style={fade(phase(t, 300, 700))}>
-          <p className="pz-kicker">The blind jury</p>
-          <p className="pz-proof-jury-title">
-            {story.judges + story.viewers} AI judges and viewers. <span className="pz-proof-dim">None knew who made what.</span>
-          </p>
+          <p className="pz-proof-jury-title">{story.judges + story.viewers} AI judges and viewers</p>
         </div>
         <ul className="pz-proof-grid">
           {jury.map((j, i) => {
@@ -234,9 +225,9 @@ export function SceneProof({ lab, story, t }: SceneProps) {
 
         {template && hero && (
           <div className="pz-proof-score" style={fade(phase(t, 6000, 600))}>
-            <p className="pz-kicker">Judged creativity, out of 10</p>
+            <p className="pz-proof-score-label">Creativity score, out of 10</p>
             {[
-              { key: "t", label: "Template", value: template.creativity, hero: false },
+              { key: "t", label: "Typical reel", value: template.creativity, hero: false },
               { key: "h", label: `${hero.id} · ${hero.title}`, value: hero.creativity, hero: true },
             ].map((row) => {
               const v = row.value * phase(t, 6200, 1400, easeOut);
@@ -252,7 +243,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
             })}
             {w != null && (
               <p className="pz-proof-agree" style={fade(phase(t, 7800, 700), 10)}>
-                Judges agree: <span className="num">Kendall's W {w.toFixed(2)}</span> <span className="pz-proof-dim">· {agreementLabel(w).short.toLowerCase()}</span>
+                {w < 0.5 ? "The judges disagreed on the order." : `The ${story.judges} judges ranked the reels almost the same way.`}
               </p>
             )}
           </div>
@@ -260,7 +251,7 @@ export function SceneProof({ lab, story, t }: SceneProps) {
       </section>
 
       <p className="pz-proof-foot" style={{ opacity: phase(t, 6500, 700) }}>
-        Novelty: distance from the cliché corpus in sentence embeddings (all-MiniLM-L6-v2). Judges never saw which agent made what.
+        Originality is how far a reel's lines are from {story.cliches} overused listing lines.
       </p>
     </div>
   );

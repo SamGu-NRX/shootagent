@@ -150,7 +150,6 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
   const drift = phase(t, 0, 7000, (x) => x);
   const lineA = phase(t, 4300, 650, easeOut);
   const lineB = phase(t, 4800, 650, easeOut);
-  const kicker = phase(t, 4150, 500, easeOut);
   const chip = phase(t, 5500, 600, easeOut);
   const note = phase(t, 1500, 600, easeOut);
   const scrolledPast = story.template ? 1 - story.template.stopRate : null;
@@ -191,8 +190,7 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
       <p className="pz-hook-corpus" style={{ opacity: note, transform: `translateY(${(1 - note) * 10}px)` }}>
         <Quote size={18} aria-hidden />
         <span>
-          <b className="num">{total}</b> stock lines from real listing reels
-          <span className="pz-hook-corpus-dim"> · a cliché corpus the agents never see</span>
+          <b className="num">{total}</b> overused lines collected from real listing reels
         </span>
       </p>
 
@@ -213,7 +211,7 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
             <LayoutTemplate size={20} aria-hidden /> A typical listing reel
             {hits > 0 && (
               <span className="pz-hook-hits" style={{ opacity: phase(t, 3400, 500, easeOut) }}>
-                <span className="num">{hits}</span> stock lines matched
+                <span className="num">{hits}</span> overused lines
               </span>
             )}
           </figcaption>
@@ -221,9 +219,6 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
       )}
 
       <div className="pz-hook-copy">
-        <p className="pz-kicker pz-hook-kicker" style={{ opacity: kicker, transform: `translateY(${(1 - kicker) * 12}px)` }}>
-          The problem
-        </p>
         <h1 className="pz-hook-title">
           <span style={{ opacity: lineA, transform: `translateY(${(1 - lineA) * 30}px)` }}>
             Every listing reel
@@ -231,9 +226,9 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
             sounds the same.
           </span>
           <span className="pz-hook-title-dim" style={{ opacity: lineB, transform: `translateY(${(1 - lineB) * 30}px)` }}>
-            Buyers scroll past
+            So buyers swipe past
             <br />
-            in 1.5 seconds.
+            in seconds.
           </span>
         </h1>
         {scrolledPast != null && (
@@ -241,9 +236,9 @@ export function SceneHook({ lab, story, fileUrl, t, playing }: SceneProps) {
             <Timer size={30} aria-hidden />
             <div>
               <p>
-                <b className="num">{shownPct}%</b> of viewers scrolled past the template in 1.5 s
+                <b className="num">{shownPct}%</b> of viewers swiped past this reel within 1.5 seconds
               </p>
-              <p className="pz-hook-chip-note">AI viewer panel · {story.viewers} simulated viewers</p>
+              <p className="pz-hook-chip-note">Tested on {story.viewers} AI viewers</p>
             </div>
           </div>
         )}

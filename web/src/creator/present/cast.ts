@@ -41,21 +41,32 @@ export const agentIcon = (id: string): LucideIcon => ICONS[id] ?? (id.startsWith
 
 /** One plain-English line per agent, for captions and labels on stage. */
 export const AGENT_JOB: Record<string, string> = {
-  showrunner: "Writes the brief, greenlights the winners",
-  storyteller: "Finds the human story",
-  contrarian: "Flips the listing tropes",
-  comedian: "Deadpan, relatable punchlines",
-  cinematographer: "Reveals, match cuts, rhythm",
-  detective: "The detail nobody noticed",
-  trend_scout: "Platform-native formats",
-  cliche_hunter: "Kills anything templated",
+  showrunner: "Studies the photos, picks the winners",
+  storyteller: "Turns the home into a story",
+  contrarian: "Does the opposite of a normal listing",
+  comedian: "Makes it funny",
+  cinematographer: "Plans the shots and cuts",
+  detective: "Finds the detail nobody noticed",
+  trend_scout: "Uses what's trending on Reels",
+  cliche_hunter: "Cuts anything overused",
   fact_checker: "Checks every claim against the photos",
-  algorithm: "Thinks like the feed: stop power, watch time",
+  algorithm: "Predicts what keeps people watching",
 };
 
 /** Agents share the walkthrough's ink: identity comes from the icon and the name, not from colour. */
 export function stageColor(_hex?: string): string {
   return "#141414";
+}
+
+/** An agent's own colour, for the few places the walkthrough tells agents apart by colour (the six creators'
+ *  progress bars). Light colours are darkened until they read on the off-white stage. */
+export function paperColor(hex: string): string {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return "#5c5b57";
+  const c = [0, 2, 4].map((i) => parseInt(m[1]!.slice(i, i + 2), 16));
+  const lum = (0.2126 * c[0]! + 0.7152 * c[1]! + 0.0722 * c[2]!) / 255;
+  const k = lum <= 0.5 ? 1 : Math.max(0.62, 1 - (lum - 0.5) * 0.9);
+  return `rgb(${c.map((v) => Math.round(v * k)).join(" ")})`;
 }
 
 /** For the dark dashboard (not the walkthrough): the agent's own colour, lifted until it reads on near-black. */
