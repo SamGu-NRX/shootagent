@@ -1,6 +1,7 @@
 // Small shared pieces of the creator dashboard: formatting, colours, avatars, hooks.
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { ChevronRight } from "lucide-react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { useCreator } from "./store";
 import type { AgentCard, LabState, Reel, ViewerPersona } from "./types";
 
@@ -16,6 +17,19 @@ export function fmtClock(seconds: number): string {
 }
 
 export const fmtInt = (n: number) => Math.round(n).toLocaleString("en-US");
+
+/** A finished span of time: "<1 s", "43 s", then m:ss. */
+export function fmtSpan(seconds: number): string {
+  if (seconds < 1) return "<1 s";
+  if (seconds < 60) return `${Math.round(seconds)} s`;
+  return fmtClock(seconds);
+}
+
+/** Text with the agents' *emphasis* rendered as emphasis instead of asterisks. */
+export function Rich({ text }: { text: string }) {
+  const parts = text.split(/\*([^*\n]+)\*/g);
+  return <>{parts.map((p, i) => (i % 2 ? <em key={i}>{p}</em> : p))}</>;
+}
 
 /** 940 / 9.4K / 94K / 1.2M */
 export function fmtCompact(n: number): string {
@@ -217,17 +231,35 @@ export const focusStyle = (focus: number[] | null | undefined): CSSProperties =>
 
 // ---- section header -------------------------------------------------------------------------------
 
-export function SectionHead({ n, id, title, sub, children }: { n: string; id: string; title: string; sub: ReactNode; children?: ReactNode }) {
+export function SectionHead({ id, title, sub, children }: { id: string; title: string; sub?: ReactNode; children?: ReactNode }) {
   return (
     <header className="cl-sec-head">
-      <span className="cl-sec-n num" aria-hidden>
-        {n}
-      </span>
       <div className="cl-sec-titles">
         <h2 id={id}>{title}</h2>
-        <p>{sub}</p>
+        {sub && <p>{sub}</p>}
       </div>
       {children && <div className="cl-sec-aside">{children}</div>}
     </header>
+  );
+}
+
+// ---- disclosure -----------------------------------------------------------------------------------
+
+/** A quiet "Show more" toggle; the content mounts only when open. */
+export function Disclosure({ label, openLabel, children, className = "" }: { label: ReactNode; openLabel?: ReactNode; children: ReactNode; className?: string }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  return (
+    <div className={`cl-disc ${className}`} data-open={open || undefined}>
+      <button className="cl-disc-btn" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
+        <ChevronRight size={14} className="cl-disc-chev" aria-hidden />
+        {open && openLabel ? openLabel : label}
+      </button>
+      {open && (
+        <div id={id} className="cl-disc-body">
+          {children}
+        </div>
+      )}
+    </div>
   );
 }

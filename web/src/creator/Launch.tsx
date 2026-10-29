@@ -4,7 +4,7 @@ import { plannedReels } from "./Reels";
 import { clockHour, formatRatio, interpolateSeries, launchOutcome, segmentsAt, visibleComments, type Metric } from "./sim";
 import { useCreator } from "./store";
 import type { LabState, Reel, Simulation, ViewerPersona } from "./types";
-import { Avatar, fmtCompact, fmtInt, fmtPct, niceTicks, ReelBadge, reelColors, reelStyle, SectionHead, useReducedMotion, useWidth, viewerWho } from "./ui";
+import { Avatar, Disclosure, fmtCompact, fmtInt, fmtPct, niceTicks, ReelBadge, reelColors, reelStyle, SectionHead, useReducedMotion, useWidth, viewerWho } from "./ui";
 
 /** Real seconds the 48-hour playback takes. */
 export const PLAY_MS = 20_000;
@@ -60,7 +60,6 @@ export function LaunchSection() {
   return (
     <section id="cl-launch" className="cl-section" aria-labelledby="cl-launch-title">
       <SectionHead
-        n="04"
         id="cl-launch-title"
         title="Simulated launch"
         sub={`Which reel would travel further? ${sims[0]?.hours ?? lab.options.hours} hours on an account with ${fmtInt(sims[0]?.followers ?? lab.options.followers)} followers, played back in ${PLAY_MS / 1000} seconds.`}
@@ -136,83 +135,77 @@ function Launch({ lab, sims, viewers }: { lab: LabState; sims: Simulation[]; vie
 
   return (
     <div className="cl-launch">
-      <div className="cl-launch-bar">
-        <div className="cl-launch-play">
-          <button className="btn btn-agent cl-launch-go" onClick={go} disabled={simBusy}>
-            {simBusy ? (
-              <>
-                <span className="spinner spinner-sm" aria-hidden /> Simulating…
-              </>
-            ) : dirty ? (
-              <>
-                <RotateCcw size={13} aria-hidden /> Simulate with these settings
-              </>
-            ) : clock.playing ? (
-              <>
-                <Pause size={13} aria-hidden /> Pause
-              </>
-            ) : (
-              <>
-                <Play size={13} aria-hidden /> {done && played ? "Replay launch" : hour > 0 ? "Resume" : "Simulate launch"}
-              </>
-            )}
+      <div className="cl-sim-bar">
+        <button className="btn btn-agent cl-launch-go" onClick={go} disabled={simBusy}>
+          {simBusy ? (
+            <>
+              <span className="spinner spinner-sm" aria-hidden /> Simulating…
+            </>
+          ) : dirty ? (
+            <>
+              <RotateCcw size={13} aria-hidden /> Simulate these settings
+            </>
+          ) : clock.playing ? (
+            <>
+              <Pause size={13} aria-hidden /> Pause
+            </>
+          ) : (
+            <>
+              <Play size={13} aria-hidden /> {done && played ? "Replay launch" : hour > 0 ? "Resume" : "Simulate launch"}
+            </>
+          )}
+        </button>
+        <button className="icon-btn" onClick={() => (setPlayed(true), clock.seek(hours))} aria-label="Skip to the end" title="Skip to the end" disabled={done}>
+          <FastForward size={15} />
+        </button>
+        <p className="cl-clock-read" aria-live="off">
+          Hour <span className="num">{hour < 10 ? hour.toFixed(1) : String(Math.floor(hour))}</span>
+          <span className="cl-clock-of">
+            {" "}
+            / <span className="num">{hours}</span>
+          </span>
+        </p>
+        <input
+          type="range"
+          className="cl-scrub"
+          min={0}
+          max={hours}
+          step={0.1}
+          value={hour}
+          onChange={(e) => (setPlayed(true), clock.seek(Number(e.target.value)))}
+          aria-label="Launch clock, hours"
+          style={{ "--p": `${(hour / hours) * 100}%` } as CSSProperties}
+        />
+        <label className="cl-follow">
+          <span>
+            Followers <span className="num">{fmtInt(followers)}</span>
+          </span>
+          <input type="range" min={0} max={100} step={1} value={sliderOf(followers)} onChange={(e) => setFollowers(niceFollowers(Number(e.target.value)))} aria-valuetext={`${fmtInt(followers)} followers`} />
+        </label>
+        <span className="cl-seed">
+          Seed <span className="num">{seed}</span>
+          <button className="icon-btn" onClick={() => setSeed(1 + Math.floor(Math.random() * 9999))} aria-label="Shuffle the seed" title="Shuffle the seed">
+            <Dices size={14} />
           </button>
-          <button className="icon-btn" onClick={() => (setPlayed(true), clock.seek(hours))} aria-label="Skip to the end" title="Skip to the end" disabled={done}>
-            <FastForward size={15} />
-          </button>
-        </div>
-        <div className="cl-clock">
-          <p className="cl-clock-read num" aria-live="off">
-            <span className="cl-clock-k">Hour</span> {hour < 10 ? hour.toFixed(1) : String(Math.floor(hour))}
-            <span className="cl-clock-of"> / {hours}</span>
-          </p>
-          <input
-            type="range"
-            className="cl-scrub"
-            min={0}
-            max={hours}
-            step={0.1}
-            value={hour}
-            onChange={(e) => (setPlayed(true), clock.seek(Number(e.target.value)))}
-            aria-label="Launch clock, hours"
-            style={{ "--p": `${(hour / hours) * 100}%` } as CSSProperties}
-          />
-        </div>
-        <div className="cl-launch-settings">
-          <label className="cl-follow">
-            <span>
-              Followers <b className="num">{fmtInt(followers)}</b>
-            </span>
-            <input type="range" min={0} max={100} step={1} value={sliderOf(followers)} onChange={(e) => setFollowers(niceFollowers(Number(e.target.value)))} aria-valuetext={`${fmtInt(followers)} followers`} />
-          </label>
-          <div className="cl-seed">
-            <span>
-              Seed <b className="num">{seed}</b>
-            </span>
-            <button className="btn btn-sm" onClick={() => setSeed(1 + Math.floor(Math.random() * 9999))} aria-label="Shuffle the seed">
-              <Dices size={13} aria-hidden /> Shuffle
-            </button>
-          </div>
-          <button className="btn btn-sm" onClick={() => void simulate({ followers, seed, hours })} disabled={simBusy}>
-            <RotateCcw size={12} aria-hidden /> Re-run
-          </button>
-        </div>
+        </span>
+        <button className="btn btn-quiet btn-sm" onClick={() => void simulate({ followers, seed, hours })} disabled={simBusy}>
+          <RotateCcw size={12} aria-hidden /> Re-run
+        </button>
       </div>
 
       <Banner sims={sims} reels={reels} colors={colors} done={done && played} leader={leader} hour={hour} />
-
-      <div className="cl-launch-grid">
-        <div className="cl-launch-main">
-          <Counters reels={reels} colors={colors} at={at} leader={hour > 0 ? leader?.[0] : undefined} final={done && played} />
-          <Growth sims={sims} colors={colors} hour={hour} hours={hours} />
-          <div className="cl-launch-pair">
-            <Retention sims={sims} colors={colors} />
-            <Segments sims={sims} colors={colors} hour={hour} viewers={viewers} />
-          </div>
-        </div>
+      <Counters reels={reels} colors={colors} at={at} leader={hour > 0 ? leader?.[0] : undefined} final={done && played} />
+      <div className="cl-sim-main">
+        <Growth sims={sims} colors={colors} hour={hour} hours={hours} />
         <Comments sims={sims} colors={colors} hour={hour} viewers={viewers} />
       </div>
-      <ModelNotes sims={sims} colors={colors} />
+      <Disclosure className="cl-sim-more" label="Retention, audience segments and how the simulation works" openLabel="Hide the details">
+        <div className="cl-launch-pair">
+          <Retention sims={sims} colors={colors} />
+          <Segments sims={sims} colors={colors} hour={hour} viewers={viewers} />
+        </div>
+        <ModelNotes sims={sims} colors={colors} />
+      </Disclosure>
     </div>
   );
 }
@@ -246,9 +239,7 @@ function Banner({
             <span className="num">{fmtInt(leader[1].views)}</span> views
           </p>
         ) : (
-          <p className="muted">
-            <Play size={13} aria-hidden /> Press Simulate launch to play {sims[0]?.hours ?? 48} hours in {PLAY_MS / 1000} seconds. Counters, curves and comments move with the clock.
-          </p>
+          <p className="muted">Press Simulate launch to play {sims[0]?.hours ?? 48} hours in {PLAY_MS / 1000} seconds; the counters, the curve and the comments move with the clock.</p>
         )}
       </div>
     );
@@ -293,13 +284,11 @@ function Banner({
 
 // ---- counters -----------------------------------------------------------------------------------------
 
-const COUNTS: [Exclude<Metric, "views">, string, typeof Heart][] = [
+const MORE: [Exclude<Metric, "views" | "shares" | "inquiries">, string, typeof Heart][] = [
   ["likes", "Likes", Heart],
   ["comments", "Comments", MessageCircle],
-  ["shares", "Shares", Send],
   ["saves", "Saves", Bookmark],
   ["follows", "Follows", UserPlus],
-  ["inquiries", "Inquiries", Mail],
 ];
 
 function Counters({
@@ -315,35 +304,53 @@ function Counters({
   leader?: string;
   final: boolean;
 }) {
+  const [all, setAll] = useState(false);
   return (
-    <div className="cl-counters" style={{ "--n": reels.length } as CSSProperties}>
-      {reels.map((r) => {
-        const p = at.get(r.id);
-        return (
-          <article key={r.id} className="cl-counter" style={reelStyle(colors[r.id]!)} data-leading={leader === r.id || undefined}>
-            <header>
-              <ReelBadge id={r.id} color={colors[r.id]!} size={22} />
-              <span className="cl-counter-label">{r.label}</span>
-              {leader === r.id && <span className="cl-counter-lead">{final ? "Winner" : "Leading"}</span>}
-            </header>
-            <p className="cl-counter-views">
-              <span className="num">{fmtInt(p?.views ?? 0)}</span>
-              <span className="cl-counter-unit">views</span>
-            </p>
-            <dl className="cl-counter-grid">
-              {COUNTS.map(([k, label, Icon]) => (
-                <div key={k} title={label}>
+    <div className="cl-counters-wrap">
+      <div className="cl-counters" style={{ "--n": reels.length } as CSSProperties}>
+        {reels.map((r) => {
+          const p = at.get(r.id);
+          return (
+            <article key={r.id} className="cl-counter" style={reelStyle(colors[r.id]!)} data-leading={leader === r.id || undefined}>
+              <header>
+                <ReelBadge id={r.id} color={colors[r.id]!} size={20} />
+                <span className="cl-counter-label">{r.label}</span>
+                {leader === r.id && <span className="cl-counter-lead">{final ? "Winner" : "Leading"}</span>}
+              </header>
+              <p className="cl-counter-views">
+                <span className="num">{fmtInt(p?.views ?? 0)}</span>
+                <span className="cl-counter-unit">views</span>
+              </p>
+              <dl className="cl-counter-key">
+                <div>
                   <dt>
-                    <Icon size={12} aria-hidden />
-                    <span className="sr-only">{label}</span>
+                    <Send size={12} aria-hidden /> Shares
                   </dt>
-                  <dd className="num">{fmtCompact(p?.[k] ?? 0)}</dd>
+                  <dd className="num">{fmtCompact(p?.shares ?? 0)}</dd>
                 </div>
-              ))}
-            </dl>
-          </article>
-        );
-      })}
+                <div>
+                  <dt>
+                    <Mail size={12} aria-hidden /> Inquiries
+                  </dt>
+                  <dd className="num">{fmtCompact(p?.inquiries ?? 0)}</dd>
+                </div>
+                {all &&
+                  MORE.map(([k, label, Icon]) => (
+                    <div key={k}>
+                      <dt>
+                        <Icon size={12} aria-hidden /> {label}
+                      </dt>
+                      <dd className="num">{fmtCompact(p?.[k] ?? 0)}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </article>
+          );
+        })}
+      </div>
+      <button className="cl-link-btn cl-counters-more" onClick={() => setAll((a) => !a)} aria-expanded={all}>
+        {all ? "Fewer metrics" : "Likes, comments, saves and follows"}
+      </button>
     </div>
   );
 }

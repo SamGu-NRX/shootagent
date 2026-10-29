@@ -1,4 +1,4 @@
-import { Clapperboard, Mic, MicOff, Music, Pause, Play, Sparkles, TriangleAlert, Trophy, Volume2, VolumeX } from "lucide-react";
+import { Clapperboard, Pause, Play, Sparkles, TriangleAlert, Trophy, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { CONTROL_AGENT } from "./phases";
 import { useCreator } from "./store";
@@ -79,12 +79,11 @@ export function ReelsSection() {
   return (
     <section id="cl-reels" className="cl-section" aria-labelledby="cl-reels-title">
       <SectionHead
-        n="02"
         id="cl-reels-title"
         title="The reels"
         sub={
           <>
-            Rendered 9:16 with kinetic text, voice and Reel Studio cards. <b>A</b> is the template reel most listings post; the room's picks sit beside it
+            A is the template reel most listings post. The room's two picks sit beside it
             {planned.some((p) => p.kind === "single_agent") ? ", with the single agent's best for comparison." : "."}
           </>
         }
@@ -255,28 +254,20 @@ function PhoneCard({
         </div>
       </div>
 
-      {reel && <RetentionStrip reel={reel} time={time} color={color} />}
-
+      {reel && <ExitStrip reel={reel} time={time} color={color} />}
       {reel && (
-        <ul className="cl-chips">
-          <li>
-            <Music size={11} aria-hidden /> {reel.music || "music"}
-          </li>
-          <li>
-            {reel.has_voice ? <Mic size={11} aria-hidden /> : <MicOff size={11} aria-hidden />}
-            {reel.has_voice ? `Voice${p.concept && p.concept.voice.voice !== "none" ? ` · ${p.concept.voice.voice}` : ""}` : "No voice"}
-          </li>
-          {reel.cards.map((c, i) => (
-            <li key={c + i}>{c.replace(/_/g, " ")} card</li>
-          ))}
-          <li className="num">{reel.seconds.toFixed(1)} s</li>
-        </ul>
-      )}
-      {reel?.warnings.map((w) => (
-        <p key={w} className="cl-warn">
-          <TriangleAlert size={12} aria-hidden /> {w}
+        <p className="cl-phone-meta">
+          <span className="num">{reel.seconds.toFixed(1)} s</span>
+          <span>{reel.music || "music"}</span>
+          <span>{reel.has_voice ? `voice${p.concept && p.concept.voice.voice !== "none" ? ` (${p.concept.voice.voice})` : ""}` : "no voice"}</span>
         </p>
-      ))}
+      )}
+      {reel && reel.warnings.length > 0 && (
+        <p className="cl-phone-note" title={reel.warnings.join("\n")}>
+          <TriangleAlert size={11} aria-hidden /> {reel.warnings.length} render note{reel.warnings.length === 1 ? "" : "s"}
+          <span className="sr-only">: {reel.warnings.join(" ")}</span>
+        </p>
+      )}
     </figure>
   );
 }
@@ -287,7 +278,6 @@ interface Exit {
   r: Reaction;
   v: ViewerPersona;
   x: number;
-  row: number;
 }
 
 /** Weighted share of the panel still watching at each of `n + 1` points across the reel. */
@@ -299,75 +289,57 @@ export function watchCurve(rs: Reaction[], weights: Map<string, number>, seconds
   });
 }
 
-function RetentionStrip({ reel, time, color }: { reel: Reel; time: number; color: string }) {
+/** One line under a phone: a tick where each viewer swiped away (their name on hover), and how many finished. */
+function ExitStrip({ reel, time, color }: { reel: Reel; time: number; color: string }) {
   const reactions = useCreator((s) => s.lab?.evaluation?.reactions ?? NONE);
   const viewers = useCreator((s) => s.lab?.evaluation?.viewers ?? NONE);
   const [hover, setHover] = useState<Exit | null>(null);
   const seconds = Math.max(reel.seconds, 0.1);
   const mine = useMemo(() => reactions.filter((r) => r.reel === reel.id), [reactions, reel.id]);
   const weights = useMemo(() => new Map(viewers.map((v) => [v.id, v.weight])), [viewers]);
-  const curve = useMemo(() => watchCurve(mine, weights, seconds), [mine, weights, seconds]);
-  const exits = useMemo(() => {
-    const rows: number[] = [];
-    return mine
-      .filter((r) => !r.completed)
-      .map((r) => ({ r, v: viewers.find((v) => v.id === r.viewer), x: Math.min(1, r.watch_seconds / seconds) }))
-      .filter((e): e is Omit<Exit, "row"> => !!e.v)
-      .sort((a, b) => a.x - b.x)
-      .map((e) => {
-        let row = rows.findIndex((last) => e.x - last > 0.045);
-        if (row < 0) row = rows.length < 3 ? rows.length : rows.indexOf(Math.min(...rows));
-        rows[row] = e.x;
-        return { ...e, row };
-      });
-  }, [mine, viewers, seconds]);
-
-  if (!mine.length) {
-    return <p className="cl-ret-empty">Where viewers swipe away shows here after the audience panel watches.</p>;
-  }
-  const w = 100;
-  const h = 30;
-  const pts = curve.map((f, i) => `${((i / (curve.length - 1)) * w).toFixed(2)},${(h - f * (h - 2)).toFixed(2)}`);
-  const end = curve[curve.length - 1] ?? 0;
+  const finished = useMemo(() => watchCurve(mine, weights, seconds, 1)[1] ?? 0, [mine, weights, seconds]);
+  const exits = useMemo(
+    () =>
+      mine
+        .filter((r) => !r.completed)
+        .map((r) => ({ r, v: viewers.find((v) => v.id === r.viewer), x: Math.min(1, r.watch_seconds / seconds) }))
+        .filter((e): e is Exit => !!e.v)
+        .sort((a, b) => a.x - b.x),
+    [mine, viewers, seconds],
+  );
+  if (!mine.length) return <p className="cl-exit-empty">Swipe-aways show here once the audience panel has watched.</p>;
   return (
-    <div className="cl-ret" style={reelStyle(color)}>
-      <div className="cl-ret-head">
-        <span>Still watching</span>
-        <span className="num">{fmtPct(end)} to the end</span>
-      </div>
-      <div className="cl-ret-plot">
-        <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden>
-          <polygon points={`0,${h} ${pts.join(" ")} ${w},${h}`} className="cl-ret-area" />
-          <polyline points={pts.join(" ")} className="cl-ret-line" vectorEffect="non-scaling-stroke" />
-        </svg>
-        <span className="cl-ret-head-line" style={{ left: `${Math.min(100, (time / seconds) * 100)}%` }} aria-hidden />
-      </div>
-      <div className="cl-ret-ticks" role="list" aria-label={`Viewers who swiped away from reel ${reel.id}`}>
+    <div className="cl-exit" style={reelStyle(color)}>
+      <div className="cl-exit-track" role="list" aria-label={`Where viewers swiped away from reel ${reel.id}`}>
+        <span className="cl-exit-played" style={{ width: `${Math.min(100, (time / seconds) * 100)}%` }} aria-hidden />
         {exits.map((e) => (
           <button
             key={e.v.id}
             role="listitem"
-            className="cl-ret-tick"
-            style={{ left: `${e.x * 100}%`, top: `${e.row * 7}px`, "--tick": e.v.color } as CSSProperties}
+            className="cl-exit-tick"
+            style={{ left: `${e.x * 100}%`, "--tick": e.v.color } as CSSProperties}
             onPointerEnter={() => setHover(e)}
-            onPointerLeave={() => setHover((h0) => (h0 === e ? null : h0))}
+            onPointerLeave={() => setHover((h) => (h === e ? null : h))}
             onFocus={() => setHover(e)}
-            onBlur={() => setHover((h0) => (h0 === e ? null : h0))}
+            onBlur={() => setHover((h) => (h === e ? null : h))}
             aria-label={`${e.v.name} swiped away at ${e.r.watch_seconds.toFixed(1)} s: ${e.r.first_impression}`}
           />
         ))}
         {hover && (
-          <div className="cl-ret-tip" style={{ left: `${Math.min(78, Math.max(22, hover.x * 100))}%` }} role="status">
+          <div className="cl-exit-tip" style={{ left: `${Math.min(80, Math.max(20, hover.x * 100))}%` }} role="status">
             <Avatar who={viewerWho(hover.v)} size={22} />
             <div>
               <p>
                 <b>{hover.v.name}</b> left at <span className="num">{hover.r.watch_seconds.toFixed(1)} s</span>
               </p>
-              <p className="cl-ret-tip-q">“{hover.r.first_impression}”</p>
+              <p className="cl-exit-tip-q">“{hover.r.first_impression}”</p>
             </div>
           </div>
         )}
       </div>
+      <span className="cl-exit-end">
+        <span className="num">{fmtPct(finished)}</span> finished
+      </span>
     </div>
   );
 }

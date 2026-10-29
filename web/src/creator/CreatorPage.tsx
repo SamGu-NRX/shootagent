@@ -5,7 +5,7 @@ import { Clapperboard, Lightbulb, Play, Scale, TrendingUp } from "lucide-react";
 import { useEffect } from "react";
 import { useStore } from "../state/store";
 import { ConceptDrawer } from "./ConceptDrawer";
-import { LabHeader, PhaseStepper } from "./Header";
+import { LabHeader, StageBar } from "./Header";
 import { LaunchSection } from "./Launch";
 import { ReelsSection } from "./Reels";
 import { RoomSection } from "./Room";
@@ -44,10 +44,8 @@ export default function CreatorPage({ shootId, labId }: { shootId: string; labId
 
   return (
     <div className="cl">
-      <div className="cl-sticky">
-        <LabHeader />
-        <PhaseStepper />
-      </div>
+      <LabHeader />
+      {lab && <StageBar />}
       {stale && (
         <p className="cl-stale" role="status">
           {stale}

@@ -31,20 +31,27 @@ export function CreativityMap() {
   const agents = useAgents();
   const [hover, setHover] = useState<MapPoint | null>(null);
   const [box, W] = useWidth<HTMLDivElement>(620);
+  // all points by default (the honest context); zoomed, the frame fits the concepts and clips the cloud
+  const [zoom, setZoom] = useState(false);
 
   const geo = useMemo(() => {
     const pts = map?.points ?? [];
     if (!pts.length) return null;
-    const xs = pts.map((p) => p.x);
-    const ys = pts.map((p) => p.y);
-    const [x0, x1] = [Math.min(...xs), Math.max(...xs)];
-    const [y0, y1] = [Math.min(...ys), Math.max(...ys)];
+    // the room's and the single agent's ideas; the template sits among the cliches, so zooming leaves it out
+    const ideas = pts.filter((p) => p.kind === "concept" || p.kind === "finalist" || p.kind === "single_agent");
+    const basis = zoom && ideas.length > 1 ? ideas : pts;
+    const xs = basis.map((p) => p.x);
+    const ys = basis.map((p) => p.y);
+    const padX = zoom ? (Math.max(...xs) - Math.min(...xs)) * 0.08 : 0;
+    const padY = zoom ? (Math.max(...ys) - Math.min(...ys)) * 0.1 : 0;
+    const [x0, x1] = [Math.min(...xs) - padX, Math.max(...xs) + padX];
+    const [y0, y1] = [Math.min(...ys) - padY, Math.max(...ys) + padY];
     const sx = (x: number) => PAD + ((x - x0) / (x1 - x0 || 1)) * (W - 2 * PAD);
     const sy = (y: number) => H - PAD - ((y - y0) / (y1 - y0 || 1)) * (H - 2 * PAD);
     const at = new Map(pts.map((p) => [p.id, { x: sx(p.x), y: sy(p.y) }]));
     const cliches = pts.filter((p) => p.kind === "cliche").map((p) => at.get(p.id)!);
     return { sx, sy, at, zone: cliches.length > 2 ? cloudEllipse(cliches) : null };
-  }, [map, W]);
+  }, [map, W, zoom]);
 
   if (!map || !geo) {
     return (
@@ -66,6 +73,23 @@ export function CreativityMap() {
   const cliches = pts.filter((p) => p.kind === "cliche");
   const order: Record<MapPoint["kind"], number> = { cliche: 0, concept: 1, single_agent: 2, baseline: 3, finalist: 4 };
   const marks = pts.filter((p) => p.kind !== "cliche").sort((a, b) => order[a.kind] - order[b.kind]);
+  // labels for the rendered reels' concepts: right of the dot (left near the edge), nudged apart vertically
+  const labels = new Map<string, { x: number; y: number; anchor: "start" | "end" }>();
+  const placed: { x0: number; x1: number; y: number }[] = [];
+  for (const p of marks.filter((m) => reelOf.has(m.id)).sort((a, b) => geo.at.get(a.id)!.y - geo.at.get(b.id)!.y)) {
+    const a = geo.at.get(p.id)!;
+    const left = a.x > W - 230;
+    const width = 7 * (p.label.length + 4);
+    const x0 = left ? a.x - 16 - width : a.x + 16;
+    let y = a.y + 4;
+    for (let tries = 0; tries < 8; tries++) {
+      const hit = placed.find((q) => Math.abs(q.y - y) < 16 && q.x0 < x0 + width && x0 < q.x1);
+      if (!hit) break;
+      y = hit.y + 16;
+    }
+    placed.push({ x0, x1: x0 + width, y });
+    labels.set(p.id, { x: left ? a.x - 16 : a.x + 16, y, anchor: left ? "end" : "start" });
+  }
   const lineage = (concepts ?? []).flatMap((c) => c.parents.filter((p) => geo.at.has(p) && geo.at.has(c.id)).map((p) => [geo.at.get(p)!, geo.at.get(c.id)!] as const));
   const hp = hover ? geo.at.get(hover.id) : null;
   const hn = hover ? nov.get(hover.id) : undefined;
@@ -82,14 +106,25 @@ export function CreativityMap() {
     <div className="cl-panel cl-map">
       <div className="cl-panel-head">
         <h3 className="cl-label">Creativity map</h3>
-        <span className="cl-panel-count">{map.method}</span>
+        <span className="cl-map-tools">
+          <span className="cl-panel-count">{map.method}</span>
+          <button className="cl-link-btn" onClick={() => setZoom((z) => !z)} aria-pressed={zoom}>
+            {zoom ? "Show every phrase" : "Zoom to the concepts"}
+          </button>
+        </span>
       </div>
       <div className="cl-map-plot" ref={box}>
         <svg width={W} height={H} role="img" aria-label={`Creativity map: ${marks.length} concepts and ${cliches.length} stock listing phrases placed by meaning.`}>
+          <defs>
+            <clipPath id="cl-map-clip">
+              <rect x={0} y={0} width={W} height={H} />
+            </clipPath>
+          </defs>
+          <g clipPath="url(#cl-map-clip)">
           {geo.zone && (
             <g className="cl-map-zone">
               <ellipse cx={geo.zone.cx} cy={geo.zone.cy} rx={geo.zone.rx} ry={geo.zone.ry} transform={`rotate(${geo.zone.angle} ${geo.zone.cx} ${geo.zone.cy})`} />
-              <text x={geo.zone.cx} y={Math.max(14, geo.zone.cy - Math.max(geo.zone.rx, geo.zone.ry) * 0.62)} textAnchor="middle">
+              <text x={geo.zone.cx} y={Math.min(H - 8, geo.zone.cy + Math.min(geo.zone.rx, geo.zone.ry) * 0.72)} textAnchor="middle">
                 the cliche zone
               </text>
             </g>
@@ -136,14 +171,18 @@ export function CreativityMap() {
                   <circle cx={a.x} cy={a.y} r={p.kind === "finalist" ? 6.5 : 5.5} style={{ fill: color }} className="cl-map-dot" />
                 )}
                 {ring && p.kind !== "baseline" && <circle cx={a.x} cy={a.y} r={11} className="cl-map-ring" style={{ stroke: ring }} />}
+                {reel && labels.get(p.id) && Math.abs(labels.get(p.id)!.y - 4 - a.y) > 3 && (
+                  <line className="cl-map-leader" x1={a.x} y1={a.y} x2={labels.get(p.id)!.x + (labels.get(p.id)!.anchor === "end" ? 3 : -3)} y2={labels.get(p.id)!.y - 4} />
+                )}
                 {reel && (
-                  <text x={a.x > W - 230 ? a.x - 16 : a.x + 16} y={a.y + 4} textAnchor={a.x > W - 230 ? "end" : "start"} className="cl-map-label">
+                  <text x={labels.get(p.id)?.x ?? a.x + 16} y={labels.get(p.id)?.y ?? a.y + 4} textAnchor={labels.get(p.id)?.anchor ?? "start"} className="cl-map-label">
                     {reel.id} · {p.label}
                   </text>
                 )}
               </g>
             );
           })}
+          </g>
         </svg>
         {hover && hp && (
           <div className="cl-map-tip" style={{ left: hp.x, top: hp.y }} data-flip={hp.x > W * 0.6 || undefined} role="status">

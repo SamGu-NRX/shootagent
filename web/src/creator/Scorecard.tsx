@@ -1,11 +1,12 @@
-import { Check, Info, Scale } from "lucide-react";
+import { Check, Scale, TriangleAlert } from "lucide-react";
 import { useMemo, useState, type CSSProperties } from "react";
 import { CreativityMap } from "./CreativityMap";
 import { plannedReels } from "./Reels";
 import { useCreator } from "./store";
+import { firstSentence } from "./story";
 import { agreementLabel, DIMENSION_LABEL, DIMENSIONS, dimensionMeans, headToHead, kendallFromRatings } from "./stats";
 import type { Evaluation, LabState, Reel, ReelSummary } from "./types";
-import { Avatar, fmtPct, numberWord, ReelBadge, reelColors, reelStyle, SectionHead, useAgents, viewerWho } from "./ui";
+import { Avatar, Disclosure, fmtPct, numberWord, ReelBadge, reelColors, reelStyle, SectionHead, useAgents, viewerWho } from "./ui";
 
 export function ScorecardSection() {
   const lab = useCreator((s) => s.lab)!;
@@ -16,21 +17,16 @@ export function ScorecardSection() {
   return (
     <section id="cl-scorecard" className="cl-section" aria-labelledby="cl-scorecard-title">
       <SectionHead
-        n="03"
         id="cl-scorecard-title"
-        title="Creativity scorecard"
+        title="Scorecard"
         sub={
           <>
-            An independent panel that never saw the room's notes: {nViewers ? numberWord(nViewers) : "the"} viewer agents react as their audience segment,{" "}
-            {nJudges ? numberWord(nJudges) : "the"} judges rate blind and vote head-to-head, and novelty is measured, not judged.
+            An independent panel that never saw the room's notes: {nJudges ? numberWord(nJudges) : "the"} judges rate the reels blind and vote head to head,{" "}
+            {nViewers ? numberWord(nViewers) : "the"} viewer agents react as their audience segment, and novelty is measured, not judged.
           </>
         }
       />
-      {!ev || !lab.reels.length ? (
-        <Waiting lab={lab} />
-      ) : (
-        <Scores lab={lab} ev={ev} colors={colors} />
-      )}
+      {!ev || !lab.reels.length ? <Waiting lab={lab} /> : <Scores lab={lab} ev={ev} colors={colors} />}
     </section>
   );
 }
@@ -40,7 +36,7 @@ function Waiting({ lab }: { lab: LabState }) {
   return (
     <div className="cl-waiting">
       <Scale size={18} strokeWidth={1.6} aria-hidden />
-      <p>The panel watches once the reels are rendered. Scores, agreement, novelty and the verdict land here.</p>
+      <p>The panel watches once the reels are rendered. The ranking, the verdict and the creativity map land here.</p>
       <ul>
         {steps.map((p) => (
           <li key={p!.key} data-status={p!.status}>
@@ -55,140 +51,160 @@ function Waiting({ lab }: { lab: LabState }) {
 function Scores({ lab, ev, colors }: { lab: LabState; ev: Evaluation; colors: Record<string, string> }) {
   const reels = lab.reels;
   const ids = reels.map((r) => r.id);
-  const summaries = new Map(ev.summaries.map((s) => [s.reel, s]));
+  const summaries = useMemo(() => new Map(ev.summaries.map((s) => [s.reel, s])), [ev.summaries]);
   return (
-    <div className="cl-score">
-      <Verdict ev={ev} />
-      <div className="cl-score-cards" style={{ "--n": reels.length } as CSSProperties}>
-        {reels.map((r) => (
-          <ReelScore key={r.id} reel={r} color={colors[r.id]!} ev={ev} summary={summaries.get(r.id)} />
-        ))}
-      </div>
-      <div className="cl-score-row">
-        <Dimensions ev={ev} reels={reels} colors={colors} />
+    <>
+      <div className="cl-score-top">
+        <div className="cl-score-left">
+          <Ranking reels={reels} ev={ev} summaries={summaries} colors={colors} />
+          <Verdict ev={ev} />
+          <Diversity ev={ev} />
+        </div>
         <CreativityMap />
       </div>
-      <div className="cl-score-row cl-score-row-3">
-        <HeadToHead ev={ev} ids={ids} colors={colors} />
-        <Agreement ev={ev} ids={ids} />
-        <AudienceRates reels={reels} colors={colors} summaries={summaries} />
-      </div>
-      <AudiencePanel ev={ev} reels={reels} colors={colors} />
-    </div>
+      <Disclosure className="cl-full" label="Full scorecard: seven dimensions, head-to-head votes, judge agreement and the audience panel" openLabel="Hide the full scorecard">
+        <div className="cl-full-grid">
+          <Dimensions ev={ev} reels={reels} colors={colors} />
+          <HeadToHead ev={ev} ids={ids} colors={colors} />
+          <Agreement ev={ev} ids={ids} />
+          <AudienceRates reels={reels} colors={colors} summaries={summaries} />
+        </div>
+        <AudiencePanel ev={ev} reels={reels} colors={colors} />
+      </Disclosure>
+    </>
   );
 }
 
-// ---- verdict and caveats ----------------------------------------------------------------------------
+// ---- the ranking ------------------------------------------------------------------------------------
+
+function Ranking({ reels, ev, summaries, colors }: { reels: Reel[]; ev: Evaluation; summaries: Map<string, ReelSummary>; colors: Record<string, string> }) {
+  const rows = reels
+    .map((r) => {
+      const ratings = ev.ratings.filter((x) => x.reel === r.id);
+      const s = summaries.get(r.id);
+      const creativity = s?.creativity ?? (ratings.length ? ratings.reduce((a, x) => a + x.creativity, 0) / ratings.length : null);
+      const wins = ev.pairwise.filter((v) => v.winner === r.id).length;
+      const games = ev.pairwise.filter((v) => v.first === r.id || v.second === r.id).length;
+      const novelty = ev.novelty.find((n) => n.kind === "reel" && n.id === r.id)?.novelty ?? s?.novelty ?? null;
+      return { r, creativity, sd: s?.creativity_sd ?? 0, wins, games, novelty };
+    })
+    .sort((a, b) => (b.creativity ?? -1) - (a.creativity ?? -1));
+  return (
+    <ol className="cl-rank" aria-label="Reels ranked by the judges' creativity score">
+      {rows.map((row, i) => (
+        <li key={row.r.id} className="cl-rank-row" style={reelStyle(colors[row.r.id]!)} data-kind={row.r.kind}>
+          <span className="cl-rank-n num">{i + 1}</span>
+          <ReelBadge id={row.r.id} color={colors[row.r.id]!} size={26} />
+          <span className="cl-rank-name">
+            <b>{row.r.label}</b>
+            <span>{row.r.title}</span>
+          </span>
+          <span className="cl-rank-score" title={`Judges' mean creativity, ± ${row.sd.toFixed(1)} sd`}>
+            <span className="cl-rank-big num">{row.creativity != null ? row.creativity.toFixed(1) : "–"}</span>
+            <span className="cl-rank-of">/ 10</span>
+            <span className="cl-rank-bar" aria-hidden>
+              <span style={{ width: `${((row.creativity ?? 0) / 10) * 100}%` }} />
+            </span>
+          </span>
+          <span className="cl-rank-fact">
+            <span>
+              won <span className="num">{row.wins}</span> of <span className="num">{row.games}</span>
+            </span>
+            <small>head-to-heads</small>
+          </span>
+          <span className="cl-rank-fact">
+            <span className="num">{row.novelty != null ? row.novelty.toFixed(2) : "–"}</span>
+            <small>novelty</small>
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+// ---- verdict, caveats, diversity -----------------------------------------------------------------------
+
+/** The caveat that most needs reading: the one that says the panel is simulated, else the first. */
+export function leadCaveat(notes: string[]): string | undefined {
+  return notes.find((n) => /not a person|simulat|language model|claude agent/i.test(n)) ?? notes[0];
+}
 
 function Verdict({ ev }: { ev: Evaluation }) {
   const head = useAgents()("head_judge");
+  const [full, setFull] = useState(false);
   if (!ev.verdict && !ev.notes.length) {
     return (
-      <div className="cl-verdict-row">
-        <p className="cl-empty-line">
-          <span className="spinner spinner-sm" aria-hidden /> The head judge writes the verdict once the panel, the judges and the novelty scores are in.
-        </p>
-      </div>
+      <p className="cl-quiet">
+        <span className="spinner spinner-sm" aria-hidden /> The head judge writes the verdict once the panel, the judges and the novelty scores are in.
+      </p>
     );
   }
+  const short = ev.verdict ? (() => {
+    const one = firstSentence(ev.verdict);
+    const rest = ev.verdict.slice(ev.verdict.indexOf(one) + one.length).trim();
+    return rest ? `${one} ${firstSentence(rest)}` : one;
+  })() : "";
+  const lead = leadCaveat(ev.notes);
   return (
-    <div className="cl-verdict-row">
-      <figure className="cl-verdict-quote">
-        <figcaption>
-          <Avatar who={head} size={24} /> <span>{head.name !== "head judge" ? head.name : "Head judge"}'s verdict</span>
-        </figcaption>
-        <blockquote>{ev.verdict}</blockquote>
-      </figure>
+    <div className="cl-verdict-block">
+      {ev.verdict && (
+        <figure className="cl-quote">
+          <blockquote>{full ? ev.verdict : short}</blockquote>
+          <figcaption>
+            <Avatar who={head} size={20} />
+            <span>{head.name !== "head judge" ? head.name : "Head judge"}</span>
+            {short !== ev.verdict && (
+              <button className="cl-link-btn" onClick={() => setFull((f) => !f)} aria-expanded={full}>
+                {full ? "Shorter" : "Full verdict"}
+              </button>
+            )}
+          </figcaption>
+        </figure>
+      )}
       {ev.notes.length > 0 && (
-        <aside className="cl-caveats" aria-label="Caveats">
-          <h3 className="cl-label">
-            <Info size={12} aria-hidden /> Read this before quoting a number
-          </h3>
-          <ul>
+        <Disclosure
+          className="cl-caveats"
+          label={
+            <>
+              <TriangleAlert size={12} aria-hidden className="cl-caveat-icon" />
+              <b>
+                {ev.notes.length} caveat{ev.notes.length === 1 ? "" : "s"}
+              </b>
+              <span className="cl-caveat-lead">{lead}</span>
+            </>
+          }
+          openLabel={
+            <>
+              <TriangleAlert size={12} aria-hidden className="cl-caveat-icon" />
+              <b>
+                {ev.notes.length} caveat{ev.notes.length === 1 ? "" : "s"}
+              </b>
+            </>
+          }
+        >
+          <ul className="cl-caveat-list">
             {ev.notes.map((n) => (
               <li key={n}>{n}</li>
             ))}
           </ul>
-        </aside>
+        </Disclosure>
       )}
     </div>
   );
 }
 
-// ---- per reel ---------------------------------------------------------------------------------------
-
-function ReelScore({ reel, color, ev, summary }: { reel: Reel; color: string; ev: Evaluation; summary: ReelSummary | undefined }) {
-  const agents = useAgents();
-  const ratings = ev.ratings.filter((r) => r.reel === reel.id);
-  const novelty = ev.novelty.find((n) => n.kind === "reel" && n.id === reel.id);
-  const wins = ev.pairwise.filter((v) => v.winner === reel.id).length;
-  const games = ev.pairwise.filter((v) => v.first === reel.id || v.second === reel.id).length;
-  const mean = summary?.creativity ?? (ratings.length ? ratings.reduce((a, r) => a + r.creativity, 0) / ratings.length : null);
-  const sdv = summary?.creativity_sd ?? 0;
-  const x = (v: number) => `${((v - 1) / 9) * 100}%`;
-  // judges who gave the same score stack upward
-  const seen = new Map<number, number>();
+function Diversity({ ev }: { ev: Evaluation }) {
+  const room = ev.diversity.room;
+  const single = ev.diversity.single_agent;
+  if (room == null || single == null) return null;
+  const close = Math.abs(room - single) < 0.02;
   return (
-    <article className="cl-rs" style={reelStyle(color)} data-kind={reel.kind}>
-      <header className="cl-rs-head">
-        <ReelBadge id={reel.id} color={color} size={26} />
-        <div>
-          <p className="cl-rs-label">{reel.label}</p>
-          <p className="cl-rs-title">{reel.title}</p>
-        </div>
-      </header>
-
-      <div className="cl-rs-block">
-        <p className="cl-rs-k">Creativity · judges</p>
-        <p className="cl-rs-big">
-          <span className="cl-rs-num">{mean != null ? mean.toFixed(1) : "–"}</span>
-          {mean != null && <span className="cl-rs-sd num">± {sdv.toFixed(1)} sd</span>}
-          <span className="cl-rs-of">/ 10</span>
-        </p>
-        <div className="cl-dots" role="img" aria-label={`Judge scores: ${ratings.map((r) => `${agents(r.judge).name} ${r.creativity}`).join(", ")}`}>
-          <span className="cl-dots-axis" />
-          {mean != null && sdv > 0 && <span className="cl-dots-sd" style={{ left: x(Math.max(1, mean - sdv)), right: `calc(100% - ${x(Math.min(10, mean + sdv))})` }} />}
-          {ratings.map((r) => {
-            const k = seen.get(r.creativity) ?? 0;
-            seen.set(r.creativity, k + 1);
-            return <span key={r.judge} className="cl-dot" style={{ left: x(r.creativity), bottom: `${6 + k * 9}px` }} title={`${agents(r.judge).name}: ${r.creativity}`} />;
-          })}
-          {mean != null && <span className="cl-dots-mean" style={{ left: x(mean) }} />}
-          <span className="cl-dots-tick num" style={{ left: 0 }}>
-            1
-          </span>
-          <span className="cl-dots-tick num" style={{ left: "100%" }}>
-            10
-          </span>
-        </div>
-      </div>
-
-      <dl className="cl-rs-facts">
-        <div>
-          <dt>Head-to-head</dt>
-          <dd>
-            <b className="num">{games ? fmtPct(wins / games) : "–"}</b>
-            <span className="num">
-              won {wins} of {games}
-            </span>
-          </dd>
-        </div>
-        <div>
-          <dt>Novelty</dt>
-          <dd>
-            <b className="num">{novelty ? novelty.novelty.toFixed(2) : summary ? summary.novelty.toFixed(2) : "–"}</b>
-            <span className="cl-meter cl-meter-wide" aria-hidden>
-              <span style={{ width: `${(novelty?.novelty ?? summary?.novelty ?? 0) * 100}%` }} />
-            </span>
-          </dd>
-        </div>
-      </dl>
-      {novelty && (
-        <p className="cl-rs-cliche">
-          Closest cliche <q>{novelty.nearest_cliche}</q> <span className="num">({novelty.cliche_similarity.toFixed(2)})</span>
-        </p>
-      )}
-    </article>
+    <p className="cl-diversity">
+      <span className="cl-diversity-k">Idea diversity</span> room <b className="num">{room.toFixed(2)}</b> · single agent <b className="num">{single.toFixed(2)}</b>
+      <span className="cl-diversity-v">
+        {close ? "about the same spread of first ideas." : room > single ? "the room's first ideas were more varied." : "the single agent's first ideas were more varied."}
+      </span>
+    </p>
   );
 }
 
@@ -309,8 +325,6 @@ function Agreement({ ev, ids }: { ev: Evaluation; ids: string[] }) {
   const panel = [a.judges && `${a.judges} judges`, a.reels && `${a.reels} reels`, a.pairs_judged && `${a.pairs_judged} pairs judged both ways`]
     .filter(Boolean)
     .join(" · ");
-  const room = ev.diversity.room;
-  const single = ev.diversity.single_agent;
   return (
     <div className="cl-panel cl-agree">
       <div className="cl-panel-head">
@@ -354,24 +368,6 @@ function Agreement({ ev, ids }: { ev: Evaluation; ids: string[] }) {
           {a.kendall_w_p != null && panel && " · "}
           {panel}
         </p>
-      )}
-      {room != null && single != null && (
-        <div className="cl-agree-div">
-          <p className="cl-label">Idea diversity · room vs single agent</p>
-          <div className="cl-divpair">
-            <span>Room</span>
-            <span className="cl-divpair-track" data-tone="room">
-              <span style={{ width: `${(room / Math.max(room, single)) * 100}%` }} />
-            </span>
-            <b className="num">{room.toFixed(2)}</b>
-            <span>Single agent</span>
-            <span className="cl-divpair-track" data-tone="single">
-              <span style={{ width: `${(single / Math.max(room, single)) * 100}%` }} />
-            </span>
-            <b className="num">{single.toFixed(2)}</b>
-          </div>
-          <p className="cl-foot">Mean distance between concepts at equal numbers. The room's ideas are {room > single ? `${(room / Math.max(single, 1e-9)).toFixed(1)}× as spread out` : "no more varied"}.</p>
-        </div>
       )}
     </div>
   );

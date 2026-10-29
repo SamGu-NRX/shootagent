@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { conceptSeconds, ConceptChip, criticMeans, VerdictChip } from "./Room";
 import { useCreator } from "./store";
 import type { Beat, CardSpec, Motion, ReelConcept, Transition } from "./types";
-import { Avatar, fmtScore, focusStyle, ReelBadge, reelColors, useAgents } from "./ui";
+import { Avatar, fmtScore, focusStyle, ReelBadge, reelColors, Rich, useAgents } from "./ui";
 
 const MOTION: Record<Motion, string> = {
   push_in: "Push in",
@@ -141,7 +141,9 @@ function DrawerBody({ c }: { c: ReelConcept }) {
       <p className="cl-drawer-logline">{c.logline}</p>
 
       <figure className="cl-drawer-hook">
-        <blockquote>“{c.hook.text}”</blockquote>
+        <blockquote>
+          “<Rich text={c.hook.text} />”
+        </blockquote>
         <figcaption>
           Hook · {human(c.hook.style)} text{c.hook.sfx !== "none" ? ` · ${human(c.hook.sfx)}` : ""}
           {c.hook.voiceover ? ` · spoken: “${c.hook.voiceover}”` : " · silent"}
@@ -186,7 +188,7 @@ function DrawerBody({ c }: { c: ReelConcept }) {
               <span>{c.ending.text}</span>
             </div>
             <div className="cl-beat-info">
-              <p className="cl-beat-time num">Ending · {human(c.ending.style)}</p>
+              <p className="cl-beat-time">Ending · {human(c.ending.style)}</p>
               <p className="cl-beat-onscreen">{c.ending.text}</p>
               {c.ending.voiceover && <p className="cl-beat-vo">“{c.ending.voiceover}”</p>}
             </div>
@@ -301,7 +303,7 @@ function BeatRow({ b, i, start, photo, room, drop, hook }: { b: Beat; i: number;
         {b.card && b.card.kind !== "none" && <span className="cl-beat-card">{cardText(b.card)}</span>}
       </div>
       <div className="cl-beat-info">
-        <p className="cl-beat-time num">
+        <p className="cl-beat-time">
           Shot {i + 1} · {start.toFixed(1)}–{(start + b.seconds).toFixed(1)} s{drop && <span className="cl-beat-drop"> · drop</span>}
         </p>
         <p className="cl-beat-moves">

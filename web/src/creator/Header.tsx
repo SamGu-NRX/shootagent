@@ -1,10 +1,12 @@
-import { ArrowLeft, Check, ChevronDown, Circle, Minus, Play, RotateCw, Square, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, Circle, ListTree, Minus, Play, RotateCw, Square, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { radioKeys } from "../components/radioKeys";
 import { phaseLabel, SECTIONS, stepPhases, type StepPhase } from "./phases";
 import { creatorRoute, useCreator } from "./store";
 import { DEFAULT_OPTIONS, type LabOptions, type LabState, type PhaseStatus } from "./types";
-import { fmtClock, fmtUsd, goToSection, plural, useLabClock, useReducedMotion } from "./ui";
+import { fmtClock, fmtSpan, fmtUsd, goToSection, useLabClock, useReducedMotion } from "./ui";
+
+// ---- header: one line -----------------------------------------------------------------------------
 
 export function LabHeader() {
   const lab = useCreator((s) => s.lab);
@@ -14,7 +16,7 @@ export function LabHeader() {
   const elapsed = useLabClock(lab, mode === "live");
   const listing = shoot?.listing;
   const title = listing?.address || lab?.title || shoot?.title || "";
-  const facts = [
+  const meta = [
     listing?.price,
     listing?.beds != null ? `${listing.beds} bed` : null,
     listing?.baths != null ? `${listing.baths} bath` : null,
@@ -23,41 +25,56 @@ export function LabHeader() {
 
   return (
     <header className="cl-top">
-      <a className="icon-btn" href={shootId ? `#/s/${encodeURIComponent(shootId)}` : "#/"} aria-label="Back to the shoot">
-        <ArrowLeft size={16} />
-      </a>
-      <div className="cl-top-title">
-        <span className="cl-kicker">
-          <LabMark /> Creative lab
-        </span>
-        <h1>{title || <span className="skeleton-text" style={{ width: 180 }} />}</h1>
-      </div>
-      {facts.length > 0 && <p className="cl-top-facts num">{facts.join(" · ")}</p>}
-      <div className="cl-top-right">
-        {mode === "mock" && (
-          <span className="badge-demo" title="A recorded lab replayed in the browser, sped up. No agents are running.">
-            Demo replay
-          </span>
-        )}
-        <LabPicker />
-        {lab && <StatusPill lab={lab} elapsed={elapsed} />}
-        {lab && (
-          <span className="cl-cost num" title={`${lab.usage.calls} model calls, ${(lab.usage.input_tokens / 1000).toFixed(0)}K tokens in, ${(lab.usage.output_tokens / 1000).toFixed(0)}K out`}>
-            {fmtUsd(lab.usage.usd)}
-          </span>
-        )}
-        <RunControls />
+      <div className="cl-wrap cl-top-row">
+        <a className="icon-btn" href={shootId ? `#/s/${encodeURIComponent(shootId)}` : "#/"} aria-label="Back to the shoot">
+          <ArrowLeft size={16} />
+        </a>
+        <h1 className="cl-top-title">{title || <span className="skeleton-text" style={{ width: 180 }} />}</h1>
+        <p className="cl-top-meta">
+          <span>Creative lab</span>
+          {meta.map((m) => (
+            <span key={m}>{m}</span>
+          ))}
+        </p>
+        <div className="cl-top-right">
+          {mode === "mock" && (
+            <span className="cl-tag" title="A recorded lab replayed in the browser, sped up. No agents are running.">
+              Demo replay
+            </span>
+          )}
+          {lab && <StatusPill lab={lab} elapsed={elapsed} />}
+          <LabPicker />
+          <RunControls />
+        </div>
       </div>
     </header>
   );
 }
 
-export function LabMark() {
+/** State, time and spend in one pill: "Done · 10:50 · $10.22". */
+function StatusPill({ lab, elapsed }: { lab: LabState; elapsed: number }) {
+  const running = lab.status === "running";
+  const current = running ? (lab.phases.find((p) => p.key === lab.phase) ?? lab.phases.find((p) => p.status === "running")) : undefined;
+  const ENDED: Record<string, string> = { done: "Done", failed: "Failed", cancelled: "Cancelled" };
+  const state = running ? (current ? phaseLabel(current.key) : "Running") : (ENDED[lab.status] ?? lab.status);
   return (
-    <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden className="cl-mark">
-      <path d="M2 7V2h5M18 7V2h-5M2 13v5h5M18 13v5h-5" stroke="currentColor" strokeWidth="1.8" fill="none" />
-      <circle cx="10" cy="10" r="2.6" fill="var(--agent)" />
-    </svg>
+    <span
+      className="cl-pill"
+      data-status={lab.status}
+      role="status"
+      title={[current?.detail, lab.error, `${lab.usage.calls} model calls`].filter(Boolean).join(" · ")}
+    >
+      {running ? <span className="live-dot" aria-hidden /> : lab.status === "done" ? <Check size={13} aria-hidden /> : <X size={13} aria-hidden />}
+      <span>{state}</span>
+      <span className="cl-pill-sep" aria-hidden>
+        ·
+      </span>
+      <span className="num">{fmtClock(running ? elapsed : lab.elapsed)}</span>
+      <span className="cl-pill-sep" aria-hidden>
+        ·
+      </span>
+      <span className="num">{fmtUsd(lab.usage.usd)}</span>
+    </span>
   );
 }
 
@@ -65,46 +82,24 @@ function LabPicker() {
   const labs = useCreator((s) => s.labs);
   const labId = useCreator((s) => s.labId);
   const shootId = useCreator((s) => s.shootId);
-  if (!shootId || labs.length < 1) return null;
+  if (!shootId || labs.length < 2) return null;
   const when = (iso: string) => {
     const d = new Date(iso);
     return Number.isNaN(d.getTime()) ? iso : d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   };
   return (
-    <label className="cl-picker">
+    <label className="cl-picker" title="Switch lab">
       <span className="sr-only">Lab</span>
       <select value={labId ?? ""} onChange={(e) => (location.hash = creatorRoute(shootId, e.target.value))}>
         {labs.map((l) => (
           <option key={l.id} value={l.id}>
-            {when(l.created)} · {l.status} · {plural(l.reels, "reel")} · {fmtUsd(l.usd)}
+            {when(l.created)}
+            {l.status === "done" ? "" : ` · ${l.status}`} · {fmtUsd(l.usd)}
           </option>
         ))}
       </select>
       <ChevronDown size={13} aria-hidden />
     </label>
-  );
-}
-
-function StatusPill({ lab, elapsed }: { lab: LabState; elapsed: number }) {
-  if (lab.status === "running") {
-    const current = lab.phases.find((p) => p.key === lab.phase) ?? lab.phases.find((p) => p.status === "running");
-    return (
-      <span className="live-pill cl-status" role="status">
-        <span className="live-dot" aria-hidden />
-        <span className="cl-status-text">
-          {current ? phaseLabel(current.key) : "Running"}
-          {current?.detail ? <span className="cl-status-detail"> · {current.detail}</span> : null}
-        </span>
-        <span className="num">{fmtClock(elapsed)}</span>
-      </span>
-    );
-  }
-  const text = lab.status === "done" ? "Done in" : lab.status === "cancelled" ? "Cancelled at" : "Failed at";
-  return (
-    <span className="cl-status" data-status={lab.status} role="status" title={lab.error ?? undefined}>
-      {lab.status === "done" ? <Check size={13} aria-hidden /> : <X size={13} aria-hidden />}
-      {text} <span className="num">{fmtClock(lab.elapsed)}</span>
-    </span>
   );
 }
 
@@ -117,6 +112,21 @@ function savedOptions(): LabOptions {
   }
 }
 
+/** Closes a popover on an outside pointer-down or Escape. */
+function useDismiss(open: boolean, close: () => void, wrap: React.RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => wrap.current?.contains(e.target as Node) || close();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, close, wrap]);
+}
+
 function RunControls() {
   const lab = useCreator((s) => s.lab);
   const starting = useCreator((s) => s.starting);
@@ -127,18 +137,7 @@ function RunControls() {
   const [opts, setOpts] = useState(savedOptions);
   const wrap = useRef<HTMLDivElement>(null);
   const running = lab?.status === "running";
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: PointerEvent) => wrap.current?.contains(e.target as Node) || setOpen(false);
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("pointerdown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  useDismiss(open, () => setOpen(false), wrap);
 
   const set = <K extends keyof LabOptions>(k: K, v: LabOptions[K]) =>
     setOpts((o) => {
@@ -155,12 +154,12 @@ function RunControls() {
   return (
     <div className="cl-run" ref={wrap}>
       {running && (
-        <button className="btn" onClick={() => void cancel()}>
+        <button className="btn btn-quiet" onClick={() => void cancel()}>
           <Square size={11} aria-hidden /> Cancel
         </button>
       )}
       {(lab?.status === "cancelled" || lab?.status === "failed") && (
-        <button className="btn" onClick={() => void resume()}>
+        <button className="btn btn-quiet" onClick={() => void resume()}>
           <RotateCw size={13} aria-hidden /> Resume
         </button>
       )}
@@ -241,71 +240,159 @@ function Toggle({ checked, onChange, label, hint, disabled }: { checked: boolean
   );
 }
 
-// ---- the phase stepper ------------------------------------------------------------------------------
+// ---- four stages, sticky ----------------------------------------------------------------------------
 
 const STATUS_WORD: Record<PhaseStatus, string> = { pending: "waiting", running: "running", done: "done", failed: "failed", skipped: "skipped" };
 
-function StepIcon({ status }: { status: PhaseStatus }) {
+function StatusIcon({ status, size = 12 }: { status: PhaseStatus; size?: number }) {
   switch (status) {
     case "done":
-      return <Check size={12} strokeWidth={2.4} aria-hidden />;
+      return <Check size={size} strokeWidth={2.4} aria-hidden />;
     case "failed":
-      return <X size={12} strokeWidth={2.4} aria-hidden />;
+      return <X size={size} strokeWidth={2.4} aria-hidden />;
     case "skipped":
-      return <Minus size={12} aria-hidden />;
+      return <Minus size={size} aria-hidden />;
     case "running":
-      return <span className="cl-step-pulse" aria-hidden />;
+      return <span className="cl-stage-pulse" aria-hidden />;
     default:
-      return <Circle size={9} aria-hidden />;
+      return <Circle size={size - 3} aria-hidden />;
   }
 }
 
-function stepMeta(p: StepPhase, now: number): string {
-  if (p.status === "skipped") return "skipped";
-  if (p.started == null) return "";
-  const s = Math.max(0, (p.ended ?? now) - p.started);
-  return fmtClock(s);
+export interface StageSummary {
+  key: string;
+  label: string;
+  status: PhaseStatus;
+  /** 0-1 */
+  progress: number;
+  meta: string;
+  phases: StepPhase[];
 }
 
-export function PhaseStepper() {
+/** One stage's state from its phases: failed beats running beats done; meta is the live phase or the time it took. */
+export function summarizeStage(key: string, label: string, phases: StepPhase[], now: number, labRunning: boolean): StageSummary {
+  const n = phases.length || 1;
+  const finished = phases.filter((p) => p.status === "done" || p.status === "skipped").length;
+  const running = phases.filter((p) => p.status === "running");
+  let status: PhaseStatus = "pending";
+  if (phases.some((p) => p.status === "failed")) status = "failed";
+  else if (running.length || (labRunning && finished > 0 && finished < phases.length)) status = "running";
+  else if (phases.length && finished === phases.length) status = phases.every((p) => p.status === "skipped") ? "skipped" : "done";
+  const starts = phases.map((p) => p.started).filter((x): x is number => x != null);
+  const ends = phases.map((p) => p.ended).filter((x): x is number => x != null);
+  let meta = "";
+  if (running.length) {
+    const p = running.reduce((a, b) => ((b.started ?? 0) > (a.started ?? 0) ? b : a));
+    meta = `${p.label} · ${fmtClock(Math.max(0, now - (p.started ?? now)))}`;
+  } else if (status === "done" && starts.length && ends.length) meta = fmtSpan(Math.max(...ends) - Math.min(...starts));
+  else if (status === "skipped") meta = "skipped";
+  return { key, label, status, progress: (finished + running.length * 0.5) / n, meta, phases };
+}
+
+/** The section whose top has passed under the sticky bar. */
+function useActiveSection(ids: string[]): string | null {
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const line = (document.querySelector(".cl-stages")?.getBoundingClientRect().bottom ?? 0) + 80;
+      let current: string | null = null;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= line) current = id;
+      }
+      setActive(current);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [ids]);
+  return active;
+}
+
+const SECTION_IDS = SECTIONS.map((s) => `cl-${s.key}`);
+
+export function StageBar() {
   const lab = useCreator((s) => s.lab);
   const mode = useCreator((s) => s.api?.mode);
   const now = useLabClock(lab, mode === "live");
   const reduced = useReducedMotion();
+  const active = useActiveSection(SECTION_IDS);
   const phases = stepPhases(lab);
+  const stages = SECTIONS.map((sec) => summarizeStage(sec.key, sec.label, phases.filter((p) => p.section === sec.key), now, lab?.status === "running"));
   return (
-    <nav className="cl-steps" aria-label="Lab phases">
-      {SECTIONS.map((sec) => {
-        const mine = phases.filter((p) => p.section === sec.key);
-        if (!mine.length) return null;
-        return (
-          <div key={sec.key} className="cl-step-group" style={{ flexGrow: mine.length }}>
-            <a className="cl-step-group-label" href={`#cl-${sec.key}`} onClick={(e) => (e.preventDefault(), goToSection(`cl-${sec.key}`, reduced))}>
-              {sec.label}
-            </a>
-            <ol>
-              {mine.map((p) => (
-                <li key={p.key}>
-                  <button
-                    className="cl-step"
-                    data-status={p.status}
-                    onClick={() => goToSection(`cl-${sec.key}`, reduced)}
-                    title={p.detail ? `${p.label}: ${p.detail}` : p.label}
-                    aria-label={`${p.label}, ${STATUS_WORD[p.status]}${p.detail ? `: ${p.detail}` : ""}`}
-                  >
-                    <span className="cl-step-bar" aria-hidden />
-                    <span className="cl-step-name">
-                      <StepIcon status={p.status} />
-                      <span>{p.label}</span>
-                    </span>
-                    <span className="cl-step-meta num">{stepMeta(p, now)}</span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </div>
-        );
-      })}
+    <nav className="cl-stages" aria-label="Lab stages">
+      <div className="cl-wrap cl-stages-row">
+        <ol className="cl-stage-list">
+          {stages.map((st) => {
+            const id = `cl-${st.key}`;
+            return (
+              <li key={st.key}>
+                <button
+                  className="cl-stage"
+                  data-status={st.status}
+                  aria-current={active === id ? "true" : undefined}
+                  onClick={() => goToSection(id, reduced)}
+                  title={st.phases.map((p) => `${p.label}: ${STATUS_WORD[p.status]}${p.started != null ? ` (${fmtSpan((p.ended ?? now) - p.started)})` : ""}`).join("\n")}
+                >
+                  <StatusIcon status={st.status} />
+                  <span className="cl-stage-name">{st.label}</span>
+                  {st.meta && <span className="cl-stage-meta">{st.meta}</span>}
+                  <span className="cl-stage-track" aria-hidden>
+                    <span style={{ width: `${Math.round(st.progress * 100)}%` }} />
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+        <PhasesPopover phases={phases} now={now} />
+      </div>
     </nav>
+  );
+}
+
+function PhasesPopover({ phases, now }: { phases: StepPhase[]; now: number }) {
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLDivElement>(null);
+  useDismiss(open, () => setOpen(false), wrap);
+  return (
+    <div className="cl-phases" ref={wrap}>
+      <button className="cl-phases-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">
+        <ListTree size={13} aria-hidden /> {phases.length} phases
+      </button>
+      {open && (
+        <div className="cl-pop cl-phases-pop" role="dialog" aria-label="All phases">
+          {SECTIONS.map((sec) => {
+            const mine = phases.filter((p) => p.section === sec.key);
+            if (!mine.length) return null;
+            return (
+              <div key={sec.key} className="cl-phases-group">
+                <p className="cl-phases-label">{sec.label}</p>
+                <ul>
+                  {mine.map((p) => (
+                    <li key={p.key} data-status={p.status}>
+                      <StatusIcon status={p.status} size={12} />
+                      <span className="cl-phases-name">{p.label}</span>
+                      <span className="cl-phases-time">{p.started != null ? fmtSpan((p.ended ?? now) - p.started) : ""}</span>
+                      {p.detail && <span className="cl-phases-detail">{p.detail}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
