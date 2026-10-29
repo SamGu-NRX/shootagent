@@ -176,7 +176,7 @@ class WriteScriptIn(ToolInput):
 def write_script(ctx: ToolContext, args: WriteScriptIn) -> ToolResult:
     spec = load_spec(ctx)
     lang = spec.languages[0]
-    problems = script_problems(args.segments, lang, spec.listing, len(spec.shots))
+    problems = script_problems(args.segments, lang, spec.listing, len(spec.shots), shot_seconds=[s.seconds for s in spec.shots])
     if problems:
         raise ToolError("Rewrite the script: " + "; ".join(problems) + ".")
     spec.narrations[lang] = Narration(language=lang, segments=[s.strip() for s in args.segments],
@@ -210,7 +210,8 @@ def translate_script(ctx: ToolContext, args: TranslateIn) -> ToolResult:
         raise ToolError(f"This film's other languages are {spec.languages[1:] or 'none'}; {lang!r} is not one of them.")
     if spec.languages[0] not in spec.narrations:
         raise ToolError("Write the first-language script with write_script before translating it.")
-    problems = script_problems(args.segments, lang, spec.listing, len(spec.shots), hook=False)
+    problems = script_problems(args.segments, lang, spec.listing, len(spec.shots), hook=False,
+                               shot_seconds=[s.seconds for s in spec.shots])
     if len(args.labels) != len(spec.shots):
         problems.append(f"give one label per shot ({len(spec.shots)})")
     end_labels = [x.strip() for x in (args.end_labels or [""] * len(spec.shots))]

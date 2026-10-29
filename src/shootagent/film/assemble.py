@@ -26,7 +26,8 @@ from typing import Any
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-from ..reel.music import SR, synth_track, write_wav
+from ..reel.music import SR
+from .music import TRACKS, prepare_bed
 from ..reel.render import _tracked, font
 from .beats import beat_times, snap_cuts
 from .engine import EngineError, ReelEngine
@@ -38,6 +39,7 @@ from .video import duration, run_ffmpeg
 
 RATE_MIN, RATE_MAX = 0.67, 1.6  # playback speed range for fitting a clip to its segment; outside it motion looks wrong
 END_CARD_S = 3.0
+MAX_HOLD_S = 4.5  # the last shot holds at most this long; the rest of its line plays over the closing card
 BEAT_WINDOW_S = 0.36  # half a beat of the 84 BPM bed: every cut can reach a beat, none moves further
 CAPTION_POSITION = 0.60  # fraction of height; at 0.66-0.75 the engine's own verify said captions sit under app buttons
 
@@ -98,8 +100,8 @@ def _scrim(w: int, h: int, top: bool, band_y: float | None) -> Image.Image:
 
 CARD_ACCENT = "#D8B98A"  # warm sand, from the photos' wood and linen; Reel Studio's default blue fought the rooms
 CARD_TEXT = {
-    "en": {"bd": "bd", "ba": "ba", "sqft": "square feet of living space"},
-    "es": {"bd": "rec", "ba": "baños", "sqft": "pies cuadrados de espacio habitable"},
+    "en": {"bd": "bd", "ba": "ba", "sqft": "square feet of living space", "sqft_short": "sq ft"},
+    "es": {"bd": "rec", "ba": "baños", "sqft": "pies cuadrados de espacio habitable", "sqft_short": "pies²"},
 }
 
 
@@ -167,8 +169,36 @@ def _pil_card(w: int, h: int, card: dict) -> Image.Image:
     return img
 
 
-def end_card_lines(spec: FilmSpec, language: str) -> list[str]:
+def closing_card(clip: Path, frames: int, spec: FilmSpec, language: str, work: Path) -> Path:
+    """`frames` of the last clip's final frame, blurred and dimmed, slowly pushing in, under the end card with
+    the listing facts: the film's last word is about the listing, so the picture is too."""
+    still = work / "closing-still.png"
+    run_ffmpeg(["-sseof", "-0.2", "-i", str(clip), "-frames:v", "1", "-vf",
+                f"scale={spec.width}:{spec.height}:force_original_aspect_ratio=increase,crop={spec.width}:{spec.height}",
+                "-update", "1", str(still)], "taking the closing frame")
+    card = work / "closing-card.png"
+    overlay_image(spec.width, spec.height, "", None, end_card_lines(spec, language, facts=True)).save(card)
+    out = work / "closing.mp4"
+    secs = frames / spec.fps
+    graph = (f"[0:v]scale={int(spec.width * 1.06)}:-2,zoompan=z='1+0.0006*on':d={frames}:s={spec.width}x{spec.height}"
+             f":fps={spec.fps},gblur=sigma=18,eq=brightness=-0.12:saturation=0.85,setsar=1[bg];"
+             f"[1:v]format=rgba,fade=t=in:st=0.1:d=0.4:alpha=1[o];[bg][o]overlay=0:0:format=auto,format=yuv420p[out]")
+    run_ffmpeg(["-loop", "1", "-framerate", str(spec.fps), "-t", f"{secs + 0.5:.2f}", "-i", str(still),
+                "-loop", "1", "-framerate", str(spec.fps), "-i", str(card), "-filter_complex", graph, "-map", "[out]",
+                "-frames:v", str(frames), "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+                "-r", str(spec.fps), "-pix_fmt", "yuv420p", str(out)], "drawing the closing card")
+    return out
+
+
+def end_card_lines(spec: FilmSpec, language: str, facts: bool = False) -> list[str]:
     lines = [END_CARD.get(language.split("-")[0], END_CARD["en"])]
+    li = spec.listing
+    words = CARD_TEXT.get(language.split("-")[0], CARD_TEXT["en"])
+    fact_line = " · ".join(x for x in (f"{li.beds:g} {words['bd']}" if li.beds is not None else "",
+                                       f"{li.baths:g} {words['ba']}" if li.baths is not None else "",
+                                       f"{li.sqft:,} {words['sqft_short']}" if li.sqft else "") if x)
+    if facts and fact_line:
+        lines.append(fact_line)
     if spec.listing.price:
         lines.append(spec.listing.price)
     if spec.listing.address:
@@ -227,6 +257,11 @@ def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list
         if len(clips) > 1:
             end = narration.end_labels[i] if i < len(narration.end_labels) else ""
             labels.append(end or shot.end_label or narration.labels[i])
+        closing = 0
+        if last and n > MAX_HOLD_S * spec.fps + spec.fps:
+            # A long last line (the call to action) plays over a closing card instead of holding the room.
+            closing = n - int(MAX_HOLD_S * spec.fps)
+            n -= closing
         split = [n // len(clips)] * len(clips)
         split[-1] += n - sum(split)
         for k, (clip, frames) in enumerate(zip(clips, split)):
@@ -236,13 +271,15 @@ def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list
             overlay_image(spec.width, spec.height, "" if card else labels[min(k, len(labels) - 1)],
                           spec.disclosure_text(language) if generated else None, None).save(png)
             overlays = [(png, 0.2)] + ([card] if card else [])
-            if last and k == len(clips) - 1:
+            if last and k == len(clips) - 1 and not closing:
                 # The end card comes in for the last END_CARD_S of the film, under the spoken call to action.
                 end_png = work / "end-card.png"
                 overlay_image(spec.width, spec.height, "", None, end_card_lines(spec, language)).save(end_png)
                 overlays.append((end_png, max(0.2, frames / spec.fps - END_CARD_S)))
             fit_segment(clip, frames, spec.fps, spec.width, spec.height, overlays, part)
             parts.append(part)
+        if closing:
+            parts.append(closing_card(clips[-1], closing, spec, language, work))
     listing = work / "parts.txt"
     listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in parts), encoding="utf-8")
     source = work / "source.mp4"
@@ -349,9 +386,9 @@ def assemble_language(fctx: FilmContext, spec: FilmSpec, language: str) -> dict[
     # The engine keeps speech from 0.10 s before the first word (its cut.py), and the music starts there, so a
     # beat at music time b falls at source time b + head.
     head = round(max(0.0, words[0]["s"] - 0.10) * spec.fps) / spec.fps if captions_ok and words else 0.0
-    track = synth_track(total + 2)
-    bed = write_wav(work / "bed.wav", track)
-    beats = beat_times(track, SR)
+    bed, bed_samples, music_track, music_notes = prepare_bed(spec.music, total, work / "bed.wav")
+    notes += music_notes
+    beats = beat_times(bed_samples, SR)
     narration_starts = starts
     starts = snap_cuts(starts, [b + head for b in beats], window=BEAT_WINDOW_S)
 
@@ -402,6 +439,7 @@ def assemble_language(fctx: FilmContext, spec: FilmSpec, language: str) -> dict[
         "verify": {"ok": verify.get("ok"), "fails": verify.get("fails"), "warns": verify.get("warns"),
                    "lufs": verify.get("lufs")} if verify else None,
         "shot_times": shot_times,
+        "music": {"track": music_track, "title": TRACKS.get(music_track, {}).get("title", "generated bed")},
         "cuts": {"narration_s": [round(s, 3) for s in narration_starts], "on_beat_s": [round(s, 3) for s in starts],
                  "beats_found": len(beats), "head_s": head},
         "cards": {str(k): v[0].name for k, v in cards.items()},
@@ -461,7 +499,7 @@ def write_manifest(fctx: FilmContext, spec: FilmSpec, variants: dict[str, dict])
         "media_mode": fctx.settings.film_media,
         "disclosure": {"law": "California AB 723", "label": spec.disclosure,
                        "rule": "shown on screen while a generated clip plays; depth moves and stills carry none"},
-        "music": "generated bed (reel/music.py), no licence" if spec.music else None,
+        "music": spec.music,
         "shots": shots,
         # Rejected clips whose photos the final plan no longer uses.
         "rejected_elsewhere": [r.model_dump(exclude_none=True) for r in spec.rejected if id(r) not in placed],

@@ -67,7 +67,10 @@ grok requests, one TTS request per language, the photos and a stdlib-only runner
 Gemini key from the macOS Keychain) to a folder; after it runs there, `shootagent film-import-media <folder>`
 verifies each clip and narration against its fingerprint and recorded request, and `shootagent film-finish
 <shoot>` checks the clips, narrates and assembles. `shootagent listing-sample <shoot>` writes the demo's sample
-listing (`web/src/listing/sample-listing.json`, no street address) to a shoot.
+listing (`web/src/listing/sample-listing.json`, no street address) to a shoot. `shootagent export-shoot <shoot>
+<out.zip>` and `shootagent import-shoot <zip>` move a finished shoot (store, blobs, traces, film, listing state)
+to another machine; import checks every file against the bundle's SHA-256 list and refuses paths that would
+leave the shoot folder. The demo shoot's bundle is about 760 MiB.
 
 **Listing launch.** From a shoot's film, *Launch listing* shows the storyboard (each shot's photo, its
 motion source, and every generated clip the checker rejected, with the reason and what replaced it), the 9:16
@@ -277,3 +280,8 @@ Sam Gu, Bryan Wang.
 
 MIT. ffmpeg is called as an external program and is not redistributed. The bundled fonts are under the
 SIL Open Font License (see `src/shootagent/reel/fonts/`).
+
+Credits: the film's music beds in `src/shootagent/film/music/` ("The Morning Foyer", the default, and "First
+Light on Oak") are AI-generated, made with Google's Gemini app (Lyria) on 28 October 2026; how they were made
+and measured is in `lab/music/NOTES.md` on branch `explore/media-tests`. A third take, "Open Plan Afternoon",
+was left out because it has wordless vocal chops.

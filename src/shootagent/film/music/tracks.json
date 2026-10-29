@@ -1,0 +1,16 @@
+{
+ "cinematic-calm": {
+  "file": "cinematic-calm-the-morning-foyer.mp3",
+  "title": "The Morning Foyer",
+  "duration_s": 63.8,
+  "vocal_free_s": 63.8,
+  "note": "Slow piano and soft strings, swell at 0:26-0:35; no vocals (lab/music/NOTES.md, explore/media-tests)."
+ },
+ "first-light-on-oak": {
+  "file": "first-light-on-oak.mp3",
+  "title": "First Light on Oak",
+  "duration_s": 66.7,
+  "vocal_free_s": 27.0,
+  "note": "Upbeat acoustic pop, ~105 BPM; wordless vocal pads from 0:27, so only films that end by then may use it."
+ }
+}

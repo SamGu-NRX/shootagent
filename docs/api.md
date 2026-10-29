@@ -67,7 +67,12 @@ under an earlier plan of the same run stay in the `attempts` of the shot that no
 top-level `rejected_elsewhere`. Per language:
 `{film, cover, duration_s, narration: {text, audio, backend, audio_s, timing: "transcript"|"word count"},
 finisher: "reelengine"|"ffmpeg", captions, caption_cues, verify: {ok, fails, warns, lufs}, shot_times, cuts:
-{narration_s, on_beat_s, beats_found, head_s}, cards: {<shot index>: file}, notes, timings_s}`. Cuts sit at each
+{narration_s, on_beat_s, beats_found, head_s}, cards: {<shot index>: file}, music: {track, title}, notes,
+timings_s}`. The music bed is a track from `film/music/tracks.json` (default `cinematic-calm`, "The Morning
+Foyer"), levelled down and limited before the finisher ducks it; `first-light-on-oak` is used only for a film
+that ends inside its first 27 s, which are free of vocals, and otherwise swapped for the default with a note.
+Beats are detected on the chosen bed. The last shot holds at most 4.5 s: the rest of a long final line plays
+over a closing card (the last frame blurred, with the end card and the listing facts). Cuts sit at each
 narration segment's start moved to the nearest beat of the music within 0.36 s (`on_beat_s`, source time). The
 first shot carries a price card and the shot nearest the middle a square-footage card, rendered from Reel
 Studio's `price-tag` and `stat-count-up` templates with the listing fields (left out when a field is missing). `notes` says why a language has no captions when it has none.

@@ -292,6 +292,29 @@ def cmd_listing_sample(a) -> int:
     return 0
 
 
+def cmd_export_shoot(a) -> int:
+    from .bundle import export_shoot
+
+    store = _store()
+    store.load(a.shoot)
+    m = export_shoot(store.shoot_dir(a.shoot), Path(a.out))
+    total = sum(f["size"] for f in m["files"])
+    print(f"{a.shoot}: {len(m['files'])} files, {total / 2**20:.1f} MiB -> {a.out}")
+    return 0
+
+
+def cmd_import_shoot(a) -> int:
+    from .bundle import BundleError, import_shoot
+
+    try:
+        r = import_shoot(Path(a.zip), get_settings().shoots_dir, replace=a.replace)
+    except BundleError as e:
+        print(f"refused: {e}", file=sys.stderr)
+        return 1
+    print(f"imported {r['shoot_id']} ({r['files']} files)" + (f"; the old copy is at {r['replaced']}" if r["replaced"] else ""))
+    return 0
+
+
 def cmd_film_seed(a) -> int:
     from .film.seed import seed_replay
 
@@ -392,6 +415,16 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("film-import-media", help="verify the clips a handoff folder came back with and add them to replay")
     s.add_argument("folder")
     s.set_defaults(fn=cmd_film_import)
+
+    s = sub.add_parser("export-shoot", help="zip a shoot (store, blobs, traces, film, listing) for another machine")
+    s.add_argument("shoot")
+    s.add_argument("out")
+    s.set_defaults(fn=cmd_export_shoot)
+
+    s = sub.add_parser("import-shoot", help="unpack a shoot zip after checking every file against its hash")
+    s.add_argument("zip")
+    s.add_argument("--replace", action="store_true", help="keep an existing shoot with that id aside and import")
+    s.set_defaults(fn=cmd_import_shoot)
 
     s = sub.add_parser("listing-sample", help="write the demo's sample listing (no street address) to a shoot")
     s.add_argument("shoot")

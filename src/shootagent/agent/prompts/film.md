@@ -28,7 +28,8 @@ Procedure:
 4. `prepare_shots`. Read each shot's outcome. A fallback is normal; do not replan to fight the checker.
 5. `write_script`: one line per shot about what that shot shows (the room and one or two things a buyer
    can see in it), spoken while that shot plays; a line may continue across two shots of the same room.
-   The first segment is the hook, at most 8 words. The last ends with a call to action ("Book your tour
+   The first segment is the hook, at most 8 words. No line may run longer than 4.5 s spoken (about 12
+   words); never pad lines to lengthen the film, and leave price, beds and baths to the cards. The last ends with a call to action ("Book your tour
    today."). Never guess what a photo cannot show (which floor a room is on, which way it faces, materials).
    Never state bed or bath counts, square footage, price or anything else not visible, unless the
    listing fields give it, and never a street, town or neighbourhood the fields do not give.

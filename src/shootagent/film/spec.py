@@ -100,7 +100,8 @@ class FilmSpec(BaseModel):
     shots: list[Shot] = Field(default_factory=list)
     languages: list[str] = Field(default_factory=lambda: ["en"])  # the first is the script's own language
     narrations: dict[str, Narration] = Field(default_factory=dict)
-    music: Literal["synth"] | None = "synth"  # the generated, licence-free bed from reel/music.py
+    # A track id from film/music/tracks.json, or "synth" for the generated bed in reel/music.py.
+    music: str = "cinematic-calm"
     disclosure: dict[str, str] = Field(default_factory=lambda: dict(DISCLOSURE))
     listing: Listing = Field(default_factory=Listing)
     rejected: list[Rejected] = Field(default_factory=list)

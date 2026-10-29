@@ -57,3 +57,16 @@ def test_visual_facts_and_spanish_articles_are_not_counts():
     assert unsupported_facts("framed by three tall windows, a second bedroom behind French doors", Listing()) == []
     assert unsupported_facts("una segunda recámara detrás de puertas francesas y un baño tipo spa", Listing()) == []
     assert unsupported_facts("tres recámaras y dos baños", Listing())
+
+
+def test_a_short_plan_lowers_the_minimum_and_no_line_may_outrun_its_shot():
+    """Fails if a script for a short plan must be padded to 28 s (the demo's last shot then held ~8 s), or if a
+    line longer than a shot should hold is accepted."""
+    from shootagent.film.narration import script_problems
+
+    lines = ["Open prairie views from the table."] + ["A bright room with tall windows and soft light."] * 5
+    problems = script_problems(lines, "en", Listing(), 6, shot_seconds=[3.5] * 6)
+    assert problems == [], problems  # ~19 s for six 3.5 s shots: fine, no padding needed
+    assert any("never pad" in p for p in script_problems(lines, "en", Listing(), 6))  # without a plan: 28 s floor
+    long = lines[:-1] + ["A game room with a round table and a bar with three pendants, then three bedrooms and two baths."]
+    assert any("segments [5]" in p for p in script_problems(long, "en", Listing(), 6, shot_seconds=[3.5] * 6))

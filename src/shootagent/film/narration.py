@@ -23,6 +23,11 @@ STYLE = ("Warm, unhurried real-estate narration, like a friendly listing agent g
 # explore/media-tests: E1 English, 88 words in 32.6 s (2.7/s); E2 Spanish, 89 words in 39.7 s (2.2/s).
 WORDS_PER_SECOND = {"en": 2.7, "es": 2.2}
 TARGET_SECONDS = (28.0, 45.0)  # the brief asks for about 30-40 s; the bounds allow one sentence either way
+# A shot that holds longer than this reads as a slideshow. The minimum length is lowered to what the planned
+# shots fill, so a short plan is never padded (the demo's first script stuffed the listing facts into its last
+# line to reach 28 s, and the game room held for about 8 s).
+MAX_SHOT_SECONDS = 4.5
+PLAN_FILL = 0.8  # the narration may run this much shorter than the planned shot lengths add up to
 # The first segment is the hook. 3 s is 8 English words at the measured rate, so the hook's point is made
 # inside the first 2 s. Translations keep the segment structure and are not held to it.
 HOOK_MAX_SECONDS = 3.0
@@ -61,21 +66,33 @@ def unsupported_facts(text: str, listing: Listing) -> list[str]:
     return out
 
 
-def script_problems(segments: list[str], language: str, listing: Listing, n_shots: int, hook: bool = True) -> list[str]:
-    """Reasons a script cannot be narrated as written; empty when it can. `hook=False` for translations."""
+def script_problems(segments: list[str], language: str, listing: Listing, n_shots: int, hook: bool = True,
+                    shot_seconds: list[float] | None = None) -> list[str]:
+    """Reasons a script cannot be narrated as written; empty when it can. `hook=False` for translations, which
+    keep the first script's structure and are held to neither the hook nor the per-shot length.
+    `shot_seconds`, the planned shot lengths, lower the minimum to what the shots fill."""
     problems = []
+    low = TARGET_SECONDS[0]
+    if shot_seconds:
+        low = min(low, PLAN_FILL * sum(shot_seconds))
     if len(segments) != n_shots:
         problems.append(f"write exactly one segment per shot: {n_shots} shots, {len(segments)} segments")
     if any(not s.strip() for s in segments):
         problems.append("every segment needs words; a silent shot drifts out of sync with the narration")
     text = " ".join(segments)
     secs = estimated_seconds(text, language)
-    if not TARGET_SECONDS[0] <= secs <= TARGET_SECONDS[1]:
-        problems.append(f"the script reads in about {secs:.0f} s; aim for {TARGET_SECONDS[0]:.0f}-{TARGET_SECONDS[1]:.0f} s "
-                        f"(about {WORDS_PER_SECOND.get(language, 2.4):g} words per second)")
+    if not low <= secs <= TARGET_SECONDS[1]:
+        problems.append(f"the script reads in about {secs:.0f} s; aim for {low:.0f}-{TARGET_SECONDS[1]:.0f} s "
+                        f"(about {WORDS_PER_SECOND.get(language, 2.4):g} words per second); never pad a line to reach it")
     if hook and segments and estimated_seconds(segments[0], language) > HOOK_MAX_SECONDS:
         limit = int(HOOK_MAX_SECONDS * WORDS_PER_SECOND.get(language, 2.4))
         problems.append(f"the first segment is the hook and must make its point in about 2 s: at most {limit} words")
+    if hook:
+        rate = WORDS_PER_SECOND.get(language, 2.4)
+        long = [i for i, s in enumerate(segments) if estimated_seconds(s, language) > MAX_SHOT_SECONDS]
+        if long:
+            problems.append(f"segments {long} read longer than a shot should hold ({MAX_SHOT_SECONDS:g} s, about "
+                            f"{int(MAX_SHOT_SECONDS * rate)} words): shorten them; listing facts are on the cards")
     problems += [f"remove {f}" for f in unsupported_facts(text, listing)]
     return problems
 
