@@ -1,0 +1,50 @@
+{
+ "street": {
+  "size": {
+   "w": 1440,
+   "h": 962
+  },
+  "sign": [
+   0.1986,
+   0.3701,
+   0.2439,
+   0.4689
+  ],
+  "candidate": [
+   0.2,
+   0.3723,
+   0.2425,
+   0.4668
+  ],
+  "confidence": 0.43,
+  "outside": 0,
+  "maskShare": 0.0028
+ },
+ "laundry": {
+  "film": {
+   "w": 2240,
+   "h": 1120
+  },
+  "groups": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   [
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  ],
+  "explanation": "The 10 brackets are 2 different camera positions: brackets 0-4 (median 300 matches within); brackets 5-9 (median 818 matches within). Across positions at most 19 features match and the geometry is inconsistent, so they must not be fused together. The finished photo matches 2 different camera positions (395, 98 matched features), so it blends views that should have been separate photos. Split the brackets into one photo per camera position.",
+  "confidence": 0.95
+ },
+ "walls": {
+  "share": 0.1579
+ }
+}
