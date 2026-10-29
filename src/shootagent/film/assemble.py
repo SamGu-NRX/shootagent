@@ -35,8 +35,9 @@ from .media import CardRequest, MediaError
 from .narration import proportional_starts, segment_starts
 from .shots import FilmContext
 from .spec import END_CARD, FilmSpec
-from .video import duration, run_ffmpeg
+from .video import duration, run_ffmpeg, size
 
+FRAME_HEIGHT = 0.94  # film/depth.py work_image: the 9:16 window spans 94% of a landscape photo's height
 RATE_MIN, RATE_MAX = 0.67, 1.6  # playback speed range for fitting a clip to its segment; outside it motion looks wrong
 END_CARD_S = 3.0
 MAX_HOLD_S = 4.5  # the last shot holds at most this long; the rest of its line plays over the closing card
@@ -220,8 +221,16 @@ def fit_segment(clip: Path, frames: int, fps: int, w: int, h: int, overlays: lis
     clip_s = duration(clip)
     span = frames / fps
     rate = min(RATE_MAX, max(RATE_MIN, clip_s / span))
-    graph = [f"[0:v:0]setpts=(PTS-STARTPTS)/{rate:.4f},scale={w}:{h}:force_original_aspect_ratio=increase,"
-             f"crop={w}:{h},fps={fps},tpad=stop_mode=clone:stop_duration={span + 1:.2f},setsar=1[v0]"]
+    cw, ch = size(clip)
+    if cw / ch > w / h + 0.02:
+        # A landscape clip (Grok returns the photo's 3:2 for single-frame requests even when 9:16 is asked
+        # for) gets the window the depth move of the same photo uses: centred, FRAME_HEIGHT of the height.
+        frame = (f"crop=w='trunc(ih*{FRAME_HEIGHT}*{w}/{h}/2)*2':h='trunc(ih*{FRAME_HEIGHT}/2)*2',"
+                 f"scale={w}:{h}:flags=lanczos")
+    else:
+        frame = f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h}"
+    graph = [f"[0:v:0]setpts=(PTS-STARTPTS)/{rate:.4f},{frame},"
+             f"fps={fps},tpad=stop_mode=clone:stop_duration={span + 1:.2f},setsar=1[v0]"]
     inputs = ["-i", str(clip)]
     for k, (layer, t_in) in enumerate(overlays, start=1):
         if layer.suffix == ".mov":
@@ -282,10 +291,13 @@ def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list
             parts.append(closing_card(clips[-1], closing, spec, language, work))
     listing = work / "parts.txt"
     listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in parts), encoding="utf-8")
-    source = work / "source.mp4"
+    source = work / "source.mov"
+    # Re-encoded, not stream-copied: with a generated clip among the parts, the copied join decoded fine on its
+    # own, but Reel Studio's trim then saw its timestamps restart at that part and cut the film 7.5 s short
+    # (run 20261028-234917-3ece1f, verify: duration and sound/picture sync failed).
     run_ffmpeg(["-f", "concat", "-safe", "0", "-i", str(listing), "-i", str(audio), "-map", "0:v:0", "-map", "1:a:0",
-                "-c:v", "copy", "-c:a", "copy", "-movflags", "+faststart", str(source)],
-               "joining the shots with the narration")
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-r", str(spec.fps), "-pix_fmt", "yuv420p",
+                "-c:a", "copy", "-movflags", "+faststart", str(source)], "joining the shots with the narration")
     return source
 
 
@@ -360,11 +372,17 @@ def assemble_language(fctx: FilmContext, spec: FilmSpec, language: str) -> dict[
         notes.append(f"no {engine.model_for(language)!r} speech model in {engine.models}, so ffmpeg finished the "
                      f"{language} film without captions")
 
-    voice = work / "voice.m4a"
-    run_ffmpeg(["-i", str(audio), "-vn", "-c:a", "aac", "-b:a", "256k", "-ar", "48000", str(voice)], "encoding the voice")
+    voice = work / "voice.wav"
+    # The Spanish take came back with a +2.1 dBFS true peak: level every narration (-19 LUFS, the English take's
+    # own level) with a -2 dBTP ceiling before it is mixed. The voice stays PCM through to the engine (a .mov
+    # source): from an AAC source the engine's cut voice came out 40-60 ms shorter than the picture, which
+    # failed its sound/picture sync check on the Spanish film. 0.6 s of padding keeps the cut off the file's end.
+    run_ffmpeg(["-i", str(audio), "-vn", "-af", "loudnorm=I=-19:TP=-2:LRA=11,apad=pad_dur=0.6", "-c:a", "pcm_s16le",
+                "-ar", "48000", str(voice)], "encoding the voice")
+    total = duration(voice)  # the picture is cut to the voice actually muxed
     timing_s = time.perf_counter()
     if captions_ok:
-        black = work / "timing.mp4"
+        black = work / "timing.mov"
         run_ffmpeg(["-f", "lavfi", "-i", f"color=black:s=320x568:r={spec.fps}", "-i", str(voice), "-shortest",
                     "-c:v", "libx264", "-preset", "ultrafast", "-tune", "stillimage", "-c:a", "copy",
                     str(black)], "making the timing video")

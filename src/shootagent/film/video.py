@@ -39,6 +39,16 @@ def duration(path: Path) -> float:
     return float(json.loads(proc.stdout)["format"]["duration"])
 
 
+def size(path: Path) -> tuple[int, int]:
+    """(width, height) of the first video stream."""
+    proc = subprocess.run([ffprobe_bin(), "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                           "-of", "json", str(path)], capture_output=True, text=True, timeout=60)
+    if proc.returncode != 0:
+        raise RuntimeError(f"ffprobe could not read {path}: {proc.stderr.strip()[-300:]}")
+    s = json.loads(proc.stdout)["streams"][0]
+    return int(s["width"]), int(s["height"])
+
+
 class VideoWriter:
     """Raw RGB frames piped into ffmpeg (H.264, yuv420p, CRF 18). stderr goes to a file: an unread pipe that
     fills up blocks ffmpeg, which then stops reading frames and blocks the writer too."""
