@@ -15,6 +15,7 @@ import type {
   PublicListing,
 } from "../listing";
 import type { Listing } from "../types";
+import { SAMPLE_LISTING } from "../../listing/sample";
 import { makeShoot, VIEW_PLAN } from "./data";
 
 export const MOCK_SLUG = "demo-listing";
@@ -105,14 +106,7 @@ function filmFixture(): FilmState {
   };
 }
 
-const DEMO_LISTING: Listing = {
-  address: "412 Maple Court, Austin, TX",
-  price: "$685,000",
-  beds: 3,
-  baths: 2,
-  sqft: 1840,
-  headline: "Bright single-story with a great room and a two-car garage",
-};
+const DEMO_LISTING: Listing = SAMPLE_LISTING;
 
 const CANNED: [RegExp, string, string][] = [
   [/garage|cochera|park/i, "The garage and drive photo shows a two-car garage with a paved driveway.", "La foto de la cochera muestra una cochera para dos autos con entrada pavimentada."],

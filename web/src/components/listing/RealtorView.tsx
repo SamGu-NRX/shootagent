@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, passcode } from "../../api/client";
 import type { Inbox, Lead, ListingCard } from "../../api/listing";
 import { relTime } from "../../lib/format";
+import { isSampleListing } from "../../listing/sample";
 import { useListingApi } from "../../state/listingApi";
 import { useStore } from "../../state/store";
 import { Brand } from "../ShootList";
@@ -144,6 +145,7 @@ function ListingReview({ card, onChange }: { card: ListingCard; onChange: () => 
               <span className="status-dot" aria-hidden />
               {card.published ? "Live" : "Unpublished"}
             </span>
+            {isSampleListing(card) && <span className="sample-tag">Sample listing</span>}
             {card.film_languages.length > 0 && <span className="num">Film · {card.film_languages.join(" + ").toUpperCase()}</span>}
           </p>
         </div>

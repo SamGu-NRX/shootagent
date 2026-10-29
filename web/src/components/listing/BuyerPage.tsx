@@ -2,6 +2,8 @@ import { ArrowUp, Check, MessageCircleQuestion, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ApiError } from "../../api/client";
 import type { PublicListing } from "../../api/listing";
+import { roomChips } from "../../listing/storyboard";
+import { isSampleListing } from "../../listing/sample";
 import { useListingApi } from "../../state/listingApi";
 import { FilmPlayer, type FilmPlayerHandle } from "./FilmPlayer";
 import { COPY, initialLang, saveLang, type Copy, type Lang } from "./i18n";
@@ -26,18 +28,28 @@ export function BuyerPage({ slug }: { slug: string }) {
   const session = useRef<string | undefined>(undefined);
   const player = useRef<FilmPlayerHandle>(null);
   const chips = useRef<HTMLElement>(null);
+  const [chip, setChip] = useState(0);
   const t = COPY[lang];
+
+  // the chip of the room on screen, so the row can keep it in view
+  useEffect(() => {
+    if (load.state !== "ready" || !load.data.film) return;
+    const film = load.data.film;
+    const lang0 = film.languages.includes(lang) ? lang : film.languages[0]!;
+    const k = roomChips(film.shots, lang0, film.languages[0]!).findIndex((c) => c.shots.includes(shot));
+    if (k >= 0) setChip(k);
+  }, [shot, load, lang]);
 
   // Keep the playing room's chip in view by scrolling the chip row only; scrollIntoView would also move the page.
   useEffect(() => {
     const row = chips.current;
-    const chip = row?.children[shot] as HTMLElement | undefined;
-    if (!row || !chip || row.scrollWidth <= row.clientWidth) return;
-    const left = chip.offsetLeft - row.offsetLeft - 16;
-    if (left < row.scrollLeft || chip.offsetLeft - row.offsetLeft + chip.offsetWidth > row.scrollLeft + row.clientWidth) {
+    const chipEl = row?.children[chip] as HTMLElement | undefined;
+    if (!row || !chipEl || row.scrollWidth <= row.clientWidth) return;
+    const left = chipEl.offsetLeft - row.offsetLeft - 16;
+    if (left < row.scrollLeft || chipEl.offsetLeft - row.offsetLeft + chipEl.offsetWidth > row.scrollLeft + row.clientWidth) {
       row.scrollTo({ left, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }
-  }, [shot]);
+  }, [chip]);
 
   const fetchListing = () => {
     setLoad({ state: "loading" });
@@ -122,28 +134,26 @@ export function BuyerPage({ slug }: { slug: string }) {
         <main className="buyer-main">
           {film && (
             <nav className="room-chips" aria-label={t.rooms} ref={chips}>
-              {film.shots.map((s, i) => {
-                const name = s.labels[filmLang] ?? s.labels[film.languages[0]!] ?? "";
-                const start = s.times[filmLang]?.[0];
-                return (
-                  <button
-                    key={s.index}
-                    className="room-chip"
-                    aria-current={i === shot ? "true" : undefined}
-                    aria-label={t.jumpTo(name)}
-                    onClick={() => {
-                      setShot(i);
-                      player.current?.seek(start ?? 0);
-                    }}
-                  >
-                    {name}
-                  </button>
-                );
-              })}
+              {roomChips(film.shots, filmLang, film.languages[0]!).map((chip, k) => (
+                <button
+                  key={chip.name}
+                  className="room-chip"
+                  aria-current={chip.shots.includes(shot) ? "true" : undefined}
+                  aria-label={t.jumpTo(chip.name)}
+                  onClick={() => {
+                    setShot(chip.shots[0]!);
+                    setChip(k);
+                    player.current?.seek(film.shots[chip.shots[0]!]?.times[filmLang]?.[0] ?? 0);
+                  }}
+                >
+                  {chip.name}
+                </button>
+              ))}
             </nav>
           )}
 
           <header className="buyer-head">
+            {isSampleListing(l) && <p className="sample-pill">{t.sample}</p>}
             <h1 className="address" tabIndex={-1}>
               {l.address}
             </h1>

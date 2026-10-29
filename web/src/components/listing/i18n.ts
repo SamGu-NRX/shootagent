@@ -5,6 +5,7 @@ export type Lang = "en" | "es";
 
 const en = {
   langName: "English",
+  sample: "Sample listing",
   otherLang: "Español",
   switchLang: "Ver en español",
   film: "Listing film",
@@ -73,6 +74,7 @@ const en = {
   dHdr: (n: number) => `Merged ${n} exposure${n === 1 ? "" : "s"} into one photo (the photo editor's HDR edit).`,
   dOps: {
     restore_from_brackets: "Restored part of the photo from the camera's own exposures",
+    regroup: "Merged the exposures from this one camera position into a photo (the editor's version blended two positions)",
     regroup_brackets: "Re-merged the exposures taken from this camera position",
     recolor_region: "Recolored part of the photo",
     adjust_exposure: "Adjusted brightness",
@@ -92,6 +94,7 @@ export type Copy = typeof en;
 
 const es: Copy = {
   langName: "Español",
+  sample: "Anuncio de muestra",
   otherLang: "English",
   switchLang: "View in English",
   film: "Video de la propiedad",
@@ -162,6 +165,7 @@ const es: Copy = {
   dHdr: (n) => `Se combinaron ${n} exposicion${n === 1 ? "" : "es"} en una sola foto (la edición HDR del editor de fotos).`,
   dOps: {
     restore_from_brackets: "Se restauró parte de la foto con las exposiciones de la propia cámara",
+    regroup: "Se combinaron en una foto las exposiciones de esta sola posición de cámara (la versión del editor mezclaba dos posiciones)",
     regroup_brackets: "Se volvieron a combinar las exposiciones de esta posición de cámara",
     recolor_region: "Se cambió el color de parte de la foto",
     adjust_exposure: "Se ajustó el brillo",

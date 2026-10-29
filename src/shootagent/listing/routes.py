@@ -25,6 +25,7 @@ from .film import film_file, read_film
 from .guard import RateLimiter, SpendLedger, clean_text, client_ip
 from .settings import ListingSettings
 from .state import QA, Lead, ListingState, ListingStore, slug_of
+from .views import display_names, listed_views
 
 log = logging.getLogger(__name__)
 BLOB_RE = re.compile(r"^[0-9a-f]{8,64}\.[a-z0-9]{2,5}$")
@@ -137,12 +138,11 @@ def build_router(
 
     def allowed_blobs(shoot) -> set[str]:
         out: set[str] = set()
-        for v in shoot.views:
-            if v.head:
-                out.add(v.head_version.blob)
-                original, _ = disclosure_mod.original_of(v)
-                if original:
-                    out.add(original)
+        for v in listed_views(shoot):
+            out.add(v.head_version.blob)
+            original, _ = disclosure_mod.original_of(v)
+            if original:
+                out.add(original)
         return out
 
     def get_client():
@@ -210,7 +210,7 @@ def build_router(
                 "film_approved": state.film_approved,
                 "note": state.note,
                 "film_languages": film["languages"] if film else [],
-                "thumb": next((v.head_version.blob for v in shoot.views if v.head), None),
+                "thumb": next((v.head_version.blob for v in listed_views(shoot)), None),
                 "leads_new": sum(1 for x in leads if x.status == "new"),
             })
             rows += [{**x.model_dump(), "shoot_id": sid, "address": shoot.listing.address or shoot.title} for x in leads]
@@ -231,11 +231,13 @@ def build_router(
         shoot, state = public(slug, request)
         film = read_film(store, shoot.id)
         dis = disclosure_mod.build(shoot, store)
+        views = listed_views(shoot)
+        names = display_names(views)
         return {
             "slug": slug,
             "listing": shoot.listing.model_dump(),
             "rooms": [
-                {"view": v.id, "name": qa.room_name(v), "photo": v.head_version.blob} for v in shoot.views if v.head
+                {"view": v.id, "name": names[v.id], "photo": v.head_version.blob} for v in views
             ],
             "film": None if not film or not film["variants"] else {
                 "languages": film["languages"],

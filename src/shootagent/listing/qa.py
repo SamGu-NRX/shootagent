@@ -18,6 +18,7 @@ from typing import Any
 from ..agent.usage import usage_event
 from ..models.vision import encode_image
 from ..store import Shoot, ShootStore
+from .views import display_names, listed_views
 
 MAX_QUESTION = 300
 MAX_ANSWER = 700
@@ -78,19 +79,15 @@ class Answer:
         return f"{self.text} {FOLLOW_UP[language]}".strip()
 
 
-def room_name(view) -> str:
-    return (view.label or (view.room or view.id).replace("_", " ")).strip().capitalize()
-
-
 def normalise_question(q: str) -> str:
     return re.sub(r"[\W_]+", " ", q.lower()).strip()
 
 
 def context_fingerprint(shoot: Shoot) -> str:
     """Changes when anything the model sees changes: listing fields, room names, or a photo's head version."""
-    parts = [shoot.listing.model_dump_json()] + [
-        f"{v.id}:{room_name(v)}:{v.head_version.blob if v.head else ''}" for v in shoot.views
-    ]
+    views = listed_views(shoot)
+    names = display_names(views)
+    parts = [shoot.listing.model_dump_json()] + [f"{v.id}:{names[v.id]}:{v.head_version.blob}" for v in views]
     return hashlib.sha256("\n".join(parts).encode()).hexdigest()[:16]
 
 
@@ -100,7 +97,9 @@ def cache_key(fingerprint: str, language: str, question: str) -> str:
 
 def listing_facts(shoot: Shoot) -> str:
     fields = {k: v for k, v in shoot.listing.model_dump().items() if v not in (None, "")}
-    rooms = [room_name(v) for v in shoot.views if v.head]
+    views = listed_views(shoot)
+    names = display_names(views)
+    rooms = [names[v.id] for v in views]
     return json.dumps({"listing_fields": fields or "none given", "photos": rooms}, ensure_ascii=False)
 
 
@@ -130,10 +129,10 @@ def build_request(store: ShootStore, shoot: Shoot, question: str, language: str,
     """messages.create kwargs. The system prompt, facts and photos form a stable prefix ending in a cache
     breakpoint; only the question and the language instruction come after it."""
     content: list[dict[str, Any]] = [{"type": "text", "text": f"Listing: {listing_facts(shoot)}"}]
-    for v in shoot.views:
-        if not v.head:
-            continue
-        content.append({"type": "text", "text": f"Photo: {room_name(v)}"})
+    views = listed_views(shoot)
+    names = display_names(views)
+    for v in views:
+        content.append({"type": "text", "text": f"Photo: {names[v.id]}"})
         content.append({
             "type": "image",
             "source": {"type": "base64", "media_type": "image/jpeg", "data": photos.get(store, shoot.id, v.head_version.blob, px)},

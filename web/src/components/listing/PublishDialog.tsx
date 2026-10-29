@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ApiError } from "../../api/client";
 import { buyerUrl, type ListingState } from "../../api/listing";
 import type { Listing } from "../../api/types";
+import { SAMPLE_LISTING, isSampleListing } from "../../listing/sample";
 import { useListingApi } from "../../state/listingApi";
 import { useStore } from "../../state/store";
 import { Qr } from "./Qr";
@@ -106,15 +107,38 @@ export function PublishDialog({ shootId, listing, state, onState, onClose }: Pro
 
       {step === "details" ? (
         <form className="publish-form" onSubmit={publish}>
-          <p className="muted">The buyer page leads with these. Buyers can ask about anything here or in the photos.</p>
+          <div className="publish-intro">
+            <p className="muted">The buyer page leads with these. Buyers can ask about anything here or in the photos.</p>
+            <button
+              type="button"
+              className="btn btn-sm"
+              onClick={() =>
+                setFields({
+                  address: SAMPLE_LISTING.address ?? "",
+                  price: SAMPLE_LISTING.price ?? "",
+                  beds: String(SAMPLE_LISTING.beds ?? ""),
+                  baths: String(SAMPLE_LISTING.baths ?? ""),
+                  sqft: String(SAMPLE_LISTING.sqft ?? ""),
+                  headline: SAMPLE_LISTING.headline ?? "",
+                })
+              }
+            >
+              Use sample details
+            </button>
+          </div>
+          {isSampleListing({ address: fields.address }) && (
+            <p className="publish-sample" role="note">
+              Sample details: the buyer page will say “Sample listing”.
+            </p>
+          )}
           <label className="field field-wide">
             <span>Street address</span>
-            <input value={fields.address} onChange={set("address")} required autoComplete="off" placeholder="412 Maple Court, Austin, TX" />
+            <input value={fields.address} onChange={set("address")} required autoComplete="off" placeholder="Street address, city, state" />
           </label>
           <div className="field-row">
             <label className="field">
               <span>Price</span>
-              <input value={fields.price} onChange={set("price")} placeholder="$685,000" autoComplete="off" />
+              <input value={fields.price} onChange={set("price")} placeholder="$0" autoComplete="off" />
             </label>
             <label className="field">
               <span>Beds</span>
@@ -131,7 +155,7 @@ export function PublishDialog({ shootId, listing, state, onState, onClose }: Pro
           </div>
           <label className="field field-wide">
             <span>One-line description</span>
-            <input value={fields.headline} onChange={set("headline")} maxLength={140} autoComplete="off" placeholder="Single-story with a great room and a two-car garage" />
+            <input value={fields.headline} onChange={set("headline")} maxLength={140} autoComplete="off" placeholder="What a buyer should know first" />
           </label>
           {error && (
             <p className="form-error" role="alert">
