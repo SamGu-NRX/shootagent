@@ -98,7 +98,7 @@ def _fit_ab(r: np.ndarray, f: np.ndarray) -> np.ndarray:
     return p.astype(np.float32)
 
 
-def fit_style(ref_lab: np.ndarray, fin_lab: np.ndarray, valid: np.ndarray, lowfreq_frac: float = 0.04) -> StyleFit:
+def fit_style(ref_lab: np.ndarray, fin_lab: np.ndarray, valid: np.ndarray, lowfreq_frac: float = 0.025) -> StyleFit:
     ok = valid & (ref_lab[..., 0] > 2) & (ref_lab[..., 0] < 98)
     idx = np.flatnonzero(ok)
     if len(idx) < 500:
@@ -116,6 +116,8 @@ def fit_style(ref_lab: np.ndarray, fin_lab: np.ndarray, valid: np.ndarray, lowfr
     grid = np.arange(1001)
     lut = np.interp(grid, grid[has], sm[has] / cnt[has]) if has.sum() >= 2 else grid / 10.0
     lut = cv2.GaussianBlur(lut.astype(np.float32).reshape(1, -1), (0, 0), 15).ravel()
+    # Keep sparse or scene-specific correspondences from turning highlight noise into a hard clip.
+    lut = 0.75 * lut + 0.25 * (grid / 10.0)
     lut = np.maximum.accumulate(lut)
     coef = _fit_ab(r, f)
     return StyleFit(lut.astype(np.float32), coef.astype(np.float32), lowfreq_frac)
