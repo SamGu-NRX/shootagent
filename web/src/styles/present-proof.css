@@ -56,6 +56,22 @@
   stroke: var(--pz-ink);
   stroke-width: 1.75;
 }
+.pz-proof-clear {
+  fill: var(--pz-bg);
+}
+.pz-proof-dot {
+  fill: var(--pz-ink);
+}
+.pz-proof-leader {
+  fill: none;
+  stroke: var(--pz-faint);
+  stroke-width: 1.25;
+}
+.pz-proof-hint {
+  font-size: 20px;
+  font-weight: 500;
+  fill: var(--pz-dim);
+}
 .pz-proof-ring {
   fill: none;
   stroke: var(--pz-ink);
@@ -65,7 +81,7 @@
   stroke-width: 2.5;
 }
 .pz-proof-label {
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 600;
   fill: var(--pz-ink);
   paint-order: stroke;

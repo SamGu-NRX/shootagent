@@ -76,6 +76,23 @@ export function SceneProof({ lab, story, t }: SceneProps) {
 
   const reelOf = useMemo(() => new Map(lab.reels.filter((r) => r.kind !== "baseline").map((r) => [r.concept, r])), [lab.reels]);
 
+  // reel labels sit in a column right of every dot, joined by leader lines, so no dot ever crosses the text
+  const labels = useMemo(() => {
+    if (!geo) return [];
+    const right = Math.max(...geo.ideas.map((d) => d.x), 0);
+    const lx = Math.min(right + 64, MW - PAD.r + 70);
+    const rows = geo.ideas
+      .filter(({ p }) => reelOf.has(p.id))
+      .map(({ p, x, y }) => ({ id: p.id, x, y, reel: reelOf.get(p.id)!.id, title: p.label, hero: story.hero?.concept === p.id, lx, ly: y + 7 }))
+      .sort((a, b) => a.y - b.y);
+    for (let i = 1; i < rows.length; i++) {
+      const prev = rows[i - 1]!;
+      const gap = prev.hero ? 104 : 44;
+      rows[i]!.ly = Math.max(rows[i]!.ly, prev.ly + gap);
+    }
+    return rows;
+  }, [geo, reelOf, story.hero?.concept]);
+
   const jury = useMemo(
     () => [
       ...ev.judges.filter((j) => j.id !== "head_judge").map((j) => ({ id: j.id, name: j.name.split(/\s+/)[0]!, role: JUDGE_ROLE[j.id] ?? shortRole(j.lens), judge: true })),
@@ -125,6 +142,10 @@ export function SceneProof({ lab, story, t }: SceneProps) {
             </g>
           )}
 
+          <text className="pz-proof-hint" x={PAD.l} y={14} style={{ opacity: phase(t, 900, 600) }}>
+            Each dot is one idea. The further from the red cloud, the more original.
+          </text>
+
           {geo.cliches.map((c, i) => {
             const delay = noise(i, 1) * 900;
             const p = phase(t, delay, 1300, easeInOut);
@@ -155,30 +176,27 @@ export function SceneProof({ lab, story, t }: SceneProps) {
             );
           })}
 
-          {geo.ideas
-            .filter(({ p }) => reelOf.has(p.id))
-            .map(({ p, x, y }) => {
-              const reel = reelOf.get(p.id)!;
-              const isHero = hero?.concept === p.id;
-              return (
-                <g key={`l-${p.id}`} style={{ opacity: labelsIn }}>
-                  <circle className="pz-proof-ring" data-hero={isHero || undefined} cx={x} cy={y} r={15 + (1 - labelsIn) * 10} />
-                  <text className="pz-proof-label" data-hero={isHero || undefined} x={x + 26} y={y + 7}>
-                    <tspan className="pz-proof-label-id">{reel.id}</tspan> · {p.label}
+          {labels.map((l) => (
+            <g key={`l-${l.id}`} style={{ opacity: labelsIn }}>
+              <circle className="pz-proof-clear" cx={l.x} cy={l.y} r={19} />
+              <circle className="pz-proof-ring" data-hero={l.hero || undefined} cx={l.x} cy={l.y} r={15 + (1 - labelsIn) * 10} />
+              <circle className="pz-proof-dot" data-hero={l.hero || undefined} cx={l.x} cy={l.y} r={8} />
+              <polyline className="pz-proof-leader" points={`${l.x + 17},${l.y} ${l.lx - 30},${l.ly - 7} ${l.lx - 12},${l.ly - 7}`} />
+              <text className="pz-proof-label" data-hero={l.hero || undefined} x={l.lx} y={l.ly}>
+                <tspan className="pz-proof-label-id">{l.reel}</tspan> · {l.title}
+              </text>
+              {l.hero && story.noveltyX != null && (
+                <g style={{ opacity: heroIn }}>
+                  <text className="pz-proof-callout" x={l.lx} y={l.ly + 42}>
+                    {fmtX(story.noveltyX)} more original
                   </text>
-                  {isHero && story.noveltyX != null && (
-                    <g style={{ opacity: heroIn }}>
-                      <text className="pz-proof-callout" x={x + 26} y={y + 50}>
-                        {fmtX(story.noveltyX)} more original
-                      </text>
-                      <text className="pz-proof-callout-sub" x={x + 26} y={y + 80}>
-                        than the typical reel
-                      </text>
-                    </g>
-                  )}
+                  <text className="pz-proof-callout-sub" x={l.lx} y={l.ly + 70}>
+                    than the typical reel
+                  </text>
                 </g>
-              );
-            })}
+              )}
+            </g>
+          ))}
 
           {geo.template && dropP > 0 && (
             <g>
@@ -231,13 +249,14 @@ export function SceneProof({ lab, story, t }: SceneProps) {
               { key: "h", label: `${hero.id} · ${hero.title}`, value: hero.creativity, hero: true },
             ].map((row) => {
               const v = row.value * phase(t, 6200, 1400, easeOut);
+              const shown = phase(t, 6100, 300);
               return (
                 <div key={row.key} className="pz-proof-row" data-hero={row.hero || undefined}>
                   <span className="pz-proof-row-label">{row.label}</span>
                   <span className="pz-proof-bar">
                     <span style={{ width: `${(v / 10) * 100}%` }} />
                   </span>
-                  <span className="pz-proof-row-v num">{v.toFixed(1)}</span>
+                  <span className="pz-proof-row-v num" style={{ opacity: shown }}>{row.value.toFixed(1)}</span>
                 </div>
               );
             })}
