@@ -75,6 +75,11 @@ prediction, not platform data.
 
 Two full labs on the demo apartment, every phase live, Claude Opus 5.5 for every agent.
 
+![Frames from the template reel and the room's pick](media/creative-reels.jpg)
+
+*The first lab: the template reel (top) and the room's greenlit "Find the Earbud's Counter" (bottom), a find-it
+game built on an earbud case the showrunner spotted on the kitchen counter.*
+
 | | Lab `212903-d13318` | Lab `215529-df468d` |
 |---|---|---|
 | Template (A): judges' creativity, simulated 48 h views | 2.6, 2,018 | 2.4, 2,015 |
