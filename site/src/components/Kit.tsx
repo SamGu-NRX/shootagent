@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { img } from "../content";
 import { useEntrance } from "../lib/motion";
 
@@ -21,14 +21,14 @@ const KEY: { id: Layer; name: string; sub: string; detail: ReactNode }[] = [
     name: "Labelled copies",
     sub: "For social posts and print",
     detail:
-      "Altered photos carry the disclosure on the image and a code to the original, because a post or a flyer has nowhere else to put it.",
+      "Altered photos carry the disclosure on the image and a QR code to the original, because a post or a flyer has nowhere else to put it.",
   },
   {
     id: "original",
     name: "Unaltered originals",
     sub: "One for each altered photo",
     detail:
-      "What the camera captured, or the editor’s photo when only ShootAgent’s own edits changed the scene. AB 723 pairs it with the altered photo.",
+      "What the camera captured, or the editor’s photo when only ShootAgent’s own edits changed the scene. AB 723 requires a link to it.",
   },
   {
     id: "record",
@@ -77,7 +77,7 @@ function Sheet({ id }: { id: Layer }) {
             <b>Digitally altered photo</b>
             Grey car removed.
           </span>
-          <img src={img("qr-demo.svg")} alt="" loading="lazy" decoding="async" />
+          <img src={img("qr-car.svg")} alt="" loading="lazy" decoding="async" />
         </div>
       )}
     </div>
@@ -92,22 +92,27 @@ export function Kit() {
   const focus = preview ?? pinned;
   const at = focus ? STACK.indexOf(focus) : -1;
 
-  useLayoutEffect(() => {
-    if (figure.current) figure.current.dataset.exploded = "";
-  }, []);
   useEffect(() => {
     const el = figure.current;
     if (!el) return;
-    if (entrance === "waiting") delete el.dataset.exploded;
+    if (entrance === "waiting") {
+      delete el.dataset.exploded;
+      return;
+    }
+    el.dataset.exploded = "";
     if (entrance !== "playing") return;
     // The first separation is slower and staggered; afterwards a selection moves at interface speed.
     el.dataset.exploding = "";
-    el.dataset.exploded = "";
     const t = window.setTimeout(() => delete el.dataset.exploding, 1100);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      delete el.dataset.exploding;
+    };
   }, [entrance]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Escape in a text field belongs to the field.
+      if (e.target instanceof Element && e.target.closest("input, textarea")) return;
       if (e.key === "Escape") {
         setPinned(null);
         setPreview(null);
@@ -131,10 +136,13 @@ export function Kit() {
     setPreview(null);
   };
   const shown = KEY.find((k) => k.id === focus);
+  const pinnedKey = KEY.find((k) => k.id === pinned);
+  const pinnedText = pinnedKey && typeof pinnedKey.detail === "string" ? pinnedKey.detail : pinnedKey ? "Every photo’s chain of fingerprints, from the brackets to the published file, re-checked offline by shootagent verify." : "";
 
   return (
     <div className="kit">
-      <div className="kit-figure" ref={figure} data-focus={focus ?? undefined} aria-hidden>
+      {/* data-exploded is the finished state, in the markup so the prerendered page shows it. */}
+      <div className="kit-figure" ref={figure} data-focus={focus ?? undefined} data-exploded="" aria-hidden>
         <div className="kit-iso">
           {STACK.map((id, i) => (
             <div
@@ -153,7 +161,7 @@ export function Kit() {
       <div className="part-copy">
         <h3>One zip for the listing.</h3>
         <p className="body">
-          Everything a listing agent uploads, posts or files, in the order they need it. Select a layer to see what it holds.
+          Everything a listing agent uploads, posts or files. Select a layer to see what it holds.
         </p>
         <div className="kit-key" role="group" aria-label="What the listing kit holds">
           {KEY.map((k, i) => (
@@ -172,7 +180,12 @@ export function Kit() {
             </button>
           ))}
         </div>
-        <div className="kit-detail" aria-live="polite">
+        {/* Shown for the layer in focus, hovered or pinned; announced only when a layer is pinned. */}
+        <p className="sr-only" aria-live="polite">
+          {pinnedKey ? `${pinnedKey.name}. ` : ""}
+          {pinnedKey ? pinnedText : ""}
+        </p>
+        <div className="kit-detail">
           {shown ? (
             <>
               <b>{shown.name}</b>

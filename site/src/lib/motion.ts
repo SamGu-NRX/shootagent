@@ -64,7 +64,8 @@ export function useEntrance(
   const decided = useRef<"wait" | "done" | null>(null);
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced) return;
+    // Read the setting itself too: on the first run `reduced` still holds the server's answer (false).
+    if (!el || reduced || reducedQuery().matches) return;
     decided.current ??= belowFold(el) ? "wait" : "done";
     if (decided.current === "done") return;
     setState("waiting");

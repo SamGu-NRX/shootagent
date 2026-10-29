@@ -22,7 +22,7 @@ const STEPS: { id: SceneId; label: string; ms: number; alt: string }[] = [
   },
   {
     id: "change",
-    label: "Make the customer's changes",
+    label: "Make the customer’s changes",
     ms: 6400,
     alt: "A customer asks for the grey bedroom walls in the colour of a reference photo. The agent finds the walls and recolours only them.",
   },
@@ -30,7 +30,7 @@ const STEPS: { id: SceneId; label: string; ms: number; alt: string }[] = [
     id: "deliver",
     label: "Disclose and deliver",
     ms: 5200,
-    alt: "The recoloured photo is published with its disclosure, “Digitally altered photo”, and a code linking to the original.",
+    alt: "The recoloured photo is published with its disclosure, “Digitally altered photo”, and a QR code that opens the unaltered original.",
   },
 ];
 
@@ -80,7 +80,7 @@ function Loupe({ at, left, right }: { at: number; left: [string, ReactNode]; rig
 
 const zoomed = (name: string, style?: CSSProperties) => <img src={img(name)} alt="" style={{ ...LOUPE, ...style }} />;
 
-function Scene({ id }: { id: SceneId }) {
+function Scene({ id, onPublished }: { id: SceneId; onPublished: () => void }) {
   switch (id) {
     case "check":
       return (
@@ -155,9 +155,9 @@ function Scene({ id }: { id: SceneId }) {
               <span>Wall colour changed to match a reference.</span>
               <span className="muted">Scan for the unaltered original.</span>
             </div>
-            <img src={img("qr-demo.svg")} alt="" />
+            <img src={img("qr-walls.svg")} alt="" />
           </div>
-          <span className="tag published beat" style={{ left: "4%", top: "6%", ...beat(1500) } as CSSProperties}>
+          <span className="tag published beat" style={{ left: "4%", top: "6%", ...beat(1500) } as CSSProperties} onAnimationEnd={onPublished}>
             <b>
               <Check size={12} />
             </b>
@@ -196,7 +196,7 @@ function Trace({ id }: { id: SceneId }) {
       return (
         <>
           <Row at={1200} mark="›" tool="find_regions">
-            “grey walls” · {(ASSETS.walls.share * 100).toFixed(1)}% of the frame
+            “grey walls”
           </Row>
           <Row at={2900} mark="›" tool="recolor_region">
             to the reference colour
@@ -209,7 +209,7 @@ function Trace({ id }: { id: SceneId }) {
     case "deliver":
       return (
         <>
-          <Row at={300} mark="›" tool="publish">
+          <Row at={300} mark="›" tool="shootagent publish">
             1 photo disclosed, its original paired
           </Row>
           <Row at={1500} mark="✓" tool="Edit record" tone="pass">
@@ -220,7 +220,7 @@ function Trace({ id }: { id: SceneId }) {
   }
 }
 
-const LATER = ["street-fixed.webp", "street-sign-mask.png", "walls-before.webp", "walls-after.webp", "walls-mask.png", "qr-demo.svg"];
+const LATER = ["street-fixed.webp", "street-sign-mask.png", "walls-before.webp", "walls-after.webp", "walls-mask.png", "qr-walls.svg"];
 
 export function Hero() {
   const reduced = useReducedMotion();
@@ -240,40 +240,25 @@ export function Hero() {
   const visible = usePageVisible();
   const active = mode === "playing" && onScreen && visible;
   const still = reduced;
-  const remaining = useRef(STEPS[0]!.ms);
-  const spent = useRef(0);
 
-  // A new step (or a replay) starts its own clock.
+  const next = () => {
+    if (index < STEPS.length - 1) setIndex(index + 1);
+    else setMode("ended");
+  };
+  useEffect(() => setPublished(false), [index, run]);
+  // With motion, each step ends when its progress bar's CSS animation does (below), so the steps can never drift
+  // from the scenes' own animations, which start at first paint and pause with them. Reduced motion has no
+  // animations: there Play moves through the steps as cuts.
   useEffect(() => {
-    remaining.current = STEPS[index]!.ms;
-    spent.current = 0;
-    setPublished(false);
-  }, [index, run]);
-
-  // The step's timer runs only while playing and seen; pausing keeps the time left.
+    if (!still || !active) return;
+    const t = window.setTimeout(next, STEPS[index]!.ms);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- next() reads the index this effect ran with
+  }, [still, active, index, run]);
+  // Reduced motion switching on pauses the walkthrough once; Play still works afterwards.
   useEffect(() => {
-    if (!active) return;
-    const started = performance.now();
-    const base = spent.current;
-    const timers = [
-      window.setTimeout(() => {
-        if (index < STEPS.length - 1) setIndex(index + 1);
-        else setMode("ended");
-      }, remaining.current),
-    ];
-    // The bar reads "Published" once the record checks out, 1.5 s into the last step.
-    if (STEPS[index]!.id === "deliver" && base < 1500) timers.push(window.setTimeout(() => setPublished(true), 1500 - base));
-    return () => {
-      const used = performance.now() - started;
-      remaining.current -= used;
-      spent.current = base + used;
-      timers.forEach((t) => window.clearTimeout(t));
-    };
-  }, [active, index, run]);
-
-  useEffect(() => {
-    if (reduced && mode === "playing") setMode("paused");
-  }, [reduced, mode]);
+    if (reduced) setMode((m) => (m === "playing" ? "paused" : m));
+  }, [reduced]);
 
   const go = (i: number) => {
     setIndex(i);
@@ -288,13 +273,16 @@ export function Hero() {
 
   const step = STEPS[index]!;
   const done = step.id === "deliver" && (mode === "ended" || published || still);
+  // Each name contains the visible word, so voice control can say what it sees.
+  const controlLabel = mode === "playing" ? "Pause the walkthrough" : mode === "ended" ? "Replay the walkthrough" : "Play the walkthrough";
+  const controlIcon = mode === "playing" ? <Pause /> : mode === "ended" ? <Replay /> : <Play />;
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
       <div className="hero-copy">
         <h1 id="hero-title">Checked against what the camera saw.</h1>
         <p className="lede">
           ShootAgent is an AI agent for real-estate photo shoots. It compares every edited photo with the camera’s own
-          exposures, fixes what the editor got wrong, makes the customer’s changes, and delivers the listing with the
+          exposure brackets, fixes what the editor got wrong, makes the customer’s changes, and delivers the listing with the
           disclosures California now requires.
         </p>
         <div className="hero-actions">
@@ -305,13 +293,14 @@ export function Hero() {
         </div>
       </div>
 
+      <div className="device-wrap">
       <figure
         className="device"
         ref={device}
         data-scene={step.id}
         data-paused={!active || undefined}
         role="img"
-        aria-label={`ShootAgent at work, step ${index + 1} of 4: ${step.alt}`}
+        aria-label={`Illustrated walkthrough, step ${index + 1} of 4: ${step.alt}`}
       >
         <div className="device-inner" aria-hidden>
           <div className="device-bar">
@@ -326,13 +315,20 @@ export function Hero() {
             </span>
           </div>
           <div className="device-stage">
-            <Scene key={`${step.id}-${run}`} id={step.id} />
+            <Scene key={`${step.id}-${run}`} id={step.id} onPublished={() => setPublished(true)} />
           </div>
           <div className="device-trace" key={`trace-${step.id}-${run}`}>
             <Trace id={step.id} />
           </div>
         </div>
       </figure>
+      <button className="device-toggle" onClick={control} aria-label={controlLabel}>
+        {controlIcon}
+      </button>
+      <p className="device-note">
+        An illustration made from ShootAgent’s real tool output on AutoHDR’s data, not a screen recording.
+      </p>
+      </div>
 
       <div className="hero-steps" data-paused={!active || undefined} data-still={still || undefined}>
         <ol className="steps" aria-label="What the agent does, shown in the picture">
@@ -348,15 +344,15 @@ export function Hero() {
                 <span>{s.label}</span>
                 {i === index && (
                   <span className="step-progress" style={{ "--dur": `${s.ms}ms` } as CSSProperties}>
-                    <span key={`${run}-${i}`} />
+                    <span key={`${run}-${i}`} onAnimationEnd={next} />
                   </span>
                 )}
               </button>
             </li>
           ))}
         </ol>
-        <button className="control" onClick={control} aria-label={mode === "playing" ? "Pause the walkthrough" : mode === "ended" ? "Play the walkthrough again" : "Play the walkthrough"}>
-          {mode === "playing" ? <Pause /> : mode === "ended" ? <Replay /> : <Play />}
+        <button className="control" onClick={control} aria-label={controlLabel}>
+          {controlIcon}
           {mode === "playing" ? "Pause" : mode === "ended" ? "Replay" : "Play"}
         </button>
       </div>

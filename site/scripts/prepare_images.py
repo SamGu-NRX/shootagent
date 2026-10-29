@@ -15,8 +15,9 @@ Two real cases from the defect set, processed by the same tools the agent calls,
 Plus two customer edits from the README's before/after composites: the bedroom walls recoloured to a
 reference, and the grey car removed. Output: WebP photos and PNG masks (white, the mask in the alpha
 channel, for CSS mask-image) in site/public/img, and site/src/assets.json with the positions and
-measurements the page's overlays and captions use. Only the files in OUTPUTS are replaced; the folder also
-holds files this script does not own (qr-demo.svg, edits/).
+measurements the page's overlays and captions use. The two labelled copies on the page carry QR codes, as the
+listing kit's do, and these point at the unaltered originals the page serves. Only the files in OUTPUTS are
+replaced; the folder also holds files this script does not own (edits/).
 """
 
 from __future__ import annotations
@@ -45,7 +46,9 @@ OUTPUTS = (
     "street-delivered.webp", "street-captured.webp", "street-fixed.webp", "street-sign-mask.png",
     "laundry-delivered.webp", "laundry-a-band.webp", "laundry-a.webp", "laundry-b.webp",
     "walls-before.webp", "walls-after.webp", "walls-mask.png", "car-before.webp", "car-after.webp",
+    "qr-walls.svg", "qr-car.svg",
 )
+SITE = "https://shootagent-ai.vercel.app"
 # The QC candidate's mask follows the blue siding and stops where the editor's fill painted the white porch
 # roof over the sign's lower-right third, so a restore through it alone reads "STO" with the roof line across
 # the corner. As the agent does when a mask misses part of its object, grow it first (grow_mask counts pixels
@@ -193,6 +196,20 @@ def customer_edits() -> dict:
     return {"walls": {"share": round(float(keep.mean()), 4)}}
 
 
+def label_codes() -> None:
+    """The QR codes on the hero's and the kit's labelled copies, each to the unaltered original it describes."""
+    import segno
+
+    for name, original in (("qr-walls.svg", "walls-before.webp"), ("qr-car.svg", "car-before.webp")):
+        assert name in OUTPUTS, f"add {name} to OUTPUTS"
+        segno.make(f"{SITE}/img/{original}", error="m").save(
+            OUT / name, kind="svg", border=2, dark="#111", light="#fff", omitsize=True, xmldecl=False)
+        # Scales with the label (viewBox, no fixed size) and keeps its modules sharp when it does.
+        svg = (OUT / name).read_text().replace("<svg ", '<svg shape-rendering="crispEdges" ', 1)
+        (OUT / name).write_text(svg)
+        print(f"  {name:26s} -> {SITE}/img/{original}")
+
+
 def main() -> None:
     shutil.rmtree(SCRATCH, ignore_errors=True)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -204,6 +221,7 @@ def main() -> None:
     data |= fused_rooms()
     print("customer edits (README composites):")
     data |= customer_edits()
+    label_codes()
     ASSETS.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
     print(f"wrote {ASSETS.relative_to(ROOT)}")
 

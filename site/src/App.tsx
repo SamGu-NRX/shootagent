@@ -4,7 +4,7 @@ import { Flow } from "./components/Flow";
 import { Hero } from "./components/Hero";
 import { DemoButton, Nav } from "./components/Nav";
 import { Results } from "./components/Results";
-import { GITHUB_URL } from "./content";
+import { GITHUB_URL, LICENSE_URL } from "./content";
 import { useInputMode } from "./lib/motion";
 
 export function App() {
@@ -42,7 +42,8 @@ export function App() {
             2026.
           </p>
           <p>
-            <a href={GITHUB_URL}>MIT licensed</a>. Disclosures follow AB 723 as MLSs summarise it; not legal advice.
+            <a href={LICENSE_URL}>MIT licensed</a>. Disclosures follow AB 723 (California Business and Professions Code
+            §10140.8). Not legal advice.
           </p>
         </div>
       </footer>

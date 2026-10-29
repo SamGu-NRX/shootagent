@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ASSETS, img } from "../content";
 import { useEntrance, useReducedMotion } from "../lib/motion";
 import { Replay } from "./Icons";
 
 // One photo the editor fused from two camera positions, walked by the viewfinder, then split into the two photos
-// ShootAgent rebuilds from the brackets. The markup's finished state is the split; each beat below adds one data
-// attribute and CSS transitions carry the change, so a replay mid-way restarts from the joined photo.
+// ShootAgent rebuilds from the brackets. The markup's finished state is the split (the data attributes are in the
+// JSX, so the prerendered page shows it before any script runs); each beat below adds one data attribute back and
+// CSS transitions carry the change, so a replay mid-way restarts from the joined photo.
 // 2800 ms is the walk's transition in styles.css; the split starts as it settles.
 const BEATS: [string, number][] = [
   ["walked", 250],
@@ -22,7 +23,11 @@ export function Film() {
   const stage = useRef<HTMLDivElement>(null);
   const timers = useRef<number[]>([]);
   const reduced = useReducedMotion();
-  const entrance = useEntrance(stage, { threshold: 0.45 });
+  // The stacked figure is taller than a phone's screen at large text sizes, so it starts once its top is well in
+  // view rather than once a share of it is.
+  const entrance = useEntrance(stage, { threshold: 0, rootMargin: "0px 0px -30% 0px" });
+  // Only without motion: whether the reader has switched back to the editor's photo.
+  const [joined, setJoined] = useState(false);
 
   const clear = () => {
     timers.current.forEach(clearTimeout);
@@ -47,32 +52,44 @@ export function Film() {
     for (const [name, at] of BEATS) timers.current.push(window.setTimeout(() => figure.current && (figure.current.dataset[name] = ""), at));
   }, [reset]);
 
-  useLayoutEffect(finish, [finish]);
   useEffect(() => {
     if (entrance === "waiting") reset();
     else if (entrance === "playing") play();
   }, [entrance, play, reset]);
   useEffect(() => {
     if (reduced) finish();
+    setJoined(false);
   }, [reduced, finish]);
   useEffect(() => clear, []);
+
+  // With motion, Replay plays the walk and the split again. Without it, the same button switches between the
+  // editor's photo and the split, so both stay reachable.
+  const control = reduced
+    ? joined
+      ? { label: "Split it", name: "Split it into its two photos", act: () => (finish(), setJoined(false)) }
+      : { label: "See the editor’s photo", name: "See the editor’s photo", act: () => (reset(), setJoined(true)) }
+    : { label: "Replay", name: "Replay the split", act: play };
 
   return (
     <section className="section" id="how" aria-labelledby="film-title">
       <div className="wrap">
         <div className="section-head">
-          <h2 id="film-title">When the editor merges two rooms.</h2>
+          <h2 id="film-title">When the editor merges two views.</h2>
           <p className="lede">
-            AutoHDR blended ten exposures into this laundry photo, but they came from two camera positions. ShootAgent
+            AutoHDR blended ten brackets into this kitchen photo, but they came from two camera positions. ShootAgent
             matches features between every pair of brackets, finds the two groups, and fuses each into its own photo.
           </p>
         </div>
-        <figure className="film" ref={figure}>
+        <figure className="film" ref={figure} data-walked="" data-split="" data-read="">
           <div className="film-stage" ref={stage}>
-            <button className="control film-replay" onClick={() => (reduced ? finish() : play())}>
-              <Replay /> Replay
+            <button className="control film-replay" onClick={control.act} aria-label={control.name}>
+              <Replay /> {control.label}
             </button>
-            <div className="film-whole" aria-hidden>
+            <div
+              className="film-whole"
+              role="img"
+              aria-label="The editor’s photo: ten brackets from two camera positions blended into one kitchen."
+            >
               <img className="layer" src={img("laundry-delivered.webp")} alt="" loading="lazy" decoding="async" />
               <img className="layer lens-view" src={img("laundry-a-band.webp")} alt="" loading="lazy" decoding="async" />
               <div className="lens">
@@ -86,7 +103,7 @@ export function Film() {
                 <span className="panel-chip">Brackets {groups[0]}</span>
               </div>
               <div className="panel" data-panel="b">
-                <img loading="lazy" decoding="async" src={img("laundry-b.webp")} alt="The second photo, fused from brackets 5 to 9: the corner with the sink." />
+                <img loading="lazy" decoding="async" src={img("laundry-b.webp")} alt="The second photo, fused from brackets 5 to 9: the kitchen corner with the sink." />
                 <span className="panel-chip">Brackets {groups[1]}</span>
               </div>
             </div>
@@ -95,21 +112,23 @@ export function Film() {
             <p className="reading" data-reading="1">
               <b>Found</b>
               Ten brackets, two camera positions.
-              {matches ? ` Within each group ${matches[1]} and ${matches[2]} features match; across them, at most ${matches[3]}.` : ""}
+              {matches
+                ? ` Within each group a median of ${matches[1]} and ${matches[2]} features match; across them, at most ${matches[3]}.`
+                : ""}
             </p>
             <p className="reading" data-reading="2">
               <b>Photo one</b>
-              Brackets {groups[0]}, fused on their own: the wall with the entry door.
+              Brackets {groups[0]}: the wall with the entry door.
             </p>
             <p className="reading" data-reading="3">
               <b>Photo two</b>
-              Brackets {groups[1]}: the corner with the sink, styled to match the editor’s look.
+              Brackets {groups[1]}: the kitchen corner with the sink. Both are toned to match the editor’s photo.
             </p>
           </figcaption>
         </figure>
         <p className="film-note">
           The viewfinder shows what one group of brackets saw: the cabinets from the other camera position vanish inside it.
-          Splitting merged views is ShootAgent’s strongest result, 21 of 21 in AutoHDR’s defect set.
+          Ghosting and grouping is ShootAgent’s strongest result: 21 of 21 fixed in AutoHDR’s defect set.
         </p>
       </div>
     </section>

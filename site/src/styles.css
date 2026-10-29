@@ -54,8 +54,7 @@
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 72px;
+  scroll-padding-top: 60px;
   -webkit-text-size-adjust: 100%;
 }
 body {
@@ -101,9 +100,13 @@ a {
   color: inherit;
 }
 :focus-visible {
-  outline: none;
-  box-shadow: var(--focus);
-  border-radius: 6px;
+  outline: 2px solid var(--agent);
+  outline-offset: 2px;
+}
+/* Smooth only for jumps people ask for (a focused link); a link from outside lands at once, so figures below the
+   target are judged from where the page really is. */
+html:focus-within {
+  scroll-behavior: smooth;
 }
 .sr-only {
   position: absolute;
@@ -451,8 +454,34 @@ h3 {
 }
 
 /* the device: a small working copy of the product's workspace */
-.device {
+.device-wrap {
   grid-area: device;
+  position: relative;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.device-note {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+/* A pause control on the picture itself, for layouts where the step list sits below it. */
+.device-toggle {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgb(18 18 18 / 0.86);
+  border: 1px solid var(--line-2);
+  color: var(--text);
+}
+.device {
   container-type: inline-size;
   position: relative;
   border-radius: 16px;
@@ -464,7 +493,7 @@ h3 {
     0 0 0 1px rgb(255 255 255 / 0.02) inset;
 }
 .device-inner {
-  font-size: clamp(11px, 2.2cqi, 14px);
+  font-size: clamp(12px, 2.4cqi, 15px);
 }
 .device-bar {
   display: flex;
@@ -488,7 +517,7 @@ h3 {
 }
 .device-bar-title span {
   font-family: var(--mono);
-  font-size: 0.78em;
+  font-size: max(0.78em, 11px);
   color: var(--text-3);
 }
 .live-pill {
@@ -500,7 +529,7 @@ h3 {
   border-radius: 999px;
   background: var(--agent-wash);
   color: var(--agent-ink);
-  font-size: 0.86em;
+  font-size: max(0.86em, 11px);
   font-weight: 550;
   white-space: nowrap;
 }
@@ -625,7 +654,7 @@ h3 {
   border-radius: 0.4em;
   background: rgb(18 18 18 / 0.82);
   color: #fff;
-  font-size: 0.82em;
+  font-size: max(0.82em, 11px);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -678,7 +707,7 @@ h3 {
   border-radius: 0.45em;
   background: rgb(18 18 18 / 0.86);
   color: #fff;
-  font-size: 0.82em;
+  font-size: max(0.82em, 11px);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -719,7 +748,7 @@ h3 {
   padding: 0.12em 0.4em;
   border-radius: 0.3em;
   background: rgb(18 18 18 / 0.8);
-  font-size: 0.72em;
+  font-size: max(0.72em, 11px);
   font-weight: 600;
 }
 
@@ -794,7 +823,7 @@ h3 {
 }
 .label-strip span {
   display: block;
-  font-size: 0.82em;
+  font-size: max(0.82em, 11px);
   color: #d8d8d8;
 }
 .label-strip img {
@@ -848,6 +877,12 @@ h3 {
   color: var(--retry);
 }
 @container (max-width: 520px) {
+  .loupe {
+    width: 46%;
+  }
+  .device-bar-title span {
+    display: none;
+  }
   .trace-row {
     font-size: 1em;
     line-height: 1.4;
@@ -952,6 +987,14 @@ h3 {
   gap: 18px;
   margin-bottom: clamp(32px, 4.5vw, 56px);
 }
+.section-note {
+  max-width: 38em;
+  font-size: 15px;
+  color: var(--text-3);
+}
+.section-note a {
+  color: var(--text-2);
+}
 
 /* ---------- film: one photo, two camera positions ----------------------------------------------------- */
 .film-stage {
@@ -1036,7 +1079,7 @@ h3 {
 }
 .film-lens-tag {
   position: absolute;
-  top: calc(var(--lt) - 34px);
+  top: max(6px, calc(var(--lt) - 34px));
   left: var(--lx);
   padding: 4px 10px;
   border-radius: 6px;
@@ -1130,7 +1173,20 @@ h3 {
   border-color: var(--agent-line);
 }
 .node h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
   font-size: 17px;
+}
+.node-tag {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--agent-wash);
+  color: var(--agent-ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 .node p {
   font-size: 15px;
@@ -1380,12 +1436,16 @@ h3 {
   font-size: 14px;
   color: var(--text-3);
 }
-.key-btn:is([aria-pressed="true"], [data-preview]) {
+.key-btn[data-preview] {
   background: var(--panel);
 }
-.key-btn:is([aria-pressed="true"], [data-preview]) .key-num {
-  background: var(--agent);
-  color: #15122a;
+.key-btn[data-preview] .key-num {
+  background: var(--text);
+  color: #121212;
+}
+/* Pinned, while another layer is being previewed: still marked, not selected. */
+.key-btn[aria-pressed="true"]:not([data-preview]) .key-num {
+  box-shadow: inset 0 0 0 1.5px var(--text-2);
 }
 .key-btn:active {
   transform: scale(0.985);
@@ -1415,12 +1475,6 @@ h3 {
   font-family: var(--mono);
   font-size: 0.9em;
   color: var(--text);
-}
-@media (pointer: coarse) {
-  .chip,
-  .seg button {
-    min-height: 44px;
-  }
 }
 
 /* the chain: fingerprints you can break */
@@ -1525,8 +1579,10 @@ h3 {
   gap: 10px 16px;
 }
 .seg {
-  display: inline-flex;
-  flex-wrap: wrap;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  justify-self: start;
   gap: 4px;
   padding: 4px;
   border-radius: 999px;
@@ -1544,9 +1600,8 @@ h3 {
     color 160ms ease;
 }
 .seg button[aria-checked="true"] {
-  background: var(--raised);
-  color: var(--text);
-  box-shadow: inset 0 0 0 1px var(--line-2);
+  background: var(--text);
+  color: #121212;
 }
 .verdict-line {
   display: inline-flex;
@@ -1583,7 +1638,7 @@ h3 {
   min-height: 52px;
   padding: 0 16px;
   border-radius: 12px;
-  border: 1px solid var(--line-2);
+  border: 1px solid #6b6b6b;
   background: var(--panel);
   font-size: 17px;
 }
@@ -1596,8 +1651,7 @@ h3 {
 }
 .policy-field input:focus-visible {
   border-color: var(--agent);
-  box-shadow: 0 0 0 3px var(--agent-wash);
-  border-radius: 12px;
+  outline-offset: 0;
 }
 .chips {
   display: flex;
@@ -1619,6 +1673,22 @@ h3 {
   .chip:hover {
     border-color: var(--text-3);
     color: var(--text);
+  }
+}
+.chips-label {
+  align-self: center;
+  margin-right: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+@media (pointer: coarse) {
+  .chips {
+    gap: 12px;
+  }
+  .chip,
+  .seg button {
+    min-height: 44px;
   }
 }
 .verdict {
@@ -1647,8 +1717,8 @@ h3 {
   color: var(--fail);
 }
 .verdict-pill[data-verdict="disclose"] {
-  background: var(--agent-wash);
-  color: var(--agent-ink);
+  background: var(--raised);
+  color: var(--text);
 }
 .verdict-pill[data-verdict="exempt"],
 .verdict-pill[data-verdict="overlay"] {
@@ -1679,7 +1749,7 @@ h3 {
   color: var(--fail);
 }
 .verdict li[data-verdict="disclose"] b {
-  color: var(--agent-ink);
+  color: var(--text);
 }
 .verdict li:is([data-verdict="exempt"], [data-verdict="overlay"]) b {
   color: var(--pass);
@@ -1818,6 +1888,17 @@ h3 {
   color: var(--text-2);
 }
 
+/* ---------- forced colours ------------------------------------------------------------------------ */
+@media (forced-colors: active) {
+  .step[aria-current="step"] .step-n,
+  .key-btn[data-preview] .key-num,
+  .seg button[aria-checked="true"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
 /* ---------- keyboard and reduced motion ----------------------------------------------------------- */
 html[data-input="keyboard"] :is(.step, .step-n, .step-progress, .button, .control, .key-btn, .key-num, .seg button, .chip, .text-link) {
   transition: none !important;
@@ -1826,7 +1907,8 @@ html[data-input="keyboard"] .kit-figure:not([data-exploding]) .sheet {
   transition: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  html:focus-within {
     scroll-behavior: auto;
   }
   *,
@@ -1860,6 +1942,16 @@ html[data-input="keyboard"] .kit-figure:not([data-exploding]) .sheet {
 @media (max-width: 900px) {
   h1 {
     font-size: clamp(40px, 7.4vw, 60px);
+  }
+  .device-toggle {
+    display: grid;
+  }
+  /* the picture carries the control here */
+  .hero-steps .control {
+    display: none;
+  }
+  .device-bar {
+    padding-right: 3.6em;
   }
   .hero {
     grid-template-columns: minmax(0, 1fr);
@@ -1937,6 +2029,14 @@ html[data-input="keyboard"] .kit-figure:not([data-exploding]) .sheet {
   .film[data-split] .film-whole {
     opacity: 1;
   }
+  .film-lens-tag {
+    top: calc(var(--lt) + 8px);
+    left: calc(var(--lx) + 8px);
+  }
+  .film-replay {
+    top: 10px;
+    bottom: auto;
+  }
   .panel {
     aspect-ratio: 1;
   }
@@ -1955,6 +2055,8 @@ html[data-input="keyboard"] .kit-figure:not([data-exploding]) .sheet {
   }
   .seg {
     display: grid;
+    grid-auto-flow: row;
+    justify-self: stretch;
     border-radius: 18px;
   }
   .seg button {

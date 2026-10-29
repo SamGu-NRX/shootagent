@@ -34,6 +34,12 @@ export function Chain() {
   const [files, setFiles] = useState<Awaited<ReturnType<typeof loadFiles>> | null>(null);
   const [checks, setChecks] = useState<Result[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Announce the verdict only once the reader has changed something, not while they scroll past.
+  const [touched, setTouched] = useState(false);
+  const choose = (m: Tamper) => {
+    setMode(m);
+    setTouched(true);
+  };
   const figure = useRef<HTMLDivElement>(null);
 
   // Fetch and fingerprint the photos once the figure comes near the screen, not while the hero loads.
@@ -69,6 +75,10 @@ export function Chain() {
   }, [files, mode]);
 
   const broken = checks?.find((c) => !c.hashOk || !c.linkOk || c.fileOk === false);
+  const okText = "Every fingerprint matches, from the brackets to the listing photo.";
+  const brokenText = broken
+    ? `Broken at “${broken.entry.label}”: ${broken.fileOk === false ? "the photo no longer matches its record." : "the record before it was rewritten."}`
+    : "";
   // A radio group: one stop in the tab order, arrow keys move the choice.
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const at = MODES.findIndex((m) => m.id === mode);
@@ -76,14 +86,14 @@ export function Chain() {
     if (to === undefined) return;
     e.preventDefault();
     const i = (to + MODES.length) % MODES.length;
-    setMode(MODES[i]!.id);
+    choose(MODES[i]!.id);
     e.currentTarget.querySelectorAll<HTMLButtonElement>("[role=radio]")[i]?.focus();
   };
   return (
     <div className="chain-figure" ref={figure}>
       <div className="seg" role="radiogroup" aria-label="What a reader receives" onKeyDown={onKey}>
         {MODES.map((m) => (
-          <button key={m.id} role="radio" aria-checked={mode === m.id} tabIndex={mode === m.id ? 0 : -1} onClick={() => setMode(m.id)}>
+          <button key={m.id} role="radio" aria-checked={mode === m.id} tabIndex={mode === m.id ? 0 : -1} onClick={() => choose(m.id)}>
             {m.label}
           </button>
         ))}
@@ -113,20 +123,23 @@ export function Chain() {
           );
         })}
       </ol>
-      <p className="verdict-line" data-ok={checks && !error ? !broken : undefined} role="status">
+      <p className="verdict-line" data-ok={checks && !error ? !broken : undefined}>
         {error ? (
           error
         ) : !checks ? (
           "Computing fingerprints in your browser…"
         ) : broken ? (
           <>
-            <Cross size={15} /> Broken at “{broken.entry.label}”: {broken.fileOk === false ? "the photo no longer matches its record." : "the record before it was rewritten."}
+            <Cross size={15} /> {brokenText}
           </>
         ) : (
           <>
-            <Check size={15} /> Every fingerprint matches, from the brackets to the listing photo.
+            <Check size={15} /> {okText}
           </>
         )}
+      </p>
+      <p className="sr-only" role="status">
+        {touched && checks ? (broken ? brokenText : okText) : ""}
       </p>
     </div>
   );

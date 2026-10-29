@@ -3,6 +3,9 @@ import assets from "./assets.json";
 
 export const DEMO_URL = "https://shootagent.sillion.app";
 export const GITHUB_URL = "https://github.com/SamGu-NRX/shootagent";
+export const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
+// The compliance tools (disclosures, the edit record, the listing kit, the policy) until they reach the live demo.
+export const PR_COMPLIANCE_URL = `${GITHUB_URL}/pull/1`;
 
 export const ASSETS = assets;
 
