@@ -1,10 +1,9 @@
-import { Bookmark, Dices, FastForward, Heart, Info, Mail, MessageCircle, Pause, Play, RotateCcw, Send, Trophy, UserPlus } from "lucide-react";
+import { Dices, FastForward, Pause, Play, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { plannedReels } from "./Reels";
-import { clockHour, formatRatio, interpolateSeries, launchOutcome, segmentsAt, visibleComments, type Metric } from "./sim";
+import { clockHour, formatRatio, interpolateSeries, launchOutcome, METRICS, segmentsAt, visibleComments, type Metric } from "./sim";
 import { useCreator } from "./store";
-import type { LabState, Reel, Simulation, ViewerPersona } from "./types";
-import { Avatar, Disclosure, fmtCompact, fmtInt, fmtPct, niceTicks, ReelBadge, reelColors, reelStyle, SectionHead, useReducedMotion, useWidth, viewerWho } from "./ui";
+import type { LabState, Reel, SimPoint, Simulation, ViewerPersona } from "./types";
+import { Disclosure, fmtCompact, fmtInt, fmtPct, niceTicks, ReelBadge, reelInks, SectionHead, useDismiss, useReducedMotion, useWidth } from "./ui";
 
 /** Real seconds the 48-hour playback takes. */
 export const PLAY_MS = 20_000;
@@ -65,16 +64,12 @@ export function LaunchSection() {
         sub={`Which reel would travel further? ${sims[0]?.hours ?? lab.options.hours} hours on an account with ${fmtInt(sims[0]?.followers ?? lab.options.followers)} followers, played back in ${PLAY_MS / 1000} seconds.`}
       />
       <p className="cl-honest">
-        <Info size={14} aria-hidden />
-        <span>
-          <b>Simulated audience:</b> a model-based prediction from the evaluation panel, not platform data.
-        </span>
+        <span>Simulated audience:</span> a model-based prediction from the evaluation panel, not platform data.
       </p>
       {ready ? (
         <Launch lab={lab} sims={sims} viewers={viewers} />
       ) : (
         <div className="cl-waiting">
-          <Trophy size={18} strokeWidth={1.6} aria-hidden />
           <p>The launch is simulated from the audience panel's reactions once the reels have been screened.</p>
         </div>
       )}
@@ -100,8 +95,6 @@ function Launch({ lab, sims, viewers }: { lab: LabState; sims: Simulation[]; vie
   const [seed, setSeed] = useState(sims[0]?.seed ?? lab.options.seed);
   const [played, setPlayed] = useState(false);
 
-  const planned = useMemo(() => plannedReels(lab), [lab]);
-  const colors = useMemo(() => reelColors(planned.map((p) => ({ id: p.id, kind: p.kind }))), [planned]);
   const reels = useMemo(() => sims.map((s) => lab.reels.find((r) => r.id === s.reel)).filter((r): r is Reel => !!r), [sims, lab.reels]);
   const dirty = followers !== (sims[0]?.followers ?? followers) || seed !== (sims[0]?.seed ?? seed);
 
@@ -117,9 +110,10 @@ function Launch({ lab, sims, viewers }: { lab: LabState; sims: Simulation[]; vie
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [simRun]);
 
+  const rerun = () => void simulate({ followers, seed, hours });
   const go = () => {
     if (dirty) {
-      void simulate({ followers, seed, hours });
+      rerun();
       return;
     }
     setPlayed(true);
@@ -131,12 +125,16 @@ function Launch({ lab, sims, viewers }: { lab: LabState; sims: Simulation[]; vie
   const hour = clock.hour;
   const done = hour >= hours - 1e-6;
   const at = useMemo(() => new Map(sims.map((s) => [s.reel, interpolateSeries(s.series, hour)])), [sims, hour]);
-  const leader = [...at.entries()].sort((a, b) => b[1].views - a[1].views)[0];
+  const leader = hour > 0 ? [...at.entries()].sort((a, b) => b[1].views - a[1].views)[0] : undefined;
+  const winner = useMemo(() => launchOutcome(sims, reels, "views")?.winner ?? null, [sims, reels]);
+  const lead = leader?.[0] ?? winner;
+  const inks = useMemo(() => reelInks(reels, lead), [reels, lead]);
+  const finalInks = useMemo(() => reelInks(reels, winner), [reels, winner]);
 
   return (
     <div className="cl-launch">
       <div className="cl-sim-bar">
-        <button className="btn btn-agent cl-launch-go" onClick={go} disabled={simBusy}>
+        <button className="btn btn-primary cl-launch-go" onClick={go} disabled={simBusy}>
           {simBusy ? (
             <>
               <span className="spinner spinner-sm" aria-hidden /> Simulating…
@@ -176,193 +174,232 @@ function Launch({ lab, sims, viewers }: { lab: LabState; sims: Simulation[]; vie
           aria-label="Launch clock, hours"
           style={{ "--p": `${(hour / hours) * 100}%` } as CSSProperties}
         />
-        <label className="cl-follow">
-          <span>
-            Followers <span className="num">{fmtInt(followers)}</span>
-          </span>
-          <input type="range" min={0} max={100} step={1} value={sliderOf(followers)} onChange={(e) => setFollowers(niceFollowers(Number(e.target.value)))} aria-valuetext={`${fmtInt(followers)} followers`} />
-        </label>
-        <span className="cl-seed">
-          Seed <span className="num">{seed}</span>
-          <button className="icon-btn" onClick={() => setSeed(1 + Math.floor(Math.random() * 9999))} aria-label="Shuffle the seed" title="Shuffle the seed">
-            <Dices size={14} />
-          </button>
-        </span>
-        <button className="btn btn-quiet btn-sm" onClick={() => void simulate({ followers, seed, hours })} disabled={simBusy}>
-          <RotateCcw size={12} aria-hidden /> Re-run
-        </button>
+        <LaunchSettings followers={followers} seed={seed} onFollowers={setFollowers} onSeed={setSeed} onRun={rerun} busy={simBusy} />
       </div>
 
-      <Banner sims={sims} reels={reels} colors={colors} done={done && played} leader={leader} hour={hour} />
-      <Counters reels={reels} colors={colors} at={at} leader={hour > 0 ? leader?.[0] : undefined} final={done && played} />
+      <Banner sims={sims} reels={reels} hours={hours} done={done && played} leader={leader} hour={hour} />
+      <Counters reels={reels} at={at} leader={leader?.[0]} final={done && played} />
       <div className="cl-sim-main">
-        <Growth sims={sims} colors={colors} hour={hour} hours={hours} />
-        <Comments sims={sims} colors={colors} hour={hour} viewers={viewers} />
+        <Growth sims={sims} inks={inks} lead={lead} hour={hour} hours={hours} />
+        <Comments sims={sims} hour={hour} />
       </div>
-      <Disclosure className="cl-sim-more" label="Retention, audience segments and how the simulation works" openLabel="Hide the details">
-        <div className="cl-launch-pair">
-          <Retention sims={sims} colors={colors} />
-          <Segments sims={sims} colors={colors} hour={hour} viewers={viewers} />
+      <Disclosure className="cl-sim-more" label="Retention, audience segments, all metrics and how the simulation works" openLabel="Hide the details">
+        <div className="cl-launch-more">
+          <Retention sims={sims} inks={finalInks} />
+          <Segments sims={sims} hour={hour} viewers={viewers} />
+          <Metrics reels={reels} at={at} />
+          <ModelNotes sims={sims} />
         </div>
-        <ModelNotes sims={sims} colors={colors} />
       </Disclosure>
     </div>
   );
 }
 
-// ---- winner banner ------------------------------------------------------------------------------------
+// ---- followers and seed, behind "Change" ----------------------------------------------------------------
+
+function LaunchSettings({
+  followers,
+  seed,
+  onFollowers,
+  onSeed,
+  onRun,
+  busy,
+}: {
+  followers: number;
+  seed: number;
+  onFollowers: (n: number) => void;
+  onSeed: (n: number) => void;
+  onRun: () => void;
+  busy: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLDivElement>(null);
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(open, close, wrap);
+  const slider = sliderOf(followers);
+  return (
+    <div className="cl-sim-settings" ref={wrap}>
+      <span className="cl-sim-settings-read">
+        <span className="num">{fmtInt(followers)}</span> followers · seed <span className="num">{seed}</span>
+      </span>
+      <button className="btn btn-sm" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">
+        Change
+      </button>
+      {open && (
+        <div className="cl-pop cl-sim-pop" role="dialog" aria-label="Launch settings">
+          <label className="cl-sim-field">
+            <span className="cl-sim-field-head">
+              <span>Followers</span>
+              <span className="num">{fmtInt(followers)}</span>
+            </span>
+            <input
+              type="range"
+              className="cl-scrub"
+              min={0}
+              max={100}
+              step={1}
+              value={slider}
+              onChange={(e) => onFollowers(niceFollowers(Number(e.target.value)))}
+              aria-valuetext={`${fmtInt(followers)} followers`}
+              style={{ "--p": `${slider}%` } as CSSProperties}
+            />
+          </label>
+          <div className="cl-sim-field cl-sim-field-row">
+            <span>Seed</span>
+            <span className="cl-sim-seed">
+              <span className="num">{seed}</span>
+              <button className="icon-btn" onClick={() => onSeed(1 + Math.floor(Math.random() * 9999))} aria-label="Shuffle the seed" title="Shuffle the seed">
+                <Dices size={14} />
+              </button>
+            </span>
+          </div>
+          <button
+            className="btn btn-sm btn-primary cl-sim-rerun"
+            onClick={() => {
+              setOpen(false);
+              onRun();
+            }}
+            disabled={busy}
+          >
+            <RotateCcw size={12} aria-hidden /> Re-run
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---- the result in one sentence -----------------------------------------------------------------------
 
 function Banner({
   sims,
   reels,
-  colors,
+  hours,
   done,
   leader,
   hour,
 }: {
   sims: Simulation[];
   reels: Reel[];
-  colors: Record<string, string>;
+  hours: number;
   done: boolean;
   leader: [string, { views: number }] | undefined;
   hour: number;
 }) {
   const views = launchOutcome(sims, reels, "views");
   const inquiries = launchOutcome(sims, reels, "inquiries");
-  const label = (id: string | null) => reels.find((r) => r.id === id);
+  const reel = (id: string | null) => reels.find((r) => r.id === id);
   if (!done || !views) {
     return (
       <div className="cl-banner" data-state="race" aria-live="polite">
         {hour > 0 && leader ? (
-          <p>
-            <ReelBadge id={leader[0]} color={colors[leader[0]]!} size={20} /> <b>{label(leader[0])?.label}</b> leads at hour {Math.floor(hour)} with{" "}
-            <span className="num">{fmtInt(leader[1].views)}</span> views
+          <p className="cl-banner-race">
+            <ReelBadge id={leader[0]} size={20} />
+            <span>
+              <b>{reel(leader[0])?.label ?? leader[0]}</b> leads at hour {Math.floor(hour)} with <span className="num">{fmtInt(leader[1].views)}</span> views
+            </span>
           </p>
         ) : (
-          <p className="muted">Press Simulate launch to play {sims[0]?.hours ?? 48} hours in {PLAY_MS / 1000} seconds; the counters, the curve and the comments move with the clock.</p>
+          <p className="cl-banner-hint">
+            Press Simulate launch to play {hours} hours in {PLAY_MS / 1000} seconds; the counters, the curve and the comments move with the clock.
+          </p>
         )}
       </div>
     );
   }
-  const w = label(views.winner);
-  const vs = label(views.against);
+  const w = reel(views.winner);
+  const vs = reel(views.against);
+  const name = w?.title ?? views.winner;
+  const against = vs?.kind === "baseline" ? "the template" : vs ? `${vs.id} · ${vs.label}` : (views.against ?? "");
   const inq = inquiries && inquiries.winner === views.winner && inquiries.against === views.against ? inquiries : null;
+  const sim = sims[0]!;
   return (
-    <div className="cl-banner" data-state="won" style={reelStyle(colors[views.winner]!)} role="status">
-      <Trophy size={26} aria-hidden className="cl-banner-icon" />
-      <div className="cl-banner-text">
-        <p className="cl-banner-head">
-          <ReelBadge id={views.winner} color={colors[views.winner]!} size={28} />
-          <span>
-            {w?.title ?? views.winner} reached{" "}
-            <b className="cl-banner-x">{views.ratio != null ? formatRatio(views.ratio) : "more"}</b> the views of {vs ? `${vs.id} · ${vs.label}` : views.against}
-          </span>
-        </p>
-        <p className="cl-banner-sub num">
-          {fmtInt(views.winnerValue)} views vs {fmtInt(views.againstValue)}
-          {inq && (
+    <div className="cl-banner" data-state="won" role="status">
+      <p className="cl-banner-head">
+        <ReelBadge id={views.winner} size={24} />
+        <span>
+          {views.tie ? (
             <>
-              {" · "}
-              {inq.ratio != null ? `${formatRatio(inq.ratio)} the inquiries (${fmtInt(inq.winnerValue)} vs ${fmtInt(inq.againstValue)})` : `${fmtInt(inq.winnerValue)} inquiries vs none`}
+              {name} and {reel(views.ranking[1]!.reel)?.title ?? views.ranking[1]!.reel} tied on views
+            </>
+          ) : views.ratio != null ? (
+            <>
+              {name} reached <b className="cl-banner-x">{formatRatio(views.ratio)}</b> {vs?.kind === "baseline" ? "the template's views" : `the views of ${against}`}
+            </>
+          ) : (
+            <>
+              {name} reached <span className="num">{fmtInt(views.winnerValue)}</span> views; {against} reached none
             </>
           )}
-          {" · "}simulated, {fmtInt(sims[0]!.followers)} followers, {sims[0]!.hours} h, seed {sims[0]!.seed}
-        </p>
-      </div>
-      <ol className="cl-banner-rank" aria-label="Views after the launch">
-        {views.ranking.map((r, i) => (
-          <li key={r.reel}>
-            <span className="cl-banner-place num">{i + 1}</span>
-            <ReelBadge id={r.reel} color={colors[r.reel]!} size={20} />
-            <b className="num">{fmtCompact(r.value)}</b>
-          </li>
-        ))}
-      </ol>
+        </span>
+      </p>
+      <p className="cl-banner-sub">
+        <span className="num">{fmtInt(views.winnerValue)}</span> views vs <span className="num">{fmtInt(views.againstValue)}</span>
+        {inq && (
+          <>
+            {" · "}
+            {inq.ratio != null ? (
+              <>
+                <span className="num">{formatRatio(inq.ratio)}</span> the inquiries (<span className="num">{fmtInt(inq.winnerValue)}</span> vs{" "}
+                <span className="num">{fmtInt(inq.againstValue)}</span>)
+              </>
+            ) : (
+              <>
+                <span className="num">{fmtInt(inq.winnerValue)}</span> {inq.winnerValue === 1 ? "inquiry" : "inquiries"} vs none
+              </>
+            )}
+          </>
+        )}
+        {" · "}simulated: <span className="num">{fmtInt(sim.followers)}</span> followers, <span className="num">{sim.hours}</span> h, seed{" "}
+        <span className="num">{sim.seed}</span>
+      </p>
     </div>
   );
 }
 
 // ---- counters -----------------------------------------------------------------------------------------
 
-const MORE: [Exclude<Metric, "views" | "shares" | "inquiries">, string, typeof Heart][] = [
-  ["likes", "Likes", Heart],
-  ["comments", "Comments", MessageCircle],
-  ["saves", "Saves", Bookmark],
-  ["follows", "Follows", UserPlus],
-];
+const count = (n: number, one: string, many: string) => (
+  <>
+    <span className="num">{fmtCompact(n)}</span> {Math.round(n) === 1 ? one : many}
+  </>
+);
 
-function Counters({
-  reels,
-  colors,
-  at,
-  leader,
-  final,
-}: {
-  reels: Reel[];
-  colors: Record<string, string>;
-  at: Map<string, ReturnType<typeof interpolateSeries>>;
-  leader?: string;
-  final: boolean;
-}) {
-  const [all, setAll] = useState(false);
+function Counters({ reels, at, leader, final }: { reels: Reel[]; at: Map<string, SimPoint>; leader?: string; final: boolean }) {
   return (
-    <div className="cl-counters-wrap">
-      <div className="cl-counters" style={{ "--n": reels.length } as CSSProperties}>
-        {reels.map((r) => {
-          const p = at.get(r.id);
-          return (
-            <article key={r.id} className="cl-counter" style={reelStyle(colors[r.id]!)} data-leading={leader === r.id || undefined}>
-              <header>
-                <ReelBadge id={r.id} color={colors[r.id]!} size={20} />
-                <span className="cl-counter-label">{r.label}</span>
-                {leader === r.id && <span className="cl-counter-lead">{final ? "Winner" : "Leading"}</span>}
-              </header>
-              <p className="cl-counter-views">
-                <span className="num">{fmtInt(p?.views ?? 0)}</span>
-                <span className="cl-counter-unit">views</span>
-              </p>
-              <dl className="cl-counter-key">
-                <div>
-                  <dt>
-                    <Send size={12} aria-hidden /> Shares
-                  </dt>
-                  <dd className="num">{fmtCompact(p?.shares ?? 0)}</dd>
-                </div>
-                <div>
-                  <dt>
-                    <Mail size={12} aria-hidden /> Inquiries
-                  </dt>
-                  <dd className="num">{fmtCompact(p?.inquiries ?? 0)}</dd>
-                </div>
-                {all &&
-                  MORE.map(([k, label, Icon]) => (
-                    <div key={k}>
-                      <dt>
-                        <Icon size={12} aria-hidden /> {label}
-                      </dt>
-                      <dd className="num">{fmtCompact(p?.[k] ?? 0)}</dd>
-                    </div>
-                  ))}
-              </dl>
-            </article>
-          );
-        })}
-      </div>
-      <button className="cl-link-btn cl-counters-more" onClick={() => setAll((a) => !a)} aria-expanded={all}>
-        {all ? "Fewer metrics" : "Likes, comments, saves and follows"}
-      </button>
+    <div className="cl-counters" style={{ "--n": reels.length } as CSSProperties}>
+      {reels.map((r) => {
+        const p = at.get(r.id);
+        const lead = leader === r.id;
+        return (
+          <article key={r.id} className="cl-counter" data-leading={lead || undefined}>
+            <header className="cl-counter-head">
+              <ReelBadge id={r.id} size={18} />
+              <span className="cl-counter-label">{r.label}</span>
+              {lead && <span className="cl-counter-lead">{final ? "Winner" : "Leading"}</span>}
+            </header>
+            <p className="cl-counter-views">
+              <span className="num">{fmtInt(p?.views ?? 0)}</span>
+              <span className="cl-counter-unit">views</span>
+            </p>
+            <p className="cl-counter-sub">
+              {count(p?.shares ?? 0, "share", "shares")} · {count(p?.inquiries ?? 0, "inquiry", "inquiries")}
+            </p>
+          </article>
+        );
+      })}
     </div>
   );
 }
 
 // ---- growth chart -------------------------------------------------------------------------------------
 
-function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Record<string, string>; hour: number; hours: number }) {
+function Growth({ sims, inks, lead, hour, hours }: { sims: Simulation[]; inks: Record<string, string>; lead: string | null; hour: number; hours: number }) {
   const [box, W] = useWidth<HTMLDivElement>(760);
-  const H = 250;
-  const L = 46;
-  const R = 84;
-  const T = 12;
+  const H = 270;
+  const L = 44;
+  const R = 78;
+  const T = 10;
   const B = 26;
   const ticksY = niceTicks(Math.max(...sims.map((s) => s.totals.views), 1), 3);
   const top = ticksY[ticksY.length - 1]!;
@@ -377,9 +414,11 @@ function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Rec
     .map((s) => ({ id: s.reel, v: interpolateSeries(s.series, hour).views }))
     .sort((a, b) => b.v - a.v)
     .map((e) => ({ ...e, y: y(e.v), ly: y(e.v) }));
-  for (let i = 1; i < ends.length; i++) ends[i]!.ly = Math.max(ends[i]!.ly, ends[i - 1]!.ly + 17);
+  for (let i = 1; i < ends.length; i++) ends[i]!.ly = Math.max(ends[i]!.ly, ends[i - 1]!.ly + 16);
   const overflow = (ends[ends.length - 1]?.ly ?? 0) - (H - B);
   if (overflow > 0) ends.forEach((e) => (e.ly -= overflow));
+  // the leader draws last, on top
+  const order = [...sims].sort((a, b) => Number(a.reel === lead) - Number(b.reel === lead));
 
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -388,17 +427,8 @@ function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Rec
   };
 
   return (
-    <div className="cl-panel cl-growth">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Views over time</h3>
-        <span className="cl-legend">
-          {sims.map((s) => (
-            <span key={s.reel}>
-              <i style={{ background: colors[s.reel] }} /> {s.reel}
-            </span>
-          ))}
-        </span>
-      </div>
+    <div className="cl-growth">
+      <h3 className="cl-h3">Views over time</h3>
       <div className="cl-growth-plot" ref={box}>
         <svg width={W} height={H} onPointerMove={onMove} onPointerLeave={() => setHoverH(null)} role="img" aria-label="Cumulative views per reel by hour">
           <defs>
@@ -420,8 +450,8 @@ function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Rec
             </text>
           ))}
           <g clipPath="url(#cl-growth-clip)">
-            {sims.map((s) => (
-              <polyline key={s.reel} className="cl-growth-line" points={s.series.map((p) => `${x(p.hour).toFixed(1)},${y(p.views).toFixed(1)}`).join(" ")} style={{ stroke: colors[s.reel] }} />
+            {order.map((s) => (
+              <polyline key={s.reel} className="cl-growth-line" points={s.series.map((p) => `${x(p.hour).toFixed(1)},${y(p.views).toFixed(1)}`).join(" ")} style={{ stroke: inks[s.reel] }} />
             ))}
           </g>
           {hour > 0 && <line className="cl-growth-now" x1={x(hour)} x2={x(hour)} y1={T} y2={H - B} />}
@@ -429,8 +459,8 @@ function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Rec
             ends.map((e) => (
               <g key={e.id}>
                 {Math.abs(e.ly - e.y) > 3 && <polyline className="cl-growth-leader" points={`${x(hour) + 6},${e.y} ${x(hour) + 11},${e.ly}`} />}
-                <circle cx={x(hour)} cy={e.y} r={4.5} className="cl-growth-dot" style={{ fill: colors[e.id] }} />
-                <text x={x(hour) + 14} y={e.ly + 4} className="cl-growth-end">
+                <circle cx={x(hour)} cy={e.y} r={3.5} style={{ fill: inks[e.id] }} />
+                <text x={x(hour) + 14} y={e.ly + 4} className="cl-growth-end" style={{ fill: inks[e.id] }}>
                   <tspan className="cl-growth-end-id">{e.id}</tspan> {fmtCompact(e.v)}
                 </text>
               </g>
@@ -438,15 +468,16 @@ function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Rec
           {hoverH != null && <line className="cl-growth-cross" x1={x(hoverH)} x2={x(hoverH)} y1={T} y2={H - B} />}
         </svg>
         {hoverH != null && (
-          <div className="cl-growth-tip" style={{ left: x(hoverH) }} data-flip={x(hoverH) > W * 0.6 || undefined}>
+          <div className="cl-tip cl-growth-tip" style={{ left: x(hoverH) }} data-flip={x(hoverH) > W * 0.6 || undefined}>
             <p className="cl-growth-tip-h num">Hour {hoverH}</p>
             {[...sims]
               .map((s) => ({ id: s.reel, v: interpolateSeries(s.series, hoverH).views }))
               .sort((a, b) => b.v - a.v)
               .map((e) => (
                 <p key={e.id} className="cl-growth-tip-row">
-                  <i style={{ background: colors[e.id] }} />
-                  <b className="num">{fmtInt(e.v)}</b> <span>{e.id}</span>
+                  <i style={{ background: inks[e.id] }} />
+                  <span>{e.id}</span>
+                  <b className="num">{fmtInt(e.v)}</b>
                 </p>
               ))}
           </div>
@@ -456,14 +487,62 @@ function Growth({ sims, colors, hour, hours }: { sims: Simulation[]; colors: Rec
   );
 }
 
+// ---- comments -------------------------------------------------------------------------------------------
+
+function Comments({ sims, hour }: { sims: Simulation[]; hour: number }) {
+  const list = useMemo(() => {
+    const byReel = new Map(sims.map((s) => [s.reel, s]));
+    return visibleComments(sims, hour).map((c) => {
+      const s = byReel.get(c.reel);
+      if (!s) return c;
+      const at = interpolateSeries(s.series, c.hour).views;
+      const later = s.totals.views - at;
+      const f = later > 0 ? Math.min(1, Math.max(0, (interpolateSeries(s.series, hour).views - at) / later)) : 1;
+      return { ...c, likes: Math.round(c.likes * f) };
+    });
+  }, [sims, hour]);
+  const total = sims.reduce((n, s) => n + s.comments.length, 0);
+  return (
+    <aside className="cl-comments" aria-label="Comments as they are posted">
+      <div className="cl-comments-head">
+        <h3 className="cl-h3">Comments</h3>
+        <span className="cl-comments-count num">
+          {list.length} of {total}
+        </span>
+      </div>
+      {list.length === 0 ? (
+        <p className="cl-empty-line">Comments appear as the clock passes the hour they were posted. They are the viewer agents' own words.</p>
+      ) : (
+        <ol className="cl-comment-list" aria-live="polite">
+          {list.map((c) => (
+            <li key={c.key} className="cl-comment">
+              <p className="cl-comment-head">
+                <b>{c.name}</b>
+                <ReelBadge id={c.reel} size={16} />
+                <span className="cl-comment-h num">{c.hour.toFixed(1)} h</span>
+              </p>
+              <p className="cl-comment-text">{c.text}</p>
+              {c.likes > 0 && (
+                <p className="cl-comment-likes">
+                  <span className="num">{fmtInt(c.likes)}</span> {c.likes === 1 ? "like" : "likes"}
+                </p>
+              )}
+            </li>
+          ))}
+        </ol>
+      )}
+    </aside>
+  );
+}
+
 // ---- retention ------------------------------------------------------------------------------------------
 
-function Retention({ sims, colors }: { sims: Simulation[]; colors: Record<string, string> }) {
-  const [box, W] = useWidth<HTMLDivElement>(360);
-  const H = 196;
+function Retention({ sims, inks }: { sims: Simulation[]; inks: Record<string, string> }) {
+  const [box, W] = useWidth<HTMLDivElement>(420);
+  const H = 200;
   const L = 40;
   const R = 58;
-  const T = 12;
+  const T = 10;
   const B = 24;
   const maxS = Math.max(...sims.map((s) => s.retention[s.retention.length - 1]?.second ?? 0), 1);
   const x = (s: number) => L + (s / maxS) * (W - L - R);
@@ -476,10 +555,8 @@ function Retention({ sims, colors }: { sims: Simulation[]; colors: Record<string
     .sort((a, b) => a.y - b.y);
   for (let i = 1; i < ends.length; i++) ends[i]!.ly = Math.max(ends[i]!.ly, ends[i - 1]!.ly + 15);
   return (
-    <div className="cl-panel cl-retention">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Still watching, second by second</h3>
-      </div>
+    <div className="cl-launch-block cl-retention">
+      <h3 className="cl-h3">Still watching, second by second</h3>
       <div className="cl-retention-plot" ref={box}>
         <svg width={W} height={H} role="img" aria-label={`Share of impressions still watching: ${ends.map((e) => `${e.id} ${fmtPct(e.f)} at the end`).join(", ")}`}>
           {[0, 0.5, 1].map((f) => (
@@ -502,12 +579,12 @@ function Retention({ sims, colors }: { sims: Simulation[]; colors: Record<string
               </text>
             ))}
           {sims.map((s) => (
-            <polyline key={s.reel} className="cl-growth-line" points={s.retention.map((p) => `${x(p.second).toFixed(1)},${y(p.fraction).toFixed(1)}`).join(" ")} style={{ stroke: colors[s.reel] }} />
+            <polyline key={s.reel} className="cl-growth-line" points={s.retention.map((p) => `${x(p.second).toFixed(1)},${y(p.fraction).toFixed(1)}`).join(" ")} style={{ stroke: inks[s.reel] }} />
           ))}
           {ends.map((e) => (
             <g key={e.id}>
-              <circle cx={e.x} cy={e.y} r={3.5} style={{ fill: colors[e.id] }} className="cl-growth-dot" />
-              <text x={W - R + 10} y={e.ly + 4} className="cl-growth-end">
+              <circle cx={e.x} cy={e.y} r={3} style={{ fill: inks[e.id] }} />
+              <text x={W - R + 10} y={e.ly + 4} className="cl-growth-end" style={{ fill: inks[e.id] }}>
                 <tspan className="cl-growth-end-id">{e.id}</tspan> {fmtPct(e.f)}
               </text>
             </g>
@@ -521,115 +598,119 @@ function Retention({ sims, colors }: { sims: Simulation[]; colors: Record<string
 
 // ---- segments -------------------------------------------------------------------------------------------
 
-function Segments({ sims, colors, hour, viewers }: { sims: Simulation[]; colors: Record<string, string>; hour: number; viewers: ViewerPersona[] }) {
+function Segments({ sims, hour, viewers }: { sims: Simulation[]; hour: number; viewers: ViewerPersona[] }) {
   const now = useMemo(() => sims.map((s) => ({ id: s.reel, seg: segmentsAt(s, hour) })), [sims, hour]);
-  const finals = useMemo(() => sims.map((s) => s.by_segment), [sims]);
   // the six segments that watch most across all reels, the rest folded into "Everyone else"
   const order = useMemo(() => {
     const total = new Map<string, number>();
-    for (const f of finals) for (const [k, v] of Object.entries(f)) total.set(k, (total.get(k) ?? 0) + v);
+    for (const s of sims) for (const [k, v] of Object.entries(s.by_segment)) total.set(k, (total.get(k) ?? 0) + v);
     return [...total.entries()].sort((a, b) => b[1] - a[1]).map(([k]) => k);
-  }, [finals]);
+  }, [sims]);
   const top = order.slice(0, 6);
   const rest = order.slice(6);
   const rows = [
     ...top.map((id) => ({ id, v: viewers.find((x) => x.id === id), vals: now.map((n) => n.seg[id] ?? 0) })),
     ...(rest.length ? [{ id: "rest", v: undefined, vals: now.map((n) => rest.reduce((a, k) => a + (n.seg[k] ?? 0), 0)) }] : []),
   ];
-  const max = Math.max(1, ...finals.flatMap((f) => [...top.map((k) => f[k] ?? 0), rest.reduce((a, k) => a + (f[k] ?? 0), 0)]));
   return (
-    <div className="cl-panel cl-segments">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Who watched · views by audience segment</h3>
-      </div>
-      <ul className="cl-seg-rows">
-        {rows.map((row) => {
-          const best = Math.max(...row.vals);
-          return (
-            <li key={row.id}>
-              <span className="cl-seg-who" title={row.v?.segment ?? `${rest.length} more segments`}>
-                {row.v ? <Avatar who={viewerWho(row.v)} size={20} /> : <span className="cl-seg-rest" aria-hidden>+{rest.length}</span>}
-                <span>{row.v?.name ?? "Everyone else"}</span>
-              </span>
-              <span className="cl-seg-bars">
+    <div className="cl-launch-block">
+      <h3 className="cl-h3">Who watched · views by audience segment</h3>
+      <table className="cl-table cl-launch-table">
+        <thead>
+          <tr>
+            <th scope="col">Viewer</th>
+            {now.map((n) => (
+              <th key={n.id} scope="col">
+                <ReelBadge id={n.id} size={18} />
+                <span className="sr-only">Reel {n.id}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const best = Math.max(...row.vals);
+            return (
+              <tr key={row.id}>
+                <th scope="row">
+                  <span className="cl-seg-name">{row.v?.name ?? "Everyone else"}</span>
+                  <span className="cl-seg-kind">{row.v?.segment ?? `${rest.length} more segments`}</span>
+                </th>
                 {row.vals.map((v, i) => (
-                  <span key={now[i]!.id} className="cl-seg-bar" style={{ width: `${(v / max) * 100}%`, background: colors[now[i]!.id] }} title={`${now[i]!.id}: ${fmtInt(v)} views`} />
+                  <td key={now[i]!.id} className="num" data-best={(v === best && v > 0) || undefined}>
+                    {fmtInt(v)}
+                  </td>
                 ))}
-              </span>
-              <span className="cl-seg-best num">{best > 0 ? `${now[row.vals.indexOf(best)]!.id} ${fmtCompact(best)}` : ""}</span>
-            </li>
-          );
-        })}
-      </ul>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-// ---- live comments ------------------------------------------------------------------------------------
+// ---- every metric -----------------------------------------------------------------------------------------
 
-function Comments({ sims, colors, hour, viewers }: { sims: Simulation[]; colors: Record<string, string>; hour: number; viewers: ViewerPersona[] }) {
-  const list = useMemo(() => {
-    const byReel = new Map(sims.map((s) => [s.reel, s]));
-    return visibleComments(sims, hour).map((c) => {
-      const s = byReel.get(c.reel);
-      if (!s) return c;
-      const at = interpolateSeries(s.series, c.hour).views;
-      const later = s.totals.views - at;
-      const f = later > 0 ? Math.min(1, Math.max(0, (interpolateSeries(s.series, hour).views - at) / later)) : 1;
-      return { ...c, likes: Math.round(c.likes * f) };
-    });
-  }, [sims, hour]);
-  const total = sims.reduce((n, s) => n + s.comments.length, 0);
+const METRIC_LABEL: Record<Metric, string> = {
+  views: "Views",
+  likes: "Likes",
+  comments: "Comments",
+  shares: "Shares",
+  saves: "Saves",
+  follows: "Follows",
+  inquiries: "Inquiries",
+};
+
+function Metrics({ reels, at }: { reels: Reel[]; at: Map<string, SimPoint> }) {
   return (
-    <aside className="cl-panel cl-comments" aria-label="Comments as they are posted">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Comments</h3>
-        <span className="cl-panel-count num">
-          {list.length} of {total}
-        </span>
-      </div>
-      {list.length === 0 ? (
-        <p className="cl-empty-line">Comments appear as the clock passes the hour they were posted. They are the viewer agents' own words.</p>
-      ) : (
-        <ol className="cl-comment-list" aria-live="polite">
-          {list.map((c) => {
-            const v = viewers.find((x) => x.id === c.viewer);
-            const who = v ? viewerWho(v) : { id: c.viewer, name: c.name, color: "#777", initials: c.name.slice(0, 2).toUpperCase(), role: "viewer" as const };
+    <div className="cl-launch-block">
+      <h3 className="cl-h3">Every metric at this hour</h3>
+      <table className="cl-table cl-launch-table">
+        <thead>
+          <tr>
+            <th scope="col">
+              <span className="sr-only">Metric</span>
+            </th>
+            {reels.map((r) => (
+              <th key={r.id} scope="col">
+                <ReelBadge id={r.id} size={18} />
+                <span className="sr-only">{r.label}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {METRICS.map((m) => {
+            const vals = reels.map((r) => at.get(r.id)?.[m] ?? 0);
+            const best = Math.max(...vals);
             return (
-              <li key={c.key} className="cl-comment">
-                <Avatar who={who} size={28} />
-                <div>
-                  <p className="cl-comment-head">
-                    <b>{c.name}</b>
-                    <ReelBadge id={c.reel} color={colors[c.reel]!} size={16} />
-                    <span className="num">h {c.hour.toFixed(1)}</span>
-                  </p>
-                  <p className="cl-comment-text">{c.text}</p>
-                  {c.likes > 0 && (
-                    <p className="cl-comment-likes num">
-                      <Heart size={10} aria-hidden /> {fmtInt(c.likes)}
-                    </p>
-                  )}
-                </div>
-              </li>
+              <tr key={m}>
+                <th scope="row">{METRIC_LABEL[m]}</th>
+                {vals.map((v, i) => (
+                  <td key={reels[i]!.id} className="num" data-best={(v === best && v > 0) || undefined}>
+                    {fmtInt(v)}
+                  </td>
+                ))}
+              </tr>
             );
           })}
-        </ol>
-      )}
-    </aside>
+        </tbody>
+      </table>
+    </div>
   );
 }
 
 // ---- the model's assumptions --------------------------------------------------------------------------
 
-function ModelNotes({ sims, colors }: { sims: Simulation[]; colors: Record<string, string> }) {
+function ModelNotes({ sims }: { sims: Simulation[] }) {
   const shared = (sims[0]?.notes ?? []).filter((n) => sims.every((s) => s.notes.includes(n)));
   const own = sims.map((s) => ({ id: s.reel, notes: s.notes.filter((n) => !shared.includes(n)) })).filter((x) => x.notes.length);
   if (!shared.length && !own.length) return null;
   return (
-    <section className="cl-notes" aria-labelledby="cl-notes-title">
-      <h3 id="cl-notes-title" className="cl-label">
-        <Info size={12} aria-hidden /> How the simulation works
+    <section className="cl-launch-block cl-notes" aria-labelledby="cl-notes-title">
+      <h3 id="cl-notes-title" className="cl-h3">
+        How the simulation works
       </h3>
       <ol className="cl-notes-list">
         {shared.map((n) => (
@@ -640,7 +721,7 @@ function ModelNotes({ sims, colors }: { sims: Simulation[]; colors: Record<strin
         <ul className="cl-notes-own">
           {own.map((x) => (
             <li key={x.id}>
-              <ReelBadge id={x.id} color={colors[x.id]!} size={16} /> {x.notes.join(" ")}
+              <ReelBadge id={x.id} size={16} /> <span>{x.notes.join(" ")}</span>
             </li>
           ))}
         </ul>

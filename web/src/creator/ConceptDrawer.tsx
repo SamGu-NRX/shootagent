@@ -1,9 +1,9 @@
-import { ArrowRight, Check, Mic, Music, ShieldAlert, X } from "lucide-react";
+import { ArrowRight, Check, X } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { conceptSeconds, ConceptChip, criticMeans, VerdictChip } from "./Room";
 import { useCreator } from "./store";
 import type { Beat, CardSpec, Motion, ReelConcept, Transition } from "./types";
-import { Avatar, fmtScore, focusStyle, ReelBadge, reelColors, Rich, useAgents } from "./ui";
+import { fmtScore, focusStyle, ReelBadge, Rich, useAgents } from "./ui";
 
 const MOTION: Record<Motion, string> = {
   push_in: "Push in",
@@ -91,12 +91,9 @@ export function ConceptDrawer() {
 
 function DrawerHead({ c, onClose }: { c: ReelConcept; onClose: () => void }) {
   const who = useAgents()(c.agent);
-  const reels = useCreator((s) => s.lab?.reels);
-  const reel = reels?.find((r) => r.concept === c.id);
-  const colors = reelColors(reels ?? []);
+  const reel = useCreator((s) => s.lab?.reels.find((r) => r.concept === c.id));
   return (
     <header className="cl-drawer-head">
-      <Avatar who={who} size={34} />
       <div className="cl-drawer-who">
         <p className="cl-drawer-name">{who.name}</p>
         <p className="cl-drawer-meta">
@@ -106,7 +103,7 @@ function DrawerHead({ c, onClose }: { c: ReelConcept; onClose: () => void }) {
       </div>
       {reel && (
         <span className="cl-drawer-reel">
-          <ReelBadge id={reel.id} color={colors[reel.id]!} /> {reel.label}
+          <ReelBadge id={reel.id} /> {reel.label}
         </span>
       )}
       <button className="icon-btn" onClick={onClose} aria-label="Close" autoFocus>
@@ -134,11 +131,11 @@ function DrawerBody({ c }: { c: ReelConcept }) {
 
   return (
     <>
-      <p className="cl-drawer-kicker">{c.format}</p>
+      {c.format && <p className="cl-drawer-kicker">{c.format}</p>}
       <h2 id="cl-drawer-title" className="cl-drawer-title">
         {c.title}
       </h2>
-      <p className="cl-drawer-logline">{c.logline}</p>
+      {c.logline && <p className="cl-drawer-logline">{c.logline}</p>}
 
       <figure className="cl-drawer-hook">
         <blockquote>
@@ -198,18 +195,14 @@ function DrawerBody({ c }: { c: ReelConcept }) {
 
       <section className="cl-drawer-sec cl-drawer-grid">
         <div>
-          <h3 className="cl-label">
-            <Music size={12} aria-hidden /> Music
-          </h3>
+          <h3 className="cl-label">Music</h3>
           <p>
             {c.music.mood}, <span className="num">{c.music.bpm} bpm</span>
             {c.music.drop_beat != null && <>, drops on shot {c.music.drop_beat + 1}</>}
           </p>
         </div>
         <div>
-          <h3 className="cl-label">
-            <Mic size={12} aria-hidden /> Voice
-          </h3>
+          <h3 className="cl-label">Voice</h3>
           <p>{c.voice.voice === "none" ? "No voice: music and on-screen text only" : `${c.voice.voice}${c.voice.direction ? `, ${c.voice.direction}` : ""}`}</p>
         </div>
       </section>
@@ -226,7 +219,7 @@ function DrawerBody({ c }: { c: ReelConcept }) {
         <section className="cl-drawer-sec">
           <h3 className="cl-label">Why it stops the scroll</h3>
           {c.rationale && <p>{c.rationale}</p>}
-          {c.audience && <p className="muted">For: {c.audience}</p>}
+          {c.audience && <p className="cl-drawer-for">For: {c.audience}</p>}
         </section>
       )}
 
@@ -246,41 +239,35 @@ function DrawerBody({ c }: { c: ReelConcept }) {
       <section className="cl-drawer-sec">
         <h3 className="cl-label">Critiques</h3>
         {critiques.length === 0 ? (
-          <p className="muted">{c.agent === "template" || c.agent === "single_agent" ? "Not critiqued: it never went through the room." : "No critiques yet."}</p>
+          <p className="cl-drawer-for">{c.agent === "template" || c.agent === "single_agent" ? "Not critiqued: it never went through the room." : "No critiques yet."}</p>
         ) : (
           <>
-            <p className="cl-crit-means num">
+            <p className="cl-crit-means">
               Mean · originality {fmtScore(+means.originality.toFixed(1))} · hook {fmtScore(+means.hook.toFixed(1))} · specificity {fmtScore(+means.specificity.toFixed(1))} · truth{" "}
               {fmtScore(+means.truth.toFixed(1))} · virality {fmtScore(+means.virality.toFixed(1))}
             </p>
             <ul className="cl-crits">
-              {critiques.map((x) => {
-                const who = agents(x.critic);
-                return (
-                  <li key={x.critic} className="cl-crit">
-                    <Avatar who={who} size={26} />
-                    <div>
-                      <p className="cl-crit-head">
-                        <b>{who.name}</b> <VerdictChip verdict={x.verdict} />
-                        <span className="num cl-crit-scores">
-                          {x.originality}/{x.hook}/{x.specificity}/{x.truth}/{x.virality}
-                        </span>
-                      </p>
-                      <p>{x.notes}</p>
-                      {x.truth_flags.map((f) => (
-                        <p key={f} className="cl-flag" data-tone="truth">
-                          <ShieldAlert size={12} aria-hidden /> {f}
-                        </p>
-                      ))}
-                      {x.cliche_flags.map((f) => (
-                        <p key={f} className="cl-flag" data-tone="cliche">
-                          Cliche: {f}
-                        </p>
-                      ))}
-                    </div>
-                  </li>
-                );
-              })}
+              {critiques.map((x) => (
+                <li key={x.critic} className="cl-crit">
+                  <p className="cl-crit-head">
+                    <b>{agents(x.critic).name}</b> <VerdictChip verdict={x.verdict} />
+                    <span className="num cl-crit-scores" title="Originality / hook / specificity / truth / virality">
+                      {x.originality}/{x.hook}/{x.specificity}/{x.truth}/{x.virality}
+                    </span>
+                  </p>
+                  <p className="cl-crit-notes">{x.notes}</p>
+                  {x.truth_flags.map((f) => (
+                    <p key={f} className="cl-flag" data-tone="truth">
+                      Truth: {f}
+                    </p>
+                  ))}
+                  {x.cliche_flags.map((f) => (
+                    <p key={f} className="cl-flag" data-tone="cliche">
+                      Cliche: {f}
+                    </p>
+                  ))}
+                </li>
+              ))}
             </ul>
           </>
         )}
@@ -296,7 +283,7 @@ function BeatRow({ b, i, start, photo, room, drop, hook }: { b: Beat; i: number;
       <div className="cl-beat-frame">
         {photo && <img src={photo} alt="" loading="lazy" style={focusStyle(b.focus)} />}
         {onscreen && (
-          <span className="cl-beat-text" data-pos={b.text ? b.text_pos : "center"} data-style={b.text ? b.text_style ?? "label" : "hook"}>
+          <span className="cl-beat-text" data-pos={b.text ? b.text_pos : "center"}>
             {onscreen}
           </span>
         )}
@@ -304,7 +291,8 @@ function BeatRow({ b, i, start, photo, room, drop, hook }: { b: Beat; i: number;
       </div>
       <div className="cl-beat-info">
         <p className="cl-beat-time">
-          Shot {i + 1} · {start.toFixed(1)}–{(start + b.seconds).toFixed(1)} s{drop && <span className="cl-beat-drop"> · drop</span>}
+          Shot {i + 1} · <span className="num">{start.toFixed(1)}–{(start + b.seconds).toFixed(1)} s</span>
+          {drop && <span className="cl-beat-drop"> · drop</span>}
         </p>
         <p className="cl-beat-moves">
           {MOTION[b.motion]}
@@ -313,10 +301,10 @@ function BeatRow({ b, i, start, photo, room, drop, hook }: { b: Beat; i: number;
         </p>
         {b.text && (
           <p className="cl-beat-onscreen">
-            {b.text} <span className="muted">({human(b.text_style ?? "label")}, {b.text_pos})</span>
+            {b.text} <span className="cl-beat-style">({human(b.text_style ?? "label")}, {b.text_pos})</span>
           </p>
         )}
-        {!b.text && hook && <p className="cl-beat-onscreen">Hook text over this shot</p>}
+        {!b.text && hook && <p className="cl-beat-note">Hook text over this shot</p>}
         {b.voiceover && <p className="cl-beat-vo">“{b.voiceover}”</p>}
         {b.card && b.card.kind !== "none" && (
           <p className="cl-beat-cardinfo">

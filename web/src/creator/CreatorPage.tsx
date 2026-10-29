@@ -1,7 +1,11 @@
 // The creator dashboard: the realtor's view of a creative lab. Route #/creator/<shootId>[/<labId>].
 
 import "../styles/creator.css";
-import { Clapperboard, Lightbulb, Play, Scale, TrendingUp } from "lucide-react";
+import "../styles/creator-room.css";
+import "../styles/creator-reels.css";
+import "../styles/creator-score.css";
+import "../styles/creator-launch.css";
+import { Play } from "lucide-react";
 import { useEffect } from "react";
 import { useStore } from "../state/store";
 import { ConceptDrawer } from "./ConceptDrawer";
@@ -103,10 +107,10 @@ function ErrorState({ message }: { message: string }) {
 }
 
 const STEPS = [
-  { icon: Lightbulb, title: "Writers' room", body: "Six creators with different lenses pitch reels; three critics score them for originality, truth and stop power; the room remixes and steals; the showrunner greenlights two." },
-  { icon: Clapperboard, title: "Render", body: "The template reel, the two finalists and the single agent's best are rendered 9:16 with kinetic text, voice and animation cards." },
-  { icon: Scale, title: "Independent panel", body: "Eleven viewer agents react as their audience segment, five judges rate blind, and novelty is measured against a cliche corpus." },
-  { icon: TrendingUp, title: "Launch sim", body: "A transparent model turns the panel's reactions into 48 hours of views, comments and inquiries per reel." },
+  { title: "Writers' room", body: "Six creators with different lenses pitch reels; three critics score them for originality, truth and stop power; the room remixes and steals; the showrunner greenlights two." },
+  { title: "Render", body: "The template reel, the two finalists and the single agent's best are rendered 9:16 with kinetic text, voice and animation cards." },
+  { title: "Independent panel", body: "Eleven viewer agents react as their audience segment, five judges rate blind, and novelty is measured against a cliche corpus." },
+  { title: "Launch sim", body: "A transparent model turns the panel's reactions into 48 hours of views, comments and inquiries per reel." },
 ];
 
 function EmptyState() {
@@ -124,13 +128,12 @@ function EmptyState() {
         {STEPS.map((s, i) => (
           <li key={s.title}>
             <span className="cl-empty-n num">{String(i + 1).padStart(2, "0")}</span>
-            <s.icon size={18} strokeWidth={1.6} aria-hidden />
             <h3>{s.title}</h3>
             <p>{s.body}</p>
           </li>
         ))}
       </ol>
-      <button className="btn btn-agent cl-empty-go" onClick={() => void start({ ...DEFAULT_OPTIONS, creators: null })} disabled={starting}>
+      <button className="btn btn-primary cl-empty-go" onClick={() => void start({ ...DEFAULT_OPTIONS, creators: null })} disabled={starting}>
         <Play size={13} aria-hidden /> {starting ? "Starting…" : "Run creative lab"}
       </button>
       <p className="cl-empty-note">Takes about ten minutes. Options (finalists, rounds, voice) are under the arrow next to Run in the header.</p>

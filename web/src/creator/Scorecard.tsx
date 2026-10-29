@@ -1,17 +1,15 @@
-import { Check, Scale, TriangleAlert } from "lucide-react";
-import { useMemo, useState, type CSSProperties } from "react";
+import { Check } from "lucide-react";
+import { useMemo, useState } from "react";
 import { CreativityMap } from "./CreativityMap";
-import { plannedReels } from "./Reels";
 import { useCreator } from "./store";
 import { firstSentence } from "./story";
 import { agreementLabel, DIMENSION_LABEL, DIMENSIONS, dimensionMeans, headToHead, kendallFromRatings } from "./stats";
 import type { Evaluation, LabState, Reel, ReelSummary } from "./types";
-import { Avatar, Disclosure, fmtPct, numberWord, ReelBadge, reelColors, reelStyle, SectionHead, useAgents, viewerWho } from "./ui";
+import { Disclosure, fmtPct, numberWord, ReelBadge, SectionHead, useAgents } from "./ui";
 
 export function ScorecardSection() {
   const lab = useCreator((s) => s.lab)!;
   const ev = lab.evaluation;
-  const colors = useMemo(() => reelColors(plannedReels(lab).map((p) => ({ id: p.id, kind: p.kind }))), [lab]);
   const nJudges = ev?.judges.length ?? 0;
   const nViewers = ev?.viewers.length ?? 0;
   return (
@@ -26,7 +24,7 @@ export function ScorecardSection() {
           </>
         }
       />
-      {!ev || !lab.reels.length ? <Waiting lab={lab} /> : <Scores lab={lab} ev={ev} colors={colors} />}
+      {!ev || !lab.reels.length ? <Waiting lab={lab} /> : <Scores lab={lab} ev={ev} />}
     </section>
   );
 }
@@ -35,9 +33,8 @@ function Waiting({ lab }: { lab: LabState }) {
   const steps = ["watch", "judge", "novelty", "verdict"].map((k) => lab.phases.find((p) => p.key === k)).filter(Boolean);
   return (
     <div className="cl-waiting">
-      <Scale size={18} strokeWidth={1.6} aria-hidden />
       <p>The panel watches once the reels are rendered. The ranking, the verdict and the creativity map land here.</p>
-      <ul>
+      <ul className="cl-score-steps">
         {steps.map((p) => (
           <li key={p!.key} data-status={p!.status}>
             {p!.label}
@@ -48,7 +45,7 @@ function Waiting({ lab }: { lab: LabState }) {
   );
 }
 
-function Scores({ lab, ev, colors }: { lab: LabState; ev: Evaluation; colors: Record<string, string> }) {
+function Scores({ lab, ev }: { lab: LabState; ev: Evaluation }) {
   const reels = lab.reels;
   const ids = reels.map((r) => r.id);
   const summaries = useMemo(() => new Map(ev.summaries.map((s) => [s.reel, s])), [ev.summaries]);
@@ -56,7 +53,7 @@ function Scores({ lab, ev, colors }: { lab: LabState; ev: Evaluation; colors: Re
     <>
       <div className="cl-score-top">
         <div className="cl-score-left">
-          <Ranking reels={reels} ev={ev} summaries={summaries} colors={colors} />
+          <Ranking reels={reels} ev={ev} summaries={summaries} />
           <Verdict ev={ev} />
           <Diversity ev={ev} />
         </div>
@@ -64,12 +61,12 @@ function Scores({ lab, ev, colors }: { lab: LabState; ev: Evaluation; colors: Re
       </div>
       <Disclosure className="cl-full" label="Full scorecard: seven dimensions, head-to-head votes, judge agreement and the audience panel" openLabel="Hide the full scorecard">
         <div className="cl-full-grid">
-          <Dimensions ev={ev} reels={reels} colors={colors} />
-          <HeadToHead ev={ev} ids={ids} colors={colors} />
+          <Dimensions ev={ev} reels={reels} />
+          <HeadToHead ev={ev} ids={ids} />
           <Agreement ev={ev} ids={ids} />
-          <AudienceRates reels={reels} colors={colors} summaries={summaries} />
+          <AudienceRates reels={reels} summaries={summaries} />
         </div>
-        <AudiencePanel ev={ev} reels={reels} colors={colors} />
+        <AudiencePanel ev={ev} reels={reels} />
       </Disclosure>
     </>
   );
@@ -77,7 +74,7 @@ function Scores({ lab, ev, colors }: { lab: LabState; ev: Evaluation; colors: Re
 
 // ---- the ranking ------------------------------------------------------------------------------------
 
-function Ranking({ reels, ev, summaries, colors }: { reels: Reel[]; ev: Evaluation; summaries: Map<string, ReelSummary>; colors: Record<string, string> }) {
+function Ranking({ reels, ev, summaries }: { reels: Reel[]; ev: Evaluation; summaries: Map<string, ReelSummary> }) {
   const rows = reels
     .map((r) => {
       const ratings = ev.ratings.filter((x) => x.reel === r.id);
@@ -92,16 +89,18 @@ function Ranking({ reels, ev, summaries, colors }: { reels: Reel[]; ev: Evaluati
   return (
     <ol className="cl-rank" aria-label="Reels ranked by the judges' creativity score">
       {rows.map((row, i) => (
-        <li key={row.r.id} className="cl-rank-row" style={reelStyle(colors[row.r.id]!)} data-kind={row.r.kind}>
+        <li key={row.r.id} className="cl-rank-row" data-kind={row.r.kind} data-top={i === 0 || undefined}>
           <span className="cl-rank-n num">{i + 1}</span>
-          <ReelBadge id={row.r.id} color={colors[row.r.id]!} size={26} />
+          <ReelBadge id={row.r.id} size={22} />
           <span className="cl-rank-name">
             <b>{row.r.label}</b>
             <span>{row.r.title}</span>
           </span>
           <span className="cl-rank-score" title={`Judges' mean creativity, ± ${row.sd.toFixed(1)} sd`}>
-            <span className="cl-rank-big num">{row.creativity != null ? row.creativity.toFixed(1) : "–"}</span>
-            <span className="cl-rank-of">/ 10</span>
+            <span className="cl-rank-line">
+              <span className="cl-rank-big num">{row.creativity != null ? row.creativity.toFixed(1) : "–"}</span>
+              <span className="cl-rank-of">/ 10</span>
+            </span>
             <span className="cl-rank-bar" aria-hidden>
               <span style={{ width: `${((row.creativity ?? 0) / 10) * 100}%` }} />
             </span>
@@ -134,29 +133,34 @@ function Verdict({ ev }: { ev: Evaluation }) {
   const [full, setFull] = useState(false);
   if (!ev.verdict && !ev.notes.length) {
     return (
-      <p className="cl-quiet">
+      <p className="cl-quiet cl-verdict-wait">
         <span className="spinner spinner-sm" aria-hidden /> The head judge writes the verdict once the panel, the judges and the novelty scores are in.
       </p>
     );
   }
-  const short = ev.verdict ? (() => {
-    const one = firstSentence(ev.verdict);
-    const rest = ev.verdict.slice(ev.verdict.indexOf(one) + one.length).trim();
-    return rest ? `${one} ${firstSentence(rest)}` : one;
-  })() : "";
+  const short = ev.verdict
+    ? (() => {
+        const one = firstSentence(ev.verdict);
+        const rest = ev.verdict.slice(ev.verdict.indexOf(one) + one.length).trim();
+        return rest ? `${one} ${firstSentence(rest)}` : one;
+      })()
+    : "";
   const lead = leadCaveat(ev.notes);
+  const caveats = `${ev.notes.length} caveat${ev.notes.length === 1 ? "" : "s"}`;
   return (
     <div className="cl-verdict-block">
       {ev.verdict && (
         <figure className="cl-quote">
           <blockquote>{full ? ev.verdict : short}</blockquote>
           <figcaption>
-            <Avatar who={head} size={20} />
             <span>{head.name !== "head judge" ? head.name : "Head judge"}</span>
             {short !== ev.verdict && (
-              <button className="cl-link-btn" onClick={() => setFull((f) => !f)} aria-expanded={full}>
-                {full ? "Shorter" : "Full verdict"}
-              </button>
+              <>
+                <span aria-hidden>·</span>
+                <button className="cl-link-btn" onClick={() => setFull((f) => !f)} aria-expanded={full}>
+                  {full ? "Shorter" : "Full verdict"}
+                </button>
+              </>
             )}
           </figcaption>
         </figure>
@@ -165,21 +169,15 @@ function Verdict({ ev }: { ev: Evaluation }) {
         <Disclosure
           className="cl-caveats"
           label={
-            <>
-              <TriangleAlert size={12} aria-hidden className="cl-caveat-icon" />
-              <b>
-                {ev.notes.length} caveat{ev.notes.length === 1 ? "" : "s"}
-              </b>
-              <span className="cl-caveat-lead">{lead}</span>
-            </>
+            <span className="cl-caveat-label">
+              <b>{caveats}</b>
+              {lead && <span className="cl-caveat-lead">{lead}</span>}
+            </span>
           }
           openLabel={
-            <>
-              <TriangleAlert size={12} aria-hidden className="cl-caveat-icon" />
-              <b>
-                {ev.notes.length} caveat{ev.notes.length === 1 ? "" : "s"}
-              </b>
-            </>
+            <span className="cl-caveat-label">
+              <b>{caveats}</b>
+            </span>
           }
         >
           <ul className="cl-caveat-list">
@@ -200,34 +198,28 @@ function Diversity({ ev }: { ev: Evaluation }) {
   const close = Math.abs(room - single) < 0.02;
   return (
     <p className="cl-diversity">
-      <span className="cl-diversity-k">Idea diversity</span> room <b className="num">{room.toFixed(2)}</b> · single agent <b className="num">{single.toFixed(2)}</b>
-      <span className="cl-diversity-v">
-        {close ? "about the same spread of first ideas." : room > single ? "the room's first ideas were more varied." : "the single agent's first ideas were more varied."}
-      </span>
+      Idea diversity: room <b className="num">{room.toFixed(2)}</b>, single agent <b className="num">{single.toFixed(2)}</b>.{" "}
+      {close ? "About the same spread of first ideas." : room > single ? "The room's first ideas were more varied." : "The single agent's first ideas were more varied."}
     </p>
   );
 }
 
 // ---- seven dimensions ---------------------------------------------------------------------------------
 
-function Dimensions({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; colors: Record<string, string> }) {
+function Dimensions({ ev, reels }: { ev: Evaluation; reels: Reel[] }) {
   const means = useMemo(() => Object.fromEntries(reels.map((r) => [r.id, dimensionMeans(ev.ratings, r.id)])), [ev.ratings, reels]);
-  const [hover, setHover] = useState<string | null>(null);
   return (
-    <div className="cl-panel cl-dims">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Seven dimensions · judges' mean</h3>
-        <span className="cl-panel-count">1-10</span>
-      </div>
-      <table className="cl-dims-table">
+    <div className="cl-full-block">
+      <h3 className="cl-h3">Seven dimensions · judges' mean, 1–10</h3>
+      <table className="cl-table cl-dims-table">
         <thead>
           <tr>
             <th scope="col">
               <span className="sr-only">Dimension</span>
             </th>
             {reels.map((r) => (
-              <th key={r.id} scope="col">
-                <ReelBadge id={r.id} color={colors[r.id]!} size={20} />
+              <th key={r.id} scope="col" className="cl-col-reel">
+                <ReelBadge id={r.id} size={18} />
                 <span className="sr-only">{r.label}</span>
               </th>
             ))}
@@ -237,13 +229,13 @@ function Dimensions({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; colo
           {DIMENSIONS.map((d) => {
             const best = Math.max(...reels.map((r) => means[r.id]![d]));
             return (
-              <tr key={d} data-hover={hover === d || undefined} onPointerEnter={() => setHover(d)} onPointerLeave={() => setHover(null)}>
+              <tr key={d}>
                 <th scope="row">{DIMENSION_LABEL[d]}</th>
                 {reels.map((r) => {
                   const v = means[r.id]![d];
                   return (
-                    <td key={r.id} style={reelStyle(colors[r.id]!)} data-best={v === best || undefined}>
-                      <span className="cl-dim-v num">{v.toFixed(1)}</span>
+                    <td key={r.id} className="cl-col-reel" data-best={v === best || undefined}>
+                      <span className="num">{v.toFixed(1)}</span>
                       <span className="cl-dim-bar" aria-hidden>
                         <span style={{ width: `${v * 10}%` }} />
                       </span>
@@ -262,26 +254,27 @@ function Dimensions({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; colo
 
 // ---- head to head and agreement ---------------------------------------------------------------------
 
-function HeadToHead({ ev, ids, colors }: { ev: Evaluation; ids: string[]; colors: Record<string, string> }) {
+function HeadToHead({ ev, ids }: { ev: Evaluation; ids: string[] }) {
   const t = useMemo(() => headToHead(ev.pairwise, ids), [ev.pairwise, ids]);
   return (
-    <div className="cl-panel cl-h2h">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Head-to-head · which is more creative?</h3>
-        <span className="cl-panel-count num">{ev.pairwise.length} votes</span>
-      </div>
-      <table className="cl-h2h-table">
+    <div className="cl-full-block">
+      <h3 className="cl-h3">
+        Head to head · which is more creative? <span className="cl-h3-aside num">{ev.pairwise.length} votes</span>
+      </h3>
+      <table className="cl-table cl-h2h-table">
         <thead>
           <tr>
             <th scope="col">
               <span className="sr-only">Reel</span>
             </th>
             {ids.map((id) => (
-              <th key={id} scope="col">
-                <span className="cl-h2h-vs">vs</span> <ReelBadge id={id} color={colors[id]!} size={18} />
+              <th key={id} scope="col" className="cl-col-reel">
+                <span className="cl-h2h-vs">vs</span> <ReelBadge id={id} size={18} />
               </th>
             ))}
-            <th scope="col">Won</th>
+            <th scope="col" className="cl-col-reel">
+              Won
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -292,21 +285,24 @@ function HeadToHead({ ev, ids, colors }: { ev: Evaluation; ids: string[]; colors
             return (
               <tr key={a}>
                 <th scope="row">
-                  <ReelBadge id={a} color={colors[a]!} size={20} />
+                  <ReelBadge id={a} size={18} />
                 </th>
                 {ids.map((b) => {
-                  if (a === b) return <td key={b} className="cl-h2h-self" aria-label="same reel" />;
+                  if (a === b)
+                    return (
+                      <td key={b} className="cl-col-reel cl-h2h-self" aria-label="same reel">
+                        –
+                      </td>
+                    );
                   const c = row[b]!;
                   const share = c.total ? c.wins / c.total : 0;
                   return (
-                    <td key={b} style={{ "--share": share } as CSSProperties} data-win={share > 0.5 || undefined} title={`${a} beat ${b} in ${c.wins} of ${c.total} votes`}>
-                      <span className="num">
-                        {c.wins}/{c.total}
-                      </span>
+                    <td key={b} className="cl-col-reel num" data-win={share > 0.5 || undefined} title={`${a} beat ${b} in ${c.wins} of ${c.total} votes`}>
+                      {c.wins}/{c.total}
                     </td>
                   );
                 })}
-                <td className="cl-h2h-total num">{total ? fmtPct(wins / total) : "–"}</td>
+                <td className="cl-col-reel num cl-h2h-total">{total ? fmtPct(wins / total) : "–"}</td>
               </tr>
             );
           })}
@@ -320,17 +316,13 @@ function HeadToHead({ ev, ids, colors }: { ev: Evaluation; ids: string[]; colors
 function Agreement({ ev, ids }: { ev: Evaluation; ids: string[] }) {
   const w = ev.agreement.kendall_w ?? kendallFromRatings(ev.ratings, ids);
   const label = agreementLabel(w);
-  const consistency = ev.agreement.pairwise_consistency;
   const a = ev.agreement;
-  const panel = [a.judges && `${a.judges} judges`, a.reels && `${a.reels} reels`, a.pairs_judged && `${a.pairs_judged} pairs judged both ways`]
-    .filter(Boolean)
-    .join(" · ");
+  const panel = [a.judges && `${a.judges} judges`, a.reels && `${a.reels} reels`, a.pairs_judged && `${a.pairs_judged} pairs judged both ways`].filter(Boolean).join(" · ");
   return (
-    <div className="cl-panel cl-agree">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Do the judges agree?</h3>
-        <span className="cl-panel-count">Kendall's W</span>
-      </div>
+    <div className="cl-full-block cl-agree">
+      <h3 className="cl-h3">
+        Do the judges agree? <span className="cl-h3-aside">Kendall's W</span>
+      </h3>
       <div className="cl-agree-w">
         <span className="cl-agree-num num">{w.toFixed(2)}</span>
         <div>
@@ -345,30 +337,30 @@ function Agreement({ ev, ids }: { ev: Evaluation; ids: string[] }) {
         <span>0 · no shared order</span>
         <span>1 · identical rankings</span>
       </p>
-      {consistency != null && (
-        <p className="cl-agree-note">
-          Judges' head-to-head votes matched their own scores <b className="num">{fmtPct(consistency)}</b> of the time.
-        </p>
-      )}
-      {a.order_consistency != null && (
-        <p className="cl-agree-note">
-          Shown a pair in both orders, judges picked the same winner <b className="num">{fmtPct(a.order_consistency)}</b> of
-          the time.
-        </p>
-      )}
-      {a.first_shown_wins != null && (
-        <p className="cl-agree-note">
-          The reel shown first won <b className="num">{fmtPct(a.first_shown_wins)}</b> of head-to-head votes (50% means no
-          position bias).
-        </p>
-      )}
-      {(a.kendall_w_p != null || panel) && (
-        <p className="cl-agree-note cl-agree-meta num">
-          {a.kendall_w_p != null && <>p = {a.kendall_w_p < 0.001 ? "<0.001" : a.kendall_w_p.toFixed(3)}</>}
-          {a.kendall_w_p != null && panel && " · "}
-          {panel}
-        </p>
-      )}
+      <ul className="cl-agree-notes">
+        {a.pairwise_consistency != null && (
+          <li>
+            Judges' head-to-head votes matched their own scores <b className="num">{fmtPct(a.pairwise_consistency)}</b> of the time.
+          </li>
+        )}
+        {a.order_consistency != null && (
+          <li>
+            Shown a pair in both orders, judges picked the same winner <b className="num">{fmtPct(a.order_consistency)}</b> of the time.
+          </li>
+        )}
+        {a.first_shown_wins != null && (
+          <li>
+            The reel shown first won <b className="num">{fmtPct(a.first_shown_wins)}</b> of head-to-head votes (50% means no position bias).
+          </li>
+        )}
+        {(a.kendall_w_p != null || panel) && (
+          <li className="num">
+            {a.kendall_w_p != null && <>p = {a.kendall_w_p < 0.001 ? "<0.001" : a.kendall_w_p.toFixed(3)}</>}
+            {a.kendall_w_p != null && panel && " · "}
+            {panel}
+          </li>
+        )}
+      </ul>
     </div>
   );
 }
@@ -386,21 +378,20 @@ const RATE_ROWS: [keyof ReelSummary, string][] = [
   ["inquire_rate", "Would message the agent"],
 ];
 
-function AudienceRates({ reels, colors, summaries }: { reels: Reel[]; colors: Record<string, string>; summaries: Map<string, ReelSummary> }) {
+function AudienceRates({ reels, summaries }: { reels: Reel[]; summaries: Map<string, ReelSummary> }) {
   return (
-    <div className="cl-panel cl-rates">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">Audience panel · weighted by segment</h3>
-      </div>
-      <table className="cl-rates-table">
+    <div className="cl-full-block">
+      <h3 className="cl-h3">Audience panel · weighted by segment</h3>
+      <table className="cl-table cl-rates-table">
         <thead>
           <tr>
             <th scope="col">
               <span className="sr-only">Measure</span>
             </th>
             {reels.map((r) => (
-              <th key={r.id} scope="col">
-                <ReelBadge id={r.id} color={colors[r.id]!} size={18} />
+              <th key={r.id} scope="col" className="cl-col-reel">
+                <ReelBadge id={r.id} size={18} />
+                <span className="sr-only">{r.label}</span>
               </th>
             ))}
           </tr>
@@ -413,7 +404,7 @@ function AudienceRates({ reels, colors, summaries }: { reels: Reel[]; colors: Re
               <tr key={k}>
                 <th scope="row">{label}</th>
                 {vals.map((v, i) => (
-                  <td key={reels[i]!.id} className="num" data-best={(v === best && v > 0) || undefined}>
+                  <td key={reels[i]!.id} className="cl-col-reel num" data-best={(v === best && v > 0) || undefined}>
                     {fmtPct(v)}
                   </td>
                 ))}
@@ -422,36 +413,39 @@ function AudienceRates({ reels, colors, summaries }: { reels: Reel[]; colors: Re
           })}
         </tbody>
       </table>
-      <p className="cl-foot">Intents are what the viewer agents said they'd do (0-100), not platform rates.</p>
+      <p className="cl-foot">Intents are what the viewer agents said they'd do (0–100), not platform rates.</p>
     </div>
   );
 }
 
-function AudiencePanel({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; colors: Record<string, string> }) {
+function AudiencePanel({ ev, reels }: { ev: Evaluation; reels: Reel[] }) {
   const [open, setOpen] = useState<string | null>(null);
   if (!ev.viewers.length) return null;
   const byKey = new Map(ev.reactions.map((r) => [`${r.viewer}:${r.reel}`, r]));
   const sel = open ? byKey.get(open) : undefined;
   const selViewer = sel ? ev.viewers.find((v) => v.id === sel.viewer) : undefined;
   return (
-    <div className="cl-panel cl-panelgrid">
-      <div className="cl-panel-head">
-        <h3 className="cl-label">The viewers · what each one did</h3>
-        <span className="cl-panel-count">
-          <span className="cl-key cl-key-stop" /> stopped <span className="cl-key cl-key-skip" /> scrolled past <Check size={11} aria-hidden /> watched to the end
+    <div className="cl-full-block cl-viewers-block">
+      <h3 className="cl-h3">
+        The viewers · what each one did
+        <span className="cl-h3-aside cl-viewers-key">
+          <span className="cl-vdot" data-stopped aria-hidden /> stopped
+          <span className="cl-vdot" aria-hidden /> scrolled past
+          <Check size={11} aria-hidden /> watched to the end
         </span>
-      </div>
+      </h3>
       <div className="cl-viewers">
-        <table className="cl-viewers-table">
+        <table className="cl-table cl-viewers-table">
           <thead>
             <tr>
               <th scope="col">Viewer</th>
-              <th scope="col" className="cl-vw">
+              <th scope="col" className="cl-col-num">
                 Share
               </th>
               {reels.map((r) => (
                 <th key={r.id} scope="col">
-                  <ReelBadge id={r.id} color={colors[r.id]!} size={18} />
+                  <ReelBadge id={r.id} size={18} />
+                  <span className="sr-only">{r.label}</span>
                 </th>
               ))}
             </tr>
@@ -461,21 +455,23 @@ function AudiencePanel({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; c
               <tr key={v.id}>
                 <th scope="row">
                   <span className="cl-viewer">
-                    <Avatar who={viewerWho(v)} size={24} />
-                    <span>
-                      <b>{v.name}</b>
-                      <small>{v.segment}</small>
-                    </span>
+                    <b>{v.name}</b>
+                    <small title={v.segment}>{v.segment}</small>
                   </span>
                 </th>
-                <td className="cl-vw num">{fmtPct(v.weight)}</td>
+                <td className="cl-col-num num">{fmtPct(v.weight)}</td>
                 {reels.map((r) => {
                   const x = byKey.get(`${v.id}:${r.id}`);
-                  if (!x) return <td key={r.id} className="muted">–</td>;
+                  if (!x)
+                    return (
+                      <td key={r.id} className="cl-h2h-self">
+                        –
+                      </td>
+                    );
                   const key = `${v.id}:${r.id}`;
                   const frac = Math.min(1, x.watch_seconds / Math.max(0.1, r.seconds));
                   return (
-                    <td key={r.id} style={reelStyle(colors[r.id]!)}>
+                    <td key={r.id}>
                       <button
                         className="cl-vcell"
                         data-stopped={x.stopped || undefined}
@@ -483,7 +479,7 @@ function AudiencePanel({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; c
                         onClick={() => setOpen(open === key ? null : key)}
                         aria-label={`${v.name} on reel ${r.id}: ${x.stopped ? "stopped" : "scrolled past"}, watched ${x.watch_seconds.toFixed(1)} s${x.completed ? " to the end" : ""}. ${x.first_impression}`}
                       >
-                        <span className="cl-vcell-dot" aria-hidden />
+                        <span className="cl-vdot" data-stopped={x.stopped || undefined} aria-hidden />
                         <span className="cl-vcell-bar" aria-hidden>
                           <span style={{ width: `${frac * 100}%` }} />
                         </span>
@@ -500,21 +496,18 @@ function AudiencePanel({ ev, reels, colors }: { ev: Evaluation; reels: Reel[]; c
           {sel && selViewer ? (
             <>
               <p className="cl-reaction-who">
-                <Avatar who={viewerWho(selViewer)} size={28} />
-                <span>
-                  <b>{selViewer.name}</b> on <ReelBadge id={sel.reel} color={colors[sel.reel]!} size={16} />
-                </span>
+                <b>{selViewer.name}</b> on <ReelBadge id={sel.reel} size={16} />
               </p>
               <blockquote>“{sel.first_impression}”</blockquote>
               {sel.why && <p className="cl-reaction-why">{sel.why}</p>}
               {sel.comment_text && (
                 <p className="cl-reaction-line">
-                  <span className="cl-label">Would comment</span> {sel.comment_text}
+                  <span>Would comment</span> {sel.comment_text}
                 </p>
               )}
               {sel.share_note && (
                 <p className="cl-reaction-line">
-                  <span className="cl-label">Would send it to</span> {sel.share_note}
+                  <span>Would send it to</span> {sel.share_note}
                 </p>
               )}
               <p className="cl-reaction-ints num">

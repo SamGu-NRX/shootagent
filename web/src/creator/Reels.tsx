@@ -1,9 +1,9 @@
-import { Clapperboard, Pause, Play, Sparkles, TriangleAlert, Trophy, Volume2, VolumeX } from "lucide-react";
+import { Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { CONTROL_AGENT } from "./phases";
 import { useCreator } from "./store";
 import type { LabState, Reaction, Reel, ReelConcept, ViewerPersona } from "./types";
-import { Avatar, fmtPct, focusStyle, ReelBadge, reelColors, reelStyle, SectionHead, viewerWho } from "./ui";
+import { fmtPct, focusStyle, ReelBadge, SectionHead } from "./ui";
 
 const NONE: never[] = [];
 
@@ -44,7 +44,6 @@ export function ReelsSection() {
   const shootId = useCreator((s) => s.shootId);
   const sims = useCreator((s) => s.sims) ?? lab.simulations;
   const planned = useMemo(() => plannedReels(lab), [lab]);
-  const colors = reelColors(planned.map((p) => ({ id: p.id, kind: p.kind })));
   const videos = useRef(new Map<string, HTMLVideoElement>());
   const [syncing, setSyncing] = useState(false);
   const [audible, setAudible] = useState<string | null>(null);
@@ -88,7 +87,7 @@ export function ReelsSection() {
           </>
         }
       >
-        <button className="btn btn-agent cl-syncbtn" onClick={() => void playAll()} disabled={rendered.length < 2} aria-pressed={syncing}>
+        <button className="btn" onClick={() => void playAll()} disabled={rendered.length < 2} aria-pressed={syncing}>
           {syncing ? <Pause size={13} aria-hidden /> : <Play size={13} aria-hidden />}
           {syncing ? "Pause all" : "Play all in sync"}
         </button>
@@ -98,7 +97,6 @@ export function ReelsSection() {
           <PhoneCard
             key={p.id}
             p={p}
-            color={colors[p.id]!}
             src={p.reel && api && shootId ? api.fileUrl(shootId, lab.id, p.reel.video) : null}
             poster={p.reel && api && shootId ? api.fileUrl(shootId, lab.id, p.reel.poster) : null}
             rendering={render?.status === "running"}
@@ -116,7 +114,6 @@ export function ReelsSection() {
 
 function PhoneCard({
   p,
-  color,
   src,
   poster,
   rendering,
@@ -127,7 +124,6 @@ function PhoneCard({
   awards,
 }: {
   p: Planned;
-  color: string;
   src: string | null;
   poster: string | null;
   rendering: boolean;
@@ -149,7 +145,7 @@ function PhoneCard({
     if (video.current) video.current.muted = !audible;
   }, [audible]);
 
-  // a smooth playhead for the retention strip while playing
+  // a smooth playhead for the progress bar and the swipe-away strip while playing
   useEffect(() => {
     if (!playing) return;
     let raf = 0;
@@ -177,97 +173,76 @@ function PhoneCard({
   const first = p.concept?.beats[0];
 
   return (
-    <figure className="cl-phone-card" data-kind={p.kind} style={reelStyle(color)}>
+    <figure className="cl-phone-card" data-kind={p.kind}>
       <figcaption className="cl-phone-cap">
-        <span className="cl-phone-label">
-          <ReelBadge id={p.id} color={color} size={24} />
-          <span>{p.label}</span>
+        <span className="cl-phone-row">
+          <ReelBadge id={p.id} size={20} />
+          <span className="cl-phone-label">{p.label}</span>
+          {reel && <span className="cl-phone-secs num">{reel.seconds.toFixed(1)} s</span>}
         </span>
-        <span className="cl-phone-title">{reel?.title ?? p.concept?.title ?? " "}</span>
-        <span className="cl-awards">
-          {awards.map((a) => (
-            <span key={a} className="cl-award">
-              {a === "Most creative" ? <Sparkles size={11} aria-hidden /> : <Trophy size={11} aria-hidden />} {a}
-            </span>
-          ))}
-        </span>
+        <span className="cl-phone-title">{reel?.title ?? p.concept?.title ?? " "}</span>
+        <span className="cl-phone-award">{awards.join(" · ")}</span>
       </figcaption>
 
       <div className="cl-phone" data-state={reel ? "ready" : rendering ? "rendering" : "waiting"}>
-        <span className="cl-phone-island" aria-hidden />
-        <div className="cl-phone-screen">
-          {reel && src && !failed ? (
-            <>
-              <video
-                ref={setRef}
-                src={src}
-                poster={poster ?? undefined}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
-                onTimeUpdate={(e) => !playing && setTime(e.currentTarget.currentTime)}
-                onError={() => setFailed(true)}
-                aria-label={`Reel ${p.id}: ${reel.title}`}
-              />
-              <button className="cl-phone-hit" onClick={toggle} aria-label={playing ? `Pause reel ${p.id}` : `Play reel ${p.id}`}>
-                {!playing && (
-                  <span className="cl-phone-play" aria-hidden>
-                    <Play size={22} fill="currentColor" />
-                  </span>
-                )}
-              </button>
-              <button className="cl-phone-sound" onClick={() => onAudible(!audible)} aria-label={audible ? `Mute reel ${p.id}` : `Unmute reel ${p.id}`} aria-pressed={audible}>
-                {audible ? <Volume2 size={14} aria-hidden /> : <VolumeX size={14} aria-hidden />}
-              </button>
-              <span className="cl-phone-progress" aria-hidden>
-                <span style={{ width: `${seconds ? Math.min(100, (time / seconds) * 100) : 0}%` }} />
-              </span>
-            </>
-          ) : (
-            <div className="cl-phone-wait">
-              {first && photos?.[first.view] && <img src={photos[first.view]} alt="" style={focusStyle(first.focus)} />}
-              <div className="cl-phone-wait-text">
-                {reel && failed ? (
-                  <p>The video didn't load. It may still be writing to disk; reload in a moment.</p>
-                ) : (
-                  <>
-                    <p className="cl-phone-wait-state">
-                      {rendering ? (
-                        <>
-                          <span className="spinner spinner-sm" aria-hidden /> Rendering
-                        </>
-                      ) : (
-                        <>
-                          <Clapperboard size={13} aria-hidden /> {p.concept ? "Renders next" : "Renders after the greenlight"}
-                        </>
-                      )}
-                    </p>
-                    {p.concept && <p className="cl-phone-wait-hook">“{p.concept.hook.text}”</p>}
-                  </>
-                )}
-              </div>
+        {reel && src && !failed ? (
+          <>
+            <video
+              ref={setRef}
+              src={src}
+              poster={poster ?? undefined}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+              onTimeUpdate={(e) => !playing && setTime(e.currentTarget.currentTime)}
+              onError={() => setFailed(true)}
+              aria-label={`Reel ${p.id}: ${reel.title}`}
+            />
+            <button className="cl-phone-hit" onClick={toggle} aria-label={playing ? `Pause reel ${p.id}` : `Play reel ${p.id}`}>
+              {!playing && (
+                <span className="cl-phone-play" aria-hidden>
+                  <Play size={18} fill="currentColor" />
+                </span>
+              )}
+            </button>
+            <button className="cl-phone-sound" onClick={() => onAudible(!audible)} aria-label={audible ? `Mute reel ${p.id}` : `Unmute reel ${p.id}`} aria-pressed={audible}>
+              {audible ? <Volume2 size={14} aria-hidden /> : <VolumeX size={14} aria-hidden />}
+            </button>
+            <span className="cl-phone-progress" aria-hidden>
+              <span style={{ width: `${seconds ? Math.min(100, (time / seconds) * 100) : 0}%` }} />
+            </span>
+          </>
+        ) : (
+          <div className="cl-phone-wait">
+            {first && photos?.[first.view] && <img src={photos[first.view]} alt="" style={focusStyle(first.focus)} />}
+            <div className="cl-phone-wait-text">
+              {reel && failed ? (
+                <p className="cl-phone-wait-state">The video didn't load. It may still be writing to disk; reload in a moment.</p>
+              ) : (
+                <>
+                  <p className="cl-phone-wait-state">
+                    {rendering ? (
+                      <>
+                        <span className="spinner spinner-sm" aria-hidden /> Rendering
+                      </>
+                    ) : p.concept ? (
+                      "Renders next"
+                    ) : (
+                      "Renders after the greenlight"
+                    )}
+                  </p>
+                  {p.concept && <p className="cl-phone-wait-hook">“{p.concept.hook.text}”</p>}
+                </>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
-      {reel && <ExitStrip reel={reel} time={time} color={color} />}
-      {reel && (
-        <p className="cl-phone-meta">
-          <span className="num">{reel.seconds.toFixed(1)} s</span>
-          <span>{reel.music || "music"}</span>
-          <span>{reel.has_voice ? `voice${p.concept && p.concept.voice.voice !== "none" ? ` (${p.concept.voice.voice})` : ""}` : "no voice"}</span>
-        </p>
-      )}
-      {reel && reel.warnings.length > 0 && (
-        <p className="cl-phone-note" title={reel.warnings.join("\n")}>
-          <TriangleAlert size={11} aria-hidden /> {reel.warnings.length} render note{reel.warnings.length === 1 ? "" : "s"}
-          <span className="sr-only">: {reel.warnings.join(" ")}</span>
-        </p>
-      )}
+      {reel && <ExitStrip reel={reel} time={time} />}
     </figure>
   );
 }
@@ -289,8 +264,8 @@ export function watchCurve(rs: Reaction[], weights: Map<string, number>, seconds
   });
 }
 
-/** One line under a phone: a tick where each viewer swiped away (their name on hover), and how many finished. */
-function ExitStrip({ reel, time, color }: { reel: Reel; time: number; color: string }) {
+/** One line under a reel: a tick where each viewer swiped away (their reaction on hover), and how many finished. */
+function ExitStrip({ reel, time }: { reel: Reel; time: number }) {
   const reactions = useCreator((s) => s.lab?.evaluation?.reactions ?? NONE);
   const viewers = useCreator((s) => s.lab?.evaluation?.viewers ?? NONE);
   const [hover, setHover] = useState<Exit | null>(null);
@@ -309,15 +284,15 @@ function ExitStrip({ reel, time, color }: { reel: Reel; time: number; color: str
   );
   if (!mine.length) return <p className="cl-exit-empty">Swipe-aways show here once the audience panel has watched.</p>;
   return (
-    <div className="cl-exit" style={reelStyle(color)}>
-      <div className="cl-exit-track" role="list" aria-label={`Where viewers swiped away from reel ${reel.id}`}>
+    <div className="cl-exit">
+      <div className="cl-exit-track" role="group" aria-label={`Where viewers swiped away from reel ${reel.id}`}>
         <span className="cl-exit-played" style={{ width: `${Math.min(100, (time / seconds) * 100)}%` }} aria-hidden />
         {exits.map((e) => (
           <button
             key={e.v.id}
-            role="listitem"
             className="cl-exit-tick"
-            style={{ left: `${e.x * 100}%`, "--tick": e.v.color } as CSSProperties}
+            style={{ left: `${e.x * 100}%` }}
+            data-active={hover === e || undefined}
             onPointerEnter={() => setHover(e)}
             onPointerLeave={() => setHover((h) => (h === e ? null : h))}
             onFocus={() => setHover(e)}
@@ -326,14 +301,11 @@ function ExitStrip({ reel, time, color }: { reel: Reel; time: number; color: str
           />
         ))}
         {hover && (
-          <div className="cl-exit-tip" style={{ left: `${Math.min(80, Math.max(20, hover.x * 100))}%` }} role="status">
-            <Avatar who={viewerWho(hover.v)} size={22} />
-            <div>
-              <p>
-                <b>{hover.v.name}</b> left at <span className="num">{hover.r.watch_seconds.toFixed(1)} s</span>
-              </p>
-              <p className="cl-exit-tip-q">“{hover.r.first_impression}”</p>
-            </div>
+          <div className="cl-tip cl-exit-tip" style={{ left: `${Math.min(80, Math.max(20, hover.x * 100))}%` }} role="status">
+            <p className="cl-exit-tip-head">
+              <b>{hover.v.name}</b> left at <span className="num">{hover.r.watch_seconds.toFixed(1)} s</span>
+            </p>
+            <p className="cl-exit-tip-q">“{hover.r.first_impression}”</p>
           </div>
         )}
       </div>

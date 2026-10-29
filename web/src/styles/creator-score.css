@@ -1,0 +1,654 @@
+/*
+ * Creator dashboard: the scorecard and the creativity map. Monochrome on the foundation in creator.css; the
+ * accent marks only the top-ranked reel's bar and the most creative reel on the map.
+ */
+
+/* ---------- layout ---------------------------------------------------------------------------------- */
+.cl-score-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.cl-score-left {
+  min-width: 0;
+}
+
+/* ---------- ranking --------------------------------------------------------------------------------- */
+.cl-rank {
+  border-top: 1px solid var(--line);
+}
+.cl-rank-row {
+  display: grid;
+  grid-template-columns: 18px 22px minmax(0, 1fr) 100px 96px 60px;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  border-bottom: 1px solid var(--line);
+}
+.cl-rank-n {
+  font-size: 12.5px;
+  color: var(--cl-faint);
+}
+.cl-rank-name {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.cl-rank-name b {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-rank-name span {
+  overflow: hidden;
+  font-size: 12.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cl-rank-score {
+  display: grid;
+  gap: 6px;
+}
+.cl-rank-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.cl-rank-big {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text);
+}
+.cl-rank-of {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-rank-bar {
+  display: block;
+  width: 88px;
+  height: 2px;
+  background: var(--line);
+}
+.cl-rank-bar span {
+  display: block;
+  height: 100%;
+  background: var(--text-3);
+}
+.cl-rank-row[data-top] .cl-rank-bar span {
+  background: var(--agent);
+}
+.cl-rank-fact {
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.cl-rank-fact small {
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+/* ---------- verdict, caveats, diversity ------------------------------------------------------------- */
+.cl-verdict-block {
+  margin-top: 28px;
+}
+.cl-quote {
+  margin: 0;
+}
+.cl-verdict-wait {
+  margin-top: 24px;
+}
+.cl-quote blockquote {
+  padding-left: 16px;
+  border-left: 1px solid var(--line-2);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.cl-quote figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 8px;
+  padding-left: 17px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-caveats {
+  margin-top: 16px;
+}
+.cl-caveats > .cl-disc-btn {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+.cl-caveat-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+.cl-caveat-label b {
+  flex: none;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.cl-caveat-lead {
+  overflow: hidden;
+  color: var(--text-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cl-caveat-list {
+  max-width: 72ch;
+  border-top: 1px solid var(--line);
+}
+.cl-caveat-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.cl-diversity {
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-diversity b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ---------- full scorecard -------------------------------------------------------------------------- */
+.cl-full {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.cl-full > .cl-disc-body {
+  margin-top: 28px;
+}
+.cl-full-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px 56px;
+}
+.cl-full-block {
+  min-width: 0;
+}
+.cl-full-block .cl-foot {
+  margin-top: 10px;
+}
+.cl-h3-aside {
+  margin-left: 8px;
+  font-weight: 400;
+  color: var(--cl-faint);
+}
+.cl-full-block .cl-table tbody th {
+  padding-right: 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.cl-col-reel {
+  width: 60px;
+  text-align: right;
+}
+.cl-table th.cl-col-reel,
+.cl-table td.cl-col-reel {
+  padding-right: 0;
+  padding-left: 10px;
+  text-align: right;
+}
+.cl-dim-bar {
+  display: block;
+  width: 36px;
+  height: 2px;
+  margin: 5px 0 0 auto;
+  background: var(--line);
+}
+.cl-dim-bar span {
+  display: block;
+  height: 100%;
+  background: var(--cl-faint);
+}
+.cl-dims-table td[data-best] .cl-dim-bar span {
+  background: var(--text-2);
+}
+.cl-h2h-vs {
+  margin-right: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--cl-faint);
+}
+.cl-h2h-table td {
+  color: var(--text-3);
+}
+.cl-h2h-table td[data-win] {
+  color: var(--text);
+}
+.cl-h2h-self,
+.cl-h2h-table td.cl-h2h-self {
+  color: var(--cl-faint);
+}
+.cl-h2h-table td.cl-h2h-total {
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* agreement */
+.cl-agree-w {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.cl-agree-num {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text);
+}
+.cl-agree-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-agree-long {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.cl-agree-scale {
+  position: relative;
+  height: 1px;
+  margin: 22px 0 8px;
+  background: var(--line-2);
+}
+.cl-agree-scale span {
+  position: absolute;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text);
+  translate: -50% 0;
+}
+.cl-agree-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--cl-faint);
+}
+.cl-agree-notes {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-agree-notes b {
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+/* the viewers */
+.cl-viewers-block {
+  margin-top: 44px;
+}
+.cl-viewers-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 14px;
+  color: var(--text-3);
+}
+.cl-viewers-key .cl-vdot + *,
+.cl-viewers-key svg {
+  margin-left: 10px;
+}
+.cl-viewers-key .cl-vdot:first-child {
+  margin-left: 0;
+}
+.cl-viewers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 36px;
+  align-items: start;
+}
+.cl-viewer {
+  display: grid;
+  gap: 1px;
+}
+.cl-viewer b {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.cl-viewer small {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cl-col-num,
+.cl-table th.cl-col-num,
+.cl-table td.cl-col-num {
+  width: 56px;
+  padding-right: 14px;
+  text-align: right;
+}
+.cl-full-block .cl-viewers-table tbody th {
+  max-width: 250px;
+  white-space: normal;
+}
+.cl-viewers-table td,
+.cl-viewers-table th {
+  vertical-align: middle;
+}
+.cl-vcell {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: -6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: var(--text-3);
+  transition: background-color 140ms ease;
+}
+.cl-vcell[aria-pressed="true"] {
+  background: var(--raised);
+  color: var(--text);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cl-vcell:hover {
+    background: var(--hover);
+  }
+}
+.cl-vdot {
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--cl-faint);
+  border-radius: 50%;
+}
+.cl-vdot[data-stopped] {
+  border-color: var(--text);
+  background: var(--text);
+}
+.cl-vcell-bar {
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--line);
+}
+.cl-vcell-bar span {
+  display: block;
+  height: 100%;
+  background: var(--text-3);
+}
+.cl-vcell-s {
+  min-width: 32px;
+  font-size: 12px;
+}
+.cl-reaction {
+  position: sticky;
+  top: calc(var(--cl-bar) + 20px);
+  padding-top: 8px;
+}
+.cl-reaction-who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.cl-reaction-who b {
+  font-weight: 500;
+  color: var(--text);
+}
+.cl-reaction blockquote {
+  margin: 10px 0 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}
+.cl-reaction-why {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-reaction-line {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.cl-reaction-line span {
+  display: block;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-reaction-ints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-reaction-hint {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+/* ---------- creativity map -------------------------------------------------------------------------- */
+.cl-map {
+  min-width: 0;
+}
+.cl-map-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.cl-map-head .cl-h3 {
+  margin: 0;
+}
+.cl-map-tools {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+}
+.cl-map-method {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--cl-faint);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cl-map-plot {
+  position: relative;
+}
+.cl-map-plot svg {
+  display: block;
+  overflow: visible;
+}
+.cl-map-zone ellipse {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.cl-map-zone text {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-style: italic;
+  fill: var(--cl-faint);
+}
+.cl-map-cliche circle:first-child {
+  fill: #474747;
+  transition: fill 120ms ease;
+}
+.cl-map-cliche:hover circle:first-child {
+  fill: var(--text-3);
+}
+.cl-map-hit {
+  fill: transparent;
+}
+.cl-map-lineage,
+.cl-map-leader {
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+.cl-map-pt {
+  cursor: pointer;
+  outline: none;
+}
+.cl-map-dot {
+  fill: #8a8a8a;
+  transition: fill 120ms ease;
+}
+.cl-map-pt[data-reel] .cl-map-dot {
+  fill: var(--text);
+}
+.cl-map-hollow {
+  fill: var(--bg);
+  stroke: #bdbdbd;
+  stroke-width: 1.5;
+}
+.cl-map-square {
+  fill: #5c5c5c;
+}
+.cl-map-ring {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1;
+}
+.cl-map-pt[data-best] .cl-map-dot {
+  fill: var(--agent);
+}
+.cl-map-pt[data-best] .cl-map-hollow,
+.cl-map-pt[data-best] .cl-map-ring {
+  stroke: var(--agent);
+}
+.cl-map-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  fill: var(--text-2);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.cl-map-pt[data-best] .cl-map-label {
+  fill: var(--text);
+}
+.cl-map-pt:hover .cl-map-dot,
+.cl-map-pt:focus-visible .cl-map-dot {
+  fill: var(--text);
+}
+.cl-map-pt[data-best]:hover .cl-map-dot,
+.cl-map-pt[data-best]:focus-visible .cl-map-dot {
+  fill: var(--agent);
+}
+.cl-map-pt:focus-visible .cl-map-hit {
+  stroke: var(--agent);
+  stroke-width: 1.5;
+}
+.cl-map-tip {
+  width: max-content;
+  max-width: 260px;
+  transform: translate(14px, -50%);
+}
+.cl-map-tip[data-flip] {
+  transform: translate(calc(-100% - 14px), -50%);
+}
+.cl-map-tip-kind {
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+.cl-map-tip-title {
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--text);
+}
+.cl-map-tip-near {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-map-tip-near q {
+  color: var(--text-2);
+}
+.cl-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-map-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cl-map-legend svg {
+  display: block;
+}
+.cl-map-legend-cliche {
+  fill: #474747;
+}
+.cl-map-legend-concept {
+  fill: #8a8a8a;
+}
+.cl-map-legend-reel {
+  fill: var(--text);
+}
+.cl-map-legend-ring {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1;
+}
+.cl-map-legend-hollow {
+  fill: none;
+  stroke: #bdbdbd;
+  stroke-width: 1.5;
+}
+.cl-map-legend-square {
+  fill: #5c5c5c;
+}
+.cl-map > .cl-foot {
+  margin-top: 8px;
+  max-width: 64ch;
+}
+
+/* ---------- narrower screens ------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  .cl-score-top,
+  .cl-full-grid,
+  .cl-viewers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-reaction {
+    position: static;
+  }
+}

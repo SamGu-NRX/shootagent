@@ -1,0 +1,557 @@
+/*
+ * Creator dashboard: the simulated launch (src/creator/Launch.tsx). Monochrome: the only hue is the accent on
+ * the reel that leads (its line, its counter, the winning ratio). No boxes; hairlines and whitespace.
+ */
+
+.cl-honest {
+  margin: -14px 0 28px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-honest > span {
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+/* ---------- controls: play, clock, scrubber, settings ------------------------------------------------- */
+.cl-sim-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  margin: 8px 0 36px;
+}
+.cl-launch-go {
+  min-width: 152px;
+  justify-content: center;
+}
+.cl-clock-read {
+  flex: none;
+  font-size: 13px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.cl-clock-read > .num {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+  color: var(--text);
+}
+.cl-clock-of {
+  color: var(--cl-faint, #5e5e5e);
+}
+
+.cl-launch .cl-scrub {
+  flex: 1 1 200px;
+  min-width: 120px;
+  height: 16px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.cl-launch .cl-scrub::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 2px;
+  /* two flat tones split at the playhead */
+  background: linear-gradient(to right, var(--text) var(--p, 0%), var(--line-2) var(--p, 0%));
+}
+.cl-launch .cl-scrub::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.cl-launch .cl-scrub::-moz-range-track {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+.cl-launch .cl-scrub::-moz-range-progress {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--text);
+}
+.cl-launch .cl-scrub::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--text);
+}
+.cl-launch .cl-scrub:focus-visible {
+  outline: none;
+}
+.cl-launch .cl-scrub:focus-visible::-webkit-slider-thumb {
+  box-shadow: var(--focus);
+}
+.cl-launch .cl-scrub:focus-visible::-moz-range-thumb {
+  box-shadow: var(--focus);
+}
+
+.cl-sim-settings {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  margin-left: auto;
+}
+.cl-sim-settings-read {
+  font-size: 12.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.cl-sim-settings-read .num {
+  color: var(--text-2);
+}
+.cl-sim-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  display: grid;
+  gap: 16px;
+  width: 280px;
+}
+.cl-sim-field {
+  display: grid;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+.cl-sim-field-head,
+.cl-sim-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cl-sim-field-head .num,
+.cl-sim-seed .num {
+  color: var(--text);
+}
+.cl-sim-pop .cl-scrub {
+  width: 100%;
+  flex: none;
+}
+.cl-sim-seed {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.cl-sim-seed .icon-btn {
+  width: 26px;
+  height: 26px;
+}
+.cl-sim-rerun {
+  justify-self: end;
+}
+
+/* ---------- the result in one sentence ---------------------------------------------------------------- */
+.cl-banner {
+  min-height: 68px;
+  margin-bottom: 28px;
+}
+.cl-banner-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--text);
+  text-wrap: balance;
+  animation: cl-launch-in 260ms ease;
+}
+.cl-banner-head .cl-badge {
+  flex: none;
+}
+.cl-banner-x {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--agent);
+}
+.cl-banner-sub {
+  margin-top: 6px;
+  padding-left: 36px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-banner-sub .num {
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+.cl-banner-race {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 29px;
+  font-size: 15px;
+  color: var(--text-2);
+}
+.cl-banner-race b {
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-banner-race .num {
+  color: var(--text);
+}
+.cl-banner-hint {
+  max-width: 76ch;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+/* ---------- counters ----------------------------------------------------------------------------------- */
+.cl-counters {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
+}
+.cl-counter {
+  min-width: 0;
+  padding: 2px 20px;
+  border-left: 1px solid var(--line);
+}
+.cl-counter:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.cl-counter-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.cl-counter-head .cl-badge {
+  flex: none;
+}
+.cl-counter-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cl-counter-lead {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--agent);
+}
+.cl-counter-views {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 12px;
+}
+.cl-counter-views .num {
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.cl-counter[data-leading] .cl-counter-views .num {
+  color: var(--agent);
+}
+.cl-counter-unit {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-counter-sub {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cl-counter-sub .num {
+  color: var(--text-2);
+}
+
+/* ---------- chart and comments ------------------------------------------------------------------------- */
+.cl-sim-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: start;
+  gap: 48px;
+  margin-top: 44px;
+}
+.cl-growth {
+  min-width: 0;
+}
+.cl-growth-plot,
+.cl-retention-plot {
+  position: relative;
+}
+.cl-growth-plot svg,
+.cl-retention-plot svg {
+  display: block;
+  overflow: visible;
+}
+.cl-launch .cl-grid line {
+  stroke: var(--line);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.cl-launch .cl-grid text,
+.cl-launch .cl-axis {
+  fill: var(--cl-faint, #5e5e5e);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.cl-growth-line {
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.cl-growth-now {
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+.cl-growth-cross {
+  stroke: var(--text-3);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.cl-growth-leader {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+.cl-growth-end {
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+.cl-growth-end-id {
+  font-weight: 700;
+}
+.cl-growth-tip {
+  position: absolute;
+  top: 8px;
+  z-index: 5;
+  min-width: 140px;
+  transform: translateX(12px);
+  pointer-events: none;
+}
+.cl-growth-tip[data-flip] {
+  transform: translateX(calc(-100% - 12px));
+}
+.cl-growth-tip-h {
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+.cl-growth-tip-row {
+  display: grid;
+  grid-template-columns: 10px 14px 1fr;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+.cl-growth-tip-row i {
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+}
+.cl-growth-tip-row b {
+  justify-self: end;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.cl-comments {
+  min-width: 0;
+}
+.cl-comments-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cl-comments-head .cl-h3 {
+  margin: 0;
+}
+.cl-comments-count {
+  font-size: 11.5px;
+  color: var(--cl-faint, #5e5e5e);
+}
+.cl-comment-list {
+  max-height: 300px;
+  padding-right: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+.cl-comment {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  animation: cl-launch-in 220ms ease;
+}
+.cl-comment:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.cl-comment-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+}
+.cl-comment-head b {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cl-comment-head .cl-badge {
+  flex: none;
+}
+.cl-comment-h {
+  flex: none;
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--cl-faint, #5e5e5e);
+}
+.cl-comment-text {
+  margin-top: 4px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.cl-comment-likes {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+/* ---------- details: retention, segments, every metric, the model ------------------------------------- */
+.cl-sim-more {
+  margin-top: 40px;
+}
+.cl-launch-more {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px 56px;
+  padding-top: 16px;
+}
+.cl-launch-block {
+  min-width: 0;
+}
+.cl-ret-hook {
+  stroke: var(--line-2);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.cl-retention .cl-foot {
+  margin-top: 8px;
+}
+.cl-launch-table {
+  width: 100%;
+}
+.cl-launch-table thead th:not(:first-child),
+.cl-launch-table td {
+  text-align: right;
+}
+.cl-launch-table thead .cl-badge {
+  vertical-align: middle;
+}
+.cl-seg-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.cl-seg-kind {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-3);
+}
+.cl-notes-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 18px;
+  list-style: decimal;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.cl-notes-list li::marker {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--cl-faint, #5e5e5e);
+}
+.cl-notes-own {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.cl-notes-own li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.cl-notes-own .cl-badge {
+  flex: none;
+  translate: 0 3px;
+}
+
+@keyframes cl-launch-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .cl-sim-main,
+  .cl-launch-more {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .cl-sim-bar {
+    flex-wrap: wrap;
+  }
+  .cl-sim-settings {
+    margin-left: 0;
+  }
+  .cl-counters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 24px;
+  }
+  .cl-counter:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-banner-head,
+  .cl-comment {
+    animation: none;
+  }
+}

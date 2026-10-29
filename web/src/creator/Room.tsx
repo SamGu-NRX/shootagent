@@ -1,26 +1,11 @@
-import { ArrowDown, ArrowRight, Check, Cpu, type LucideIcon, RotateCw, ThumbsDown, ThumbsUp, X } from "lucide-react";
+import { ArrowDown, ArrowRight, Check, type LucideIcon, RotateCw, X } from "lucide-react";
 import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { plannedReels } from "./Reels";
 import { CONTROL_AGENT, groupFeed } from "./phases";
 import { useCreator } from "./store";
 import { buildStory, criticScore, type CriticPick, type StoryStep } from "./story";
 import type { Critique, CritiqueVerdict, LabState, ReelConcept, RoomMessage } from "./types";
-import {
-  Avatar,
-  Disclosure,
-  fmtClock,
-  focusStyle,
-  numberWord,
-  onDark,
-  ReelBadge,
-  reelColors,
-  reelStyle,
-  Rich,
-  SectionHead,
-  useAgents,
-  useReducedMotion,
-  type Who,
-} from "./ui";
+import { Disclosure, fmtClock, focusStyle, numberWord, ReelBadge, Rich, SectionHead, useAgents, useReducedMotion, type Who } from "./ui";
 
 // ---- shared bits ----------------------------------------------------------------------------------
 
@@ -36,7 +21,7 @@ export function VerdictChip({ verdict, who }: { verdict: CritiqueVerdict; who?: 
   const v = VERDICT[verdict];
   return (
     <span className="cl-verdict" data-verdict={verdict} title={who ? `${who.name}: ${v.label}` : v.label}>
-      <v.icon size={11} strokeWidth={2.4} aria-hidden />
+      <v.icon size={11} strokeWidth={2.2} aria-hidden />
       {who ? who.initials : v.label}
     </span>
   );
@@ -60,13 +45,11 @@ export function criticMeans(cs: Critique[]) {
 export function ConceptChip({ id, prefix }: { id: string; prefix?: string }) {
   const concept = useCreator((s) => s.lab?.concepts.find((c) => c.id === id));
   const open = useCreator((s) => s.openConcept);
-  const who = useAgents()(concept?.agent ?? "");
   if (!concept) return <span className="cl-cchip" data-missing>{id}</span>;
   return (
     <button className="cl-cchip" onClick={() => open(id)} data-status={concept.status} title={`Open ${concept.title}`}>
       {prefix && <span className="cl-cchip-prefix">{prefix}</span>}
-      <span className="cl-cchip-dot" style={{ background: onDark(who.color) }} aria-hidden />
-      <span className="cl-cchip-title">{concept.title}</span>
+      {concept.title}
     </button>
   );
 }
@@ -87,7 +70,7 @@ function TitleLink({ id }: { id: string }) {
 export function RoomSection() {
   const lab = useCreator((s) => s.lab);
   if (!lab) return null;
-  const room = lab.concepts.filter((c) => c.agent !== "template" && c.agent !== CONTROL_AGENT && !lab.single_agent.includes(c.id));
+  const room = lab.concepts.filter((c) => isRoom(lab, c));
   const creators = lab.agents.filter((a) => a.role === "creator" && a.id !== CONTROL_AGENT).length;
   const critics = lab.agents.filter((a) => a.role === "critic").length;
   const remixes = room.filter((c) => c.parents.length).length;
@@ -104,11 +87,12 @@ export function RoomSection() {
         sub={
           <>
             {creators ? numberWord(creators, true) : "The"} creators pitch, {critics ? numberWord(critics) : "the"} critics tear the pitches apart, and the showrunner
-            greenlights {lab.options.finalists === 1 ? "one" : numberWord(lab.options.finalists)}.{" "}
-            {room.length > 0 && <span className="cl-counts">{counts.join(" · ")}</span>}
+            greenlights {lab.options.finalists === 1 ? "one" : numberWord(lab.options.finalists)}.
           </>
         }
-      />
+      >
+        {room.length > 0 && <p className="cl-counts">{counts.join(" · ")}</p>}
+      </SectionHead>
       <Cast lab={lab} />
       <div className="cl-room">
         <div className="cl-room-story">
@@ -126,7 +110,7 @@ export function RoomSection() {
   );
 }
 
-// ---- cast: one row of avatars -----------------------------------------------------------------------
+// ---- cast: the agents by role -----------------------------------------------------------------------
 
 const Cast = memo(function Cast({ lab }: { lab: LabState }) {
   const speaking = lab.status === "running" ? [...lab.feed].sort((a, b) => a.t - b.t).pop()?.agent : undefined;
@@ -144,10 +128,9 @@ const Cast = memo(function Cast({ lab }: { lab: LabState }) {
               <p className="cl-cast-label">{label}</p>
               <ul>
                 {list.map((a) => (
-                  <li key={a.id} className="cl-cast-member" data-speaking={a.id === speaking || undefined} title={`${a.name}: ${a.lens}`}>
-                    <Avatar who={a} size={40} />
-                    <span className="cl-cast-name">{a.name}</span>
-                    <span className="sr-only">{a.lens}</span>
+                  <li key={a.id} data-speaking={a.id === speaking || undefined} title={a.lens}>
+                    {a.name}
+                    <span className="sr-only">: {a.lens}</span>
                   </li>
                 ))}
               </ul>
@@ -184,17 +167,11 @@ function Latest({ lab }: { lab: LabState }) {
         <span className="live-dot" aria-hidden /> Happening now
       </p>
       <ul>
-        {msgs.map((m) => {
-          const who = agents(m.agent);
-          return (
-            <li key={m.id}>
-              <Avatar who={who} size={24} />
-              <p>
-                <b>{who.name}</b> {m.text}
-              </p>
-            </li>
-          );
-        })}
+        {msgs.map((m) => (
+          <li key={m.id}>
+            <b>{agents(m.agent).name}</b> {m.text}
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -211,7 +188,7 @@ function Story({ lab }: { lab: LabState }) {
       <ol className="cl-story">
         {steps.map((s, i) => (
           <li key={`${s.kind}-${i}`} className="cl-step" data-kind={s.kind}>
-            <span className="cl-step-dot" aria-hidden />
+            <time className="cl-step-t num">{Number.isFinite(s.t) ? fmtClock(s.t) : ""}</time>
             <Step s={s} lab={lab} />
           </li>
         ))}
@@ -220,40 +197,38 @@ function Story({ lab }: { lab: LabState }) {
   );
 }
 
-function StepHead({ title, t, meta }: { title: string; t: number; meta?: string }) {
+function StepHead({ title, meta }: { title: string; meta?: string }) {
   return (
     <p className="cl-step-head">
       <span className="cl-step-title">{title}</span>
       {meta && <span className="cl-step-meta">{meta}</span>}
-      {Number.isFinite(t) && <time className="num">{fmtClock(t)}</time>}
     </p>
   );
 }
 
 function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
   const agents = useAgents();
-  const photos = useCreator((st) => st.shoot?.photos);
   const conceptOf = useMemo(() => new Map(lab.concepts.map((c) => [c.id, c])), [lab.concepts]);
   switch (s.kind) {
     case "brief": {
       const brief = lab.brief;
       return (
         <div className="cl-step-body">
-          <StepHead title="The brief" t={s.t} />
+          <StepHead title="The brief" />
           <p className="cl-step-text">{s.summary}</p>
-          {s.heroes.length > 0 && (
-            <ul className="cl-heroes" aria-label="Hero details">
-              {s.heroes.map((h) => (
-                <li key={h.full} title={h.full}>
-                  {photos?.[h.view] && <img src={photos[h.view]} alt="" loading="lazy" />}
-                  <span>{h.label}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {brief && (brief.facts.length > 0 || brief.avoid_claims.length > 0) && (
+          {brief && (brief.facts.length > 0 || brief.hero_features.length > 0) && (
             <Disclosure label="Brief details" openLabel="Hide brief details">
               <div className="cl-brief-cols">
+                {brief.hero_features.length > 0 && (
+                  <div>
+                    <p className="cl-mini-label">Hero details</p>
+                    <ul className="cl-plain">
+                      {brief.hero_features.map((f) => (
+                        <li key={f.feature}>{f.feature}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div>
                   <p className="cl-mini-label">Can claim</p>
                   <ul className="cl-plain">
@@ -261,14 +236,16 @@ function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
                       <li key={f}>{f}</li>
                     ))}
                   </ul>
-                </div>
-                <div>
-                  <p className="cl-mini-label">Won't claim</p>
-                  <ul className="cl-plain">
-                    {brief.avoid_claims.map((f) => (
-                      <li key={f}>{f}</li>
-                    ))}
-                  </ul>
+                  {brief.avoid_claims.length > 0 && (
+                    <>
+                      <p className="cl-mini-label">Won't claim</p>
+                      <ul className="cl-plain">
+                        {brief.avoid_claims.map((f) => (
+                          <li key={f}>{f}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                 </div>
               </div>
               {brief.tone && <p className="cl-brief-tone">Tone: {brief.tone}</p>}
@@ -280,18 +257,15 @@ function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
     case "pitches":
       return (
         <div className="cl-step-body">
-          <StepHead title={`${s.concepts.length} pitches from ${numberWord(s.creators)} creator${s.creators === 1 ? "" : "s"}`} t={s.t} />
+          <StepHead title={`${s.concepts.length} pitches from ${numberWord(s.creators)} creator${s.creators === 1 ? "" : "s"}`} />
           <Disclosure label="Show the titles" openLabel="Hide the titles">
             <ul className="cl-titles">
-              {s.concepts.map((id) => {
-                const c = conceptOf.get(id);
-                return (
-                  <li key={id}>
-                    <Avatar who={agents(c?.agent ?? "")} size={18} />
-                    <TitleLink id={id} />
-                  </li>
-                );
-              })}
+              {s.concepts.map((id) => (
+                <li key={id}>
+                  <TitleLink id={id} />
+                  <span className="cl-titles-by">{agents(conceptOf.get(id)?.agent ?? "").name}</span>
+                </li>
+              ))}
             </ul>
           </Disclosure>
         </div>
@@ -299,7 +273,7 @@ function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
     case "critique":
       return (
         <div className="cl-step-body">
-          <StepHead title={s.round <= 1 ? "The critics' picks" : "Second pass, on the remixes"} meta={`${s.notes} critiques`} t={s.t} />
+          <StepHead title={s.round <= 1 ? "The critics' picks" : "Second pass, on the remixes"} meta={`${s.notes} critiques`} />
           {s.agreed ? (
             <PickLine pick={s.picks[0]!} who={null} agreedCount={s.picks.length} />
           ) : (
@@ -316,27 +290,21 @@ function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
     case "remix":
       return (
         <div className="cl-step-body">
-          <StepHead title={`${s.remixes} remixes, ${s.steals} of them steals`} t={s.t} />
+          <StepHead title={`${s.remixes} remixes, ${s.steals} of them steals`} />
           <ul className="cl-steals">
-            {s.examples.map((e) => {
-              const who = agents(e.agent);
-              return (
-                <li key={e.child}>
-                  <Avatar who={who} size={20} />
-                  <span>
-                    {who.name} took{" "}
-                    {e.parents.map((p, i) => (
-                      <span key={p}>
-                        {i > 0 && " and "}
-                        <TitleLink id={p} />
-                      </span>
-                    ))}
-                    <ArrowRight size={12} className="cl-arrow" aria-label="into" />
-                    <TitleLink id={e.child} />
+            {s.examples.map((e) => (
+              <li key={e.child}>
+                <span className="cl-steals-who">{agents(e.agent).name}</span> took{" "}
+                {e.parents.map((p, i) => (
+                  <span key={p}>
+                    {i > 0 && " and "}
+                    <TitleLink id={p} />
                   </span>
-                </li>
-              );
-            })}
+                ))}
+                <ArrowRight size={12} className="cl-arrow" aria-label="into" />
+                <TitleLink id={e.child} />
+              </li>
+            ))}
           </ul>
         </div>
       );
@@ -344,7 +312,7 @@ function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
       const top = s.tally[0]!;
       return (
         <div className="cl-step-body">
-          <StepHead title="The vote" t={s.t} />
+          <StepHead title="The vote" />
           <ul className="cl-tally">
             {s.tally.slice(0, 3).map((v) => (
               <li key={v.concept} data-top={v === top || undefined}>
@@ -369,26 +337,25 @@ function Step({ s, lab }: { s: StoryStep; lab: LabState }) {
 function PickLine({ pick, who, agreedCount }: { pick: CriticPick; who: Who | null; agreedCount?: number }) {
   return (
     <div className="cl-pick">
-      {who ? (
-        <span className="cl-pick-who">
-          <Avatar who={who} size={20} />
-          {who.name}
-        </span>
-      ) : (
-        <span className="cl-pick-who cl-pick-all">All {agreedCount ? numberWord(agreedCount) : ""} agree</span>
-      )}
-      <span className="cl-pick-items">
+      <p className="cl-pick-who">{who ? who.name : `All ${agreedCount ? numberWord(agreedCount) : ""} critics agree`}</p>
+      <dl className="cl-pick-items">
         {pick.strongest && (
-          <span className="cl-pick-item" data-tone="up" title={pick.strongestWhy}>
-            <ThumbsUp size={12} aria-label="Strongest" /> <TitleLink id={pick.strongest} />
-          </span>
+          <div title={pick.strongestWhy}>
+            <dt>Strongest</dt>
+            <dd>
+              <TitleLink id={pick.strongest} />
+            </dd>
+          </div>
         )}
         {pick.weakest && (
-          <span className="cl-pick-item" data-tone="down" title={pick.weakestWhy}>
-            <ThumbsDown size={12} aria-label="Weakest" /> <TitleLink id={pick.weakest} />
-          </span>
+          <div title={pick.weakestWhy}>
+            <dt>Weakest</dt>
+            <dd>
+              <TitleLink id={pick.weakest} />
+            </dd>
+          </div>
         )}
-      </span>
+      </dl>
       {!who && pick.strongestWhy && <p className="cl-pick-why">“{pick.strongestWhy}”</p>}
     </div>
   );
@@ -396,19 +363,18 @@ function PickLine({ pick, who, agreedCount }: { pick: CriticPick; who: Who | nul
 
 function GreenlightStep({ s, lab }: { s: Extract<StoryStep, { kind: "greenlight" }>; lab: LabState }) {
   const planned = useMemo(() => plannedReels(lab), [lab]);
-  const colors = reelColors(planned.map((p) => ({ id: p.id, kind: p.kind })));
   return (
     <div className="cl-step-body">
-      <StepHead title="The greenlight" t={s.t} />
+      <StepHead title="The greenlight" />
       <ul className="cl-greens">
         {s.picks.map((p) => {
           const reel = planned.find((r) => r.concept?.id === p.concept);
           return (
             <li key={p.concept}>
-              {reel && <ReelBadge id={reel.id} color={colors[reel.id]!} size={20} />}
+              {reel ? <ReelBadge id={reel.id} size={18} /> : <span className="cl-greens-mark" aria-hidden />}
               <p>
                 <TitleLink id={p.concept} />
-                {reel && <span className="cl-greens-label"> {reel.label}</span>}
+                {reel && <span className="cl-greens-label"> · {reel.label}</span>}
                 {p.reason && <span className="cl-greens-why">{p.reason}</span>}
               </p>
             </li>
@@ -416,8 +382,8 @@ function GreenlightStep({ s, lab }: { s: Extract<StoryStep, { kind: "greenlight"
         })}
         {s.passed.map((p) => (
           <li key={p.concept} className="cl-greens-passed">
-            <span className="cl-greens-x" aria-hidden>
-              <X size={12} />
+            <span className="cl-greens-mark" aria-hidden>
+              <X size={11} />
             </span>
             <p>
               Passed over: <TitleLink id={p.concept} />
@@ -517,7 +483,6 @@ const Message = memo(function Message({ m }: { m: RoomMessage }) {
   if (m.kind === "system") {
     return (
       <div className="cl-msg-sys">
-        <Cpu size={12} aria-hidden />
         <p>{m.text}</p>
         <time className="num">{fmtClock(m.t)}</time>
       </div>
@@ -526,24 +491,21 @@ const Message = memo(function Message({ m }: { m: RoomMessage }) {
   const refs = m.refs.filter((r) => r !== m.concept);
   return (
     <article className="cl-msg" data-kind={m.kind}>
-      <Avatar who={who} size={26} />
-      <div className="cl-msg-body">
-        <header className="cl-msg-head">
-          <span className="cl-msg-who">{who.name}</span>
-          {KIND_LABEL[m.kind] && <span className="cl-kind">{KIND_LABEL[m.kind]}</span>}
-          {critique && <VerdictChip verdict={critique.verdict} />}
-          <time className="num">{fmtClock(m.t)}</time>
-        </header>
-        <p className="cl-msg-text">{m.text}</p>
-        {(m.concept || refs.length > 0) && (
-          <div className="cl-msg-refs">
-            {m.concept && <ConceptChip id={m.concept} />}
-            {refs.map((r) => (
-              <ConceptChip key={r} id={r} />
-            ))}
-          </div>
-        )}
-      </div>
+      <header className="cl-msg-head">
+        <span className="cl-msg-who">{who.name}</span>
+        {KIND_LABEL[m.kind] && <span className="cl-kind">{KIND_LABEL[m.kind]}</span>}
+        {critique && <VerdictChip verdict={critique.verdict} />}
+        <time className="num">{fmtClock(m.t)}</time>
+      </header>
+      <p className="cl-msg-text">{m.text}</p>
+      {(m.concept || refs.length > 0) && (
+        <div className="cl-msg-refs">
+          {m.concept && <ConceptChip id={m.concept} />}
+          {refs.map((r) => (
+            <ConceptChip key={r} id={r} />
+          ))}
+        </div>
+      )}
     </article>
   );
 });
@@ -554,7 +516,6 @@ const isRoom = (lab: LabState, c: ReelConcept) => c.agent !== "template" && c.ag
 
 function Finalists({ lab }: { lab: LabState }) {
   const planned = useMemo(() => plannedReels(lab), [lab]);
-  const colors = reelColors(planned.map((p) => ({ id: p.id, kind: p.kind })));
   const leading = useMemo(() => {
     if (lab.finalists.length) return [];
     return lab.concepts
@@ -572,14 +533,14 @@ function Finalists({ lab }: { lab: LabState }) {
       ) : (
         shown.map((c) => {
           const reel = planned.find((p) => p.concept?.id === c.id && lab.finalists.includes(c.id));
-          return <FinalistCard key={c.id} c={c} reelId={reel?.id} label={reel?.label} color={reel ? colors[reel.id] : undefined} />;
+          return <FinalistCard key={c.id} c={c} reelId={reel?.id} label={reel?.label} />;
         })
       )}
     </div>
   );
 }
 
-function FinalistCard({ c, reelId, label, color }: { c: ReelConcept; reelId?: string; label?: string; color?: string }) {
+function FinalistCard({ c, reelId, label }: { c: ReelConcept; reelId?: string; label?: string }) {
   const who = useAgents()(c.agent);
   const photos = useCreator((s) => s.shoot?.photos);
   const lab = useCreator((s) => s.lab)!;
@@ -587,30 +548,28 @@ function FinalistCard({ c, reelId, label, color }: { c: ReelConcept; reelId?: st
   const first = c.beats[0];
   const score = criticScore(lab, c.id);
   return (
-    <article className="cl-fin" style={color ? reelStyle(color) : undefined} data-reel={reelId}>
-      <div className="cl-fin-photo">{first && photos?.[first.view] && <img src={photos[first.view]} alt="" loading="lazy" style={focusStyle(first.focus)} />}</div>
+    <article className="cl-fin" data-reel={reelId}>
+      <button className="cl-fin-photo" onClick={() => open(c.id)} tabIndex={-1} aria-hidden>
+        {first && photos?.[first.view] && <img src={photos[first.view]} alt="" loading="lazy" style={focusStyle(first.focus)} />}
+      </button>
       <div className="cl-fin-body">
-        {reelId && color && (
+        {reelId && (
           <p className="cl-fin-reel">
-            <ReelBadge id={reelId} color={color} size={18} /> {label}
+            <ReelBadge id={reelId} size={18} /> {label}
           </p>
         )}
         <p className="cl-fin-hook">
           “<Rich text={c.hook.text} />”
         </p>
         <p className="cl-fin-who">
-          <Avatar who={who} size={20} />
-          <span>
-            <button className="cl-fin-title" onClick={() => open(c.id)}>
-              {c.title}
-            </button>
-            <span className="cl-fin-by"> by {who.name}</span>
-          </span>
+          <button className="cl-fin-title" onClick={() => open(c.id)}>
+            {c.title}
+          </button>
+          <span> by {who.name}</span>
         </p>
         {score > 0 && (
-          <p className="cl-fin-score">
-            <b className="num">{score.toFixed(1)}</b>
-            <span>/ 10 from the critics</span>
+          <p className="cl-fin-score" title="Mean of the three critics' scores">
+            <span className="num">{score.toFixed(1)}</span> / 10 from the critics
           </p>
         )}
       </div>
@@ -638,21 +597,17 @@ function OtherConcepts({ lab }: { lab: LabState }) {
         {others.length} {lab.finalists.length ? "other " : ""}concept{others.length === 1 ? "" : "s"}
       </h3>
       <ul>
-        {shown.map(({ c, score }) => {
-          const who = agents(c.agent);
-          return (
-            <li key={c.id}>
-              <button onClick={() => open(c.id)} title={`${c.title} by ${who.name}`}>
-                <Avatar who={who} size={20} />
-                <span className="cl-others-title">{c.title}</span>
-                {score > 0 && <span className="cl-others-score num">{score.toFixed(1)}</span>}
-                <span className="cl-others-status" data-status={c.status}>
-                  {STATUS_LABEL[c.status]}
-                </span>
-              </button>
-            </li>
-          );
-        })}
+        {shown.map(({ c, score }) => (
+          <li key={c.id}>
+            <button onClick={() => open(c.id)} title={`${c.title} by ${agents(c.agent).name}`}>
+              <span className="cl-others-title">{c.title}</span>
+              <span className="cl-others-status" data-status={c.status}>
+                {STATUS_LABEL[c.status]}
+              </span>
+              <span className="cl-others-score num">{score > 0 ? score.toFixed(1) : ""}</span>
+            </button>
+          </li>
+        ))}
       </ul>
       {others.length > 6 && (
         <button className="cl-more-btn" onClick={() => setAll((a) => !a)} aria-expanded={all}>
@@ -673,13 +628,13 @@ function ControlLine({ lab }: { lab: LabState }) {
       <span className="cl-control-k">Single-agent control</span>
       {control.length ? (
         <>
-          {numberWord(control.length)} concepts written alone{pick && <>; its pick: </>}
+          {numberWord(control.length, true)} concepts written alone{pick && <>; its pick: </>}
           {pick && <TitleLink id={pick} />}
         </>
       ) : phase?.status === "running" ? (
-        "writing concepts alone…"
+        "Writing concepts alone…"
       ) : (
-        "runs beside the room with the same brief."
+        "Runs beside the room with the same brief."
       )}
     </p>
   );

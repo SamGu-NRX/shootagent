@@ -1,9 +1,9 @@
-// Small shared pieces of the creator dashboard: formatting, colours, avatars, hooks.
+// Small shared pieces of the creator dashboard: formatting, reel marks, hooks.
 
 import { ChevronRight } from "lucide-react";
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { useCreator } from "./store";
-import type { AgentCard, LabState, Reel, ViewerPersona } from "./types";
+import type { AgentCard, LabState, Reel } from "./types";
 
 // ---- formatting -----------------------------------------------------------------------------------
 
@@ -55,53 +55,30 @@ export function plural(n: number, one: string, many = `${one}s`) {
   return `${fmtInt(n)} ${n === 1 ? one : many}`;
 }
 
-// ---- colour ---------------------------------------------------------------------------------------
+// ---- reels ----------------------------------------------------------------------------------------
 
-function rgb(hex: string): [number, number, number] | null {
-  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex.trim());
-  if (!m) return null;
-  const h = m[1]!.length === 3 ? [...m[1]!].map((c) => c + c).join("") : m[1]!;
-  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
-}
+// Charts are grey except the reel that leads on the chart's own measure, which takes the accent. Identity
+// comes from the letter labels at the line ends, not from colour.
+const ACCENT = "#a593ff";
+const GREYS = ["#bdbdbd", "#8a8a8a"];
+const TEMPLATE = "#5c5c5c";
 
-function luminance(hex: string): number {
-  const c = rgb(hex);
-  if (!c) return 0.5;
-  const [r, g, b] = c.map((v) => {
-    const s = v / 255;
-    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-  }) as [number, number, number];
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-/** Ink for text set inside a fill of this colour. */
-export const inkOn = (hex: string) => (luminance(hex) > 0.36 ? "#141414" : "#ffffff");
-
-/** The same hue lifted toward white until it reads as a mark on the dark surface. */
-export function onDark(hex: string): string {
-  const c = rgb(hex);
-  if (!c) return hex;
-  const l = luminance(hex);
-  if (l >= 0.16) return hex;
-  const t = Math.min(0.55, (0.16 - l) * 3.2 + 0.15);
-  return `rgb(${c.map((v) => Math.round(v + (255 - v) * t)).join(" ")})`;
-}
-
-// Validated for the dark surface (dataviz validate_palette.js, all pairs): B, C and S clear the CVD and
-// normal-vision floors; the template's grey is deliberately colourless and always carries its letter.
-const BASELINE = "#c9c9c9";
-const CREATIVE = ["#8f80f0", "#d9762b", "#d55181", "#c98500"];
-const SINGLE = "#1f9fb0";
-
-/** Colour per reel id: grey template, violet and orange for the room's picks, teal for the single agent. */
-export function reelColors(reels: Pick<Reel, "id" | "kind">[]): Record<string, string> {
+/** Ink per reel id for a chart: the leader in the accent, the template darkest, the rest in two greys. */
+export function reelInks(reels: Pick<Reel, "id" | "kind">[], lead: string | null | undefined): Record<string, string> {
   const out: Record<string, string> = {};
   let i = 0;
-  for (const r of reels) out[r.id] = r.kind === "baseline" ? BASELINE : r.kind === "single_agent" ? SINGLE : CREATIVE[i++ % CREATIVE.length]!;
+  for (const r of reels) out[r.id] = r.id === lead ? ACCENT : r.kind === "baseline" ? TEMPLATE : GREYS[i++ % GREYS.length]!;
   return out;
 }
 
-export const reelStyle = (color: string) => ({ "--reel": color }) as CSSProperties;
+/** The reel's letter in a small square. */
+export function ReelBadge({ id, size = 20 }: { id: string; size?: number }) {
+  return (
+    <span className="cl-badge" style={{ width: size, height: size, fontSize: Math.round(size * 0.5) }} aria-hidden>
+      {id}
+    </span>
+  );
+}
 
 // ---- agents ---------------------------------------------------------------------------------------
 
@@ -116,40 +93,10 @@ export function useAgents(): (id: string) => Who {
   const viewers = useCreator((s) => s.lab?.evaluation?.viewers);
   return useMemo(() => {
     const m = new Map<string, Who>();
-    for (const v of viewers ?? []) m.set(v.id, viewerWho(v));
+    for (const v of viewers ?? []) m.set(v.id, { id: v.id, name: v.name, color: v.color, initials: v.initials, role: "viewer", lens: v.segment });
     for (const a of [...(agents ?? []), ...(judges ?? [])]) m.set(a.id, a);
     return (id: string) => m.get(id) ?? unknown(id);
   }, [agents, judges, viewers]);
-}
-
-export const viewerWho = (v: ViewerPersona): Who => ({
-  id: v.id,
-  name: v.name,
-  color: v.color,
-  initials: v.initials || v.name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase(),
-  role: "viewer",
-  lens: v.segment,
-});
-
-export function Avatar({ who, size = 28, className = "" }: { who: Who; size?: number; className?: string }) {
-  return (
-    <span
-      className={`cl-av ${className}`}
-      data-role={who.role}
-      style={{ "--av": who.color, "--av-ink": inkOn(who.color), width: size, height: size, fontSize: Math.round(size * 0.36) } as CSSProperties}
-      aria-hidden
-    >
-      {who.initials}
-    </span>
-  );
-}
-
-export function ReelBadge({ id, color, size = 22 }: { id: string; color: string; size?: number }) {
-  return (
-    <span className="cl-badge" style={{ ...reelStyle(color), "--ink": inkOn(color), width: size, height: size, fontSize: Math.round(size * 0.52) } as CSSProperties} aria-hidden>
-      {id}
-    </span>
-  );
 }
 
 // ---- hooks ----------------------------------------------------------------------------------------
@@ -220,6 +167,21 @@ export function useLabClock(lab: Pick<LabState, "elapsed" | "status"> | null, sm
   return running && smooth ? base.elapsed + Math.max(0, (now - base.at) / 1000) : lab.elapsed;
 }
 
+/** Closes a popover on an outside pointer-down or Escape. */
+export function useDismiss(open: boolean, close: () => void, wrap: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => wrap.current?.contains(e.target as Node) || close();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, close, wrap]);
+}
+
 /** Scroll a dashboard section into view below the sticky bars. */
 export function goToSection(id: string, reduced: boolean) {
   document.getElementById(id)?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
@@ -252,7 +214,7 @@ export function Disclosure({ label, openLabel, children, className = "" }: { lab
   return (
     <div className={`cl-disc ${className}`} data-open={open || undefined}>
       <button className="cl-disc-btn" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
-        <ChevronRight size={14} className="cl-disc-chev" aria-hidden />
+        <ChevronRight size={13} className="cl-disc-chev" aria-hidden />
         {open && openLabel ? openLabel : label}
       </button>
       {open && (
@@ -263,3 +225,4 @@ export function Disclosure({ label, openLabel, children, className = "" }: { lab
     </div>
   );
 }
+

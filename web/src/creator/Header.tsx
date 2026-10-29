@@ -1,10 +1,10 @@
-import { ArrowLeft, Check, ChevronDown, Circle, ListTree, Minus, Play, RotateCw, Square, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, Minus, Play, RotateCw, Square, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { radioKeys } from "../components/radioKeys";
 import { phaseLabel, SECTIONS, stepPhases, type StepPhase } from "./phases";
 import { creatorRoute, useCreator } from "./store";
 import { DEFAULT_OPTIONS, type LabOptions, type LabState, type PhaseStatus } from "./types";
-import { fmtClock, fmtSpan, fmtUsd, goToSection, useLabClock, useReducedMotion } from "./ui";
+import { fmtClock, fmtSpan, fmtUsd, goToSection, useDismiss, useLabClock, useReducedMotion } from "./ui";
 
 // ---- header: one line -----------------------------------------------------------------------------
 
@@ -31,14 +31,13 @@ export function LabHeader() {
         </a>
         <h1 className="cl-top-title">{title || <span className="skeleton-text" style={{ width: 180 }} />}</h1>
         <p className="cl-top-meta">
-          <span>Creative lab</span>
-          {meta.map((m) => (
+          {["Creative lab", ...meta].map((m) => (
             <span key={m}>{m}</span>
           ))}
         </p>
         <div className="cl-top-right">
           {mode === "mock" && (
-            <span className="cl-tag" title="A recorded lab replayed in the browser, sped up. No agents are running.">
+            <span className="cl-top-note" title="A recorded lab replayed in the browser, sped up. No agents are running.">
               Demo replay
             </span>
           )}
@@ -51,28 +50,17 @@ export function LabHeader() {
   );
 }
 
-/** State, time and spend in one pill: "Done · 10:50 · $10.22". */
+/** State, time and spend in one line: "Done · 10:50 · $10.22". */
 function StatusPill({ lab, elapsed }: { lab: LabState; elapsed: number }) {
   const running = lab.status === "running";
   const current = running ? (lab.phases.find((p) => p.key === lab.phase) ?? lab.phases.find((p) => p.status === "running")) : undefined;
   const ENDED: Record<string, string> = { done: "Done", failed: "Failed", cancelled: "Cancelled" };
   const state = running ? (current ? phaseLabel(current.key) : "Running") : (ENDED[lab.status] ?? lab.status);
   return (
-    <span
-      className="cl-pill"
-      data-status={lab.status}
-      role="status"
-      title={[current?.detail, lab.error, `${lab.usage.calls} model calls`].filter(Boolean).join(" · ")}
-    >
-      {running ? <span className="live-dot" aria-hidden /> : lab.status === "done" ? <Check size={13} aria-hidden /> : <X size={13} aria-hidden />}
-      <span>{state}</span>
-      <span className="cl-pill-sep" aria-hidden>
-        ·
-      </span>
+    <span className="cl-pill" data-status={lab.status} role="status" title={[current?.detail, lab.error, `${lab.usage.calls} model calls`].filter(Boolean).join(" · ")}>
+      {running && <span className="live-dot" aria-hidden />}
+      <span className="cl-pill-state">{state}</span>
       <span className="num">{fmtClock(running ? elapsed : lab.elapsed)}</span>
-      <span className="cl-pill-sep" aria-hidden>
-        ·
-      </span>
       <span className="num">{fmtUsd(lab.usage.usd)}</span>
     </span>
   );
@@ -112,21 +100,6 @@ function savedOptions(): LabOptions {
   }
 }
 
-/** Closes a popover on an outside pointer-down or Escape. */
-function useDismiss(open: boolean, close: () => void, wrap: React.RefObject<HTMLElement | null>) {
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: PointerEvent) => wrap.current?.contains(e.target as Node) || close();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
-    document.addEventListener("pointerdown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open, close, wrap]);
-}
-
 function RunControls() {
   const lab = useCreator((s) => s.lab);
   const starting = useCreator((s) => s.starting);
@@ -164,17 +137,10 @@ function RunControls() {
         </button>
       )}
       <div className="cl-split">
-        <button className="btn btn-agent" onClick={run} disabled={running || starting}>
+        <button className="btn" onClick={run} disabled={running || starting}>
           <Play size={12} aria-hidden /> {starting ? "Starting…" : "Run creative lab"}
         </button>
-        <button
-          className="btn btn-agent cl-split-more"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          aria-haspopup="dialog"
-          aria-label="Lab options"
-          disabled={running || starting}
-        >
+        <button className="btn cl-split-more" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog" aria-label="Lab options" disabled={running || starting}>
           <ChevronDown size={14} aria-hidden />
         </button>
       </div>
@@ -206,7 +172,7 @@ function RunControls() {
             label="Render the single agent's reel"
             hint="Adds reel S to the screening"
           />
-          <button className="btn btn-agent cl-pop-go" onClick={run}>
+          <button className="btn btn-primary cl-pop-go" onClick={run}>
             <Play size={12} aria-hidden /> Start lab
           </button>
         </div>
@@ -244,18 +210,18 @@ function Toggle({ checked, onChange, label, hint, disabled }: { checked: boolean
 
 const STATUS_WORD: Record<PhaseStatus, string> = { pending: "waiting", running: "running", done: "done", failed: "failed", skipped: "skipped" };
 
-function StatusIcon({ status, size = 12 }: { status: PhaseStatus; size?: number }) {
+function PhaseIcon({ status }: { status: PhaseStatus }) {
   switch (status) {
     case "done":
-      return <Check size={size} strokeWidth={2.4} aria-hidden />;
+      return <Check size={12} strokeWidth={2.2} aria-hidden />;
     case "failed":
-      return <X size={size} strokeWidth={2.4} aria-hidden />;
+      return <X size={12} strokeWidth={2.2} aria-hidden />;
     case "skipped":
-      return <Minus size={size} aria-hidden />;
+      return <Minus size={12} aria-hidden />;
     case "running":
       return <span className="cl-stage-pulse" aria-hidden />;
     default:
-      return <Circle size={size - 3} aria-hidden />;
+      return <span className="cl-phase-wait" aria-hidden />;
   }
 }
 
@@ -344,12 +310,14 @@ export function StageBar() {
                   onClick={() => goToSection(id, reduced)}
                   title={st.phases.map((p) => `${p.label}: ${STATUS_WORD[p.status]}${p.started != null ? ` (${fmtSpan((p.ended ?? now) - p.started)})` : ""}`).join("\n")}
                 >
-                  <StatusIcon status={st.status} />
+                  {(st.status === "running" || st.status === "failed") && <PhaseIcon status={st.status} />}
                   <span className="cl-stage-name">{st.label}</span>
                   {st.meta && <span className="cl-stage-meta">{st.meta}</span>}
-                  <span className="cl-stage-track" aria-hidden>
-                    <span style={{ width: `${Math.round(st.progress * 100)}%` }} />
-                  </span>
+                  {st.status === "running" && (
+                    <span className="cl-stage-track" aria-hidden>
+                      <span style={{ width: `${Math.round(st.progress * 100)}%` }} />
+                    </span>
+                  )}
                 </button>
               </li>
             );
@@ -368,7 +336,7 @@ function PhasesPopover({ phases, now }: { phases: StepPhase[]; now: number }) {
   return (
     <div className="cl-phases" ref={wrap}>
       <button className="cl-phases-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">
-        <ListTree size={13} aria-hidden /> {phases.length} phases
+        {phases.length} phases <ChevronDown size={12} aria-hidden />
       </button>
       {open && (
         <div className="cl-pop cl-phases-pop" role="dialog" aria-label="All phases">
@@ -381,9 +349,9 @@ function PhasesPopover({ phases, now }: { phases: StepPhase[]; now: number }) {
                 <ul>
                   {mine.map((p) => (
                     <li key={p.key} data-status={p.status}>
-                      <StatusIcon status={p.status} size={12} />
+                      <PhaseIcon status={p.status} />
                       <span className="cl-phases-name">{p.label}</span>
-                      <span className="cl-phases-time">{p.started != null ? fmtSpan((p.ended ?? now) - p.started) : ""}</span>
+                      <span className="cl-phases-time num">{p.started != null ? fmtSpan((p.ended ?? now) - p.started) : ""}</span>
                       {p.detail && <span className="cl-phases-detail">{p.detail}</span>}
                     </li>
                   ))}

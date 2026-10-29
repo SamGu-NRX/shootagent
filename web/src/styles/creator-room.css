@@ -1,0 +1,1033 @@
+/*
+ * Creator dashboard: the writers' room and the concept drawer. Monochrome, hairlines instead of panels; the
+ * accent only marks who is speaking while a lab runs. Shared pieces (.cl-h3, .cl-disc, .cl-badge, ...) are in
+ * creator.css.
+ */
+
+/* ---------- cast ---------------------------------------------------------------------------------- */
+.cl-cast {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 48px;
+  margin-bottom: 8px;
+}
+.cl-cast-group {
+  min-width: 0;
+}
+.cl-cast-label {
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-cast-group ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+.cl-cast-group li {
+  position: relative;
+  font-size: 14px;
+  color: var(--text-2);
+  white-space: nowrap;
+  cursor: default;
+  transition: color 160ms ease;
+}
+.cl-cast-group li[data-speaking] {
+  color: var(--text);
+}
+.cl-cast-group li[data-speaking]::before {
+  content: "";
+  position: absolute;
+  left: -11px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--agent);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+/* ---------- two columns: the story, the concepts ------------------------------------------------------ */
+.cl-room {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  align-items: start;
+  gap: 64px;
+  margin-top: 48px;
+}
+.cl-room-story,
+.cl-room-side {
+  min-width: 0;
+}
+.cl-room-side {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* the live edge while a lab runs */
+.cl-latest {
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.cl-latest-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-latest ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cl-latest li {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 72ch;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  animation: cl-room-in 260ms var(--ease-out);
+}
+.cl-latest li + li {
+  color: var(--text-3);
+}
+.cl-latest b {
+  margin-right: 4px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-latest-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  font-size: 13.5px;
+  color: var(--text-3);
+}
+
+/* ---------- how the room got there ------------------------------------------------------------------- */
+.cl-story {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.cl-step {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  animation: cl-room-in 300ms var(--ease-out);
+}
+.cl-step-t {
+  padding-top: 3px;
+  font-size: 12px;
+  color: var(--cl-faint);
+}
+.cl-step-body {
+  min-width: 0;
+}
+.cl-step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.cl-step-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+.cl-step-meta {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-step-text {
+  max-width: 66ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.cl-step-body > .cl-disc {
+  margin-top: 6px;
+}
+
+/* brief details */
+.cl-brief-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  max-width: 760px;
+}
+.cl-brief-cols .cl-plain + .cl-mini-label {
+  margin-top: 16px;
+}
+.cl-brief-tone {
+  margin-top: 16px;
+  max-width: 66ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+/* pitches */
+.cl-titles {
+  display: grid;
+  gap: 4px;
+}
+.cl-titles li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.cl-titles-by {
+  font-size: 12.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* the critics' picks */
+.cl-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cl-pick-who {
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.cl-pick-items {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cl-pick-items > div {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.cl-pick-items dt {
+  flex: none;
+  width: 76px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-pick-items dd {
+  min-width: 0;
+}
+.cl-pick-why {
+  margin-top: 6px;
+  max-width: 62ch;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+/* remixes and steals */
+.cl-steals {
+  display: flex;
+  flex-direction: column;
+}
+.cl-steals li {
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--text-2);
+}
+.cl-steals-who {
+  color: var(--text);
+}
+.cl-arrow {
+  display: inline-block;
+  margin: 0 6px;
+  vertical-align: -1px;
+  color: var(--text-3);
+}
+
+/* the vote */
+.cl-tally {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 560px;
+}
+.cl-tally li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px auto;
+  align-items: center;
+  gap: 14px;
+  font-size: 13.5px;
+}
+.cl-tally li .cl-tlink {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-2);
+}
+.cl-tally li[data-top] .cl-tlink {
+  color: var(--text);
+}
+.cl-tally-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.cl-tally-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--text-3);
+}
+.cl-tally li[data-top] .cl-tally-bar > span {
+  background: var(--text);
+}
+.cl-tally-n {
+  font-size: 12.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* the greenlight */
+.cl-greens {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cl-greens li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.cl-greens li > .cl-badge,
+.cl-greens-mark {
+  margin-top: 1px;
+}
+.cl-greens-label {
+  color: var(--text-3);
+}
+.cl-greens-why {
+  display: block;
+  margin-top: 3px;
+  max-width: 62ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-greens-mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: var(--cl-faint);
+}
+.cl-greens-passed {
+  color: var(--text-3);
+}
+.cl-greens-passed .cl-tlink {
+  color: var(--text-2);
+}
+
+/* a concept title that opens the drawer */
+.cl-tlink {
+  display: inline;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    color 140ms ease,
+    text-decoration-color 140ms ease;
+}
+.cl-tlink:hover {
+  text-decoration-color: var(--text-3);
+}
+.cl-tlink:focus-visible {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: var(--focus);
+}
+
+/* ---------- the full transcript ---------------------------------------------------------------------- */
+.cl-transcript {
+  margin-top: 36px;
+}
+.cl-feed {
+  position: relative;
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.cl-feed-scroll {
+  max-height: 560px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+}
+.cl-feed-scroll:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+.cl-feed-phase {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-3);
+}
+.cl-msg {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cl-msg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.cl-msg-who {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-kind {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-msg-head time,
+.cl-msg-sys time {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--cl-faint);
+}
+.cl-msg-text {
+  max-width: 72ch;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+  white-space: pre-line;
+}
+.cl-msg-refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.cl-msg-sys {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-new-pill {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--panel);
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* verdicts and concept chips (also used in the drawer) */
+.cl-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.cl-verdict[data-verdict="greenlight"] {
+  color: var(--text-2);
+}
+.cl-verdict[data-verdict="kill"] {
+  color: var(--fail);
+}
+.cl-cchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 2px 9px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-2);
+  text-align: left;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease;
+}
+.cl-cchip:hover {
+  color: var(--text);
+  border-color: var(--text-3);
+}
+.cl-cchip[data-missing] {
+  border-style: dashed;
+  color: var(--text-3);
+}
+.cl-cchip-prefix {
+  color: var(--text-3);
+}
+
+/* ---------- right column: greenlit, the other concepts, the control ------------------------------------ */
+.cl-fins .cl-h3 {
+  margin-bottom: 4px;
+}
+.cl-fin {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 16px 0;
+  animation: cl-room-in 300ms var(--ease-out);
+}
+.cl-fin + .cl-fin {
+  border-top: 1px solid var(--line);
+}
+.cl-fin-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--raised);
+}
+.cl-fin-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 160ms ease;
+}
+.cl-fin-photo:hover img {
+  opacity: 0.86;
+}
+.cl-fin-body {
+  min-width: 0;
+  padding-top: 2px;
+}
+.cl-fin-reel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-fin-hook {
+  margin: 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.cl-fin-who {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-fin-title {
+  padding: 0;
+  font: inherit;
+  color: var(--text-2);
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    color 140ms ease,
+    text-decoration-color 140ms ease;
+}
+.cl-fin-title:hover {
+  color: var(--text);
+  text-decoration-color: var(--text-3);
+}
+.cl-fin-score {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-fin-score .num {
+  color: var(--text-2);
+}
+
+.cl-others ul {
+  border-top: 1px solid var(--line);
+}
+.cl-others li button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 36px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 38px;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  color: var(--text-2);
+  text-align: left;
+  transition: color 140ms ease;
+}
+.cl-others li button:hover {
+  color: var(--text);
+}
+.cl-others li button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+.cl-others-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cl-others-status {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-others-status[data-status="killed"] {
+  color: var(--cl-faint);
+}
+.cl-others-score {
+  font-size: 12.5px;
+  color: var(--text-3);
+  text-align: right;
+}
+.cl-others .cl-more-btn {
+  margin-top: 10px;
+}
+
+.cl-control {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-3);
+}
+.cl-control-k {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.cl-control .cl-tlink {
+  color: var(--text-2);
+}
+
+/* ---------- concept drawer --------------------------------------------------------------------------- */
+.cl-drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(560px, 100vw);
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: -24px 0 64px rgb(0 0 0 / 0.4);
+}
+.cl-drawer[open] {
+  animation: cl-drawer-in 240ms var(--ease-out);
+}
+.cl-drawer::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
+.cl-drawer:focus-visible {
+  outline: none;
+}
+.cl-drawer-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.cl-drawer-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 14px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.cl-drawer-who {
+  flex: 1;
+  min-width: 0;
+}
+.cl-drawer-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.cl-drawer-meta {
+  margin-top: 1px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-drawer-reel {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.cl-drawer-scroll {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 24px 24px 64px;
+}
+.cl-drawer-kicker {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-drawer-title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.cl-drawer-logline {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.cl-drawer-hook {
+  margin: 20px 0 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.cl-drawer-hook blockquote {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.cl-drawer-hook figcaption {
+  margin-top: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.cl-drawer-sec {
+  margin-top: 28px;
+}
+.cl-drawer-sec h3.cl-label {
+  display: flex;
+  margin-bottom: 10px;
+}
+.cl-drawer-sec p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.cl-drawer-sec p + p {
+  margin-top: 6px;
+}
+.cl-drawer-sec .cl-drawer-for {
+  color: var(--text-3);
+}
+
+/* lineage */
+.cl-lineage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.cl-lineage-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.cl-lineage-self {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-lineage-arrow {
+  flex: none;
+  color: var(--text-3);
+}
+
+/* storyboard */
+.cl-beats {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cl-beat {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+.cl-beat-frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--raised);
+}
+.cl-beat-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cl-beat-text {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  translate: 0 -50%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 2px 3px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.45);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  color: #fff;
+}
+.cl-beat-text[data-pos="top"] {
+  top: 10%;
+  translate: none;
+}
+.cl-beat-text[data-pos="bottom"] {
+  top: auto;
+  bottom: 14%;
+  translate: none;
+}
+.cl-beat-card {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  overflow: hidden;
+  padding: 2px 3px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.55);
+  font-size: 8.5px;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+}
+.cl-beat-frame-end {
+  display: grid;
+  place-items: center;
+  padding: 6px;
+}
+.cl-beat-frame-end span {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--text);
+}
+.cl-beat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.cl-beat-info p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.cl-drawer-sec .cl-beat-info p + p {
+  margin-top: 0;
+}
+.cl-beat-info .cl-beat-time {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-beat-info .cl-beat-note {
+  color: var(--text-3);
+}
+.cl-beat-drop {
+  color: var(--text);
+}
+.cl-beat-info .cl-beat-onscreen {
+  color: var(--text);
+}
+.cl-beat-style {
+  color: var(--text-3);
+}
+.cl-beat-info .cl-beat-vo {
+  font-style: italic;
+  color: var(--text-3);
+}
+.cl-beat-info .cl-beat-cardinfo {
+  color: var(--text-3);
+}
+
+/* music, voice, caption, claims */
+.cl-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.cl-drawer-sec .cl-caption {
+  white-space: pre-wrap;
+}
+.cl-drawer-sec .cl-tags {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-claims {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cl-claims li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.cl-claims li svg {
+  flex: none;
+  translate: 0 1px;
+  color: var(--text-3);
+}
+
+/* critiques */
+.cl-drawer-sec .cl-crit-means {
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.cl-crits {
+  display: flex;
+  flex-direction: column;
+}
+.cl-crit {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cl-crit:last-child {
+  border-bottom: none;
+}
+.cl-crit-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.cl-crit-head b {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.cl-drawer-sec .cl-crit-scores {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cl-drawer-sec .cl-flag {
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.cl-drawer-sec .cl-flag[data-tone="truth"] {
+  color: var(--fail);
+}
+.cl-drawer-sec .cl-flag[data-tone="cliche"] {
+  color: var(--text-3);
+}
+
+/* ---------- motion and widths ------------------------------------------------------------------------- */
+@keyframes cl-room-in {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+@keyframes cl-drawer-in {
+  from {
+    opacity: 0;
+    translate: 24px 0;
+  }
+}
+@media (max-width: 1100px) {
+  .cl-room {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+}
+@media (max-width: 640px) {
+  .cl-step {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .cl-brief-cols,
+  .cl-drawer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-step,
+  .cl-fin,
+  .cl-latest li,
+  .cl-drawer[open],
+  .cl-cast-group li[data-speaking]::before {
+    animation: none;
+  }
+}
