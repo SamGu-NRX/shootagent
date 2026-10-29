@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#131313" />
+    <title>ShootAgent: listing photos checked against what the camera saw</title>
+    <meta
+      name="description"
+      content="An AI agent that checks edited real-estate photos against the camera's brackets, fixes defects, makes customer changes, and adds California AB 723 disclosures."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://shootagent-ai.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://shootagent-ai.vercel.app/" />
+    <meta property="og:site_name" content="ShootAgent" />
+    <meta property="og:title" content="ShootAgent: checked against what the camera saw" />
+    <meta
+      property="og:description"
+      content="An AI agent for real-estate photo shoots: QC against the brackets, the customer's changes, and AB 723 disclosures."
+    />
+    <meta property="og:image" content="https://shootagent-ai.vercel.app/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ShootAgent: checked against what the camera saw. The agent's viewfinder finds a stop sign the editor erased." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://shootagent-ai.vercel.app/og.jpg" />
+    <meta name="twitter:image:alt" content="ShootAgent: checked against what the camera saw. The agent's viewfinder finds a stop sign the editor erased." />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://shootagent-ai.vercel.app/#website",
+            "url": "https://shootagent-ai.vercel.app/",
+            "name": "ShootAgent",
+            "inLanguage": "en",
+            "about": { "@id": "https://shootagent-ai.vercel.app/#app" }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://shootagent-ai.vercel.app/#app",
+            "name": "ShootAgent",
+            "description": "An AI agent for real-estate photo shoots. It checks edited photos against the camera's exposure brackets, fixes editing defects, applies the customer's chat requests, cuts a listing reel, and delivers the listing with California AB 723 disclosures.",
+            "url": "https://shootagent.sillion.app/",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web",
+            "author": [
+              { "@id": "https://shootagent-ai.vercel.app/#sam-gu" },
+              { "@id": "https://shootagent-ai.vercel.app/#bryan-wang" }
+            ],
+            "license": "https://opensource.org/license/mit"
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://shootagent-ai.vercel.app/#source",
+            "name": "ShootAgent",
+            "description": "Source code for ShootAgent, built by Sam Gu and Bryan Wang for the AITX & MLOps World Community Hackathon, Austin Tech Week, October 2026.",
+            "codeRepository": "https://github.com/SamGu-NRX/shootagent",
+            "programmingLanguage": ["Python", "TypeScript"],
+            "license": "https://opensource.org/license/mit",
+            "author": [
+              { "@id": "https://shootagent-ai.vercel.app/#sam-gu" },
+              { "@id": "https://shootagent-ai.vercel.app/#bryan-wang" }
+            ],
+            "targetProduct": { "@id": "https://shootagent-ai.vercel.app/#app" }
+          },
+          { "@type": "Person", "@id": "https://shootagent-ai.vercel.app/#sam-gu", "name": "Sam Gu" },
+          { "@type": "Person", "@id": "https://shootagent-ai.vercel.app/#bryan-wang", "name": "Bryan Wang" }
+        ]
+      }
+    </script>
+    <link
+      rel="preload"
+      as="image"
+      href="/img/street-delivered.webp"
+      imagesrcset="/img/street-delivered-720.webp 720w, /img/street-delivered-1080.webp 1080w, /img/street-delivered.webp 1440w"
+      imagesizes="(max-width: 900px) 100vw, 680px"
+      fetchpriority="high"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

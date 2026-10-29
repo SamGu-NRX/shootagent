@@ -1,0 +1,342 @@
+/* ---------- try the viewfinder: the visitor works the agent's viewfinder ------------------------------
+ * The stage holds the editor's photo; the viewfinder is a window onto the brackets (street-captured), aligned pixel
+ * for pixel. Its position is --vf-x and --vf-y (shares of the photo, set by LensDemo), and they feed only transforms:
+ * the window translates one way and the photo inside it the other, so moving it is composited. --vf-dx is the
+ * one-time nudge's offset. Registered so glides and the nudge can interpolate them. */
+@property --vf-x {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --vf-y {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --vf-dx {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.vf-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.vf-head {
+  margin-bottom: 0;
+}
+.vf-note {
+  font-size: 15px;
+  color: var(--text-3);
+}
+.vf-note code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--text-2);
+}
+
+.vf {
+  container-type: inline-size;
+  border-radius: 16px;
+  border: 1px solid var(--line-2);
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow:
+    0 40px 100px -30px rgb(0 0 0 / 0.75),
+    0 0 0 1px rgb(255 255 255 / 0.02) inset;
+}
+.vf-stage {
+  position: relative;
+  aspect-ratio: 1440 / 962;
+  overflow: hidden;
+  background: #0c0c0c;
+  font-size: clamp(11px, 1.9cqi, 14px);
+  cursor: crosshair;
+  /* a finger on the photo still scrolls and zooms the page; only the viewfinder takes the drag */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.vf-stage img {
+  -webkit-user-drag: none;
+}
+.vf-stage[data-glide] {
+  transition:
+    --vf-x 480ms var(--ease-out),
+    --vf-y 480ms var(--ease-out);
+}
+.vf-stage[data-nudge] {
+  animation: vf-nudge 1700ms var(--ease-in-out) both;
+}
+@keyframes vf-nudge {
+  30% {
+    --vf-dx: -0.05;
+  }
+  58% {
+    --vf-dx: 0;
+  }
+  78% {
+    --vf-dx: -0.02;
+  }
+}
+
+.vf-lens {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--vf-w) * 100%);
+  height: calc(var(--vf-h) * 100%);
+  transform: translate(
+    calc((var(--vf-x) + var(--vf-dx)) / var(--vf-w) * 100%),
+    calc(var(--vf-y) / var(--vf-h) * 100%)
+  );
+  will-change: transform;
+  cursor: grab;
+  touch-action: none;
+  touch-action: pinch-zoom; /* where supported, two fingers still zoom the page */
+}
+.vf-stage[data-dragging],
+.vf-stage[data-dragging] .vf-lens {
+  cursor: grabbing;
+}
+.vf-window {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.vf-window img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(100% / var(--vf-w));
+  height: calc(100% / var(--vf-h));
+  max-width: none;
+  transform: translate(calc((var(--vf-x) + var(--vf-dx)) * -100%), calc(var(--vf-y) * -100%));
+  will-change: transform;
+  pointer-events: none;
+}
+/* the hero's viewfinder corners and "As captured" tag, filling the window */
+.vf-lens .lens {
+  inset: 0;
+  width: auto;
+}
+.vf-lens[data-top] .lens-tag {
+  bottom: auto;
+  top: 0.6em;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* the slider is the viewfinder: invisible, over it, for keys and assistive technology */
+.vf-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* focus: a violet frame inside the window, violet corners and tag */
+.vf-input:focus-visible:not([data-quiet]) ~ .lens {
+  box-shadow:
+    inset 0 0 0 2px var(--agent),
+    inset 0 0 0 4px rgb(12 12 12 / 0.45);
+}
+.vf-input:focus-visible:not([data-quiet]) ~ .lens::before,
+.vf-input:focus-visible:not([data-quiet]) ~ .lens::after,
+.vf-input:focus-visible:not([data-quiet]) ~ .lens > i::before,
+.vf-input:focus-visible:not([data-quiet]) ~ .lens > i::after {
+  border-color: var(--agent-ink);
+}
+.vf-input:focus-visible:not([data-quiet]) ~ .lens .lens-tag {
+  background: var(--agent);
+  color: #15122a;
+}
+
+/* the hint, until the viewfinder first moves */
+.vf-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.75em 0.3em 0.55em;
+  border-radius: 999px;
+  background: rgb(18 18 18 / 0.82);
+  color: #fff;
+  font-size: 0.82em;
+  font-weight: 600;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+.vf[data-moved] .vf-hint {
+  opacity: 0;
+}
+.vf-hint-keys,
+.vf-input:focus-visible:not([data-quiet]) ~ .vf-hint .vf-hint-drag {
+  display: none;
+}
+.vf-input:focus-visible:not([data-quiet]) ~ .vf-hint .vf-hint-keys {
+  display: inline;
+}
+
+/* the finding, above the viewfinder so it frames the sign seen through it */
+.vf-finding,
+.vf-tag {
+  pointer-events: none;
+}
+.vf-conf {
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--text-2);
+}
+.vf[data-phase="restored"] .vf-finding {
+  --tone: var(--pass);
+}
+.vf[data-phase="restored"] .vf-finding::before,
+.vf[data-phase="restored"] .vf-finding::after,
+.vf[data-phase="restored"] .vf-finding > i::before,
+.vf[data-phase="restored"] .vf-finding > i::after {
+  transition-delay: 600ms;
+}
+
+/* the restore: the fixed photo through its mask, after a violet pass over the pixels it replaces */
+.vf-restored {
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.vf[data-phase="restored"] .vf-restored {
+  opacity: 1;
+  transition-delay: 450ms;
+}
+.vf-flash {
+  background: var(--agent);
+  -webkit-mask-image: url("/img/street-sign-mask.png");
+  mask-image: url("/img/street-sign-mask.png");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+.vf[data-phase="restored"] .vf-flash {
+  animation: vf-flash 1200ms ease-out 250ms both;
+}
+@keyframes vf-flash {
+  30% {
+    opacity: 0.75;
+  }
+}
+
+/* the bar under the photo: what the agent says, and the one thing to do next */
+.vf-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px 20px;
+  min-height: 78px;
+  padding: 14px 16px 14px 18px;
+  border-top: 1px solid var(--line);
+}
+.vf-status {
+  display: grid;
+  grid-template-columns: 1.1em minmax(0, 1fr);
+  column-gap: 0.5em;
+  align-items: baseline;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.vf-mark {
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--agent);
+}
+.vf-status b {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+}
+.vf-status[data-tone="found"] :is(.vf-mark, b) {
+  color: var(--retry);
+}
+.vf-status[data-tone="restored"] :is(.vf-mark, b) {
+  color: var(--pass);
+}
+.vf-check {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.vf-restore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--agent);
+  color: #15122a;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 160ms ease,
+    transform 140ms var(--ease-out);
+}
+.vf-restore:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .vf-restore:hover {
+    background: var(--agent-ink);
+  }
+}
+html[data-input="keyboard"] :is(.vf-restore, .vf-reset) {
+  transition: none !important;
+}
+/* the instructions follow the pointer: "click" and the keys with a mouse, "tap" on a touch screen */
+.vf-coarse {
+  display: none;
+}
+@media (pointer: coarse) {
+  .vf-coarse {
+    display: inline;
+  }
+  .vf-fine {
+    display: none;
+  }
+}
+
+@container (max-width: 520px) {
+  .vf-bar {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px 14px 14px;
+  }
+  .vf-status {
+    font-size: 14.5px;
+  }
+  .vf-restore,
+  .vf-reset {
+    justify-self: start;
+  }
+  .vf-conf-word {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .vf-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

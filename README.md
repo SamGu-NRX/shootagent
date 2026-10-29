@@ -21,6 +21,8 @@ model APIs). A silent 7-minute walkthrough of one real run (QC, two chat request
 [docs/media/demo-walkthrough.mp4](docs/media/demo-walkthrough.mp4), with timestamps in
 [docs/media/demo-walkthrough.md](docs/media/demo-walkthrough.md).
 
+**Landing page:** https://shootagent-ai.vercel.app (no passcode).
+
 ## What it does
 
 **QC pass.** For each view, ShootAgent aligns and fuses the brackets into a reference, then compares the
@@ -208,6 +210,7 @@ and the HTTP contract in [docs/api.md](docs/api.md).
 | Bracket work | OpenCV feature matching and homographies, Mertens exposure fusion, Lab-space colour fitting |
 | Reel | frames drawn in Python (sub-pixel camera moves), encoded by ffmpeg; Fraunces and Inter (OFL) |
 | API and UI | FastAPI with SSE; Vite, React and TypeScript |
+| Public landing page | `site/`: Vite, React and TypeScript, prerendered to static HTML (see [site/README.md](site/README.md)) |
 
 ## Datasets
 
