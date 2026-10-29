@@ -1,0 +1,184 @@
+{
+  "alignment_sample_count": 20,
+  "alignment": {
+    "median_shift_px": 0.23391430736418228,
+    "median_scale": 1.00038343667984,
+    "median_rotation_deg": -0.0013274912890246728,
+    "median_reprojection_px": 0.21548444032669067,
+    "median_inlier_ratio": 0.962371479391634,
+    "aspect_ratios": [
+      {
+        "id": "000002",
+        "src": 1.5005002501250626,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000022",
+        "src": 1.5013698630136987,
+        "lr": 1.5022747952684259,
+        "hr": 1.5022747952684259
+      },
+      {
+        "id": "000042",
+        "src": 1.5,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000062",
+        "src": 1.506882237273323,
+        "lr": 1.5077484047402006,
+        "hr": 1.5077484047402006
+      },
+      {
+        "id": "000082",
+        "src": 1.5,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000102",
+        "src": 1.5028901734104045,
+        "lr": 1.5022747952684259,
+        "hr": 1.5022747952684259
+      },
+      {
+        "id": "000122",
+        "src": 1.506882237273323,
+        "lr": 1.5077484047402006,
+        "hr": 1.5077484047402006
+      },
+      {
+        "id": "000142",
+        "src": 1.4996141975308641,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000162",
+        "src": 1.5358785648574058,
+        "lr": 1.5354185832566698,
+        "hr": 1.5354185832566698
+      },
+      {
+        "id": "000182",
+        "src": 1.5025289017341041,
+        "lr": 1.5022747952684259,
+        "hr": 1.5022747952684259
+      },
+      {
+        "id": "000202",
+        "src": 1.50296668188042,
+        "lr": 1.5031963470319634,
+        "hr": 1.5031963470319634
+      },
+      {
+        "id": "000222",
+        "src": 1.5003608371421697,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000242",
+        "src": 1.504713560551124,
+        "lr": 1.5045537340619308,
+        "hr": 1.5045537340619308
+      },
+      {
+        "id": "000262",
+        "src": 1.5,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000282",
+        "src": 1.508837006327733,
+        "lr": 1.5086599817684594,
+        "hr": 1.5086599817684594
+      },
+      {
+        "id": "000302",
+        "src": 1.497175141242938,
+        "lr": 1.4968210717529518,
+        "hr": 1.4968210717529518
+      },
+      {
+        "id": "000322",
+        "src": 1.5,
+        "lr": 1.5,
+        "hr": 1.5
+      },
+      {
+        "id": "000342",
+        "src": 1.5028901734104045,
+        "lr": 1.5022747952684259,
+        "hr": 1.5022747952684259
+      },
+      {
+        "id": "000362",
+        "src": 1.5015197568389058,
+        "lr": 1.5022747952684259,
+        "hr": 1.5022747952684259
+      },
+      {
+        "id": "000382",
+        "src": 1.4997857754927164,
+        "lr": 1.5,
+        "hr": 1.5
+      }
+    ]
+  },
+  "summary": [
+    {
+      "method": "aligned_guided",
+      "psnr": 26.48287075063042,
+      "ssim": 0.8751454156637192,
+      "cpu_seconds": 0.6199577530007809,
+      "cpu_cost_usd_per_image": 6.888419477786455e-06
+    },
+    {
+      "method": "aligned_guided_residual",
+      "psnr": 34.23279984785689,
+      "ssim": 0.9300177949666977,
+      "cpu_seconds": 0.31514968399656934,
+      "cpu_cost_usd_per_image": 3.5016631555174373e-06
+    },
+    {
+      "method": "aligned_detail_transfer",
+      "psnr": 35.25990720751115,
+      "ssim": 0.9454695725440979,
+      "cpu_seconds": 0.4525723339995602,
+      "cpu_cost_usd_per_image": 5.028581488884003e-06
+    }
+  ],
+  "worst_cases": [
+    {
+      "id": "000494",
+      "method": "aligned_guided_residual",
+      "psnr": 26.343128389838334,
+      "ssim": 0.9073479771614075,
+      "cpu_seconds": 0.27066919999197125
+    },
+    {
+      "id": "000490",
+      "method": "aligned_guided_residual",
+      "psnr": 26.52450595369665,
+      "ssim": 0.8691099286079407,
+      "cpu_seconds": 0.2607826999737881
+    },
+    {
+      "id": "000491",
+      "method": "aligned_guided_residual",
+      "psnr": 26.55981727578171,
+      "ssim": 0.9042560458183289,
+      "cpu_seconds": 0.31605929997749627
+    }
+  ],
+  "contact_sheets": [
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\alignment\\contact_sheets\\aligned_case_000494.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\alignment\\contact_sheets\\aligned_case_000490.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\alignment\\contact_sheets\\aligned_case_000491.jpg"
+  ],
+  "peak_memory_note": "CPU peak was not separately tracked in this follow-up; prior full run peaked at about 1.88 GB."
+}
