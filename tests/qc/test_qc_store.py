@@ -12,6 +12,8 @@ from synth import expose, grade, scene
 
 from shootagent.ingest import create_shoot_from_defect_cases
 from shootagent.qc import HIGH_CONFIDENCE, analyze_view, regroup_view
+from shootagent.qc.analyze import _transfer_finished_look
+from shootagent.imaging.color import rgb_to_lab
 from shootagent.store import ShootStore
 from shootagent.trace import NullTrace
 
@@ -64,6 +66,19 @@ def test_clean_view_has_no_high_confidence_candidates(shoot):
     assert view.reference == va.reference and view.meta["qc"]["analyzed_blob"] == view.finished
     again = analyze_view(store, s.id, s.views[0].id)
     assert again.cached and again.candidates == va.candidates
+
+
+def test_finished_look_transfer_undoes_a_known_tone_shift_without_geometry_change():
+    # fails if regrouped photos keep the fusion's flat grade, or if look transfer resizes/crops the part
+    source = expose(scene(32, 900, 600), 0)
+    finished = grade(source)
+    styled, method = _transfer_finished_look(source, finished)
+    before = np.mean(np.linalg.norm(rgb_to_lab(source) - rgb_to_lab(finished), axis=2))
+    after = np.mean(np.linalg.norm(rgb_to_lab(styled) - rgb_to_lab(finished), axis=2))
+    assert styled.shape == source.shape
+    assert styled.dtype == np.uint8
+    assert method.startswith("grade fitted")
+    assert after < before * 0.5
 
 
 def test_two_view_blend_is_flagged_and_regroup_splits_it(shoot):

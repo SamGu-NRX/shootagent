@@ -327,8 +327,31 @@ def _style_transfer_stats(src: np.ndarray, ref: np.ndarray) -> np.ndarray:
     sq, rq = np.quantile(sl, q), np.quantile(rl, q)
     out[..., 0] = np.interp(s[..., 0], sq, rq)
     for c in (1, 2):
-        out[..., c] = (s[..., c] - s[..., c].mean()) / (s[..., c].std() + 1e-3) * r[..., c].std() + r[..., c].mean()
-    return lab_to_rgb(out)
+        src_mean, src_std = float(s[..., c].mean()), float(s[..., c].std())
+        ref_mean, ref_std = float(r[..., c].mean()), float(r[..., c].std())
+        out[..., c] = (s[..., c] - src_mean) / (src_std + 1e-3) * ref_std + ref_mean
+    return lab_to_rgb(np.clip(out, (0, -128, -128), (100, 127, 127)))
+
+
+def _transfer_finished_look(source: np.ndarray, finished: np.ndarray) -> tuple[np.ndarray, str]:
+    """Make a regrouped fusion resemble the editor's finished photo without changing its geometry.
+
+    A feature registration supplies pixel correspondence for a robust, smooth Lab tone/colour fit.
+    When correspondence is unavailable or too small, global Lab statistics are safer than leaving the
+    split photo visibly flatter, and the method is returned so the caller can record that fallback.
+    """
+    source_work = resize_to(source, (round(source.shape[1] * WORK_LONG_EDGE / max(source.shape[:2])),
+                                     round(source.shape[0] * WORK_LONG_EDGE / max(source.shape[:2]))))
+    finished_work = resize_to(finished, (round(finished.shape[1] * WORK_LONG_EDGE / max(finished.shape[:2])),
+                                         round(finished.shape[0] * WORK_LONG_EDGE / max(finished.shape[:2]))))
+    try:
+        reg = register(source_work, finished_work, use_flow=False)
+        aligned, valid = reg.warp(source_work, (finished_work.shape[1], finished_work.shape[0]))
+        fit = fit_style(rgb_to_lab(aligned), rgb_to_lab(finished_work), valid)
+    except (ValueError, cv2.error):
+        return _style_transfer_stats(source, finished), "tone/colour statistics of the finished photo (fallback)"
+    styled = lab_to_rgb(apply_style(rgb_to_lab(source), fit))
+    return styled, "grade fitted on the registered overlap with the finished photo"
 
 
 def regroup_view(store: ShootStore, shoot_id: str, view_id: str, groups: list[list[int]] | None = None,
@@ -367,36 +390,12 @@ def regroup_view(store: ShootStore, shoot_id: str, view_id: str, groups: list[li
         aligned, _ = B.apply_alignment(imgs, aligns, r)
         fused_all.append(B.fuse_mertens([a for a, al in zip(aligned, aligns) if al.ok]))
 
-    # Fit the finished photo's grade on the group that overlaps it best.
-    fit, best = None, None
-    if fin_work is not None:
-        scores = []
-        fin_f = F.detect(fin_work)
-        for k, fz in enumerate(fused_all):
-            m = F.match(F.detect(fz), fin_f)
-            scores.append(m.inliers if m.H is not None else 0)
-        best = int(np.argmax(scores))
-        if scores[best] >= 30:
-            fz = fused_all[best]
-            fz_work = resize_to(fz, (round(fz.shape[1] * WORK_LONG_EDGE / max(fz.shape[:2])),
-                                     round(fz.shape[0] * WORK_LONG_EDGE / max(fz.shape[:2]))))
-            try:
-                reg = register(fz_work, fin_work, use_flow=False)
-                ref_al, valid = reg.warp(fz_work, (fin_work.shape[1], fin_work.shape[0]))
-                fit = fit_style(rgb_to_lab(ref_al), rgb_to_lab(fin_work), valid)
-            except ValueError:
-                fit = None
-
     new_ids = []
     base_n = len(groups)
     created: list[View] = []
     for k, (g, fz) in enumerate(zip(groups, fused_all)):
-        if fit is not None:
-            styled = lab_to_rgb(apply_style(rgb_to_lab(fz), fit))
-            how = f"grade fitted on group {best} vs the finished photo"
-        elif finished is not None:
-            styled = _style_transfer_stats(fz, fin_work)
-            how = "tone/colour statistics of the finished photo"
+        if finished is not None:
+            styled, how = _transfer_finished_look(fz, fin_work)
         else:
             styled, how = fz, "plain fusion (no finished photo to match)"
         nid = f"{view_id}-{chr(97 + k)}"
