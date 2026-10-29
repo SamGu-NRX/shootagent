@@ -1,0 +1,301 @@
+{
+ "source": "README.md, chat pass: saved customer requests from AutoHDR's editor dataset, one view each",
+ "pairs": [
+  {
+   "id": "floors",
+   "request": 156,
+   "text": "Please use #C8C2B7 color for floors",
+   "kind": "Recolour",
+   "result": "applied",
+   "attempts": 2,
+   "seconds": 75,
+   "cost": 0.15,
+   "outside": "byte-identical",
+   "line": "Applied in 2 attempts, 75 s, $0.15; outside the edit: byte-identical",
+   "why": "The vision judge rejected the first recolour as too slight.",
+   "size": {
+    "w": 700,
+    "h": 467
+   },
+   "before": "floors-before.webp",
+   "after": "floors-after.webp",
+   "mask": "floors-mask.png",
+   "share": 0.0939,
+   "split": 0.529,
+   "knob": 0.5,
+   "outline": "M241.5 467L240 463.5L244 459.5L244 454.5L249 450.5L251 444.5L258 435.5L255 429.5L257.5 427L261.5 427L266 421.5L271 411.5L271 407.5L277 401.5L277 398.5L286 384.5L288 378.5L293 374.5L303 353.5L314 341.5L316 334.5L323 324.5L323 320.5L337 301.5L346 285.5L346 282.5L348.5 280L354.5 279L357.5 275L361.5 276L365.5 280L368.5 280L373.5 275L382.5 275L386.5 279L412.5 281L418 285.5L414 291.5L419 300.5L418 316.5L435 333.5L439 342.5L445 349.5L457 360.5L458 364.5L468 376.5L468 380.5L473 385.5L470 403.5L473 412.5L473 417.5L474.5 420L480 422.5L480 426.5L485 437.5L491 444.5L494 453.5L499 458.5L500 464.5L498.5 467",
+   "alt": {
+    "before": "A long white hallway with peach floor tiles.",
+    "after": "The same hallway with the floor tiles in #C8C2B7, a pale warm grey."
+   },
+   "crop": {
+    "composite": "docs/media/editor-requests-before-after.jpg",
+    "rows": [
+     0,
+     467
+    ],
+    "before": [
+     0,
+     700
+    ],
+    "after": [
+     708,
+     1408
+    ]
+   }
+  },
+  {
+   "id": "tv",
+   "request": 100,
+   "text": "Add the reference image on the TV screen",
+   "kind": "Add",
+   "result": "applied",
+   "attempts": 2,
+   "seconds": 29,
+   "cost": 0.09,
+   "outside": "byte-identical",
+   "line": "Applied in 2 attempts, 29 s, $0.09; outside the edit: byte-identical",
+   "size": {
+    "w": 700,
+    "h": 466
+   },
+   "before": "tv-before.webp",
+   "after": "tv-after.webp",
+   "mask": "tv-mask.png",
+   "share": 0.0249,
+   "split": 0.275,
+   "knob": 0.6,
+   "outline": "M197.5 222L184.5 218L139.5 217L133 212.5L131 207.5L130 188.5L132 179.5L131 152.5L133.5 149L137.5 147L162.5 149L171.5 148L191.5 153L206.5 153L214.5 155L233.5 155L240.5 157L248.5 157L253 160.5L255 167.5L255 194.5L254 210.5L252 214.5L246.5 218L210.5 218Z",
+   "alt": {
+    "before": "A bedroom with a blank black TV above a white dresser.",
+    "after": "The same bedroom with the reference photo, an apartment building, on the TV screen."
+   },
+   "crop": {
+    "composite": "docs/media/editor-requests-before-after.jpg",
+    "rows": [
+     475,
+     941
+    ],
+    "before": [
+     0,
+     700
+    ],
+    "after": [
+     708,
+     1408
+    ]
+   }
+  },
+  {
+   "id": "walls",
+   "request": 21,
+   "text": "change the grey walls to the colour in the reference image",
+   "kind": "Recolour",
+   "result": "applied",
+   "attempts": 3,
+   "seconds": 70,
+   "cost": 0.2,
+   "outside": "byte-identical",
+   "line": "Applied in 3 attempts, 70 s, $0.20; outside the edit: byte-identical",
+   "size": {
+    "w": 700,
+    "h": 466
+   },
+   "before": "walls-before.webp",
+   "after": "walls-after.webp",
+   "mask": "walls-mask.png",
+   "share": 0.1875,
+   "split": 0.5,
+   "knob": 0.5,
+   "outline": "M700 247.5L688.5 257L679.5 259L672.5 264L666.5 266L659 274.5L657 281.5L653.5 285L649 283.5L638.5 270L634.5 268L627.5 268L620 261.5L622 257.5L622 113.5L641 86.5L666 57.5L678 39.5L688 28.5L695 17.5L698.5 15L700 16.5M0 232.5L5.5 230L57.5 230L64.5 235L84.5 235L89.5 230L112.5 230L117.5 234L124 242.5L126 253.5L127 365.5L122.5 371L106.5 376L103 381.5L103 389.5L104 392.5L107.5 395L109 390.5L114.5 385L121.5 382L126.5 386L132.5 386L136.5 383L150.5 379L154.5 377L158 372.5L163 365.5L164 360.5L160.5 358L154.5 361L148.5 361L140.5 364L136.5 364L134 361.5L132 233.5L136.5 230L152.5 230L157 225.5L156 219.5L163 161.5L161.5 159L155.5 157L119.5 150L107.5 146L94.5 144L89.5 141L77.5 140L40.5 130L26.5 128L6.5 122L1.5 122L0 120.5M0 48.5L1.5 45L9.5 49L17.5 50L29.5 56L51.5 62L61.5 67L65.5 67L78.5 73L85.5 74L109.5 84L116.5 85L126.5 90L140.5 93L150.5 98L172.5 105L176 108.5L177 115.5L176 233.5L177 351.5L175 382.5L170.5 388L154.5 399L143.5 402L130.5 409L126.5 409L105.5 420L76.5 432L73.5 432L70.5 429L66.5 429L53.5 441L39.5 442L39 445.5L34.5 450L17.5 458L14.5 458L4.5 464L0 462.5",
+   "alt": {
+    "before": "A bedroom with dark grey walls on both sides.",
+    "after": "The same bedroom with both walls in the reference teal."
+   },
+   "crop": {
+    "composite": "docs/media/editor-requests-before-after.jpg",
+    "rows": [
+     949,
+     1415
+    ],
+    "before": [
+     0,
+     700
+    ],
+    "after": [
+     708,
+     1408
+    ]
+   }
+  },
+  {
+   "id": "bin",
+   "request": 43,
+   "text": "remove white trash bin on the side",
+   "kind": "Remove",
+   "result": "applied",
+   "attempts": 1,
+   "seconds": 77,
+   "cost": 0.1,
+   "outside": "byte-identical",
+   "line": "Applied in 1 attempt, 77 s, $0.10; outside the edit: byte-identical",
+   "size": {
+    "w": 382,
+    "h": 460
+   },
+   "before": "bin-before.webp",
+   "after": "bin-after.webp",
+   "mask": "bin-mask.png",
+   "share": 0.0881,
+   "split": 0.169,
+   "knob": 0.4,
+   "outline": "M0 368.5L16.5 363L20.5 365L22 368.5L14 378.5L14 383.5L16.5 386L20.5 386L41 373.5L43 369.5L43 361.5L39.5 357L28.5 357L24 352.5L24 349.5L29 343.5L32 335.5L32 319.5L29 308.5L24 300.5L24 292.5L21 285.5L21 273.5L23.5 270L30.5 267L33 262.5L28.5 259L20.5 259L17.5 260L10.5 267L5.5 268L0 264.5M0 255.5L6.5 252L13.5 252L24.5 249L30.5 246L38.5 238L45.5 236L54.5 244L65.5 248L71.5 256L85.5 255L90 257.5L94 267.5L94 336.5L96 343.5L103.5 353L112.5 358L125.5 361L128 362.5L129 365.5L111 381.5L111 386.5L113 390.5L111.5 396L94.5 396L89 405.5L81.5 414L66.5 426L59.5 434L48.5 437L35.5 450L19.5 456L2.5 458L0 457.5",
+   "alt": {
+    "before": "A bedroom corner with a white trash bin beside the dresser.",
+    "after": "The same corner without the bin: wall, skirting and floor in its place."
+   },
+   "crop": {
+    "composite": "docs/media/removals-before-after.jpg",
+    "rows": [
+     0,
+     460
+    ],
+    "before": [
+     0,
+     382
+    ],
+    "after": [
+     390,
+     772
+    ]
+   }
+  },
+  {
+   "id": "car",
+   "request": 5,
+   "text": "remove the grey car",
+   "kind": "Remove",
+   "result": "applied",
+   "attempts": 1,
+   "seconds": 43,
+   "cost": 0.08,
+   "outside": "byte-identical",
+   "line": "Applied in 1 attempt, 43 s, $0.08; outside the edit: byte-identical",
+   "size": {
+    "w": 460,
+    "h": 460
+   },
+   "before": "car-before.webp",
+   "after": "car-after.webp",
+   "mask": "car-mask.png",
+   "share": 0.0627,
+   "split": 0.447,
+   "knob": 0.3,
+   "outline": "M185.5 313L167.5 313L160.5 310L154 304.5L147.5 292L135.5 290L130 284.5L130 281.5L132.5 278L140.5 275L146 269.5L146 256.5L148 246.5L151 240.5L153.5 238L161.5 235L170 226.5L170 213.5L173 205.5L182.5 200L192.5 199L205.5 201L210.5 198L230.5 198L240.5 202L248.5 199L269.5 200L273 203.5L277 211.5L274 230.5L281 243.5L280 253.5L271 274.5L272 278.5L277 285.5L276 289.5L268.5 297L249.5 306L232.5 309Z",
+   "alt": {
+    "before": "A brick driveway with a grey car parked in front of a carport.",
+    "after": "The same driveway with the car gone and the carport behind it filled in."
+   },
+   "crop": {
+    "composite": "docs/media/removals-before-after.jpg",
+    "rows": [
+     468,
+     928
+    ],
+    "before": [
+     0,
+     460
+    ],
+    "after": [
+     468,
+     928
+    ]
+   }
+  },
+  {
+   "id": "wires",
+   "request": 147,
+   "text": "remove wires and extension cord",
+   "kind": "Remove",
+   "result": "applied",
+   "attempts": 3,
+   "seconds": 134,
+   "cost": 0.24,
+   "outside": "byte-identical",
+   "line": "Applied in 3 attempts, 134 s, $0.24; outside the edit: byte-identical",
+   "why": "The vision judge rejected the first two removals for erasing the wall outlet; the third kept it.",
+   "size": {
+    "w": 575,
+    "h": 460
+   },
+   "before": "wires-before.webp",
+   "after": "wires-after.webp",
+   "mask": "wires-mask.png",
+   "share": 0.0283,
+   "split": 0.523,
+   "knob": 0.4,
+   "outline": "M307.5 366L301.5 366L289.5 360L276.5 360L259.5 350L245.5 349L240 343.5L239 319.5L248 307.5L246 283.5L249 277.5L249 254.5L247 248.5L247 241.5L248 233.5L253.5 228L263.5 229L272.5 235L280.5 236L285.5 234L294.5 227L300.5 225L305 227.5L308 236.5L312 242.5L309 248.5L303.5 251L295.5 250L288.5 247L281.5 247L276 252.5L274 275.5L276 308.5L282.5 315L285.5 316L309.5 317L321.5 324L329.5 326L342.5 326L348.5 330L356.5 332L360 337.5L362 352.5L357.5 360L351.5 362L340.5 359L335.5 356L319.5 353L316 355.5L313 362.5Z",
+   "alt": {
+    "before": "A bedroom wall with a power strip, an extension cord and wires along the skirting.",
+    "after": "The same wall without the cord or the wires; the outlet is still there."
+   },
+   "crop": {
+    "composite": "docs/media/removals-before-after.jpg",
+    "rows": [
+     936,
+     1396
+    ],
+    "before": [
+     0,
+     575
+    ],
+    "after": [
+     583,
+     1158
+    ]
+   }
+  },
+  {
+   "id": "lockbox",
+   "request": 58,
+   "text": "remove lockbox",
+   "kind": "Remove",
+   "result": "applied",
+   "attempts": 1,
+   "seconds": 44,
+   "cost": 0.07,
+   "outside": "byte-identical",
+   "line": "Applied in 1 attempt, 44 s, $0.07; outside the edit: byte-identical",
+   "size": {
+    "w": 484,
+    "h": 460
+   },
+   "before": "lockbox-before.webp",
+   "after": "lockbox-after.webp",
+   "mask": "lockbox-mask.png",
+   "share": 0.0108,
+   "split": 0.503,
+   "knob": 0.4,
+   "outline": "M240.5 288L230.5 288L225.5 286L222 282.5L220 277.5L222 266.5L222 249.5L226 242.5L231 227.5L235.5 225L247.5 226L260 231.5L263 237.5L265 260.5L264 271.5L267 278.5L266 284.5L262.5 287L247.5 285Z",
+   "alt": {
+    "before": "A front door with a key lockbox hanging from its handle.",
+    "after": "The same front door without the lockbox."
+   },
+   "crop": {
+    "composite": "docs/media/removals-before-after.jpg",
+    "rows": [
+     1404,
+     1864
+    ],
+    "before": [
+     0,
+     484
+    ],
+    "after": [
+     492,
+     976
+    ]
+   }
+  }
+ ]
+}

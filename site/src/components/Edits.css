@@ -1,0 +1,341 @@
+/* ---------- customer requests: before and after ------------------------------------------------------------------ */
+/* The divider's position; registered so the entrance can transition it. Every layer reads it. */
+@property --split {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+.edits {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 1.9fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* the requests: a list of tabs, a strip of cards on narrow screens */
+.edits-tabs {
+  display: grid;
+  gap: 4px;
+}
+.edits-tab {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  width: 100%;
+  min-height: 60px;
+  padding: 11px 16px 12px;
+  border-radius: 14px;
+  text-align: left;
+  color: var(--text-3);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 140ms var(--ease-out);
+}
+.edits-tab-meta {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.edits-tab-text {
+  font-size: 16px;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.edits-tab[aria-selected="true"] {
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  color: var(--text);
+}
+.edits-tab[aria-selected="true"] .edits-tab-meta {
+  color: var(--text-2);
+}
+.edits-tab:active {
+  transform: scale(0.985);
+}
+@media (hover: hover) and (pointer: fine) {
+  .edits-tab:hover:not([aria-selected="true"]) {
+    color: var(--text-2);
+    background: rgb(255 255 255 / 0.03);
+  }
+}
+
+/* the photo: a fixed frame, each pair fitted inside it at its own aspect ratio */
+.edits-panel {
+  display: grid;
+  gap: 16px;
+}
+.cmp-frame {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  display: grid;
+  place-items: center;
+  container-type: size;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--line-2);
+  background: #0c0c0c;
+}
+.cmp-photo {
+  --ar: 1.5;
+  position: relative;
+  width: min(100cqw, 100cqh * var(--ar));
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  cursor: ew-resize;
+  /* A vertical swipe scrolls the page; only a sideways drag reaches the divider. */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.cmp-layer {
+  position: absolute;
+  inset: 0;
+}
+.cmp-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+}
+.cmp-layer[data-side="before"] {
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+}
+.cmp-layer[data-side="after"] {
+  clip-path: inset(0 0 0 var(--split));
+}
+.cmp-label {
+  position: absolute;
+  top: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(18 18 18 / 0.8);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.cmp-layer[data-side="before"] .cmp-label {
+  left: 12px;
+}
+.cmp-layer[data-side="after"] .cmp-label {
+  right: 12px;
+}
+.cmp-label {
+  transition: opacity 160ms ease;
+}
+.cmp-photo[data-narrow="before"] [data-side="before"] .cmp-label,
+.cmp-photo[data-narrow="after"] [data-side="after"] .cmp-label {
+  opacity: 0;
+}
+
+/* what changed: everything the edit left alone dims, and the agent's region gets its outline */
+.cmp-dim,
+.cmp-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+.cmp-dim {
+  background: rgb(8 8 8 / 0.64);
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--mask);
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite: xor;
+  mask-image: linear-gradient(#000 0 0), var(--mask);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  mask-composite: exclude;
+}
+.cmp-outline {
+  overflow: visible;
+  filter: drop-shadow(0 0 3px rgb(165 147 255 / 0.6));
+}
+.cmp-outline path {
+  fill: none;
+  stroke: var(--agent);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.cmp-photo[data-changed] :is(.cmp-dim, .cmp-outline) {
+  opacity: 1;
+}
+
+/* the divider and its handle, a slider */
+.cmp-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split);
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.3),
+    0 0 14px rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}
+/* The knob sits at a height clear of the edit (edits.json), so it never hides what changed. */
+.cmp-handle {
+  position: absolute;
+  top: var(--knob, 50%);
+  left: clamp(22px, var(--split), 100% - 22px);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  touch-action: pan-y;
+}
+.cmp-handle:focus-visible {
+  border-radius: 50%;
+}
+.cmp-knob {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f4f4f4;
+  color: #1c1c1c;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.45);
+  transition: transform 140ms var(--ease-out);
+}
+.cmp-photo[data-dragging] .cmp-knob {
+  transform: scale(1.08);
+}
+
+/* the entrance, once: the first photo waits as delivered, then the divider sweeps across to the edit */
+.cmp-photo[data-entrance="waiting"] {
+  --split: 100% !important;
+}
+.cmp-photo[data-entrance="playing"] {
+  transition: --split 1300ms var(--ease-in-out) 200ms;
+}
+
+/* the result, from the README */
+.cmp-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 20px;
+}
+.cmp-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin: 0;
+}
+.cmp-result > div {
+  display: grid;
+  gap: 2px;
+}
+.cmp-result dt {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.cmp-result dd {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.cmp-result dd[data-tone="pass"] {
+  color: var(--pass);
+}
+.cmp-result dd[data-tone="retry"] {
+  color: var(--retry);
+}
+.cmp-toggle {
+  flex: none;
+}
+.cmp-toggle[aria-pressed="true"] {
+  background: var(--agent-wash);
+  border-color: var(--agent-line);
+  color: var(--agent-ink);
+}
+.cmp-why {
+  margin-top: -4px;
+  font-size: 15px;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.edits-note {
+  max-width: 46em;
+  margin-top: 28px;
+  font-size: 15px;
+  color: var(--text-3);
+}
+
+html[data-input="keyboard"] :is(.edits-tab, .cmp-dim, .cmp-outline, .cmp-knob, .cmp-label) {
+  transition: none !important;
+}
+
+@media (max-width: 900px) {
+  .edits {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  /* The requests become a strip of cards that scrolls sideways, edge to edge, above the photo. */
+  .edits-tabs {
+    display: flex;
+    gap: 8px;
+    margin-inline: calc(-1 * var(--pad));
+    padding: 5px var(--pad) 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--pad);
+    scrollbar-width: none;
+  }
+  .edits-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .edits-tab {
+    flex: 0 0 min(264px, 74%);
+    scroll-snap-align: start;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .edits-tab-text {
+    font-size: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .cmp-frame {
+    aspect-ratio: 5 / 4;
+  }
+  .cmp-label {
+    top: 8px;
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+  .cmp-layer[data-side="before"] .cmp-label {
+    left: 8px;
+  }
+  .cmp-layer[data-side="after"] .cmp-label {
+    right: 8px;
+  }
+  .cmp-result {
+    gap: 10px 22px;
+  }
+  .cmp-result dd {
+    font-size: 16px;
+  }
+}
