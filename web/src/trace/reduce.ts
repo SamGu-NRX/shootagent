@@ -3,6 +3,7 @@
 // must leave the state unchanged.
 
 import type { Finding, PlanStep, TraceDataByKind, TraceEvent } from "../api/types";
+import { judgeReasons } from "../listing/reasons";
 
 export type ViewOutcome = "pending" | "applied" | "not_needed" | "failed";
 
@@ -26,7 +27,8 @@ export interface ToolItem extends Base {
   tool: string;
   input: Record<string, unknown>;
   attempt: number;
-  status: "running" | "ok" | "failed";
+  /** "ended": the run finished without this call's result (the film-finish path sends calls with no id) */
+  status: "running" | "ok" | "failed" | "ended";
   result?: TraceDataByKind["tool_result"];
   /** findings first reported while this call ran (run_qc_checks candidates), shown inside its row */
   candidates?: string[];
@@ -246,7 +248,11 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
     }
     case "tool_result": {
       const d = event.data;
-      const idx = s.items.findIndex((it) => it.type === "tool" && it.callId === d.call_id);
+      // Film-finish runs (no agent, so no tool_use ids) send call_id null on every call and result: pair a
+      // result with the latest open call of the same tool instead of the first call with the same (null) id.
+      const idx = d.call_id
+        ? s.items.findIndex((it) => it.type === "tool" && it.callId === d.call_id)
+        : findLastIndex(s.items, (it) => it.type === "tool" && it.status === "running" && it.tool === d.tool);
       if (idx >= 0) {
         const item = s.items[idx] as ToolItem;
         const items = s.items.slice();
@@ -422,6 +428,8 @@ export function reduceTrace(state: TraceState, event: TraceEvent): TraceState {
       // api/app.py ends a run whose process died with ms 0 and usd 0; keep what the events measured
       s.totals = { ...s.totals, usd: d.usd || s.totals.usd, ms: d.ms || at };
       s.viewResults = settleViews(s);
+      // a call still open when the run ends is over too; it just never reported
+      s.items = s.items.map((it) => (it.type === "tool" && it.status === "running" ? { ...it, status: "ended" } : it));
       s.items = [...s.items, { ...base, type: "end", ok: d.ok, summary: d.summary }];
       return s;
     }
@@ -445,8 +453,8 @@ function findLastIndex<T>(xs: T[], pred: (x: T) => boolean): number {
 /** A film clip judge reports `pass` and a list of changes; give it the edit judge's verdict and reason. */
 function clipJudge(j: TraceDataByKind["check"]["judge"]): TraceDataByKind["check"]["judge"] {
   if (!j || j.verdict || j.pass === undefined) return j ?? null;
-  const changes = (j.changes ?? []).map((c) => `${c.object} ${c.change.replace(/_/g, " ")}${c.first_frame ? ` (${c.first_frame})` : ""}`);
-  return { ...j, verdict: j.pass ? "pass" : "fail", reason: changes.length ? changes.join("; ") : j.pass ? "No change to the room seen." : "" };
+  const found = judgeReasons(j).map((r) => r.plain);
+  return { ...j, verdict: j.pass ? "pass" : "fail", reason: found.length ? found.join(" ") : j.pass ? "No change to the room seen." : "" };
 }
 
 function checkFailReason(d: TraceDataByKind["check"]): string {

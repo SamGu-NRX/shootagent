@@ -13,6 +13,8 @@ export interface ClipJudge {
   pass?: boolean;
   changed?: boolean;
   changes?: { object: string; change: string; first_frame?: string | number | null; where?: string | null }[];
+  /** judge v2: the findings that failed the clip, one per object, each a sentence in `description` */
+  failing?: { kind: string; category: string; description: string; frame?: string; confidence?: string }[];
   confidence?: string;
   model?: string;
 }

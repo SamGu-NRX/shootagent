@@ -1937,3 +1937,12 @@ h1[tabindex="-1"]:focus {
   color: var(--retry);
   font-size: var(--fs-meta);
 }
+/* display: flex on a summary drops the browser's disclosure triangle; draw one so it reads as expandable */
+.doc-rejected summary::before {
+  content: "▸";
+  margin-right: 8px;
+  color: var(--ink-3);
+}
+.doc-rejected[open] summary::before {
+  content: "▾";
+}

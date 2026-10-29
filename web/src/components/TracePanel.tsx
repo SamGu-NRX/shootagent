@@ -80,7 +80,13 @@ const IMAGE_TOOLS = new Set([
   "revert",
 ]);
 
-const MODE_LABEL: Record<string, string> = { qc: "QC pass", chat: "Chat request", reel: "Reel", film: "Listing film" };
+const MODE_LABEL: Record<string, string> = {
+  qc: "QC pass",
+  chat: "Chat request",
+  reel: "Reel",
+  film: "Listing film",
+  film_script: "Film script",
+};
 const MOTION: Record<string, string> = { generated: "generated clip", depth: "depth move", still: "slow push-in" };
 
 export function TracePanel() {
@@ -115,7 +121,8 @@ export function TracePanel() {
           <select value={runId ?? ""} onChange={(e) => setRun(e.target.value)}>
             {[...runs].reverse().map((r) => {
               const t = traces[r.id];
-              const req = t?.request ?? r.request;
+              const raw = t?.request ?? r.request;
+              const req = raw && !raw.startsWith("film-finish") ? raw : null; // the server's own label, not a request
               const what = req ? `“${req.slice(0, 40)}${req.length > 40 ? "…" : ""}”` : (MODE_LABEL[r.mode ?? ""] ?? r.mode ?? "Run");
               return (
                 <option key={r.id} value={r.id}>
@@ -199,7 +206,7 @@ function TraceView({ trace }: { trace: TraceState }) {
     <>
       <Tape trace={trace} />
       <div className="trace-scroll" ref={scroller}>
-        {trace.request && (
+        {trace.request && !trace.request.startsWith("film-finish") && (
           <p className="trace-request">
             <span className="eyebrow">Request</span>“{trace.request}”
           </p>
@@ -333,8 +340,18 @@ function TapePlan({ trace }: { trace: TraceState }) {
   const cur = currentStep(trace);
   const done = steps.filter((s) => s.done).length;
   const viewLabel = useViewLabel();
+  // Film-finish runs prepare, narrate and assemble a film the agent already planned; they have no plan of
+  // their own by design. Other runs with no plan show no plan line once they are over.
+  const finishing = trace.request?.startsWith("film-finish") ?? false;
+  if (!steps.length && (finishing || trace.status !== "running")) {
+    return finishing ? (
+      <div className="tape-plan">
+        <span className="tape-plan-now">Checks, narration and assembly; no agent plan</span>
+      </div>
+    ) : null;
+  }
   let now: string;
-  if (!steps.length) now = trace.status === "running" ? "Planning…" : "No plan recorded";
+  if (!steps.length) now = "Planning…";
   else if (cur >= 0) now = `Now: ${steps[cur]!.view ? `${viewLabel(steps[cur]!.view!)} · ` : ""}${steps[cur]!.intent}`;
   else now = `Plan: ${done} of ${steps.length} steps done`;
   return (
@@ -601,7 +618,9 @@ function ToolRow({
           <Icon size={13} className="tr-icon" aria-hidden />
           <span className="tr-tool-name">{toolLabel(item.tool)}</span>
           {item.attempt > 1 && <span className="tr-attempt">attempt {item.attempt}</span>}
-          <span className="tr-dur num">{r ? duration(r.ms) : <span className="spinner spinner-sm" aria-label="Running" />}</span>
+          <span className="tr-dur num">
+            {r ? duration(r.ms) : item.status === "ended" ? "" : <span className="spinner spinner-sm" aria-label="Running" />}
+          </span>
         </div>
         {(input || viewChip) && (
           <p className="tr-input num" title={input || undefined}>
@@ -610,7 +629,11 @@ function ToolRow({
           </p>
         )}
         <p className="tr-result" data-ok={r ? r.ok : undefined}>
-          {r ? (r.ok ? r.summary : `Failed: ${r.error ?? r.summary}`) : <span className="muted">Running…</span>}
+          {r ? (
+            r.ok ? r.summary : `Failed: ${r.error ?? r.summary}`
+          ) : (
+            <span className="muted">{item.status === "ended" ? "Ended with the run; no result was recorded." : "Running…"}</span>
+          )}
         </p>
         {item.media && (
           <p className="tr-refs num">
@@ -655,7 +678,9 @@ function CheckRow({ item, time, onFocus, common }: { item: CheckItem; time: Reac
           <span className="stamp" data-passed={item.passed}>
             {item.passed ? "Pass" : "Fail"}
           </span>
-          <span className="tr-title">{item.clip ? `Clip check · shot ${(item.shot ?? 0) + 1}` : "Self-check"}</span>
+          <span className="tr-title">
+            {item.clip ? `${item.source === "depth" ? "Depth-move check" : "Clip check"} · shot ${(item.shot ?? 0) + 1}` : "Self-check"}
+          </span>
           {item.clip ? (
             <span className="tr-attempt num">clip {item.clip.slice(0, 8)}</span>
           ) : (

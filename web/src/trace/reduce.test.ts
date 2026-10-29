@@ -217,6 +217,28 @@ describe("film runs", () => {
     expect(check.clip).toBe("e20e");
     expect(check.images).toEqual(["47cb.jpg"]);
     expect(check.judge?.verdict).toBe("fail");
-    expect(check.judge?.reason).toContain("white door duplicated");
+    expect(check.judge?.reason).toContain("White door duplicated at 3.5 s");
+  });
+});
+
+describe("film-finish runs", () => {
+  // Run 20261029-002833-d8fc3d: no agent, so every tool_call and tool_result has call_id null.
+  it("pairs each result with its own call and closes calls left open at run end", () => {
+    const e = stream();
+    const s = reduceAll([
+      e("run_start", { mode: "film", request: "film-finish: prepare, narrate and assemble the planned film", views: [] }),
+      e("tool_call", { call_id: null as unknown as string, tool: "prepare_shots", input: {} }),
+      e("tool_result", { call_id: null as unknown as string, tool: "prepare_shots", ok: true, summary: "Prepared 1 shots", ms: 9000 }),
+      e("tool_call", { call_id: null as unknown as string, tool: "narrate", input: {} }),
+      e("tool_result", { call_id: null as unknown as string, tool: "narrate", ok: true, summary: "Narrated en (37.0 s)", ms: 3000 }),
+      e("tool_call", { call_id: null as unknown as string, tool: "assemble_film", input: {} }),
+      e("run_end", { ok: true, summary: "Assembled", ms: 300000, usd: 0.27 }),
+    ]);
+    const tools = s.items.filter((i): i is ToolItem => i.type === "tool");
+    expect(tools.map((t) => [t.tool, t.status, t.result?.summary])).toEqual([
+      ["prepare_shots", "ok", "Prepared 1 shots"],
+      ["narrate", "ok", "Narrated en (37.0 s)"],
+      ["assemble_film", "ended", undefined],
+    ]);
   });
 });

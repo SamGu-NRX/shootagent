@@ -37,3 +37,29 @@ describe("attemptReasons", () => {
     expect(r[0]!.kind).toBe("unavailable");
   });
 });
+
+describe("judge v2 findings", () => {
+  // Attempt from the final demo run (manifest shot 1): the judge files the object under "wall_plate" and its
+  // description already says what changed.
+  const judge = {
+    failing: [{ kind: "new", category: "wall_plate", frame: "FRAME 7", confidence: "medium",
+      description: "A white outlet plate appears on the left wall near the baseboard behind the sideboard. The photo shows no outlet there." }],
+    changes: [{ object: "wall_plate: A white outlet plate appears on the left wall near the baseboard behind the sideboard. The photo shows no outlet there.", change: "appeared", first_frame: "FRAME 7" }],
+  };
+
+  it("names the category in words and does not repeat the change word", () => {
+    expect(attemptReasons([], judge)[0]!.plain).toBe(
+      "Wall plate: A white outlet plate appears on the left wall near the baseboard behind the sideboard. The photo shows no outlet there.",
+    );
+    expect(attemptReasons([], { changes: judge.changes })[0]!.plain).toBe(attemptReasons([], judge)[0]!.plain);
+  });
+
+  it("reads the judge's line in the failures when the attempt has no judge record", () => {
+    const line = "judge: built_in new at FRAME 6 (medium): Dark vanity cabinet with gold pulls at right foreground, not in end photo; furniture new at FRAME 7 (medium): Dark vanity cabinet in place of the closed door";
+    expect(attemptReasons(["room-to-room walk: can't be verified against a photo", line], null).map((r) => r.plain)).toEqual([
+      "A walk from one room into another can't be checked against a single photo",
+      "Built-in: Dark vanity cabinet with gold pulls at right foreground, not in end photo",
+      "Furniture: Dark vanity cabinet in place of the closed door",
+    ]);
+  });
+});
