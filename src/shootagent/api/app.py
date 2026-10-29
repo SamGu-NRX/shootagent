@@ -23,6 +23,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from ..agent import loop
 from ..config import Settings, get_settings
+from ..film.readiness import NeedsReview
 from ..listing.routes import ListingError, build_router, error_response
 from ..store import Listing, ShootStore
 from ..trace import read_events
@@ -161,6 +162,8 @@ def create_app(
             trace = loop.start_run(
                 store, shoot_id, mode, settings=settings, client=client, manager=manager, **kw
             )
+        except NeedsReview as e:
+            raise ApiError(409, "needs_review", str(e)) from None
         except ValueError as e:
             raise ApiError(400, "bad_run_request", str(e)) from None
         except RuntimeError as e:

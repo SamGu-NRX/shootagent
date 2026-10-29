@@ -138,14 +138,19 @@ def build_picture(fctx: FilmContext, spec: FilmSpec, language: str, starts: list
             raise ValueError(f"shot {i} has no clip yet; run prepare_shots first")
         generated = shot.result.source == "generated"
         last = i == len(spec.shots) - 1
-        png = work / f"overlay-{i:02d}.png"
-        overlay_image(spec.width, spec.height, narration.labels[i],
-                      spec.disclosure_text(language) if generated else None, None).save(png)
         clips = [fctx.media.path(fp) for fp in shot.result.clips]
+        # A two-photo shot that fell back plays each photo on its own, each under its own room's label.
+        labels = [narration.labels[i]]
+        if len(clips) > 1:
+            end = narration.end_labels[i] if i < len(narration.end_labels) else ""
+            labels.append(end or shot.end_label or narration.labels[i])
         split = [n // len(clips)] * len(clips)
         split[-1] += n - sum(split)
         for k, (clip, frames) in enumerate(zip(clips, split)):
             part = work / f"shot-{i:02d}-{k}.mp4"
+            png = work / f"overlay-{i:02d}-{k}.png"
+            overlay_image(spec.width, spec.height, labels[min(k, len(labels) - 1)],
+                          spec.disclosure_text(language) if generated else None, None).save(png)
             overlays = [(png, 0.2)]
             if last and k == len(clips) - 1:
                 # The end card comes in for the last END_CARD_S of the film, under the spoken call to action.
@@ -316,6 +321,7 @@ def write_manifest(fctx: FilmContext, spec: FilmSpec, variants: dict[str, dict])
     film. Generated clips are listed with every attempt, so a rejected clip stays on record."""
     shoot = fctx.store.load(fctx.shoot_id)
     shots = []
+    placed: set[int] = set()
     for i, shot in enumerate(spec.shots):
         res = shot.result
         used = {p["view"]: p for p in (res.photos if res else [])}  # the versions the clips were made from
@@ -326,10 +332,20 @@ def write_manifest(fctx: FilmContext, spec: FilmSpec, variants: dict[str, dict])
             photos.append({"view": vid, "version": snap["version"], "blob": snap["blob"], "room": v.room,
                            "case": v.meta.get("case_id")})
         attempts = [a.model_dump(exclude_none=True) for a in (res.attempts if res else [])]
+        # Clips rejected under an earlier plan of this shot's photo stay on record for the disclosure page.
+        seen = {(a.get("fingerprint"), a.get("prompt")) for a in attempts}
+        for r in spec.rejected:
+            if id(r) not in placed and shot.view in (r.view, r.end_view) and (r.attempt.fingerprint, r.attempt.prompt) not in seen:
+                seen.add((r.attempt.fingerprint, r.attempt.prompt))
+                placed.add(id(r))
+                attempts.append({**r.attempt.model_dump(exclude_none=True), "earlier_plan": True,
+                                 "planned": {"view": r.view, "end_view": r.end_view, "label": r.label}})
         last = res.attempts[-1] if res and res.attempts else None
         shots.append({
             "index": i,
             "labels": {lang: n.labels[i] for lang, n in spec.narrations.items() if i < len(n.labels)},
+            "end_labels": {lang: n.end_labels[i] for lang, n in spec.narrations.items()
+                           if i < len(n.end_labels) and n.end_labels[i]},
             "source_photos": photos,
             "planned_motion": shot.motion,
             "motion_source": res.source if res else None,
@@ -349,6 +365,8 @@ def write_manifest(fctx: FilmContext, spec: FilmSpec, variants: dict[str, dict])
                        "rule": "shown on screen while a generated clip plays; depth moves and stills carry none"},
         "music": "generated bed (reel/music.py), no licence" if spec.music else None,
         "shots": shots,
+        # Rejected clips whose photos the final plan no longer uses.
+        "rejected_elsewhere": [r.model_dump(exclude_none=True) for r in spec.rejected if id(r) not in placed],
         "languages": variants,
     }
     (film_dir(fctx) / "manifest.json").write_text(json.dumps(manifest, indent=1, ensure_ascii=False), encoding="utf-8")

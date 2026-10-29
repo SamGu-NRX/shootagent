@@ -42,7 +42,7 @@ class ReelEngine:
         py = Path(settings.reelengine_python)
         if not py.is_file():
             raise EngineError(f"REELENGINE_PYTHON={py} does not exist; point it at the reelengine venv's python.")
-        return cls(py, settings.reelengine_models, root)
+        return cls(py, settings.speech_models_dir, root)
 
     def model_for(self, language: str) -> str:
         return ENGLISH_MODEL if language.startswith("en") else MULTILINGUAL_MODEL

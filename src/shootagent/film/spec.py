@@ -64,6 +64,7 @@ class Shot(BaseModel):
     aspect: Aspect = "9:16"  # generated clip frame; "source" keeps the photo's own aspect
     move: DepthMove = "dolly"  # depth move, also used when a generated clip falls back
     label: str = ""  # on-screen room label in the first language
+    end_label: str = ""  # the end view's room label, shown when a fallback plays the end photo on its own
     seconds: float = Field(4.0, ge=1.5, le=8.0)  # planned length; the narration decides the final length
     result: ShotResult | None = None
 
@@ -72,12 +73,23 @@ class Narration(BaseModel):
     language: str
     segments: list[str]  # one per shot, in shot order
     labels: list[str]  # on-screen room label per shot in this language
+    end_labels: list[str] = Field(default_factory=list)  # per shot: the end view's label, "" without an end view
     audio: str | None = None  # media fingerprint of the spoken narration
     backend: str | None = None
 
     @property
     def text(self) -> str:
         return " ".join(s.strip() for s in self.segments if s.strip())
+
+
+class Rejected(BaseModel):
+    """A generated clip rejected under an earlier plan in this run. Kept so the manifest and the disclosure page
+    still list it after the agent re-plans that shot (generated to depth, say)."""
+
+    view: str
+    end_view: str | None = None
+    label: str = ""
+    attempt: Attempt
 
 
 class FilmSpec(BaseModel):
@@ -90,6 +102,7 @@ class FilmSpec(BaseModel):
     music: Literal["synth"] | None = "synth"  # the generated, licence-free bed from reel/music.py
     disclosure: dict[str, str] = Field(default_factory=lambda: dict(DISCLOSURE))
     listing: Listing = Field(default_factory=Listing)
+    rejected: list[Rejected] = Field(default_factory=list)
 
     def disclosure_text(self, language: str) -> str:
         return self.disclosure.get(language) or self.disclosure.get(language.split("-")[0]) or self.disclosure["en"]

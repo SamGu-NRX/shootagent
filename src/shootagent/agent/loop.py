@@ -166,14 +166,22 @@ class AgentRun:
         if self.mask and self.mask not in shoot.masks:
             raise ValueError(f"Shoot {self.shoot_id} has no mask {self.mask!r}.")
         all_ids = [v.id for v in shoot.views]
-        if self.views:
+        if self.mode == "film":
+            from ..film.readiness import film_scope
+
+            # Approved photos only, so QC has looked at everything a buyer sees (raises NeedsReview).
+            unknown = [v for v in self.views or [] if v not in all_ids]
+            if unknown:
+                raise ValueError(f"Unknown view(s) {', '.join(unknown)}; views are {', '.join(all_ids)}.")
+            scope = film_scope(self.store, shoot, self.views)
+        elif self.views:
             unknown = [v for v in self.views if v not in all_ids]
             if unknown:
                 raise ValueError(f"Unknown view(s) {', '.join(unknown)}; views are {', '.join(all_ids)}.")
             scope = list(self.views)
         elif self.mask:
             scope = [shoot.masks[self.mask].view]
-        elif self.mode in ("reel", "film"):
+        elif self.mode == "reel":
             scope = [v.id for v in shoot.views if v.approved and v.head] or [v.id for v in shoot.views if v.head]
         else:
             scope = all_ids

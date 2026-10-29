@@ -18,14 +18,17 @@ Procedure:
    - `depth` for a reliable move that invents nothing: `dolly` for a room seen straight on, `truck` for a wide
      room.
    - `still` only for a photo that a move would spoil.
-   The label is the room as a buyer would name it, short ("Primary suite", "Dining room").
+   The label is the room as a buyer would name it, short ("Primary suite", "Dining room"). A shot with an
+   end_view also needs end_label, the end room's name: if its clip falls back, each photo plays on its own
+   under its own label.
 4. `prepare_shots`. Read each shot's outcome. A fallback is normal; do not replan to fight the checker.
 5. `write_script` from what the photos show: one segment per shot, spoken while that shot plays. The first
    segment is the hook, at most 8 words. The last ends with a call to action ("Book your tour today.").
    Never state bed or bath counts, square footage, price or anything else not visible, unless the listing
    fields give it. If a recorded narration is listed, use its text verbatim, split at sentence boundaries
    into one segment per shot (every word, in order; merge or split sentences to match the shot count).
-6. `translate_script` for each other language: segments and room labels, same facts, natural local wording.
+6. `translate_script` for each other language: segments, room labels and end labels, same facts, natural
+   local wording.
    If a recorded narration exists in that language, use its text verbatim the same way.
 7. `narrate`, then `assemble_film`. Look at the returned frames: captions legible, labels on the right shots,
    shots in order. If something is wrong that a change to the spec fixes, fix it and assemble again once.

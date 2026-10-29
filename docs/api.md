@@ -45,7 +45,7 @@ A chat message while a run is active on the same shoot is queued, not run in par
 
 | Method | Path | Body | Returns |
 |---|---|---|---|
-| POST | `/api/shoots/{id}/film` | `{languages?: ["en", "es"], views?: [id]}`; default `["en"]`, script language first | `{run_id}` film run: the agent plans shots, makes or falls back each clip, writes and translates the script, narrates, and assembles one film per language. Trace over the usual `/runs/{run}/events` SSE stream. |
+| POST | `/api/shoots/{id}/film` | `{languages?: ["en", "es"], views?: [id]}`; default `["en"]`, script language first | `{run_id}` film run: the agent plans shots, makes or falls back each clip, writes and translates the script, narrates, and assembles one film per language. Trace over the usual `/runs/{run}/events` SSE stream. Films use approved views only (a view QC split into camera positions is replaced by its parts); with none approved, or `views` naming an unapproved one, 409 `needs_review` says which views need QC or approval. `shootagent launch <shoot>` runs QC on unchecked views, approves the ones QC left with no open or failed finding, and makes the film. |
 | GET | `/api/shoots/{id}/film` | | `{spec, manifest, variants: {<lang>: {url, cover, duration_s, captions, finisher, verify}}}`; `spec` and `manifest` are null before the first film |
 | GET | `/api/shoots/{id}/film/manifest.json` | | the manifest (below); 404 `no_film` before the first assembly |
 | GET | `/api/shoots/{id}/film/{lang}.mp4` | | the film in that language, 1080x1920, 30 fps |
@@ -56,10 +56,15 @@ move, label, seconds, result: {source, clips, attempts: [{fingerprint, backend, 
 judge, sheet}], fell_back, note}}], languages, narrations: {<lang>: {segments, labels, audio, backend}}, music,
 disclosure, listing}`. `result.source` is what plays; it is `depth` after a fallback.
 
-The manifest lists, per shot, `source_photos: [{view, version, blob, room, case}]`, `planned_motion`,
+The manifest lists, per shot, `source_photos: [{view, version, blob, room, case}]` (the versions the clips were
+made from), `labels` and `end_labels` (`{<lang>: str}`; a two-photo shot that fell back shows each photo under its
+own label), `planned_motion`,
 `motion_source`, `fell_back`, `ai_label` (true only for a generated clip that passed its check; it carries the
 on-screen "AI-generated motion" label, California AB 723), `check: {passed, reasons, judge}` for the last
-generated attempt, every `attempts` entry, and `times: {<lang>: [start_s, end_s]}` in film time. Per language:
+generated attempt, every `attempts` entry, and `times: {<lang>: [start_s, end_s]}` in film time. Clips rejected
+under an earlier plan of the same run stay in the `attempts` of the shot that now shows that photo, with
+`earlier_plan: true` and `planned: {view, end_view, label}`; ones whose photos the final plan dropped are in the
+top-level `rejected_elsewhere`. Per language:
 `{film, cover, duration_s, narration: {text, audio, backend, audio_s, timing: "transcript"|"word count"},
 finisher: "reelengine"|"ffmpeg", captions, caption_cues, verify: {ok, fails, warns, lufs}, shot_times, notes,
 timings_s}`. `notes` says why a language has no captions when it has none.
@@ -68,14 +73,20 @@ Film trace events, in addition to the common ones (`view` is the shot's photo):
 
 - `media` `{shot?, language?, fingerprint, backend: "grok"|"replay"|"depth"|"still"|"gemini-tts", cached, seconds}`:
   a clip or narration produced, or served from the fingerprint cache.
-- `check` `{shot, attempt, clip, passed, failures: [str], judge: {pass, changed, changes: [{object, change,
-  first_frame, where}], confidence, model, usd} | null, signals: {endpoint_start, endpoint_end, motion,
+- `check` `{shot, attempt, clip, passed, failures: [str], judge, signals: {endpoint_start, endpoint_end, motion,
   appearance, lines, coverage}, images: [contact sheet blob], ms}`: one generated clip checked against its
-  photo(s). A film `check` has `clip` and no `version`.
+  photo(s). A film `check` has `clip` and no `version`. `judge` (v2, inventory then census): `{pass, failing:
+  [{frame, kind: "new"|"missing"|"changed", category, item_id, description, where, in_photo_view, confidence}],
+  not_counted: [same], changes: [{object, change, first_frame, where}] (failing in the v1 shape), confidence,
+  inventory_items, frames_checked, form, strict, model, usages: [{purpose, model, input_tokens, output_tokens,
+  usd}], usd}` or `{pass: false, error}`. Low-confidence findings never fail a clip and "missing" ones fail only
+  at high confidence. For a room-to-room clip whose last frame shares under half its area with the start photo,
+  `motion`, `appearance` and `lines` are `{checkable: false, pass: null, shared_with_start, why}`.
 - `retry` `{shot, attempt, max_attempts: 2, reason, next: "regenerate with the failure named in the prompt" |
   "depth fallback"}`: after a failed check, or when the backend cannot serve the request.
 - `shot` `{shot, end_view, planned, source, fell_back, clips, note}`: what the shot will play.
-- `usage` with `purpose: "judge_clip"` for each vision judgement of a clip.
+- `usage` with `purpose: "judge_clip"` for each clip check call and `"judge_clip_inventory"` for each photo
+  inventory (made once per photo, then cached in `<data>/media/inventory/`).
 
 ## Listing
 

@@ -146,6 +146,35 @@ def cmd_film(a) -> int:
     return _run(a.shoot, "film", views=a.views, languages=a.languages)
 
 
+def cmd_launch(a) -> int:
+    """QC on every view QC has not checked, approval of the views QC left clean, then the film."""
+    from .film.readiness import review_state
+
+    store = _store()
+    state = review_state(store, store.load(a.shoot))
+    need = [v for v, s in state.items() if s == "needs_qc"]
+    if need:
+        print(f"QC first on {', '.join(need)}")
+        if _run(a.shoot, "qc", views=need) != 0:
+            print("QC did not finish; the film was not made.")
+            return 1
+    shoot = store.load(a.shoot)
+    state = review_state(store, shoot)
+    clean = [v for v, s in state.items() if s == "qc_ok"]
+    held = [v for v, s in state.items() if s in ("open_findings", "needs_qc")]
+
+    def approve(s):
+        for v in clean:
+            s.view(v).approved = True
+
+    store.mutate(a.shoot, approve)
+    print(f"approved {', '.join(clean) or 'none'}; already approved "
+          f"{', '.join(v for v, s in state.items() if s == 'approved') or 'none'}; left out "
+          f"{', '.join(held) or 'none'} (open or failed findings); split into parts: "
+          f"{', '.join(v for v, s in state.items() if s == 'split') or 'none'}")
+    return _run(a.shoot, "film", languages=a.languages)
+
+
 def cmd_film_seed(a) -> int:
     from .film.seed import seed_replay
 
@@ -219,6 +248,11 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--languages", nargs="+", default=["en"], help="narration languages, script language first")
     s.add_argument("--views", nargs="+")
     s.set_defaults(fn=cmd_film)
+
+    s = sub.add_parser("launch", help="QC what QC has not checked, approve the clean views, then make the film")
+    s.add_argument("shoot")
+    s.add_argument("--languages", nargs="+", default=["en"], help="narration languages, script language first")
+    s.set_defaults(fn=cmd_launch)
 
     s = sub.add_parser("film-seed-replay", help="copy the recorded Grok clips and Gemini narrations into the replay folder")
     s.add_argument("--branch", default="origin/explore/media-tests")

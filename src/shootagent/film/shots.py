@@ -22,7 +22,7 @@ from ..agent.usage import usage_event
 from ..config import Settings
 from ..store import ShootStore
 from ..trace import TraceRun
-from .check import Judge, check_clip, claude_judge
+from .check import InventoryJudge, Judge, check_clip
 from .media import DepthRequest, Media, MediaError, Photo, StillRequest, clip_request
 from .spec import Attempt, Shot, ShotResult
 
@@ -40,7 +40,7 @@ class FilmContext:
     trace: TraceRun
     settings: Settings
     media: Media
-    judge: Judge | None = claude_judge
+    judge: Judge | None  # None checks with the deterministic signals only (tests)
     call_id: str | None = None
     photos: dict[str, Photo] = field(default_factory=dict)
     versions: dict[str, tuple[str, str]] = field(default_factory=dict)  # view -> (version id, blob) read
@@ -59,6 +59,10 @@ class FilmContext:
         return self.photos[view_id]
 
 
+def default_judge(settings: Settings) -> InventoryJudge:
+    return InventoryJudge(settings.data_dir / "media" / "inventory", model=settings.judge_model)
+
+
 def _emit_media(ctx: FilmContext, view: str, index: int, res) -> None:
     ctx.trace.emit("media", view=view, call_id=ctx.call_id, shot=index, fingerprint=res.fingerprint,
                    backend=res.backend, cached=res.cached, seconds=res.seconds)
@@ -67,8 +71,8 @@ def _emit_media(ctx: FilmContext, view: str, index: int, res) -> None:
 def _rejection(reasons: list[str], judge: dict | None) -> str:
     """The failure to name in the regeneration prompt: the judge's own words when it saw a change, since
     they name the object, else the first signal."""
-    if judge and judge.get("changes"):
-        return "; ".join(f"{c['object']} {c['change'].replace('_', ' ')}" for c in judge["changes"])
+    if judge and judge.get("failing"):
+        return "; ".join(f"{f['category']} {f['kind']}: {f['description']}" for f in judge["failing"])
     return reasons[0] if reasons else "the clip did not match the photo"
 
 
@@ -89,13 +93,12 @@ def _check(ctx: FilmContext, index: int, attempt_no: int, shot: Shot, fp: str, p
     started = time.perf_counter()
     result = check_clip(path, first.rgb(), last.rgb() if last else None, judge=ctx.judge)
     judge = result.judge
-    if judge and judge.get("model"):
-        usage: dict[str, Any] = usage_event(judge["model"], {"input_tokens": judge.get("input_tokens", 0),
-                                                             "output_tokens": judge.get("output_tokens", 0)})
-        if judge.get("usd") is not None:
-            usage["usd"] = judge["usd"]
-            usage.pop("unpriced", None)
-        ctx.trace.emit("usage", view=shot.view, purpose="judge_clip", **usage)
+    # One usage event per judge call: the per-photo inventory (only when it was not cached) and the check.
+    for u in (judge or {}).get("usages") or []:
+        usage: dict[str, Any] = usage_event(u["model"], u)
+        usage["usd"] = u["usd"]
+        usage.pop("unpriced", None)
+        ctx.trace.emit("usage", view=shot.view, purpose=u["purpose"], **usage)
     from ..tools._common import put_preview
 
     sheet = put_preview(ctx.tool_ctx(), result.sheet, long_edge=1568)

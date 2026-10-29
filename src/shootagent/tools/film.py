@@ -18,8 +18,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from ..film.assemble import assemble_language, film_dir, write_manifest
 from ..film.media import Media, MediaError
 from ..film.narration import script_problems, speech_request
-from ..film.shots import FilmContext, prepare_shots as _prepare
-from ..film.spec import FilmSpec, Narration, Shot
+from ..film.shots import FilmContext, default_judge, prepare_shots as _prepare
+from ..film.spec import FilmSpec, Narration, Rejected, Shot
 from ..film.video import duration
 from ._common import ToolError, contact_sheet, put_preview
 from .base import ToolContext, ToolInput, ToolResult, tool
@@ -42,7 +42,8 @@ def _drop_manifest(ctx: ToolContext) -> None:
 
 
 def film_context(ctx: ToolContext) -> FilmContext:
-    return FilmContext(ctx.store, ctx.shoot_id, ctx.trace, ctx.settings, Media(ctx.settings), call_id=ctx.call_id)
+    return FilmContext(ctx.store, ctx.shoot_id, ctx.trace, ctx.settings, Media(ctx.settings), default_judge(ctx.settings),
+                       call_id=ctx.call_id)
 
 
 def scope_of(ctx: ToolContext) -> list[str]:
@@ -71,6 +72,8 @@ class ShotIn(BaseModel):
     move: Literal["dolly", "truck"] = Field("dolly", description="Depth move (also the fallback for a generated shot): "
                                             "dolly pushes forward, truck slides sideways across a wide room.")
     label: str = Field(max_length=28, description="On-screen room label, e.g. 'Primary suite'.")
+    end_label: str | None = Field(None, max_length=28, description="Shots with end_view: the end view's room label. "
+                                  "If the clip falls back, each photo plays on its own under its own label.")
     seconds: float = Field(4.0, ge=2.0, le=8.0, description="Planned length; the narration sets the final length.")
 
 
@@ -95,11 +98,19 @@ def plan_film(ctx: ToolContext, args: PlanFilmIn) -> ToolResult:
             problems.append(f"shot {i}: a generated shot needs a camera direction")
         if s.end_view and s.motion != "generated":
             problems.append(f"shot {i}: end_view applies only to generated shots")
+        if s.end_view and not (s.end_label or "").strip():
+            problems.append(f"shot {i}: give end_label, the room label for {s.end_view}")
     if problems:
         raise ToolError("; ".join(problems))
     old = FilmSpec.load(spec_path(ctx))
     shoot = ctx.store.load(ctx.shoot_id)
-    spec = FilmSpec(shots=[Shot(**s.model_dump()) for s in args.shots], listing=shoot.listing,
+    rejected = list(old.rejected) if old else []
+    for s in (old.shots if old else []):
+        for a in (s.result.attempts if s.result else []):
+            if not a.passed and all(r.attempt.fingerprint != a.fingerprint or r.attempt.prompt != a.prompt for r in rejected):
+                rejected.append(Rejected(view=s.view, end_view=s.end_view, label=s.label, attempt=a))
+    spec = FilmSpec(shots=[Shot(**{**s.model_dump(), "end_label": (s.end_label or "").strip()}) for s in args.shots],
+                    listing=shoot.listing, rejected=rejected,
                     languages=old.languages if old else ["en"])
     spec.save(spec_path(ctx))
     _drop_manifest(ctx)
@@ -169,7 +180,7 @@ def write_script(ctx: ToolContext, args: WriteScriptIn) -> ToolResult:
     if problems:
         raise ToolError("Rewrite the script: " + "; ".join(problems) + ".")
     spec.narrations[lang] = Narration(language=lang, segments=[s.strip() for s in args.segments],
-                                      labels=[s.label for s in spec.shots])
+                                      labels=[s.label for s in spec.shots], end_labels=[s.end_label for s in spec.shots])
     for other in spec.languages[1:]:
         spec.narrations.pop(other, None)  # translations of an older script no longer match
     spec.save(spec_path(ctx))
@@ -182,6 +193,8 @@ class TranslateIn(ToolInput):
     language: str = Field(description="Language code, e.g. 'es'.")
     segments: list[str] = Field(description="The script translated, one segment per shot, same order.")
     labels: list[str] = Field(description="The room labels translated, one per shot.")
+    end_labels: list[str] | None = Field(None, description="The end labels translated, one per shot ('' for shots "
+                                         "without an end view). Required when any shot has an end view.")
 
 
 @tool(
@@ -200,10 +213,15 @@ def translate_script(ctx: ToolContext, args: TranslateIn) -> ToolResult:
     problems = script_problems(args.segments, lang, spec.listing, len(spec.shots), hook=False)
     if len(args.labels) != len(spec.shots):
         problems.append(f"give one label per shot ({len(spec.shots)})")
+    end_labels = [x.strip() for x in (args.end_labels or [""] * len(spec.shots))]
+    if len(end_labels) != len(spec.shots):
+        problems.append(f"give one end label per shot ({len(spec.shots)}), '' where a shot has no end view")
+    else:
+        problems += [f"shot {i}: translate its end label" for i, s in enumerate(spec.shots) if s.end_view and not end_labels[i]]
     if problems:
         raise ToolError("Revise the translation: " + "; ".join(problems) + ".")
     spec.narrations[lang] = Narration(language=lang, segments=[s.strip() for s in args.segments],
-                                      labels=[s.strip() for s in args.labels])
+                                      labels=[s.strip() for s in args.labels], end_labels=end_labels)
     spec.save(spec_path(ctx))
     return ToolResult(summary=f"Saved the {lang} script ({len(spec.narrations[lang].text.split())} words).",
                       data={"language": lang, "text": spec.narrations[lang].text})
@@ -316,6 +334,7 @@ def start_film(ctx: ToolContext, scope: list[str], languages: list[str]) -> None
     if spec.languages != languages:
         spec.narrations = {k: v for k, v in spec.narrations.items() if k in languages and k == languages[0]}
     spec.languages, spec.listing = languages, shoot.listing
+    spec.rejected = []  # rejections belong to the run that made them; this run starts its own film
     spec.save(spec_path(ctx))
 
 

@@ -72,7 +72,9 @@ class Settings(BaseSettings):
     depth_parallax_px: float = 24.0
     # Reel Studio's engine (Python 3.11, its own venv) finishes the film: captions, music mix, cover, verify.
     reelengine_python: Path | None = None
-    reelengine_models: Path | None = None  # faster-whisper models folder (small.en; `small` for Spanish)
+    # faster-whisper models (small.en; `small` for Spanish). Default <data_dir>/models/speech: git-ignored and
+    # outside the OS temp folder, which Windows clears.
+    reelengine_models: Path | None = None
 
     @property
     def shoots_dir(self) -> Path:
@@ -81,6 +83,10 @@ class Settings(BaseSettings):
     @property
     def models_dir(self) -> Path:
         return self.data_dir / "models"
+
+    @property
+    def speech_models_dir(self) -> Path:
+        return self.reelengine_models or self.models_dir / "speech"
 
     @property
     def media_cache_dir(self) -> Path:

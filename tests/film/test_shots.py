@@ -38,8 +38,10 @@ class FakeMedia:
 
 
 def _verdict(passed: bool):
-    judge = {"pass": passed, "changes": [] if passed else
-             [{"object": "cluster of pendant lights", "change": "appeared", "first_frame": "t=1.2s", "where": "top"}]}
+    judge = {"pass": passed, "failing": [] if passed else
+             [{"frame": "FRAME 2", "kind": "new", "category": "ceiling_light", "item_id": "NEW",
+               "description": "cluster of cone pendant lights over the table", "where": "", "in_photo_view": True,
+               "confidence": "high"}]}
 
     def fake_check(clip, start, end=None, judge_fn=None, **kw):
         return ClipCheck(passed=passed, reasons=[] if passed else ["judge (high confidence): pendant lights appeared"],
@@ -78,7 +80,7 @@ def test_a_clip_rejected_twice_is_regenerated_once_naming_the_failure_then_falls
 
     clips = [r for r in media.requests if isinstance(r, ClipRequest)]
     assert len(clips) == 2
-    assert "pendant lights appeared" in clips[1].prompt and "pendant" not in clips[0].prompt
+    assert "cluster of cone pendant lights" in clips[1].prompt and "pendant" not in clips[0].prompt
     assert isinstance(media.requests[-1], DepthRequest)
     assert out.source == "depth" and out.fell_back and out.clips == [fingerprint(media.requests[-1])]
     assert [a.passed for a in out.attempts] == [False, False]
