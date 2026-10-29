@@ -1,0 +1,120 @@
+{
+  "train_count": 399,
+  "heldout_count": 100,
+  "threshold": 0.02,
+  "softness": 0.04,
+  "cpu_peak_bytes": 1883115520,
+  "gpu_available": true,
+  "summary": [
+    {
+      "method": "bicubic",
+      "psnr": 34.77358048342075,
+      "ssim": 0.9374918115139007,
+      "cpu_seconds": 0.023726104004308583,
+      "gpu_seconds": null,
+      "gpu_peak_bytes": 0,
+      "cpu_cost_usd_per_image": 2.636233778256509e-07,
+      "gpu_cost_usd_per_image": null
+    },
+    {
+      "method": "lanczos",
+      "psnr": 35.012688854180155,
+      "ssim": 0.9394857239723206,
+      "cpu_seconds": 0.021456671002088114,
+      "gpu_seconds": null,
+      "gpu_peak_bytes": 0,
+      "cpu_cost_usd_per_image": 2.3840745557875682e-07,
+      "gpu_cost_usd_per_image": null
+    },
+    {
+      "method": "guided",
+      "psnr": 26.032681422357847,
+      "ssim": 0.8526810598373413,
+      "cpu_seconds": 0.7458528449997539,
+      "gpu_seconds": 0.15872922999842556,
+      "gpu_peak_bytes": 829176832,
+      "cpu_cost_usd_per_image": 8.2872538333306e-06,
+      "gpu_cost_usd_per_image": 2.204572638867022e-05
+    },
+    {
+      "method": "guided_residual",
+      "psnr": 34.14369125430411,
+      "ssim": 0.9273830169439315,
+      "cpu_seconds": 0.3635860249964753,
+      "gpu_seconds": 0.17908817166559549,
+      "gpu_peak_bytes": 975546368,
+      "cpu_cost_usd_per_image": 4.039844722183059e-06,
+      "gpu_cost_usd_per_image": 2.4873357175777152e-05
+    }
+  ],
+  "worst_cases": [
+    {
+      "id": "000494",
+      "method": "guided_residual",
+      "psnr": 26.282635245361767,
+      "ssim": 0.9056441783905029,
+      "cpu_seconds": 0.36200570000801235,
+      "crop_x": 0,
+      "crop_y": 0
+    },
+    {
+      "id": "000490",
+      "method": "guided_residual",
+      "psnr": 26.31136023381604,
+      "ssim": 0.8603951334953308,
+      "cpu_seconds": 0.39236260001780465,
+      "crop_x": 700,
+      "crop_y": 0
+    },
+    {
+      "id": "000491",
+      "method": "guided_residual",
+      "psnr": 26.54620106947981,
+      "ssim": 0.9033994674682617,
+      "cpu_seconds": 0.3587329000001773,
+      "crop_x": 1400,
+      "crop_y": 0
+    },
+    {
+      "id": "000495",
+      "method": "guided_residual",
+      "psnr": 27.028594111166626,
+      "ssim": 0.8828275203704834,
+      "cpu_seconds": 0.4917433999944478,
+      "crop_x": 0,
+      "crop_y": 500
+    },
+    {
+      "id": "000414",
+      "method": "guided_residual",
+      "psnr": 27.980892957576934,
+      "ssim": 0.8556582927703857,
+      "cpu_seconds": 0.2750021999818273,
+      "crop_x": 700,
+      "crop_y": 500
+    },
+    {
+      "id": "000482",
+      "method": "guided_residual",
+      "psnr": 29.025010569476972,
+      "ssim": 0.9114794731140137,
+      "cpu_seconds": 0.4447548000025563,
+      "crop_x": 1400,
+      "crop_y": 500
+    }
+  ],
+  "contact_sheets": [
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\case_000494.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\case_000490.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\case_000491.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\case_000495.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\case_000414.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\case_000482.jpg",
+    "C:\\Users\\sgu07\\Programming Projects\\shootagent-upscale\\experiments\\upscale\\results\\contact_sheets\\six_cases_contact_sheet.jpg"
+  ],
+  "cost_assumptions": {
+    "cpu_usd_per_hour": 0.04,
+    "gpu_usd_per_hour": 0.5,
+    "gpu_timing_sample_count": 20
+  }
+}
