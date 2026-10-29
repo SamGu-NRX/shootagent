@@ -1,38 +1,74 @@
-# AutoHDR agent connection (checked 28 October 2026, no account)
+# AutoHDR agent connection (checked 28 October 2026)
 
-There are two AutoHDR "agent" products:
+The account is `sgu07966@gmail.com`, created with Sign in with Google and on the Free plan (10 credits a month,
+$0 per month). Activating Free asked for no card.
 
-- **The Slack agent.** `agent-install.autohdr.com/install` only offers "Add to Slack", which provisions a hosted
-  assistant in a Slack workspace. `agent.autohdr.com` is its skills catalogue, and it is empty until you sign in.
-  ShootAgent cannot call either one.
-- **The MCP server.** AutoHDR's API page (`new.autohdr.com/api`, marked BETA) links a remote MCP server at
-  `https://mcp.realestatephotoediting.com/mcp`. This is the one an agent can call.
+**Result: the free account cannot use the MCP server or the API.** The OAuth consent page for the MCP server
+(`new.autohdr.com/consent`) shows the following and disables **Allow**:
 
-The page says: "Beta Access Now Live for Standard Plans and Above". Standard costs $265/month for 500 credits.
-The free plan gives 10 credits a month, with extra credits at $0.80 each.
+> The API is on Standard and above. Upgrade your plan to connect this app.
 
-## How the MCP server authenticates
+The flow was ended with Deny (`error=access_denied`). No token was issued, no tool list was read and no test
+edit ran.
 
-The details below come from the server's own discovery documents.
+## What AutoHDR offers developers
 
-- **Transport:** streamable HTTP. An unauthenticated `initialize` returns `401` with `WWW-Authenticate: Bearer
-  resource_metadata=".../.well-known/oauth-protected-resource/mcp"`.
-- **Authorization server:** `https://new.autohdr.com/api/auth`. Its endpoints are
-  `/oauth2/authorize`, `/oauth2/token` and `/oauth2/register` (dynamic client registration).
-- **Grants:** `authorization_code` with PKCE `S256`, `refresh_token`, and `client_credentials`. The last one is
-  for "API apps", which the API tab creates as a client ID and secret.
+There is no hackathon, developer, beta or promo-code option anywhere in the signed-in account.
+
+| Place | What it holds |
+|---|---|
+| Account settings tabs | Automations, Style settings, Billing, Team, Earn |
+| Billing | Plan, card, invoices and credit log; no code field |
+| Earn | An affiliate application and a 50% referral commission |
+| Pricing | Free: 10 credits a month, extra credits at $0.80 each |
+| Pricing | Standard: $265 a month for 500 credits; Enterprise: $960 a month for 2,000 |
+| API page (`new.autohdr.com/api`) | "Beta Access Now Live for Standard Plans and Above" |
+
+The API page has two modes:
+
+- **MCP:** an "Add to Claude" button for `https://mcp.realestatephotoediting.com/mcp`.
+- **API:** "Create your API app", which issues a client ID and secret and can download them as a `.env` file,
+  plus a link to the API docs. No app was created; per the consent page, its tokens would also need Standard.
+
+## The REST API, from its public OpenAPI spec
+
+The spec is at `https://external.realestatephotoediting.com/openapi.json` (`external-api` 0.1.0).
+
+- **Auth:** OAuth 2.0.
+  - `client_credentials` acts on your own account.
+  - `authorization_code` acts for a user, with `offline_access` for refresh tokens.
+  - The token URL is `https://new.autohdr.com/api/auth/oauth2/token`.
+  - The `resource` parameter is required on the token request.
+- **Endpoints, all under `/v1`:**
+  - `me`, `credits`, `settings`, `capabilities` (transforms with live prices) and `models`.
+  - Photoshoots: create with presigned uploads, or `from-urls`.
+  - `commit` and `status`, then `photos`.
+  - `photos/download`, which charges credits.
+  - Per photo: history, `source-photos`, `version`, and `describe` (free).
+  - `transforms`: run, list and poll.
+  - `asset-uploads` for masks and reference images.
+  - `presets`: list, get and `run`.
+- **Documented errors:** `402 insufficient_credits` (nothing charged) and `403 transform_not_exposed`.
+- **Timing:** the spec says HDR processing "typically a few minutes, plan on ~30 min".
+
+## The MCP server
+
+- **Transport:** streamable HTTP.
+- **Authorization server:** `https://new.autohdr.com/api/auth`, with `/oauth2/authorize`, `/oauth2/token` and
+  `/oauth2/register` (dynamic client registration).
+- **Grants:** PKCE `S256`, `authorization_code`, `refresh_token` and `client_credentials`.
 - **Scopes:** `photoshoots:read`, `photoshoots:write`, `images:edit`, `presets:read`, `presets:run`,
   `offline_access`.
-- **No static API key.** Claude Code stores the OAuth token itself after `/mcp`, then "Authenticate".
 
-The tool list needs an authorised session, so it was not read. The scopes and the page's three headings outline
-what the tools cover. Those headings are "Photoshoot creation: pick a look, start a shoot", "Post-processing:
-make any re-edit" and "Agent Tools".
+Dynamic registration works on the Free plan; the plan check is on the consent page. The registration (client ID
+and secret, no tokens) is saved at `~/.local/share/shootagent/autohdr/oauth.json` (0600), outside every repo.
+It can be reused after an upgrade.
+
+The flow ran with the MCP Python SDK 2.3.0 OAuth client, in a throwaway environment under `/tmp`, catching the
+callback on `127.0.0.1:33418`.
 
 ## State on the demo Mac
 
-- **Configured:** `claude mcp add --scope local --transport http autohdr https://mcp.realestatephotoediting.com/mcp`
-  was run. Claude Code keys local scope to the main checkout, `~/Programming Projects/shootagent`. Its status is
-  "Needs authentication".
+- **Claude Code:** `autohdr` is configured with local scope, keyed to `~/Programming Projects/shootagent`.
+  Its status is "Needs authentication".
 - **Remove it with:** `claude mcp remove autohdr -s local`, run from that folder.
-- **Not done:** no AutoHDR account exists yet, and no test edit ran.
