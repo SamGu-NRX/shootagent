@@ -56,6 +56,16 @@ class Settings(BaseSettings):
     # Optional shared passcode for a public deployment. Empty disables the check.
     demo_passcode: str = ""
 
+    # Creative lab (creative/): the writers' room, the audience panel and the creativity judges.
+    creative_model: str = "claude-opus-5-5"
+    creative_effort: str = "medium"
+    audience_model: str = "claude-opus-5-5"
+    audience_effort: str = "low"
+    creative_judge_model: str = "claude-opus-5-5"
+    creative_judge_effort: str = "medium"
+    creative_workers: int = 6  # model calls in flight at once
+    render_workers: int = 2  # reels rendered at once
+
     @property
     def shoots_dir(self) -> Path:
         return self.data_dir / "shoots"
