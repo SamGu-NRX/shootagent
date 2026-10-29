@@ -62,6 +62,18 @@ def test_a_mixed_request_keeps_its_allowed_parts():
     assert r.verdict == "decline" and len(r.declined) == 2
 
 
+@pytest.mark.parametrize("text", ["Stage the bedroom", "Furnish the room", "Virtually stage the bedroom",
+                                  "Stage the patio with outdoor furniture"])
+def test_staging_a_space_is_disclosed_not_declined_as_a_new_feature(text):
+    r = classify_request(text)
+    assert r.verdict == "disclose" and [(i.verdict, i.category) for i in r.items] == [("disclose", "staging")]
+
+
+def test_staging_does_not_excuse_adding_a_feature():
+    r = classify_request("Stage the bedroom and add a fireplace")
+    assert [(i.verdict, i.category) for i in r.items] == [("disclose", "staging"), ("decline", "feature")]
+
+
 def test_check_edit_judges_the_object_not_the_context():
     assert check_edit("remove_object", {"what": "power lines", "intent": "x"}).category == "surroundings"
     assert check_edit("remove_object", {"what": "grey car", "intent": "the car in front of the neighbour's house is gone"}) is None

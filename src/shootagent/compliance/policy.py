@@ -96,8 +96,11 @@ _VIEW = re.compile(
 )
 NOT_STRUCT = '(?!\\s+(?:mats?|stops?|hangers?|wreaths?|signs?|decor|decals?|stickers?|clings?|art|clocks?|hangings?|posters?|pictures?|lights?|sconces?|shelf|shelves|mounts?|tvs?|outlets?|plates?|vents?|treatments?|coverings?|curtains?|blinds?|screens?|reflections?|glare|clutter|items?|contents?|magnets?|handles?|knobs?|hardware|ac\\b|a/c|air\\s+condition\\w*|units?|fans?|heaters?|tools?|toys?|accessories|deck|decks|side|sides|area|areas|edge|edges|furniture|chairs?|loungers?|towels?|floats?|cover|covers))'
 _ARTICLES = r"(?:(?:a|an|the|some|new|nice|big|small|large|beautiful|modern|another|second|extra|real|working|built-in|in-ground|above-ground)\s+){0,3}"
+# _ADD without "stage" and "furnish": staging puts furniture in a space the property has ("stage the bedroom",
+# "furnish the patio"), it never adds the space, so it is disclosed as staging below rather than declined here.
+_ADD_FEATURE = r"add|adding|insert|place|put|include|install|render|create|build|show"
 _FEATURE_ADD = re.compile(
-    rf"\b(?:{_ADD})\s+{_ARTICLES}(?:swimming\s+pools?|pools?|hot\s+tubs?|jacuzzis?|spas?|decks?|patios?|balcon(?:y|ies)|"
+    rf"\b(?:{_ADD_FEATURE})\s+{_ARTICLES}(?:swimming\s+pools?|pools?|hot\s+tubs?|jacuzzis?|spas?|decks?|patios?|balcon(?:y|ies)|"
     r"porch(?:es)?|fireplaces?|chimneys?|windows?|skylights?|doors?|garages?|rooms?|bedrooms?|bathrooms?|"
     r"extensions?|(?:second|2nd|third)\s+(?:story|storey|floor)|fences?|gazebos?|pergolas?|sheds?|"
     r"(?:tennis|basketball|pickleball)\s+courts?|driveways?|solar\s+panels?|staircases?|kitchen\s+islands?)\b"
