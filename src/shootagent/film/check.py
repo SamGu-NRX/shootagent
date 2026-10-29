@@ -35,7 +35,7 @@ to 960 px on the long edge:
 Motion, appearance and line findings count only when they persist across two consecutive samples
 (0.5 s). They need frame-0 content to stay in view: for a clip with an end photo whose last frame shares
 less than half its area with the start photo (a room-to-room move), they are reported as not checkable,
-and only the endpoint checks and the judge apply.
+and the clip fails with ROOM_TO_ROOM whatever the judge says: an unverifiable clip never passes.
 """
 from __future__ import annotations
 
@@ -777,6 +777,8 @@ def counts_against(f: dict, strict: bool) -> bool:
 
 _CHANGE_WORD = {"new": "appeared", "missing": "disappeared", "changed": "changed_shape"}
 
+ROOM_TO_ROOM = "room-to-room walk: can't be verified against a photo"
+
 Judge = Callable[[np.ndarray, "np.ndarray | None", "list[tuple[float, np.ndarray]]"], dict[str, Any]]
 
 
@@ -948,6 +950,11 @@ def check_clip(clip: Path, start: np.ndarray, end: np.ndarray | None = None, jud
                            f"worst tile {r['min_tile_ssim']} at {r['worst_tile']}")
     if trackable:
         reasons += tracking_reasons(signals)
+    else:
+        # Generate only what can be verified. Without frame-0 tracks the judge is the only check left, and on
+        # the demo's walk from the bedroom into the bath it passed a clip that added a person in the shower
+        # window (handoff c46bbca496, S02-A1). Any judge findings still follow below.
+        reasons.append(ROOM_TO_ROOM)
     if not signals["coverage"]["pass"]:
         reasons.append(f"{oop * 100:.0f}% of a frame shows area outside the start photo, which cannot be checked")
     jd = signals.get("judge")

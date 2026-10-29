@@ -23,3 +23,36 @@ def test_a_new_item_outside_every_photo_fails_only_in_strict_mode():
     """Fails if an unverifiable fixture (T3's switch plate, on wall the photo cuts off) passes in strict mode."""
     assert counts_against(_f("new", "high", in_view=False), strict=True)
     assert not counts_against(_f("new", "high", in_view=False), strict=False)
+
+
+def test_a_room_to_room_walk_the_tracking_cannot_follow_never_passes_even_if_the_judge_does(tmp_path):
+    """Fails if a clip with an end photo that the tracking checks cannot follow passes on the judge alone (the
+    judge passed the demo's bedroom-to-bath walk, which added a person in the shower window)."""
+    import shutil
+
+    import numpy as np
+    import pytest
+
+    from shootagent.film.check import ROOM_TO_ROOM, check_clip
+    from shootagent.film.video import VideoWriter
+
+    if shutil.which("ffmpeg") is None:
+        pytest.skip("needs ffmpeg")
+
+    def room(seed):
+        r = np.random.default_rng(seed)
+        img = np.full((540, 960, 3), 200, np.uint8)
+        for _ in range(60):
+            y, x = r.integers(0, 500), r.integers(0, 900)
+            img[y:y + 40, x:x + 60] = r.integers(0, 255, 3)
+        return img
+
+    start, end = room(1), room(2)
+    clip = tmp_path / "walk.mp4"
+    with VideoWriter(clip, 960, 540, 24) as vw:
+        for k in range(48):
+            vw.write(start if k < 24 else end)
+    passing_judge = lambda photo, end_photo, frames: {"pass": True, "failing": [], "changes": [], "usages": [], "usd": 0.0}
+    result = check_clip(clip, start, end, judge=passing_judge)
+    assert not result.passed
+    assert ROOM_TO_ROOM in result.reasons

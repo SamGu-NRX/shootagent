@@ -89,7 +89,9 @@ Film trace events, in addition to the common ones (`view` is the shot's photo):
   inventory_items, frames_checked, form, strict, model, usages: [{purpose, model, input_tokens, output_tokens,
   usd}], usd}` or `{pass: false, error}`. Low-confidence findings never fail a clip and "missing" ones fail only
   at high confidence. For a room-to-room clip whose last frame shares under half its area with the start photo,
-  `motion`, `appearance` and `lines` are `{checkable: false, pass: null, shared_with_start, why}`.
+  `motion`, `appearance` and `lines` are `{checkable: false, pass: null, shared_with_start, why}`, and the clip
+  fails with the reason "room-to-room walk: can't be verified against a photo" whatever the judge says. Scores on
+  real clips: [docs/eval/film_checker.md](eval/film_checker.md).
 - `retry` `{shot, attempt, max_attempts: 2, reason, next: "regenerate with the failure named in the prompt" |
   "depth fallback"}`: after a failed check, or when the backend cannot serve the request.
 - `shot` `{shot, end_view, planned, source, fell_back, clips, note}`: what the shot will play.

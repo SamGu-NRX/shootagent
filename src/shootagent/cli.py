@@ -255,7 +255,8 @@ def cmd_film_finish(a) -> int:
     trace.emit("run_start", mode="film", request="film-finish: prepare, narrate and assemble the planned film",
                views=list(dict.fromkeys(s.view for s in spec.shots)), languages=spec.languages, media=settings.film_media)
     ok, summary, started = True, "", time.perf_counter()
-    steps = [("prepare_shots", {"shots": list(range(len(spec.shots)))}), ("narrate", {}), ("assemble_film", {})]
+    steps = [("prepare_shots", {"shots": a.shots if a.shots is not None else list(range(len(spec.shots)))}),
+             ("narrate", {}), ("assemble_film", {})]
     if a.assemble_only:  # keep the shots' clips and check results; narrate (cached) and assemble again
         steps = steps[1:]
     for name, inp in steps:
@@ -414,6 +415,7 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("film-finish", help="make the clips, narrate and assemble a film from its spec, with no agent")
     s.add_argument("shoot")
     s.add_argument("--assemble-only", action="store_true", help="keep the prepared shots and their checks")
+    s.add_argument("--shots", nargs="+", type=int, help="prepare only these shot indices again, keep the others")
     s.set_defaults(fn=cmd_film_finish)
 
     s = sub.add_parser("film-import-media", help="verify the clips a handoff folder came back with and add them to replay")
