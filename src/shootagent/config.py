@@ -55,6 +55,8 @@ class Settings(BaseSettings):
 
     # Optional shared passcode for a public deployment. Empty disables the check.
     demo_passcode: str = ""
+    # Base URL for links printed into the listing kit (QR codes, disclosures). Empty: the URL the request came in on.
+    public_base_url: str = ""
 
     @property
     def shoots_dir(self) -> Path:

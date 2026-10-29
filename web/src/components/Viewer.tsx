@@ -275,22 +275,24 @@ export function Viewer() {
         <div className="vb-group">
           <button
             className="tog"
+            aria-label="Brackets"
             aria-pressed={bracketsOn}
             onClick={() => setSource("a", bracketsOn ? { kind: "finished" } : view.reference ? { kind: "reference" } : { kind: "bracket", index: 0 })}
             title="Compare against the exposure brackets"
           >
-            <Layers size={14} aria-hidden /> Brackets
+            <Layers size={14} aria-hidden /> <span className="tog-label">Brackets</span>
           </button>
-          <button className="tog" aria-pressed={showFindings} onClick={() => toggle("showFindings")} title="Finding boxes (F)">
-            <ScanLine size={14} aria-hidden /> Findings
+          <button className="tog" aria-label="Findings" aria-pressed={showFindings} onClick={() => toggle("showFindings")} title="Finding boxes (F)">
+            <ScanLine size={14} aria-hidden /> <span className="tog-label">Findings</span>
           </button>
           <button
             className="tog"
+            aria-label="Mask"
             aria-pressed={showMask}
             onClick={() => toggle("showMask")}
             title={maskRecord ? "Mask overlay (M)" : "No mask for this version"}
           >
-            <SquareDashed size={14} aria-hidden /> Mask
+            <SquareDashed size={14} aria-hidden /> <span className="tog-label">Mask</span>
           </button>
         </div>
         <div className="vb-group vb-right">

@@ -114,9 +114,10 @@ def set_finding(ctx: ToolContext, args: SetFindingIn) -> ToolResult:
 class RequestResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
     request: str = Field(description="The part of the customer's request this covers, in a few words.")
-    status: Literal["applied", "not_needed", "failed"] = Field(
+    status: Literal["applied", "not_needed", "failed", "declined"] = Field(
         description="'applied' after a verified edit, 'not_needed' when it does not apply to this photo, "
-        "'failed' when every attempt failed its check."
+        "'failed' when every attempt failed its check, 'declined' when the listing photo policy forbids it "
+        "(it would misrepresent the property)."
     )
     reason: str = Field(description="One sentence: what was done, or why it was not needed.")
 
@@ -129,8 +130,9 @@ class ReportViewIn(ToolInput):
 @tool(
     "report_view_result",
     "In chat mode, close out one view: for each part of the customer's request say whether it was applied, "
-    "not needed (does not apply to this photo, e.g. 'remove the car' on an interior), or failed. Call it once "
-    "for every view in scope, including untouched ones, after any edits on that view.",
+    "not needed (does not apply to this photo, e.g. 'remove the car' on an interior), failed, or declined (the "
+    "listing photo policy forbids it). Call it once for every view in scope, including untouched ones, after any "
+    "edits on that view.",
     kind="shoot",
 )
 def report_view_result(ctx: ToolContext, args: ReportViewIn) -> ToolResult:
@@ -143,7 +145,7 @@ def report_view_result(ctx: ToolContext, args: ReportViewIn) -> ToolResult:
 
     ctx.store.mutate(ctx.shoot_id, apply)
     ctx.trace.emit("view_result", view=args.view, results=results)
-    counts = {s: sum(r["status"] == s for r in results) for s in ("applied", "not_needed", "failed")}
+    counts = {s: sum(r["status"] == s for r in results) for s in ("applied", "not_needed", "failed", "declined")}
     return ToolResult(
         summary=f"{args.view}: " + ", ".join(f"{r['request']} {r['status']}" for r in results) + ".",
         data={"view": args.view, "results": results, "counts": counts},
@@ -179,3 +181,99 @@ def set_listing(ctx: ToolContext, args: ListingIn) -> ToolResult:
         summary="Listing updated: " + ", ".join(f"{k}={v}" for k, v in fields.items()) + ".",
         data={"listing": shoot.listing.model_dump(exclude_none=True)},
     )
+
+
+# ---- listing copy (copy mode) ------------------------------------------------------------------------------
+
+
+class ListingCopyIn(ToolInput):
+    headline: str = Field(min_length=8, max_length=90, description="One line a buyer reads first, under 90 characters.")
+    remarks: str = Field(
+        min_length=80,
+        max_length=1500,
+        description="MLS public remarks: what the photos show (rooms, light, materials, updates, outdoor space), in "
+        "plain sentences. Under 1,500 characters.",
+    )
+
+
+@tool(
+    "write_listing_copy",
+    "Save the listing headline and the MLS public remarks. Copy is checked against fair-housing wording first: a "
+    "phrase that says who should live there (families, couples, retirees), refers to religion, race, disability or "
+    "national origin, or excludes anyone is refused with the reason, and nothing is saved until it is rewritten. "
+    "Phrases that are only commonly flagged ('master suite') are saved with a note.",
+    kind="shoot",
+)
+def write_listing_copy(ctx: ToolContext, args: ListingCopyIn) -> ToolResult:
+    from ..compliance.fairhousing import lint
+
+    flags = lint(f"{args.headline}\n{args.remarks}")
+    avoid = [f for f in flags if f.severity == "avoid"]
+    if avoid:
+        detail = "; ".join(f'"{f.phrase}": {f.why} Try: {f.suggestion}' for f in avoid)
+        return ToolResult(
+            summary=f"Refused by the fair-housing check, nothing saved: {detail} Rewrite without these phrases.",
+            data={"flags": [f.__dict__ for f in avoid], "saved": False},
+            ok=False,
+        )
+
+    def apply(shoot):
+        shoot.listing.headline = args.headline.strip()
+        shoot.listing.description = args.remarks.strip()
+
+    ctx.store.mutate(ctx.shoot_id, apply)
+    review = [f for f in flags if f.severity == "review"]
+    note = (" Commonly flagged, kept: " + "; ".join(f'"{f.phrase}" ({f.suggestion})' for f in review)) if review else ""
+    return ToolResult(
+        summary=f"Saved the headline and {len(args.remarks)} characters of remarks.{note}",
+        data={"saved": True, "review": [f.phrase for f in review]},
+    )
+
+
+class PhotoCaption(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    view: str
+    caption: str = Field(min_length=2, max_length=60, description="Short room caption: 'Kitchen', 'Primary suite'.")
+    alt_text: str = Field(
+        min_length=12,
+        max_length=200,
+        description="One sentence describing what the photo shows, for screen readers: 'Kitchen with white shaker "
+        "cabinets, a marble island and pendant lights'.",
+    )
+
+
+class CaptionsIn(ToolInput):
+    captions: list[PhotoCaption] = Field(min_length=1)
+
+
+@tool(
+    "set_photo_captions",
+    "Save a caption and alt text for each listing photo. They go into the listing kit's captions.csv for the MLS "
+    "photo descriptions and image alt text. Describe what is visible; never describe people or who should live there.",
+    kind="shoot",
+)
+def set_photo_captions(ctx: ToolContext, args: CaptionsIn) -> ToolResult:
+    from ..compliance.fairhousing import lint
+
+    bad = [(c.view, f) for c in args.captions for f in lint(f"{c.caption} {c.alt_text}") if f.severity == "avoid"]
+    if bad:
+        return ToolResult(
+            summary="Refused by the fair-housing check: "
+            + "; ".join(f'{v} "{f.phrase}": {f.why}' for v, f in bad)
+            + " Rewrite those captions.",
+            ok=False,
+        )
+
+    def apply(shoot):
+        ids = {v.id for v in shoot.views}
+        unknown = sorted({c.view for c in args.captions} - ids)
+        if unknown:
+            raise ToolError(f"Unknown views {', '.join(unknown)}.")
+        for c in args.captions:
+            meta = shoot.view(c.view).meta
+            meta["caption"] = c.caption.strip()
+            meta["alt_text"] = c.alt_text.strip()
+
+    ctx.store.mutate(ctx.shoot_id, apply)
+    return ToolResult(summary=f"Saved captions and alt text for {len(args.captions)} photo(s).",
+                      data={"views": [c.view for c in args.captions]})

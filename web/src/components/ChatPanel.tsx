@@ -1,4 +1,4 @@
-import { ArrowUp, ChevronRight, SquareDashed, X } from "lucide-react";
+import { ArrowUp, ChevronRight, ShieldAlert, ShieldCheck, SquareDashed, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { pct } from "../lib/format";
 import { activeRun, currentView, useStore } from "../state/store";
@@ -7,17 +7,19 @@ import { LiveClock } from "./LiveClock";
 import { MessageText } from "./MessageText";
 import { radioKeys } from "./radioKeys";
 
+// Short labels keep the chips to a row or two in the side panel; each sends its full request.
 const QUICK = [
-  "Remove the cars and trash bins",
-  "Put the reference image on the TV screen",
-  "Match the wall colour to the reference",
-  "Add a 'Listed by Acme Realty' watermark bottom-right on every photo",
+  { label: "Remove cars and bins", request: "Remove the cars and trash bins" },
+  { label: "Reference image on the TV", request: "Put the reference image on the TV screen" },
+  { label: "Match wall colour", request: "Match the wall colour to the reference" },
+  { label: "Add a watermark", request: "Add a 'Listed by Acme Realty' watermark bottom-right on every photo" },
 ];
 
 const OUTCOME_TEXT: Record<ViewOutcome, string> = {
   applied: "Applied",
   not_needed: "Not needed",
   failed: "Couldn't apply",
+  declined: "Declined",
   pending: "Working",
 };
 
@@ -74,10 +76,11 @@ function Exchange({ trace }: { trace: TraceState }) {
   const results = Object.entries(trace.viewResults);
   const steps = trace.items.filter((i) => i.type === "tool").length;
   // Applied first, then the rest, so the changes are what the eye lands on.
-  const order: ViewOutcome[] = ["applied", "failed", "pending", "not_needed"];
+  const order: ViewOutcome[] = ["applied", "failed", "declined", "pending", "not_needed"];
   results.sort((a, b) => order.indexOf(a[1].outcome) - order.indexOf(b[1].outcome));
   const unreached = results.filter(([, r]) => r.reason === NOT_REACHED);
-  const changed = results.filter(([, r]) => r.outcome !== "not_needed" && r.reason !== NOT_REACHED);
+  const refused = results.filter(([, r]) => r.outcome === "declined");
+  const changed = results.filter(([, r]) => r.outcome !== "not_needed" && r.outcome !== "declined" && r.reason !== NOT_REACHED);
   const skipped = results.filter(([, r]) => r.outcome === "not_needed");
 
   const openTrace = () => {
@@ -85,9 +88,24 @@ function Exchange({ trace }: { trace: TraceState }) {
     setTab("trace");
   };
 
+  const declined = trace.policy?.items.filter((i) => i.verdict === "decline") ?? [];
+  const disclosed = trace.policy?.verdict === "disclose" && results.some(([, r]) => r.outcome === "applied");
+
   return (
     <div className="exchange">
+      {trace.origin === "client" && <p className="msg-origin">Client · review link</p>}
       <p className="msg-user">{trace.request}</p>
+      {declined.length > 0 && (
+        <div className="policy-note" data-tone="decline" role="note">
+          <ShieldAlert size={14} aria-hidden />
+          <div>
+            <p className="policy-note-title">
+              Declined by the listing photo policy: {declined.map((d) => `“${d.text}”`).join(", ")}
+            </p>
+            <p>{declined[0]!.reason}</p>
+          </div>
+        </div>
+      )}
       {running && (
         <p className="msg-status">
           <span className="live-dot" aria-hidden /> Working · {steps} tool call{steps === 1 ? "" : "s"} · <LiveClock since={trace.startedAt} />
@@ -117,8 +135,23 @@ function Exchange({ trace }: { trace: TraceState }) {
               ))}
             </ul>
           )}
+          {refused.length > 0 && (
+            <details className="skipped" open={changed.length === 0 && refused.length <= 2}>
+              <summary>
+                <ChevronRight size={13} aria-hidden />
+                Declined in {refused.length} photo{refused.length > 1 ? "s" : ""}
+              </summary>
+              <ul>
+                {refused.map(([viewId, r]) => (
+                  <li key={viewId}>
+                    <ResultRow viewId={viewId} r={r} />
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
           {skipped.length > 0 && (
-            <details className="skipped" open={changed.length === 0}>
+            <details className="skipped" open={changed.length === 0 && refused.length === 0}>
               <summary>
                 <ChevronRight size={13} aria-hidden />
                 Not needed in {skipped.length} photo{skipped.length > 1 ? "s" : ""}
@@ -147,6 +180,12 @@ function Exchange({ trace }: { trace: TraceState }) {
               </ul>
             </details>
           )}
+        </div>
+      )}
+      {disclosed && !running && (
+        <div className="policy-note" data-tone="disclose" role="note">
+          <ShieldCheck size={14} aria-hidden />
+          <p>These photos will be marked digitally altered on the listing and paired with their originals (AB 723). See Deliver.</p>
         </div>
       )}
       {!running && (
@@ -226,8 +265,8 @@ function Composer() {
     >
       <div className="quick" role="group" aria-label="Suggested requests">
         {QUICK.map((q) => (
-          <button key={q} type="button" className="quick-btn" onClick={() => void submit(q)} disabled={!shoot || sending}>
-            {q}
+          <button key={q.label} type="button" className="quick-btn" title={q.request} onClick={() => void submit(q.request)} disabled={!shoot || sending}>
+            {q.label}
           </button>
         ))}
       </div>

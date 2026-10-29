@@ -8,6 +8,8 @@ at a time and later ones queue. The loop owns three rules the model cannot bypas
    to the parent, emits `check` and `retry`, and tells the model to try something different. Failed checks
    per view are capped at `settings.max_fix_attempts`, after which edits on that view are refused.
 3. Edits stay inside the run's views.
+4. In chat mode, an edit that would misrepresent the property (compliance/policy.py: hiding damage, removing
+   power lines or neighbouring buildings, inventing a view or a feature) is refused before it runs.
 
 History is append-only (assistant turns are passed back unchanged, including progress-note thinking blocks),
 so the cached prefix and the model's thinking blocks stay valid from turn to turn.
@@ -80,6 +82,7 @@ MODE_TOOLS: dict[str, list[str]] = {
         "set_listing",
     ],
     "reel": ["submit_plan", "list_views", "view_photo", "label_views", "render_reel", "set_listing"],
+    "copy": ["submit_plan", "list_views", "view_photo", "label_views", "write_listing_copy", "set_photo_captions"],
 }
 
 
@@ -140,6 +143,8 @@ class AgentRun:
     request: str | None = None
     views: list[str] | None = None
     mask: str | None = None
+    origin: str = "photographer"  # "client" when the request came from the client review link
+    comment: str | None = None  # the client comment this run answers
     cancel: threading.Event = field(default_factory=threading.Event)
 
     def __post_init__(self):
@@ -160,6 +165,10 @@ class AgentRun:
             scope = [shoot.masks[self.mask].view]
         elif self.mode == "reel":
             scope = [v.id for v in shoot.views if v.approved and v.head] or [v.id for v in shoot.views if v.head]
+        elif self.mode == "copy":
+            # The listing set: approved photos, else every photo a regroup did not replace.
+            live = [v for v in shoot.views if v.head and not v.meta.get("split_into")]
+            scope = [v.id for v in live if v.approved] or [v.id for v in live]
         else:
             scope = all_ids
         self.scope: list[str] = scope
@@ -174,6 +183,11 @@ class AgentRun:
             {"type": "text", "text": system_prompt(self.mode), "cache_control": {"type": "ephemeral"}}
         ]
         self._final_text = ""
+        self.policy = None
+        if self.mode == "chat":
+            from ..compliance.policy import classify_request
+
+            self.policy = classify_request(self.request or "")
 
     # ---- public ------------------------------------------------------------------------------------------
     def run(self) -> None:
@@ -185,6 +199,9 @@ class AgentRun:
             views=self.scope,
             mask=self.mask,
             model=self.settings.agent_model,
+            origin=self.origin,
+            comment=self.comment,
+            policy=self.policy.to_dict() if self.policy else None,
         )
         try:
             self._loop()
@@ -362,6 +379,17 @@ class AgentRun:
                 f"{view} has used all {self.settings.max_fix_attempts} fix attempts. Stop "
                 "editing it and record the outcome as failed.",
             )
+        if self.mode == "chat" and spec.kind == "edit":
+            from ..compliance.policy import check_edit
+
+            hit = check_edit(name, inp)
+            if hit is not None:
+                return self._refuse(
+                    block,
+                    f"Refused by the listing photo policy ({hit.category}): {hit.reason} Do not attempt this edit "
+                    "another way; report that part of the request as declined with report_view_result and tell "
+                    "the customer why.",
+                )
 
         ctx = ToolContext(self.store, self.shoot_id, self.trace, self.settings, call_id=block.id)
         result = run_tool(ctx, name, inp)
@@ -449,10 +477,26 @@ class AgentRun:
         shoot = self.store.load(self.shoot_id)
         lines = [f"Shoot: {shoot.title} ({len(shoot.views)} views). Views in scope: {', '.join(self.scope)}."]
         if self.mode == "chat":
-            lines.insert(0, f"Customer request: {self.request.strip()}")
+            who = "the client, from the review link" if self.origin == "client" else "the customer"
+            lines.insert(0, f"Request from {who}: {self.request.strip()}")
+            if self.policy is not None and self.policy.items:
+                lines.append(
+                    "Listing photo policy check of the request (deterministic; edits it declines are refused by the "
+                    "loop): " + "; ".join(f'"{i.text}" -> {i.verdict} ({i.category})' for i in self.policy.items)
+                )
         elif self.mode == "reel":
             lines.insert(0, "Assemble the listing reel from the views in scope. Listing: "
                          + shoot.listing.model_dump_json(exclude_none=True))
+        elif self.mode == "copy":
+            from ..compliance.disclosure import build_report
+
+            lines.insert(0, "Write the listing copy for the views in scope. Listing: "
+                         + shoot.listing.model_dump_json(exclude_none=True, exclude={"description"}))
+            disclosed = {p.view: p.disclosure for p in build_report(self.store, self.shoot_id).photos
+                         if p.view in self.allowed and p.disclosure}
+            if disclosed:
+                lines.append("Photos with a disclosure on the listing (do not describe what was removed or changed as "
+                             "a feature): " + json.dumps(disclosed, ensure_ascii=False))
         else:
             lines.insert(0, "Run the autonomous QC pass on the views in scope.")
         if self.mask:
@@ -519,6 +563,16 @@ class AgentRun:
                 for e in self._events()
             )
             return "" if rendered else "call render_reel to produce the reel."
+        if self.mode == "copy":
+            ok = [e["data"] for e in self._events() if e["kind"] == "tool_result" and e["data"].get("ok")]
+            missing: list[str] = []
+            if not any(d.get("tool") == "write_listing_copy" for d in ok):
+                missing.append("save the headline and remarks with write_listing_copy")
+            captioned = {v for d in ok if d.get("tool") == "set_photo_captions" for v in d.get("data", {}).get("views", [])}
+            uncaptioned = [v for v in self.scope if v not in captioned]
+            if uncaptioned:
+                missing.append(f"call set_photo_captions for {', '.join(uncaptioned)}")
+            return "; ".join(missing)
         if self.mode == "chat":
             missing = [
                 v
@@ -556,16 +610,16 @@ class AgentRun:
             if e["kind"] == "finding":
                 f = e["data"]["finding"]
                 latest[f["id"]] = f["status"]
-        not_needed = 0
+        not_needed = declined = 0
         for e in self._events():
             if (
                 e["kind"] == "tool_result"
                 and e["data"].get("tool") == "report_view_result"
                 and e["data"].get("ok")
             ):
-                not_needed += sum(
-                    r["status"] == "not_needed" for r in e["data"].get("data", {}).get("results", [])
-                )
+                results = e["data"].get("data", {}).get("results", [])
+                not_needed += sum(r["status"] == "not_needed" for r in results)
+                declined += sum(r["status"] == "declined" for r in results)
         c = self.counts
         return {
             "findings_detected": sum(1 for s in latest.values() if s != "dismissed"),
@@ -575,6 +629,7 @@ class AgentRun:
             "edits_applied": c.edits_applied,
             "edits_reverted": c.checks_failed,
             "edits_skipped": not_needed,
+            "edits_declined": declined,
             "tool_calls": c.tool_calls,
             "refused_calls": c.refused,
             "model_calls": c.model_calls,
@@ -682,6 +737,8 @@ def start_run(
     settings: Settings | None = None,
     client: Any = None,
     manager: RunManager | None = None,
+    origin: str = "photographer",
+    comment: str | None = None,
 ) -> TraceRun:
     """Create a run and start it (or queue it behind the shoot's active run). Returns its trace at once."""
     settings = settings or get_settings()
@@ -690,7 +747,8 @@ def start_run(
 
         client = default_client()
     trace = TraceRun(store.shoot_dir(shoot_id), mode)
-    agent = AgentRun(store, shoot_id, mode, trace, settings, client, request=request, views=views, mask=mask)
+    agent = AgentRun(store, shoot_id, mode, trace, settings, client, request=request, views=views, mask=mask,
+                     origin=origin, comment=comment)
     (manager or MANAGER).start(agent)
     return trace
 

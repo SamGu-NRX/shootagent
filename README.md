@@ -5,6 +5,12 @@ editing pipeline got wrong, applies a customer's chat requests across every phot
 a 9:16 listing reel from the approved photos. Every decision it makes shows up in a live trace: the
 plan, each tool call, each self-check, and each retry.
 
+Then it delivers the listing the way California now requires. Since 1 January 2026, AB 723 says a
+digitally altered listing photo must say so and be paired with the unaltered original. ShootAgent knows
+which photos are altered because it keeps every edit and the camera's own brackets: it writes the
+disclosures, pairs each altered photo with what the camera captured, refuses edits that would
+misrepresent the property, and publishes a page where anyone can check the edit record in their browser.
+
 Built for the AITX & MLOps World Community Hackathon (Austin Tech Week, October 2026), entering the
 AutoHDR "Image Models & Pipelines" track (conversational editing, with AI quality control as the
 agent's first pass) and the Antler "Agents" track.
@@ -54,6 +60,56 @@ finishes. The music is generated, so the reel carries no licence.
 ![Removals from saved customer requests](docs/media/removals-before-after.jpg)
 
 *Removals from saved customer requests: a trash bin, a car, wires and an extension cord, a lockbox.*
+
+### Listing compliance and delivery
+
+**Disclosures, from the edit log.** Every change between what the camera captured and the listing photo
+falls in one class: an *alteration* (something added, removed or changed in the scene: a car removed, a
+wall recoloured, virtual staging, a replaced sky), an *adjustment* (exposure, white balance,
+straightening; AB 723 exempts these), a *restoration* (a QC fix that brings the photo back to what the
+camera captured), or an *overlay* (a watermark, lot lines). ShootAgent reads its own versions for its
+edits and its QC verdicts for the upstream editor's: a sky replacement the agent judged legitimate is
+still an alteration to disclose. Each altered photo gets one sentence ("Digitally altered: grey car
+removed, sky replaced.") and is paired with its unaltered original: the editor's delivered photo when QC
+confirmed the editor changed nothing in the scene, otherwise the brackets fused and registered onto the
+photo's frame, so a before/after slider lines up pixel for pixel.
+
+![The public disclosure page: as captured versus the listing photo](docs/media/disclosure-page.jpg)
+
+*The public disclosure page on a real AutoHDR case. Left, what the camera captured (the brackets
+fused); right, the photo the editor delivered, with the stop sign erased and the sky replaced. QC flagged
+the missing sign; the photographer chose to disclose it, and the page verified the edit record in the
+browser.*
+
+**Listing photo policy, enforced by the loop.** Some requests should never be carried out: hiding a
+crack or a water stain, removing power lines, poles or the neighbour's house, inventing an ocean view,
+adding a pool, removing a wall, stretching a room to look bigger. A deterministic classifier
+(`compliance/policy.py`) judges every chat request part by part; the agent is told the verdict, and the
+loop refuses a misrepresenting edit tool call before it runs even if the model tries anyway, the same way
+it enforces the plan and the self-check. The customer gets the reason in plain words, and the allowed
+parts of the request still happen.
+
+**A verifiable edit record.** Publishing writes a SHA-256 hash chain per photo: the brackets, the
+delivered photo, every edit (with its parent, mask and self-check result), and the published files.
+Each entry hashes its own text and links to the one before, so changing one byte of a photo, reordering
+two edits or rewriting a disclosure breaks the chain. The public page (`/#/d/<token>`, the link a QR code
+on a flyer opens) re-hashes everything in the browser; `shootagent verify kit.zip` does the same offline.
+
+**Client review link.** The photographer sends the listing agent a link (`/#/r/<token>`, no passcode). The
+agent taps a spot on a photo and asks for a change; ShootAgent segments what was tapped, makes the edit
+under the same policy and self-checks, and shows the result, which the client can undo. Declined
+requests are answered at once and cost nothing. Each link has a budget of automatic edits.
+
+![The client review link on a phone-sized sheet](docs/media/client-review.jpg)
+
+**Listing kit.** One zip: MLS-ready photos (2048 px) in showing order; labelled copies for social posts
+and print, where altered photos carry the disclosure and a QR code to the original; the unaltered
+originals; captions.csv with alt text and the disclosure per photo; listing remarks with a fair-housing
+wording check; the provenance manifest; and the reel. "Draft with ShootAgent" writes the headline, the
+remarks and a caption and alt text per photo from what the photos show; the tools refuse copy that says
+who should live there ("perfect for families") and save nothing until it is rewritten.
+
+![The Deliver tab](docs/media/deliver-tab.jpg)
 
 ## Results
 
@@ -115,6 +171,16 @@ every photo in 83 s ($0.25), and half a stop brighter in 154 s ($0.37, measured 
 each, judged by the vision judge): gpt-image-2 with a grown, shadow-aware mask passes 10 to 11 of 12;
 LaMa alone passes 2 of 12.
 
+**Listing compliance** (deterministic parts, measured without model calls). On AutoHDR's 200 saved
+customer requests the listing photo policy declines exactly one, "remove the electric pole"; the other
+199 are disclosed alterations (191) or exempt adjustments (8), so it does not get in the way of real
+work. On the showcase shoot, QC's bracket comparison flagged the erased stop sign (defect_train_0016,
+"something visible in every bracket is missing") as a possible undisclosed removal before any agent
+ran. Publishing 8 photos (bracket fusions, listing JPEGs, chains) takes about 8 s on a MacBook CPU, and a
+tampered photo in a kit fails `shootagent verify`. The agent-side paths (the loop refusing a
+misrepresenting edit, client-link runs, copy mode with a refused first draft) are covered by tests
+with a scripted model client; they have not yet been timed against live Claude runs.
+
 ## Quick start
 
 Requirements: Python 3.11 or 3.12, Node 20, ffmpeg on PATH, and [uv](https://docs.astral.sh/uv/).
@@ -157,7 +223,14 @@ uv run shootagent demo showcase           # 4 defect cases + 4 saved customer-re
 uv run shootagent demo qc-tour            # 8 defect cases: grouping, ghosting, fire, false removal, paint, 2 clean
 uv run shootagent qc <shoot-id>           # autonomous QC pass, trace printed as it runs
 uv run shootagent chat <shoot-id> "add a 'Listed by Acme Realty' watermark bottom-right on every photo"
+uv run shootagent publish <shoot-id>      # disclosures, originals and edit records; prints the public URL
+uv run shootagent kit <shoot-id>          # the listing kit zip
+uv run shootagent verify <kit.zip>        # re-hash every photo against its edit record
 ```
+
+In the UI, the **Deliver** tab holds the disclosures, publishing, the client review link and the kit.
+Set `PUBLIC_BASE_URL` when the server sits behind a proxy, so links and QR codes in the kit point at
+the public address.
 
 Or open the UI, pick a demo shoot on the start screen, and press Run QC.
 
@@ -207,6 +280,7 @@ and the HTTP contract in [docs/api.md](docs/api.md).
 | Removal | gpt-image-2 inside a grown mask that takes in the object's cast shadow, colour- and grain-matched, composited back; LaMa offline |
 | Bracket work | OpenCV feature matching and homographies, Mertens exposure fusion, Lab-space colour fitting |
 | Reel | frames drawn in Python (sub-pixel camera moves), encoded by ffmpeg; Fraunces and Inter (OFL) |
+| Compliance | `compliance/`: request policy enforced in the loop, disclosures from the op log and QC verdicts, SHA-256 hash chains, publication, labels with QR codes (segno), the kit |
 | API and UI | FastAPI with SSE; Vite, React and TypeScript |
 
 ## Datasets
@@ -238,6 +312,15 @@ variables at the unzipped folders.
   lens-corrected or cropped the way AutoHDR's own pipeline would.
 - The QC detector's confidence thresholds were chosen on the same 63 cases it is scored on.
 - Single-user: one agent run per shoot at a time, files on local disk, no accounts.
+- Disclosures follow AB 723 as MLSs summarise it (SDMLS guidance): alterations add, remove or materially
+  change what the scene shows; exposure, colour correction, cropping and straightening do not count.
+  It is not legal advice, and each MLS sets its own labelling fields.
+- The listing photo policy is a keyword classifier. It was checked against AutoHDR's 200 saved requests,
+  not against adversarial phrasing; the loop's tool-level check is the backstop.
+- The edit record proves integrity, not identity: anyone can build a hash chain. Signing it (C2PA) is the
+  next step.
+- Disclosure of the upstream editor's own changes depends on QC having looked: a photo QC has not checked
+  is marked "not checked" rather than guessed.
 
 Next steps: a firebox-aware restore; sky checks along window edges; lens-geometry checks from straight
 architectural lines; batch generative removals per shoot.

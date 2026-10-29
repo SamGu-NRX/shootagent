@@ -52,6 +52,11 @@ To record live instead, follow the shot list below.
    delta of 0 in the check row.
 4. **2:30 to 3:10, reel.** Approve the photos, press Build reel, and play the 9:16 result. The agent
    ordered the rooms and chose the camera moves; the trace shows its reasoning.
+4b. **Optional, 40 s: compliance and delivery.** Open the **Deliver** tab: the photos QC repaired say "no
+   disclosure needed", the removal says "Digitally altered: grey car removed." Press Publish, open the
+   public page, drag the slider on an altered photo (as captured versus the listing photo) and press
+   "Verify these records". In chat, ask "remove the power lines": it is declined with the reason. Open the
+   client review link on a phone, tap a bin, ask to remove it, and watch it run.
 5. **3:10 to 3:30, numbers.** The README Results table: 21/21 grouping fixed, 31/59 overall, 0 clean
    photos touched, $0.07 per photo. Close on the repo URL.
 

@@ -155,6 +155,37 @@ def cmd_runs(a) -> int:
     return 0
 
 
+def cmd_publish(a) -> int:
+    from .compliance.publish import public_url, publish
+
+    pub = publish(_store(), a.shoot)
+    for ph in pub.photos:
+        print(f"{ph.order:>2}  {ph.label:<28} {ph.status:<10} {ph.disclosure or ''}")
+    print(f"published v{pub.version}  root {pub.root[:16]}  {public_url(a.base_url, pub.token)}")
+    return 0
+
+
+def cmd_kit(a) -> int:
+    from .compliance.kit import build_kit
+
+    info = build_kit(_store(), a.shoot, a.base_url)
+    print(f"{info['path']}  ({info['size'] / 1e6:.1f} MB, {info['photos']} photos, {info['altered']} altered)")
+    return 0
+
+
+def cmd_verify(a) -> int:
+    from .compliance.kit import verify_kit
+
+    res = verify_kit(Path(a.kit))
+    for ph in res["photos"]:
+        mark = "ok " if ph["ok"] else "BAD"
+        print(f"{mark} {ph['order']:>2}  {ph['label']}")
+        for problem in ph["problems"]:
+            print(f"       {problem}")
+    print(("verified" if res["ok"] else "NOT verified") + f"  root {str(res.get('root') or '')[:16]}")
+    return 0 if res["ok"] else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -192,6 +223,20 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("shoot")
     s.add_argument("-v", "--verbose", action="store_true", help="print each run's trace")
     s.set_defaults(fn=cmd_runs)
+
+    s = sub.add_parser("publish", help="publish the listing photos with disclosures and provenance")
+    s.add_argument("shoot")
+    s.add_argument("--base-url", default="http://127.0.0.1:8000")
+    s.set_defaults(fn=cmd_publish)
+
+    s = sub.add_parser("kit", help="build the listing kit zip")
+    s.add_argument("shoot")
+    s.add_argument("--base-url", default="http://127.0.0.1:8000")
+    s.set_defaults(fn=cmd_kit)
+
+    s = sub.add_parser("verify", help="check a listing kit's photos against its provenance chains")
+    s.add_argument("kit", help="path to a listing kit zip")
+    s.set_defaults(fn=cmd_verify)
 
     a = p.parse_args(argv)
     return a.fn(a)
