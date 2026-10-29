@@ -51,6 +51,17 @@ wall outlet the customer wanted kept; the third attempt kept it.
 a home, picks a camera move and focus point per photo, renders, and checks a strip of frames before it
 finishes. The music is generated, so the reel carries no licence.
 
+**Listing film.** A narrated, captioned 9:16 film in one or more languages. The agent orders the rooms,
+picks a motion per shot (a generated clip from Grok Imagine, a depth-parallax move, or a slow push-in),
+writes the script from the photos and translates it. Every generated clip is checked against its photos
+(feature matching, motion and line consistency, and a vision judge). A clip that adds or reshapes anything
+is regenerated once with the failure named, then replaced by a depth move, which uses only the photo's
+own pixels. Generated clips that do play carry an "AI-generated motion" label (California AB 723), and
+each film ships with a manifest of every shot's source photo, motion source and check result. Gemini TTS
+speaks the script, and Reel Studio's engine adds captions, the music mix, the cover and a verify report.
+`shootagent film <shoot> --languages en es`; set `FILM_MEDIA=replay` to use recorded media only
+(`shootagent film-seed-replay` copies the recordings from branch `explore/media-tests`).
+
 ![Removals from saved customer requests](docs/media/removals-before-after.jpg)
 
 *Removals from saved customer requests: a trash bin, a car, wires and an extension cord, a lockbox.*

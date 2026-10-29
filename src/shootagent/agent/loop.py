@@ -1,4 +1,4 @@
-"""The Claude tool-use loop for QC and chat runs.
+"""The Claude tool-use loop for QC, chat, reel and film runs.
 
 `start_run` returns a TraceRun at once and runs the agent in a worker thread; one run per shoot is active
 at a time and later ones queue. The loop owns three rules the model cannot bypass:
@@ -16,6 +16,7 @@ so the cached prefix and the model's thinking blocks stay valid from turn to tur
 from __future__ import annotations
 
 import json
+import re
 import threading
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
@@ -32,6 +33,7 @@ from .usage import usage_event
 from .verify import verify_edit
 
 PROMPTS = Path(__file__).parent / "prompts"
+LANG_RE = re.compile(r"^[a-z]{2,3}(-[a-z0-9]{2,8})?$")  # film languages become folder names; nothing else gets through
 MAX_IMAGES_PER_RESULT = 4
 MAX_NUDGES = 2
 
@@ -80,6 +82,18 @@ MODE_TOOLS: dict[str, list[str]] = {
         "set_listing",
     ],
     "reel": ["submit_plan", "list_views", "view_photo", "label_views", "render_reel", "set_listing"],
+    "film": [
+        "submit_plan",
+        "list_views",
+        "view_photo",
+        "label_views",
+        "plan_film",
+        "prepare_shots",
+        "write_script",
+        "translate_script",
+        "narrate",
+        "assemble_film",
+    ],
 }
 
 
@@ -140,6 +154,7 @@ class AgentRun:
     request: str | None = None
     views: list[str] | None = None
     mask: str | None = None
+    languages: list[str] | None = None  # film runs: narration languages, the first is the script's own
     cancel: threading.Event = field(default_factory=threading.Event)
 
     def __post_init__(self):
@@ -158,11 +173,20 @@ class AgentRun:
             scope = list(self.views)
         elif self.mask:
             scope = [shoot.masks[self.mask].view]
-        elif self.mode == "reel":
+        elif self.mode in ("reel", "film"):
             scope = [v.id for v in shoot.views if v.approved and v.head] or [v.id for v in shoot.views if v.head]
         else:
             scope = all_ids
         self.scope: list[str] = scope
+        if self.mode == "film":
+            self.languages = [lang.strip().lower() for lang in (self.languages or ["en"])]
+            bad = [lang for lang in self.languages if not LANG_RE.match(lang)]
+            if bad or not self.languages or len(set(self.languages)) != len(self.languages):
+                raise ValueError("A film run needs one or more distinct language codes such as 'en' or 'es'"
+                                 + (f", not {', '.join(map(repr, bad))}." if bad else "."))
+            empty = [v for v in scope if shoot.view(v).head is None]
+            if empty:
+                raise ValueError(f"View(s) {', '.join(empty)} have no photo yet and cannot be filmed.")
         self.allowed: set[str] = set(scope)
         self.plan_done = False
         self.failures: dict[str, int] = {}
@@ -185,6 +209,7 @@ class AgentRun:
             views=self.scope,
             mask=self.mask,
             model=self.settings.agent_model,
+            **({"languages": self.languages, "media": self.settings.film_media} if self.mode == "film" else {}),
         )
         try:
             self._loop()
@@ -214,6 +239,10 @@ class AgentRun:
             _ops.prewarm_analysis(
                 self.store, self.shoot_id, [v for v in self.scope if bracket_problem(shoot.view(v)) is None]
             )
+        if self.mode == "film":
+            from ..tools.film import start_film
+
+            start_film(ToolContext(self.store, self.shoot_id, self.trace, self.settings), self.scope, self.languages)
         self.messages.append({"role": "user", "content": self._opening()})
         nudges = 0
         for _ in range(self.settings.max_agent_steps):
@@ -453,6 +482,10 @@ class AgentRun:
         elif self.mode == "reel":
             lines.insert(0, "Assemble the listing reel from the views in scope. Listing: "
                          + shoot.listing.model_dump_json(exclude_none=True))
+        elif self.mode == "film":
+            from ..tools.film import film_opening
+
+            lines[0:0] = film_opening(ctx, self.scope, self.languages)
         else:
             lines.insert(0, "Run the autonomous QC pass on the views in scope.")
         if self.mask:
@@ -519,6 +552,18 @@ class AgentRun:
                 for e in self._events()
             )
             return "" if rendered else "call render_reel to produce the reel."
+        if self.mode == "film":
+            # Only assemblies after the latest change to the plan, clips, scripts or audio count.
+            made: set[str] = set()
+            for e in self._events():
+                if e["kind"] != "tool_result" or not e["data"].get("ok"):
+                    continue
+                if e["data"].get("tool") in ("plan_film", "prepare_shots", "write_script", "translate_script", "narrate"):
+                    made = set()
+                elif e["data"].get("tool") == "assemble_film":
+                    made |= set((e["data"].get("data") or {}).get("languages", {}))
+            missing = [lang for lang in self.languages if lang not in made]
+            return f"assemble the film for {', '.join(missing)} (narrate first if needed)." if missing else ""
         if self.mode == "chat":
             missing = [
                 v
@@ -682,6 +727,7 @@ def start_run(
     settings: Settings | None = None,
     client: Any = None,
     manager: RunManager | None = None,
+    languages: list[str] | None = None,
 ) -> TraceRun:
     """Create a run and start it (or queue it behind the shoot's active run). Returns its trace at once."""
     settings = settings or get_settings()
@@ -690,7 +736,8 @@ def start_run(
 
         client = default_client()
     trace = TraceRun(store.shoot_dir(shoot_id), mode)
-    agent = AgentRun(store, shoot_id, mode, trace, settings, client, request=request, views=views, mask=mask)
+    agent = AgentRun(store, shoot_id, mode, trace, settings, client, request=request, views=views, mask=mask,
+                     languages=languages)
     (manager or MANAGER).start(agent)
     return trace
 

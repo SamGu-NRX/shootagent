@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -56,6 +57,23 @@ class Settings(BaseSettings):
     # Optional shared passcode for a public deployment. Empty disables the check.
     demo_passcode: str = ""
 
+    # Listing film (film/). "replay" serves clips and narration from `film_replay_dir` only, so a machine
+    # without Grok or a Gemini key still runs the whole pass; "live" generates with the grok CLI and Gemini
+    # TTS. Both read the fingerprint cache first, so nothing is generated twice.
+    film_media: Literal["replay", "live"] = "replay"
+    film_replay_dir: Path | None = None  # default <data_dir>/replay
+    film_workers: int = 2  # shots prepared at once (checks and depth renders); Grok calls stay one at a time
+    grok_bin: str = "grok"
+    # Gemini key, filled from the Keychain at launch on the demo Mac. Never logged.
+    gemini_api_key: str | None = None
+    tts_model: str = "gemini-3.8-flash-tts"
+    tts_voice: str = "Sulafat"  # the lab's pick: natural in English and Spanish (lab/REPORT.md on explore/media-tests)
+    # Depth parallax size in output px. 24 px passed the clip checker on 6 of 6 clips; 40 px passed 5 of 10.
+    depth_parallax_px: float = 24.0
+    # Reel Studio's engine (Python 3.11, its own venv) finishes the film: captions, music mix, cover, verify.
+    reelengine_python: Path | None = None
+    reelengine_models: Path | None = None  # faster-whisper models folder (small.en; `small` for Spanish)
+
     @property
     def shoots_dir(self) -> Path:
         return self.data_dir / "shoots"
@@ -63,6 +81,14 @@ class Settings(BaseSettings):
     @property
     def models_dir(self) -> Path:
         return self.data_dir / "models"
+
+    @property
+    def media_cache_dir(self) -> Path:
+        return self.data_dir / "media"
+
+    @property
+    def replay_dir(self) -> Path:
+        return self.film_replay_dir or self.data_dir / "replay"
 
 
 def anthropic_client_kwargs(s: Settings) -> dict:

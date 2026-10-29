@@ -28,6 +28,7 @@ from ..trace import read_events
 
 ID_RE = re.compile(r"^[A-Za-z0-9_.-]{1,80}$")
 BLOB_RE = re.compile(r"^[0-9a-f]{8,64}\.[a-z0-9]{2,5}$")
+LANG_RE = loop.LANG_RE
 IMMUTABLE = {"Cache-Control": "public, max-age=31536000, immutable"}
 WEB_DIST = Path(__file__).resolve().parents[3] / "web" / "dist"
 DEV_ORIGINS = [f"http://{h}:{p}" for h in ("localhost", "127.0.0.1") for p in (5173, 4173)]
@@ -72,6 +73,11 @@ class ChatBody(BaseModel):
     message: str
     views: list[str] | None = None
     mask: str | None = None
+
+
+class FilmBody(BaseModel):
+    languages: list[str] = Field(default_factory=lambda: ["en"], description="Narration languages, script language first.")
+    views: list[str] | None = None
 
 
 def create_app(
@@ -306,6 +312,63 @@ def create_app(
         if not path.exists():
             raise ApiError(404, "no_reel", "No reel has been rendered for this shoot yet.")
         return FileResponse(path, media_type="video/mp4")
+
+    @app.post("/api/shoots/{shoot_id}/film")
+    def film(shoot_id: str, body: FilmBody | None = None):
+        load(shoot_id)
+        body = body or FilmBody()
+        bad = [lang for lang in body.languages if not LANG_RE.match(lang.strip().lower())]
+        if bad:
+            raise ApiError(400, "bad_language", f"Languages are codes like 'en' or 'es', not {', '.join(map(repr, bad))}.")
+        return start(shoot_id, "film", views=body.views, languages=body.languages)
+
+    def film_file(shoot_id: str, *parts: str) -> Path:
+        load(shoot_id)
+        return store.shoot_dir(shoot_id).joinpath("film", *parts)
+
+    def read_json(path: Path):
+        return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+    @app.get("/api/shoots/{shoot_id}/film")
+    def film_state(shoot_id: str):
+        spec = read_json(film_file(shoot_id, "spec.json"))
+        manifest = read_json(film_file(shoot_id, "manifest.json"))
+        variants = {}
+        for lang, v in ((manifest or {}).get("languages") or {}).items():
+            variants[lang] = {
+                "url": f"/api/shoots/{shoot_id}/film/{lang}.mp4",
+                "cover": f"/api/shoots/{shoot_id}/film/{lang}/cover.png" if v.get("cover") else None,
+                "duration_s": v.get("duration_s"),
+                "captions": v.get("captions"),
+                "finisher": v.get("finisher"),
+                "verify": v.get("verify"),
+            }
+        return {"spec": spec, "manifest": manifest, "variants": variants}
+
+    @app.get("/api/shoots/{shoot_id}/film/manifest.json")
+    def film_manifest(shoot_id: str):
+        path = film_file(shoot_id, "manifest.json")
+        if not path.is_file():
+            raise ApiError(404, "no_film", "No film has been assembled for this shoot yet. Start one with POST /film.")
+        return FileResponse(path, media_type="application/json")
+
+    @app.get("/api/shoots/{shoot_id}/film/{lang}.mp4")
+    def film_video(shoot_id: str, lang: str):
+        if not LANG_RE.match(lang):
+            raise ApiError(400, "bad_language", "Languages are codes like 'en' or 'es'.")
+        path = film_file(shoot_id, lang, "film.mp4")
+        if not path.is_file():
+            raise ApiError(404, "no_film", f"No {lang} film for this shoot yet.")
+        return FileResponse(path, media_type="video/mp4")
+
+    @app.get("/api/shoots/{shoot_id}/film/{lang}/cover.png")
+    def film_cover(shoot_id: str, lang: str):
+        if not LANG_RE.match(lang):
+            raise ApiError(400, "bad_language", "Languages are codes like 'en' or 'es'.")
+        path = film_file(shoot_id, lang, "cover.png")
+        if not path.is_file():
+            raise ApiError(404, "no_cover", f"No {lang} cover for this shoot yet.")
+        return FileResponse(path, media_type="image/png")
 
     @app.get("/api/shoots/{shoot_id}/runs")
     def list_runs(shoot_id: str):

@@ -48,6 +48,18 @@ def format_event(ev: dict) -> str | None:
         mark = "✓" if d.get("ok") else "✗"
         extra = f" → {d['version']}" if d.get("version") else ""
         return f"    {mark} {d.get('summary')}{extra} ({d.get('ms')} ms)"
+    if k == "check" and "clip" in d:
+        verdict = "PASS" if d.get("passed") else "FAIL"
+        lines = [f"    ◆ clip check {tag}shot {d.get('shot')} attempt {d.get('attempt')} ({d.get('clip')}): {verdict}"]
+        lines += [f"        - {_short(r, 160)}" for r in d.get("failures") or []]
+        return "\n".join(lines)
+    if k == "media":
+        what = f"shot {d['shot']}" if d.get("shot") is not None else f"narration {d.get('language')}"
+        how = "cache" if d.get("cached") else f"{d.get('seconds')} s"
+        return f"    ▸ {tag}{what}: {d.get('backend')} {d.get('fingerprint')} ({how})"
+    if k == "shot":
+        fell = " (fell back)" if d.get("fell_back") else ""
+        return f"    ■ {tag}shot {d.get('shot')} plays {d.get('source')}{fell}: {d.get('note') or ''}"
     if k == "check":
         j = d.get("judge") or {}
         verdict = "PASS" if d.get("passed") else "FAIL"
@@ -130,6 +142,20 @@ def cmd_chat(a) -> int:
     return _run(a.shoot, "chat", request=a.message, views=a.views, mask=a.mask)
 
 
+def cmd_film(a) -> int:
+    return _run(a.shoot, "film", views=a.views, languages=a.languages)
+
+
+def cmd_film_seed(a) -> int:
+    from .film.seed import seed_replay
+
+    settings = get_settings()
+    for e in seed_replay(settings, branch=a.branch):
+        print(f"{e['fingerprint']}  {e['request']['kind']:<6} {e['file']}")
+    print(f"replay index: {settings.replay_dir / 'index.json'}")
+    return 0
+
+
 def cmd_runs(a) -> int:
     from .trace import read_events
 
@@ -187,6 +213,16 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--views", nargs="+")
     s.add_argument("--mask")
     s.set_defaults(fn=cmd_chat)
+
+    s = sub.add_parser("film", help="make the narrated listing film and print the trace")
+    s.add_argument("shoot")
+    s.add_argument("--languages", nargs="+", default=["en"], help="narration languages, script language first")
+    s.add_argument("--views", nargs="+")
+    s.set_defaults(fn=cmd_film)
+
+    s = sub.add_parser("film-seed-replay", help="copy the recorded Grok clips and Gemini narrations into the replay folder")
+    s.add_argument("--branch", default="origin/explore/media-tests")
+    s.set_defaults(fn=cmd_film_seed)
 
     s = sub.add_parser("runs", help="list a shoot's agent runs")
     s.add_argument("shoot")
