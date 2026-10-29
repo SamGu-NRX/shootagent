@@ -46,8 +46,18 @@ OUTPUTS = (
     "street-delivered.webp", "street-captured.webp", "street-fixed.webp", "street-sign-mask.png",
     "laundry-delivered.webp", "laundry-a-band.webp", "laundry-a.webp", "laundry-b.webp",
     "walls-before.webp", "walls-after.webp", "walls-mask.png", "car-before.webp", "car-after.webp",
-    "qr-walls.svg", "qr-car.svg",
+    "qr-walls.svg", "qr-car.svg", "walls-tint.webp",
 )
+# Smaller copies for srcset, so a phone downloads a photo near the size it shows (the hero's photos render
+# 350–770 px wide; the film's band 354 px on a phone). Named <stem>-<width>.webp beside the full size.
+RESPONSIVE = {
+    "street-delivered.webp": (720, 1080),
+    "street-captured.webp": (720, 1080),
+    "street-fixed.webp": (720, 1080),
+    "laundry-delivered.webp": (1120,),
+    "laundry-a-band.webp": (1120,),
+}
+OUTPUTS += tuple(f"{name[:-5]}-{w}.webp" for name, widths in RESPONSIVE.items() for w in widths)
 SITE = "https://shootagent-ai.vercel.app"
 # The QC candidate's mask follows the blue siding and stops where the editor's fill painted the white porch
 # roof over the sign's lower-right third, so a restore through it alone reads "STO" with the roof line across
@@ -62,6 +72,9 @@ def save_webp(img: np.ndarray | Image.Image, name: str, width: int | None = None
     assert name in OUTPUTS, f"add {name} to OUTPUTS"
     pil = Image.fromarray(img) if isinstance(img, np.ndarray) else img
     pil = pil.convert("RGB")
+    for w in RESPONSIVE.get(name, ()):
+        small = pil.resize((w, round(pil.height * w / pil.width)), Image.Resampling.LANCZOS)
+        small.save(OUT / f"{name[:-5]}-{w}.webp", "WEBP", quality=quality, method=6)
     if width and pil.width > width:
         pil = pil.resize((width, round(pil.height * width / pil.width)), Image.Resampling.LANCZOS)
     path = OUT / name
@@ -189,11 +202,29 @@ def customer_edits() -> dict:
     keep = np.isin(labels, [i + 1 for i, size in enumerate(sizes) if size > 0.01 * region.size])
     keep = ndimage.binary_fill_holes(ndimage.binary_closing(keep, iterations=3))
     save_mask(keep, "walls-mask.png", blur=1.2)
+    walls_tint(before, keep)
     cars = Image.open(ROOT / "docs/media/removals-before-after.jpg").convert("RGB")
     save_webp(cars.crop((0, 468, 460, 928)), "car-before.webp", quality=84)
     save_webp(cars.crop((468, 468, 928, 928)), "car-after.webp", quality=84)
     print(f"  walls mask covers {keep.mean():.1%} of the frame")
     return {"walls": {"share": round(float(keep.mean()), 4)}}
+
+
+def walls_tint(before: Image.Image, mask: np.ndarray) -> None:
+    """The violet "found the walls" beat, pre-tinted: the walls of the before photo in the agent's violet at their own
+    lightness (what CSS mix-blend-mode: color did, which cost a second page-sized layer every frame), with the
+    walls mask as alpha, so the page only fades an image in and out."""
+    from skimage.color import lab2rgb, rgb2lab
+
+    lab = rgb2lab(np.asarray(before.convert("RGB")) / 255.0)
+    violet = rgb2lab(np.array([[[0xA5, 0x93, 0xFF]]]) / 255.0)[0, 0]
+    lab[..., 1], lab[..., 2] = violet[1], violet[2]
+    rgb = (np.clip(lab2rgb(lab), 0, 1) * 255).round().astype(np.uint8)
+    alpha = Image.fromarray((mask.astype(float) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
+    tint = Image.fromarray(rgb).convert("RGBA")
+    tint.putalpha(alpha)
+    assert "walls-tint.webp" in OUTPUTS
+    tint.save(OUT / "walls-tint.webp", "WEBP", quality=80, method=6)
 
 
 def label_codes() -> None:

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ASSETS, img } from "../content";
+import { ASSETS, img, srcSet } from "../content";
 import { useEntrance, useReducedMotion } from "../lib/motion";
 import { Replay } from "./Icons";
 
@@ -15,6 +15,8 @@ const BEATS: [string, number][] = [
 ];
 
 const L = ASSETS.laundry;
+// The film runs the content's width: the page's on a phone, at most 1360 px.
+const FILM_SIZES = "(max-width: 1360px) 100vw, 1360px";
 const groups = L.groups.map((g) => `${g[0]}–${g[g.length - 1]}`);
 const matches = L.explanation.match(/median (\d+) matches within\); brackets [\d-]+ \(median (\d+) matches within\)\. Across positions at most (\d+)/);
 
@@ -90,8 +92,8 @@ export function Film() {
               role="img"
               aria-label="The editor’s photo: ten brackets from two camera positions blended into one kitchen."
             >
-              <img className="layer" src={img("laundry-delivered.webp")} alt="" loading="lazy" decoding="async" />
-              <img className="layer lens-view" src={img("laundry-a-band.webp")} alt="" loading="lazy" decoding="async" />
+              <img className="layer" src={img("laundry-delivered.webp")} srcSet={srcSet("laundry-delivered.webp")} sizes={FILM_SIZES} alt="" loading="lazy" decoding="async" />
+              <img className="layer lens-view" src={img("laundry-a-band.webp")} srcSet={srcSet("laundry-a-band.webp")} sizes={FILM_SIZES} alt="" loading="lazy" decoding="async" />
               <div className="lens">
                 <i />
               </div>

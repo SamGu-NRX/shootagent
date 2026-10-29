@@ -260,9 +260,8 @@ h3 {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgb(19 19 19 / 0.82);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  backdrop-filter: blur(14px) saturate(140%);
+  /* opaque enough to read over photos without a backdrop blur, which cost most of the GPU time while scrolling */
+  background: rgb(19 19 19 / 0.95);
   border-bottom: 1px solid transparent;
   transition: border-color 200ms ease;
 }
@@ -772,9 +771,8 @@ h3 {
   mask-size: 100% 100%;
 }
 .walls-tint {
-  background: var(--agent);
-  mix-blend-mode: color;
-  opacity: 0.55;
+  /* a pre-tinted image (walls only, in its alpha), faded by the beat: no blend mode, no extra page-sized layer */
+  opacity: 0;
 }
 .bubble {
   position: absolute;

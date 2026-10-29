@@ -11,6 +11,29 @@ export const ASSETS = assets;
 
 export const img = (name: string) => `/img/${name}`;
 
+// The widths each photo exists in (site/scripts/prepare_images.py writes <stem>-<width>.webp beside the full size).
+const WIDTHS: Record<string, number[]> = {
+  "street-delivered.webp": [720, 1080, 1440],
+  "street-captured.webp": [720, 1080, 1440],
+  "street-fixed.webp": [720, 1080, 1440],
+  "laundry-delivered.webp": [1120, 2240],
+  "laundry-a-band.webp": [1120, 2240],
+};
+/**
+ * The street photos' display size wherever they appear (the hero and the viewfinder): the page's width below
+ * 900 px, at most 680 px beside the text above. One value, so each file downloads once (index.html preloads the
+ * hero's with the same sizes).
+ */
+export const STREET_SIZES = "(max-width: 900px) 100vw, 680px";
+
+/** A srcset for a photo that has smaller copies, so each screen downloads one near the size it shows. */
+export function srcSet(name: string): string | undefined {
+  const widths = WIDTHS[name];
+  if (!widths) return undefined;
+  const largest = widths[widths.length - 1];
+  return widths.map((w) => `${w === largest ? img(name) : img(`${name.slice(0, -5)}-${w}.webp`)} ${w}w`).join(", ");
+}
+
 /**
  * CSS variables (--zw, --zx, --zy) that place a photo inside a cell so the cell shows `region` (a share of the
  * photo's width) centred on `box`. `cell` is the cell's height over its width.

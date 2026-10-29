@@ -12,7 +12,7 @@ import {
   type PointerEvent,
 } from "react";
 import { Replay } from "./Icons";
-import { ASSETS, img } from "../content";
+import { ASSETS, img, srcSet, STREET_SIZES } from "../content";
 import { useReducedMotion } from "../lib/motion";
 import "./LensDemo.css";
 
@@ -32,6 +32,8 @@ const S = ASSETS.street;
 // What QC found (the candidate's box); the restore works through a grown mask around it.
 const [SX0, SY0, SX1, SY1] = S.candidate as [number, number, number, number];
 const CONFIDENCE = S.confidence.toFixed(2);
+// The same size as the hero's copies of these photos, so the files the hero loaded serve here too.
+const VF_SIZES = STREET_SIZES;
 
 // A 3:4 viewfinder, 28% of the photo's width. It starts over the houses on the right, away from the sign.
 const LW = 0.28;
@@ -389,12 +391,14 @@ export function LensDemo() {
             <img
               className="layer"
               src={img("street-delivered.webp")}
+              srcSet={srcSet("street-delivered.webp")}
+              sizes={VF_SIZES}
               alt="The editor’s photo: a street of new houses behind a young tree, with a lawn in front."
               draggable={false}
               loading="lazy"
               decoding="async"
             />
-            <img className="layer restored vf-restored" src={img("street-fixed.webp")} alt="" draggable={false} loading="lazy" decoding="async" />
+            <img className="layer restored vf-restored" src={img("street-fixed.webp")} srcSet={srcSet("street-fixed.webp")} sizes={VF_SIZES} alt="" draggable={false} loading="lazy" decoding="async" />
             <div className="layer vf-flash" aria-hidden />
 
             <div
@@ -422,7 +426,7 @@ export function LensDemo() {
                 aria-describedby={hintId}
               />
               <div className="vf-window" aria-hidden>
-                <img src={img("street-captured.webp")} alt="" draggable={false} loading="lazy" decoding="async" />
+                <img src={img("street-captured.webp")} srcSet={srcSet("street-captured.webp")} sizes={VF_SIZES} alt="" draggable={false} loading="lazy" decoding="async" />
               </div>
               <div className="lens" aria-hidden>
                 <i />

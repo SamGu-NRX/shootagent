@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { ASSETS, img, zoomTo } from "../content";
+import { ASSETS, img, srcSet, STREET_SIZES, zoomTo } from "../content";
 import { useOnScreen, usePageVisible, useReducedMotion } from "../lib/motion";
 import { Mark } from "./Brand";
 import { Check, Pause, Play, Replay } from "./Icons";
@@ -78,15 +78,23 @@ function Loupe({ at, left, right }: { at: number; left: [string, ReactNode]; rig
   );
 }
 
-const zoomed = (name: string, style?: CSSProperties) => <img src={img(name)} alt="" style={{ ...LOUPE, ...style }} />;
+// Every street photo in the device, the loupe's included, uses the same srcset and sizes, so each file downloads
+// once at the size this screen needs.
+const SIZES = STREET_SIZES;
+const photo = (name: string) => ({ src: img(name), srcSet: srcSet(name), sizes: srcSet(name) ? SIZES : undefined });
+// The camera's photo is hidden at first paint, so it waits behind the editor's (the page's largest paint).
+const LOW = { fetchPriority: "low" as const };
+const zoomed = (name: string, style?: CSSProperties) => (
+  <img {...photo(name)} {...(name === "street-captured.webp" ? LOW : {})} alt="" style={{ ...LOUPE, ...style }} />
+);
 
 function Scene({ id, onPublished }: { id: SceneId; onPublished: () => void }) {
   switch (id) {
     case "check":
       return (
         <div className="scene scene-check">
-          <img className="layer" src={img("street-delivered.webp")} alt="" />
-          <img className="layer lens-view lens-out" src={img("street-captured.webp")} alt="" />
+          <img className="layer" {...photo("street-delivered.webp")} alt="" />
+          <img className="layer lens-view lens-out" {...photo("street-captured.webp")} {...LOW} alt="" />
           <div className="lens lens-out">
             <i />
             <span className="lens-tag">As captured</span>
@@ -103,8 +111,8 @@ function Scene({ id, onPublished }: { id: SceneId; onPublished: () => void }) {
     case "fix":
       return (
         <div className="scene scene-fix">
-          <img className="layer" src={img("street-delivered.webp")} alt="" />
-          <img className="layer restored beat" src={img("street-fixed.webp")} alt="" style={beat(500, { "--dur": "1000ms" })} />
+          <img className="layer" {...photo("street-delivered.webp")} alt="" />
+          <img className="layer restored beat" {...photo("street-fixed.webp")} alt="" style={beat(500, { "--dur": "1000ms" })} />
           <div className="finding to-pass" style={signBox}>
             <i />
           </div>
@@ -121,7 +129,7 @@ function Scene({ id, onPublished }: { id: SceneId; onPublished: () => void }) {
               "Fixed",
               <>
                 {zoomed("street-delivered.webp")}
-                <img className="beat" src={img("street-fixed.webp")} alt="" style={{ ...LOUPE, ...beat(500, { "--dur": "1000ms" }) }} />
+                <img className="beat" {...photo("street-fixed.webp")} alt="" style={{ ...LOUPE, ...beat(500, { "--dur": "1000ms" }) }} />
               </>,
             ]}
           />
@@ -131,7 +139,7 @@ function Scene({ id, onPublished }: { id: SceneId; onPublished: () => void }) {
       return (
         <div className="scene scene-change">
           <img className="layer" src={img("walls-before.webp")} alt="" />
-          <div className="layer walls-mask walls-tint beat" style={beat(1300, { "--anim": "tint-pulse", "--dur": "1700ms", "--ease": "ease-in-out" })} />
+          <img className="layer walls-tint beat" src={img("walls-tint.webp")} alt="" style={beat(1300, { "--anim": "tint-pulse", "--dur": "1700ms", "--ease": "ease-in-out" })} />
           <img className="layer walls-mask beat" src={img("walls-after.webp")} alt="" style={beat(2900, { "--dur": "1300ms" })} />
           <div className="bubble beat" style={beat(150, { "--anim": "rise-in" })}>
             <span>Change the grey walls to the colour in the reference</span>
@@ -220,16 +228,16 @@ function Trace({ id }: { id: SceneId }) {
   }
 }
 
-const LATER = ["street-fixed.webp", "street-sign-mask.png", "walls-before.webp", "walls-after.webp", "walls-mask.png", "qr-walls.svg"];
+// What the next scene shows, fetched two seconds into this one so it is ready when the scene starts.
+const NEXT: Record<SceneId, string[]> = {
+  check: ["street-fixed.webp", "street-sign-mask.png"],
+  fix: ["walls-before.webp", "walls-tint.webp", "walls-mask.png", "walls-after.webp"],
+  change: ["qr-walls.svg"],
+  deliver: [],
+};
 
 export function Hero() {
   const reduced = useReducedMotion();
-  useEffect(() => {
-    const fetchLater = () => LATER.forEach((name) => (new Image().src = img(name)));
-    if (document.readyState === "complete") fetchLater();
-    else window.addEventListener("load", fetchLater, { once: true });
-    return () => window.removeEventListener("load", fetchLater);
-  }, []);
   const [index, setIndex] = useState(0);
   const [run, setRun] = useState(0);
   // Reduced motion pauses it straight after the first render (below), so the server and the browser agree.
@@ -246,6 +254,22 @@ export function Hero() {
     else setMode("ended");
   };
   useEffect(() => setPublished(false), [index, run]);
+  useEffect(() => {
+    const names = NEXT[STEPS[index]!.id];
+    if (!names.length) return;
+    const t = window.setTimeout(() => {
+      for (const name of names) {
+        const next = new Image();
+        const set = photo(name);
+        if (set.srcSet) {
+          next.sizes = SIZES;
+          next.srcset = set.srcSet;
+        }
+        next.src = set.src;
+      }
+    }, 2000);
+    return () => window.clearTimeout(t);
+  }, [index]);
   // With motion, each step ends when its progress bar's CSS animation does (below), so the steps can never drift
   // from the scenes' own animations, which start at first paint and pause with them. Reduced motion has no
   // animations: there Play moves through the steps as cuts.

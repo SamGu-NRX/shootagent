@@ -72,8 +72,14 @@
         ]
       }
     </script>
-    <link rel="preload" as="image" href="/img/street-delivered.webp" fetchpriority="high" />
-    <link rel="preload" as="image" href="/img/street-captured.webp" />
+    <link
+      rel="preload"
+      as="image"
+      href="/img/street-delivered.webp"
+      imagesrcset="/img/street-delivered-720.webp 720w, /img/street-delivered-1080.webp 1080w, /img/street-delivered.webp 1440w"
+      imagesizes="(max-width: 900px) 100vw, 680px"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>
