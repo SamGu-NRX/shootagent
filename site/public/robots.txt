@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shootagent-ai.vercel.app/sitemap.xml

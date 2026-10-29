@@ -8,7 +8,7 @@
     <title>ShootAgent: listing photos checked against what the camera saw</title>
     <meta
       name="description"
-      content="An AI agent for real-estate photo shoots. It checks every edited photo against the camera's brackets, fixes what the editor got wrong, makes the customer's changes, and delivers the listing with California's AB 723 disclosures."
+      content="An AI agent that checks edited real-estate photos against the camera's brackets, fixes defects, makes customer changes, and adds California AB 723 disclosures."
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href="https://shootagent-ai.vercel.app/" />
@@ -26,6 +26,52 @@
     <meta property="og:image:alt" content="ShootAgent: checked against what the camera saw. The agent's viewfinder finds a stop sign the editor erased." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://shootagent-ai.vercel.app/og.jpg" />
+    <meta name="twitter:image:alt" content="ShootAgent: checked against what the camera saw. The agent's viewfinder finds a stop sign the editor erased." />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://shootagent-ai.vercel.app/#website",
+            "url": "https://shootagent-ai.vercel.app/",
+            "name": "ShootAgent",
+            "inLanguage": "en",
+            "about": { "@id": "https://shootagent-ai.vercel.app/#app" }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://shootagent-ai.vercel.app/#app",
+            "name": "ShootAgent",
+            "description": "An AI agent for real-estate photo shoots. It checks edited photos against the camera's exposure brackets, fixes editing defects, applies the customer's chat requests, cuts a listing reel, and delivers the listing with California AB 723 disclosures.",
+            "url": "https://shootagent.sillion.app/",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web",
+            "author": [
+              { "@id": "https://shootagent-ai.vercel.app/#sam-gu" },
+              { "@id": "https://shootagent-ai.vercel.app/#bryan-wang" }
+            ],
+            "license": "https://opensource.org/license/mit"
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://shootagent-ai.vercel.app/#source",
+            "name": "ShootAgent",
+            "description": "Source code for ShootAgent, built by Sam Gu and Bryan Wang for the AITX & MLOps World Community Hackathon, Austin Tech Week, October 2026.",
+            "codeRepository": "https://github.com/SamGu-NRX/shootagent",
+            "programmingLanguage": ["Python", "TypeScript"],
+            "license": "https://opensource.org/license/mit",
+            "author": [
+              { "@id": "https://shootagent-ai.vercel.app/#sam-gu" },
+              { "@id": "https://shootagent-ai.vercel.app/#bryan-wang" }
+            ],
+            "targetProduct": { "@id": "https://shootagent-ai.vercel.app/#app" }
+          },
+          { "@type": "Person", "@id": "https://shootagent-ai.vercel.app/#sam-gu", "name": "Sam Gu" },
+          { "@type": "Person", "@id": "https://shootagent-ai.vercel.app/#bryan-wang", "name": "Bryan Wang" }
+        ]
+      }
+    </script>
     <link rel="preload" as="image" href="/img/street-delivered.webp" fetchpriority="high" />
     <link rel="preload" as="image" href="/img/street-captured.webp" />
   </head>
