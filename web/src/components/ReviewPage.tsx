@@ -290,7 +290,7 @@ function PhotoSheet({
           {view.disclosure && <p className="rv-disclosure">On the listing this photo is marked: “{view.disclosure}”</p>}
           <div className="rv-verdict" role="group" aria-label="Your verdict">
             <button
-              className={view.client?.status === "approved" ? "btn btn-approve-on" : "btn"}
+              className={view.client?.status === "approved" ? "btn btn-approved" : "btn"}
               onClick={() => void verdict(view.client?.status === "approved" ? null : "approved")}
             >
               <Check size={14} aria-hidden /> {view.client?.status === "approved" ? "Approved" : "Approve"}
@@ -299,7 +299,8 @@ function PhotoSheet({
               className={view.client?.status === "changes_requested" ? "btn btn-changes-on" : "btn"}
               onClick={() => void verdict(view.client?.status === "changes_requested" ? null : "changes_requested")}
             >
-              Needs changes
+              {/* like Approve → Approved, the label says the state too, so it never rests on colour alone */}
+              {view.client?.status === "changes_requested" ? "Changes requested" : "Needs changes"}
             </button>
           </div>
           <form

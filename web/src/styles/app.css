@@ -2844,44 +2844,12 @@ button.chip-view {
 }
 
 /* ---------- client-facing pages: public disclosures (/#/d) and the review link (/#/r) ---------------- */
-/* People outside the studio (buyers, listing agents) get a light page; the studio chrome stays dark. */
+/* People outside the studio (buyers, listing agents) see the studio's own dark, zero-chroma chrome. */
 .client-app {
-  --bg: #f5f4f0;
-  --panel: #ffffff;
-  --raised: #efeee9;
-  --hover: #e7e5df;
-  --line: #e2e0d9;
-  --line-2: #cfccc3;
-  --text: #1b1a17;
-  --text-2: #4a4740;
-  --text-3: #75716a;
-  --agent: #6550e0;
-  --agent-ink: #4f3cc4;
-  --agent-wash: rgb(101 80 224 / 0.09);
-  --agent-line: rgb(101 80 224 / 0.32);
-  --pass: #1b7f45;
-  --pass-wash: rgb(27 127 69 / 0.1);
-  --fail: #b93a27;
-  --fail-wash: rgb(185 58 39 / 0.08);
-  --retry: #9a5f0a;
-  --retry-wash: rgb(154 95 10 / 0.1);
-  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--agent);
-  color-scheme: light;
   min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
   font-size: 14px;
-}
-body:has(.client-app) {
-  background: #f5f4f0;
-}
-.client-app .btn-primary {
-  color: #ffffff;
-}
-@media (hover: hover) and (pointer: fine) {
-  .client-app .btn-primary:hover:not(:disabled) {
-    background: #3a3832;
-  }
 }
 .pub-bar {
   position: sticky;
@@ -2893,7 +2861,8 @@ body:has(.client-app) {
   gap: 12px;
   height: 52px;
   padding: 0 max(16px, calc((100% - 980px) / 2 + 16px));
-  background: rgb(245 244 240 / 0.9);
+  /* --bg at 94%: over a white photo scrolling beneath, --text-3 here stays above 4.5:1 */
+  background: rgb(19 19 19 / 0.94);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -3133,13 +3102,13 @@ body:has(.client-app) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #fff;
-  color: #222;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.3);
+  background: #f4f4f4;
+  color: #333;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.45);
 }
 .ba-handle:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px var(--agent), 0 2px 10px rgb(0 0 0 / 0.3);
+  box-shadow: 0 0 0 3px var(--agent), 0 2px 8px rgb(0 0 0 / 0.45);
 }
 
 /* review link */
@@ -3187,18 +3156,18 @@ body:has(.client-app) {
   text-align: left;
   transition:
     border-color 140ms ease,
-    transform 160ms var(--ease-out),
-    box-shadow 160ms ease;
+    background-color 140ms ease,
+    transform 160ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .rv-card:hover {
     border-color: var(--line-2);
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.07);
+    background: var(--raised);
     transform: translateY(-1px);
   }
 }
 .rv-card[data-verdict="approved"] {
-  border-color: rgb(27 127 69 / 0.35);
+  border-color: rgb(111 207 142 / 0.45);
 }
 .rv-thumb {
   position: relative;
@@ -3221,7 +3190,8 @@ body:has(.client-app) {
   height: 24px;
   border-radius: 50%;
   background: var(--pass);
-  color: #fff;
+  color: #121212;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.45);
 }
 .rv-card-label {
   padding: 0 12px;
@@ -3265,7 +3235,7 @@ body:has(.client-app) {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgb(20 19 17 / 0.55);
+  background: rgb(0 0 0 / 0.6);
   animation: fade 160ms ease;
 }
 @keyframes fade {
@@ -3278,16 +3248,17 @@ body:has(.client-app) {
   height: min(780px, 100%);
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
+  border: 1px solid var(--line-2);
   border-radius: 14px;
   overflow: hidden;
   background: var(--panel);
-  box-shadow: 0 24px 80px rgb(0 0 0 / 0.35);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.55);
 }
 .rv-stage {
   min-height: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  background: #161513;
+  background: var(--canvas-black);
 }
 .rv-photo {
   position: relative;
@@ -3304,12 +3275,16 @@ body:has(.client-app) {
   user-select: none;
   border-radius: 4px;
 }
+/* the spot the client tapped is where the assistant will act: violet with a white outline, like the studio's click points */
 .rv-pin {
   position: absolute;
   transform: translate(-50%, -100%);
-  color: #ff5a3c;
+  color: #fff;
   filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.5));
   pointer-events: none;
+}
+.rv-pin svg {
+  fill: var(--agent);
 }
 .rv-photo {
   isolation: isolate;
@@ -3319,8 +3294,8 @@ body:has(.client-app) {
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  color: #e9e7e1;
-  border-top: 1px solid rgb(255 255 255 / 0.08);
+  color: var(--text);
+  border-top: 1px solid var(--line);
 }
 .rv-stage-title {
   flex: 1;
@@ -3336,11 +3311,11 @@ body:has(.client-app) {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  color: #e9e7e1;
+  color: var(--text);
 }
 @media (hover: hover) and (pointer: fine) {
   .rv-nav:hover {
-    background: rgb(255 255 255 / 0.1);
+    background: var(--hover);
   }
 }
 .rv-hold {
@@ -3350,8 +3325,8 @@ body:has(.client-app) {
   height: 30px;
   padding: 0 11px;
   border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 0.2);
-  color: #e9e7e1;
+  border: 1px solid var(--line-2);
+  color: var(--text);
   font-size: 12.5px;
   font-weight: 550;
   user-select: none;
@@ -3393,14 +3368,10 @@ body:has(.client-app) {
   justify-content: center;
   font-size: 13px;
 }
-.btn-approve-on {
-  background: var(--pass);
-  border-color: var(--pass);
-  color: #fff;
-}
+/* the approved state is the studio's .btn-approved; this is its counterpart */
 .btn-changes-on {
+  border-color: rgb(255 125 110 / 0.45);
   background: var(--fail-wash);
-  border-color: rgb(185 58 39 / 0.4);
   color: var(--fail);
 }
 .rv-compose {
@@ -3425,6 +3396,9 @@ body:has(.client-app) {
   background: var(--panel);
   font-size: 14px;
   line-height: 1.45;
+}
+.rv-compose textarea::placeholder {
+  color: var(--text-3);
 }
 .rv-compose textarea:focus-visible {
   outline: none;
@@ -3490,6 +3464,7 @@ body:has(.client-app) {
   .rv-sheet-inner {
     width: 100%;
     height: 100%;
+    border: 0;
     border-radius: 0;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);

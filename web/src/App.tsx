@@ -35,7 +35,7 @@ export function App() {
     window.addEventListener("hashchange", on);
     return () => window.removeEventListener("hashchange", on);
   }, []);
-  // The disclosure page and the review link are for people outside the studio: their own titles, light theme.
+  // The disclosure page and the review link are for people outside the studio: their own titles.
   useEffect(() => {
     document.title = route.kind === "public" ? "Photo disclosures" : route.kind === "review" ? "Photo review" : "ShootAgent";
   }, [route.kind]);
